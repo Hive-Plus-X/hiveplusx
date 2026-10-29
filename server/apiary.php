@@ -246,7 +246,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
 // 蜂場の持ち主と共有先の短い説明(チーム機能を使っているときだけ)
 function share_line(array $a): string
 {
-    global $UID;
+    if (!team_on() || demo_members_on()) return '';   // デモの架空のメンバーは作業記録だけ
     if (!team_on()) return '';
     if ($a['_o'] !== $UID) {
         $tn = [];

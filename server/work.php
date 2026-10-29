@@ -40,6 +40,7 @@ function assignee_options(array $site, string $aid): array
     if (!isset($site['apiaries'][$aid])) return [];
     $out = [];
     foreach (apiary_people(apiary_owner($site, $aid), $aid) as $u => $r) $out[(string)$u] = user_name((string)$u);
+    if (demo_members_on()) foreach (DEMO_MEMBERS as $u => $nm) $out[$u] = $nm;   // デモの架空のメンバー
     asort($out);
     return $out;
 }
@@ -140,7 +141,7 @@ if (is_post()) {
         }
         if (!$tg || $min <= 0 || $min > 1440) redirect($back, '対象と、かかった時間 (開始と終了、または分) を入れてください。');
         $ex = record_find($works['logs'], $id);
-        if ($id !== '' && !$ex) redirect($back);
+        if ($id !== '' && (!$ex || !empty($ex['demo']))) redirect($back, $ex ? '見本の作業記録は変更できません。' : '');
         work_owner($site, $tg, $ex, $back);
         $date = date_in('date', date('Y-m-d'));
         $newId = $id !== '' ? $id : new_id();
@@ -160,6 +161,7 @@ if (is_post()) {
         redirect('work.php?' . http_build_query(array_filter(['a' => $fa, 'm' => substr($date, 0, 7)])) . '#log', '作業記録を保存しました。');
     }
     if ($act === 'log_delete') {
+        if (!empty(record_find($works['logs'], $id)['demo'])) redirect($back, '見本の作業記録は削除できません。');
         work_owner($site, null, record_find($works['logs'], $id), $back);
         site_update('works', function (array $w) use ($id) {
             $w['logs'] = array_values(array_filter($w['logs'] ?? [], fn($x) => ($x['id'] ?? '') !== $id));
@@ -474,10 +476,10 @@ else {
             . '<td style="white-space:nowrap">' . h(hm((int)$l['minutes'])) . ((int)($l['people'] ?? 1) > 1 ? ' ×' . (int)$l['people'] . '人' : '')
             . (($l['start'] ?? '') !== '' ? '<br><span class="muted">' . h($l['start'] . '〜' . $l['end']) . '</span>' : '') . '</td>'
             . '<td>' . nl((string)($l['note'] ?? '')) . by_html($l)
-            . '<details><summary class="muted">変更・削除</summary>' . log_form($l, $site, $selfUrl([], 'log'))
+            . (!empty($l['demo']) ? '' : '<details><summary class="muted">変更・削除</summary>' . log_form($l, $site, $selfUrl([], 'log'))
             . '<form method="post" onsubmit="return confirm(\'この作業記録を削除しますか?\');">' . csrf_field()
             . '<input type="hidden" name="act" value="log_delete"><input type="hidden" name="id" value="' . h((string)$l['id']) . '">'
-            . '<input type="hidden" name="back" value="' . h($selfUrl([], 'log')) . '"><button type="submit">削除</button></form></details></td></tr>';
+            . '<input type="hidden" name="back" value="' . h($selfUrl([], 'log')) . '"><button type="submit">削除</button></form></details>') . '</td></tr>';
     }
     echo '</table></div>';
 }

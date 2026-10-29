@@ -42,5 +42,6 @@ $HPX_TODO_MAIL_HOUR = 7;       // タスクのお知らせメールを送る時�
 $HPX_DEMO_EMAIL = '';
 $HPX_DEMO_READONLY = false;    // true にすると見るだけ (書き込みもできない)
 $HPX_DEMO_RESET_HOUR = 3;
+$HPX_DEMO_DUMMY = true;         // デモのセンサの記録を見本の値 (温度34℃前後・湿度の日変動・重さが毎日増える) で作る。false なら届いた記録を使う
 
 date_default_timezone_set('Asia/Tokyo');
