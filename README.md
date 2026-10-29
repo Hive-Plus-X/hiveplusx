@@ -27,6 +27,8 @@
 - ハードウェア (`hardware/`): [CERN-OHL-P v2](LICENSES/CERN-OHL-P-2.0.txt)
 - 文書・写真 (`docs/` など): [CC BY 4.0](LICENSES/CC-BY-4.0.txt)
 
+著作権: Copyright (c) 2026 Taro Maeda and Hive Plus X contributors (「contributors」は、改良を寄せてくれた人たちを含みます)
+
 どれも、改造・再配布・販売を含めて自由に使えます。使うときは「Hive Plus X」の名前と元のライセンスの表示を残してください。無保証です。
 
 ## 名前とロゴ
