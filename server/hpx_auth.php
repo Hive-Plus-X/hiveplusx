@@ -398,6 +398,14 @@ function auth_require(string $selfPage, bool $adminOnly = false): array
         demo_guard(basename($selfPage));
         demo_sensor_fill();
     }
+    // サイト管理者には、ページが途中で止まったときのエラーの内容を画面の下に出す (原因を調べるため)
+    if (!empty($u['admin'])) register_shutdown_function(function () {
+        $e = error_get_last();
+        if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_RECOVERABLE_ERROR], true)) {
+            echo '<div style="margin:1em;padding:.8em;border:2px solid #c62828;background:#fff;color:#c62828;white-space:pre-wrap;font-size:13px">'
+                . 'エラーで止まりました (サイト管理者だけに表示しています):' . "\n" . htmlspecialchars($e['message'] . "\n" . basename((string)$e['file']) . ' ' . $e['line'], ENT_QUOTES) . '</div>';
+        }
+    });
     if ($adminOnly && empty($u['admin'])) {
         http_response_code(403);
         exit('このページはサイト管理者だけが開けます。');
