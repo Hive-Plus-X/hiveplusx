@@ -4,7 +4,7 @@
 //   ・パスワードを忘れたとき(再設定のメールを送る)
 //   ・メールのリンク(?k=...): 招待されたアカウントのパスワードを決める / パスワードの再設定 / メールアドレスの変更の確認
 //   ・初期設定: アカウントがまだ1つも無いとき。今の共通パスワード($HPX_VIEW_PASSWORD)で本人を確かめて、
-//     サイト管理者のアカウントを作り、前の版のデータ(data/site/ と data/<HPX-coreのID>/)をそのアカウントへ移す
+//     サイト管理者のアカウントを作り、前の版のデータ(data/site/ と data/<HPX-CoreのID>/)をそのアカウントへ移す
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 
@@ -118,12 +118,12 @@ function migrate_legacy(string $uid): array
         if ($lock) flock($lock, LOCK_EX);
         $ok = @rename($dir, account_hubs_dir($uid) . '/' . $id);
         if ($lock) { flock($lock, LOCK_UN); fclose($lock); }
-        $out[] = $ok ? 'HPX-core「' . $nm . '」の記録を移しました。' : 'HPX-core「' . $nm . '」の記録 (data/' . $id . '/) を移せませんでした。';
+        $out[] = $ok ? 'HPX-Core「' . $nm . '」の記録を移しました。' : 'HPX-Core「' . $nm . '」の記録 (data/' . $id . '/) を移せませんでした。';
     }
     $tok = (string)($HPX_TOKEN ?? '');
     if ($tok !== '' && $tok !== 'CHANGE-ME-to-a-long-random-string') {
         token_issue($uid, $tok);
-        $out[] = 'config.php の $HPX_TOKEN を、このアカウントの機器用トークンにしました (HPX-core の設定はそのままで届きます)。';
+        $out[] = 'config.php の $HPX_TOKEN を、このアカウントの機器用トークンにしました (HPX-Core の設定はそのままで届きます)。';
     }
     $to = notify_clean((string)($HPX_MAIL_TO ?? ''));
     if ($to !== null && $to !== '' && $to !== 'you@example.com') {

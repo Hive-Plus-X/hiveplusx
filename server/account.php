@@ -1,6 +1,6 @@
 <?php
 // 設定ページ: ログインしている本人のアカウントの設定。
-//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、HPX-core に入れる機器用トークン。
+//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、HPX-Core に入れる機器用トークン。
 //   メールアドレスは、新しいアドレスに確認メールを送り、そのリンクを開いた時点で切り替える(打ち間違いでログインできなくなるのを防ぐ)。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
@@ -43,7 +43,7 @@ if (is_post()) {
     }
     if ($act === 'token_new') {
         token_issue($UID);
-        redirect('account.php#token', '機器用トークンを作り直しました。HPX-core の「送信先のトークン」を新しいものに変えてください。');
+        redirect('account.php#token', '機器用トークンを作り直しました。HPX-Core の「送信先のトークン」を新しいものに変えてください。');
     }
     redirect('account.php');
 }
@@ -78,15 +78,15 @@ echo '<h2 id="notify">通知メールの送り先</h2><div class="card form"><p 
     . '<button type="submit">送り先を保存</button></form></div>';
 
 $token = (string)($acct['token'] ?? '');
-echo '<h2 id="token">HPX-core の接続 (機器用トークン)</h2><div class="card form">'
-    . '<p>HPX-core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
+echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="card form">'
+    . '<p>HPX-Core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
     . '<details><summary>送信先のURLを表示する</summary><p><input type="text" readonly value="' . h(site_url('receive.php')) . '" onclick="this.select()"></p></details>'
     . '<details><summary>送信先のトークンを表示する</summary><p><input type="text" readonly value="' . h($token) . '" onclick="this.select()"></p>'
     . '<p class="muted">このトークンを知っている人は、このアカウントに記録を送れます。人に見せないでください。'
     . ($token !== '' && !empty($acct['token_at']) ? ' (' . h(date('Y-m-d H:i', (int)$acct['token_at'])) . ' に作成)' : '') . '</p></details>'
-    . '<p class="muted">このアカウントの HPX-core: ' . $hubCount . ' 台' . ((int)($HPX_MAX_HUBS ?? 0) > 0 && empty($ME['admin']) ? ' (' . (int)$HPX_MAX_HUBS . ' 台まで)' : '') . '</p>'
-    . '<details><summary>トークンを作り直す</summary><div class="card danger"><p>今のトークンは使えなくなります。つないでいるすべての HPX-core に、新しいトークンを入れ直してください。'
-    . '入れ直すまでの記録は HPX-core に貯まり、入れ直した後に送られます。</p>'
+    . '<p class="muted">このアカウントの HPX-Core: ' . $hubCount . ' 台' . ((int)($HPX_MAX_HUBS ?? 0) > 0 && empty($ME['admin']) ? ' (' . (int)$HPX_MAX_HUBS . ' 台まで)' : '') . '</p>'
+    . '<details><summary>トークンを作り直す</summary><div class="card danger"><p>今のトークンは使えなくなります。つないでいるすべての HPX-Core に、新しいトークンを入れ直してください。'
+    . '入れ直すまでの記録は HPX-Core に貯まり、入れ直した後に送られます。</p>'
     . '<form method="post" onsubmit="return window.confirm(\'機器用トークンを作り直します。よろしいですか?\')">' . csrf_field()
     . '<input type="hidden" name="act" value="token_new"><button type="submit">作り直す</button></form></div></details></div>';
 echo '<h2 id="export">データ一括ダウンロード</h2><div class="card form">'

@@ -1,6 +1,6 @@
 <?php
-// 蜂場ページ: 蜂場の登録・変更と、蜂場ごとの概要(巣箱の数、HPX-core と電柵の状態、タスク、最近のメモ)。
-//   HPX-core(ハブ)と電柵アラートセンサは蜂場に紐づける。1台のハブ・センサは1つの蜂場にだけ紐づく。
+// 蜂場ページ: 蜂場の登録・変更と、蜂場ごとの概要(巣箱の数、HPX-Core と電柵の状態、タスク、最近のメモ)。
+//   HPX-Core(ハブ)と電柵アラートセンサは蜂場に紐づける。1台のハブ・センサは1つの蜂場にだけ紐づく。
 //   チームに共有された蜂場も並べる。蜂場の情報を変えられるのは持ち主とチーム管理者、削除は持ち主だけ。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
@@ -220,7 +220,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         . '<p><label>地主・連絡先</label><input type="text" name="owner" value="' . h((string)($a['owner'] ?? '')) . '"></p>'
         . '<p><label>説明・備考</label><textarea name="note">' . h((string)($a['note'] ?? '')) . '</textarea></p>'
         . '<p><label>並び順 (小さいほど上)</label><input type="number" name="order" value="' . (int)($a['order'] ?? 0) . '"></p>'
-        . '<p><label>この蜂場の HPX-core (ハブ)</label>';
+        . '<p><label>この蜂場の HPX-Core (ハブ)</label>';
     if (!$hubs) $o .= '<span class="muted">まだハブからのデータがありません。</span>';
     foreach ($hubs as $hid => $hb) {
         $on = in_array($hid, (array)($a['hubs'] ?? []), true);
@@ -229,7 +229,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     }
     $o .= '</p><p><label>この蜂場の電柵アラートセンサ</label>';
     $fa = array_filter($sensors, fn($s) => $s['kind'] === 'fa');
-    if (!$fa) $o .= '<span class="muted">電柵アラートセンサはまだ登録されていません (HPX-core の管理画面で登録します)。</span>';
+    if (!$fa) $o .= '<span class="muted">電柵アラートセンサはまだ登録されていません (HPX-Core の管理画面で登録します)。</span>';
     foreach ($fa as $k => $s) {
         $o .= '<span style="display:block"><input type="checkbox" name="fences[]" value="' . h($k) . '"' . (in_array($k, (array)($a['fences'] ?? []), true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k) . '</span>';
@@ -299,7 +299,7 @@ function apiary_avg(array $hv, array $sensors, int $since): array
     return $out;
 }
 
-// 蜂場に紐づいている HPX-core と電柵アラートの稼働状況のボタン
+// 蜂場に紐づいている HPX-Core と電柵アラートの稼働状況のボタン
 //   受信できている: 薄い緑 / 届いていない: グレーに赤の✕ / 電柵の電圧低下など: 赤に⚠
 function sensor_chips(array $a, array $hv, array $hubs, array $sensors, string $aid, int $now): string
 {
@@ -315,7 +315,7 @@ function sensor_chips(array $a, array $hv, array $hubs, array $sensors, string $
         $last = (int)($hubs[$hid]['st']['last_rx'] ?? 0);
         $ok = $last > 0 && $now - $last < (int)($HPX_HUB_MISSING_S ?? 3600);
         $chip('core', 'HPX-Core', $ok ? 'ok' : 'ng', $hubs[$hid]['name'] . ': ' . ($ok ? '受信中' : '届いていません') . '。' . $lastTxt($last),
-            $hubs[$hid]['o'] === $GLOBALS['UID'] ? 'sensor.php?' . http_build_query(['hub' => $hid]) : 'apiary.php#a-' . $aid);   // センサページは自分の HPX-core だけ
+            $hubs[$hid]['o'] === $GLOBALS['UID'] ? 'sensor.php?' . http_build_query(['hub' => $hid]) : 'apiary.php#a-' . $aid);   // センサページは自分の HPX-Core だけ
     }
     foreach ((array)($a['fences'] ?? []) as $k) {
         if (!isset($sensors[$k])) continue;
@@ -361,7 +361,7 @@ foreach ($site['apiaries'] as $aid => $a) {
     echo $ll ? weather_html(weather_get($aid, $ll[0], $ll[1], site_dir_of($a['_o'])))
         : '<div class="wx"><div class="none" style="grid-column:1/-1">地図の場所に緯度,経度を入れると天気予報が出ます</div></div>';
 
-    // HPX-core と電柵(詳細の中に入れる。異常のときだけ上にも出す)
+    // HPX-Core と電柵(詳細の中に入れる。異常のときだけ上にも出す)
     $hubTxt = []; $warn = [];
     foreach ((array)($a['hubs'] ?? []) as $hid) {
         if (!isset($hubs[$hid])) continue;
@@ -394,7 +394,7 @@ foreach ($site['apiaries'] as $aid => $a) {
     echo '<dt>所在地</dt><dd>' . (($a['address'] ?? '') !== '' ? h((string)$a['address']) : '<span class="muted">-</span>')
         . ($mq !== '' ? ' <a href="https://www.google.com/maps?' . h(http_build_query(['q' => $mq])) . '" target="_blank" rel="noopener">地図</a>' : '') . '</dd>';
     echo '<dt>地主・連絡先</dt><dd>' . (($a['owner'] ?? '') !== '' ? h((string)$a['owner']) : '<span class="muted">-</span>') . '</dd>';
-    echo '<dt>HPX-core</dt><dd>' . ($hubTxt ? implode('<br>', $hubTxt) : '<span class="muted">未設定</span>') . '</dd>';
+    echo '<dt>HPX-Core</dt><dd>' . ($hubTxt ? implode('<br>', $hubTxt) : '<span class="muted">未設定</span>') . '</dd>';
     echo '<dt>電柵</dt><dd>' . ($faTxt ? implode('<br>', $faTxt) : '<span class="muted">未設定</span>') . '</dd>';
     echo '</dl>';
     if (($a['note'] ?? '') !== '') echo '<p>' . nl((string)$a['note']) . '</p>';

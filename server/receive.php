@@ -1,7 +1,7 @@
 <?php
 // HPX 受信ページ: 機器からのレポート(JSON)を受け取り、保存する。
 //   POST /hpx/receive.php   Authorization: Bearer <トークン>   (または ?k=<トークン>)
-//   トークンはアカウントごとの機器用トークン(設定ページに出る)。届いた記録は、そのアカウントの hubs/<HPX-coreのID>/ に保存する。
+//   トークンはアカウントごとの機器用トークン(設定ページに出る)。届いた記録は、そのアカウントの hubs/<HPX-CoreのID>/ に保存する。
 //   初期設定(login.php)の前だけは、config.php の $HPX_TOKEN で前の場所(データフォルダの <ID>/)に保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
@@ -49,7 +49,7 @@ $name = preg_replace('/[^a-z0-9-]/', '', strtolower((string)($d['name'] ?? '')))
 
 $dir = $hubsDir . '/' . $id;
 if (!is_dir($dir)) {
-    // 1つのアカウントにつなげる HPX-core の台数の上限(config.php の $HPX_MAX_HUBS。0 なら無制限。サイト管理者は無制限)
+    // 1つのアカウントにつなげる HPX-Core の台数の上限(config.php の $HPX_MAX_HUBS。0 なら無制限。サイト管理者は無制限)
     $max = (int)($HPX_MAX_HUBS ?? 0);
     $active = array_filter(glob($hubsDir . '/*/state.json') ?: [], fn($p) => !is_file(dirname($p) . '/.retired'));   // 外したハブは数えない
     if ($uid !== '' && $max > 0 && empty(user_get($uid)['admin']) && count($active) >= $max) fail(403, 'hub limit');
@@ -87,7 +87,7 @@ $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以
 
 // ble.csv の列: time, epoch, seq, temp_c, humidity_pct, battery_pct, rssi_dbm, ts_known, sensor, mac, kind, raw, spread, batt_v,
 //               fence_state, fence_events, fence_blink_ago_s
-//   kind: th=温湿度計 / w=重量ノード(temp_c はノード内部の温度、raw は重量の生の値、spread は読み取りのばらつき、batt_v は電池電圧)
+//   kind: th=温湿度計 / w=重量センサ(temp_c はノード内部の温度、raw は重量の生の値、spread は読み取りのばらつき、batt_v は電池電圧)
 //         fa=電柵アラート(temp_c はノード内部の温度、fence_state は 0=正常 1=電圧低下 2=常時点灯、
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
@@ -139,7 +139,7 @@ if (is_array($ble) && count($ble) > 0) {
             if ($sid > 0 && isset($sidMap[$sid])) { $key = $sidMap[$sid]['mac']; $nm = $sidMap[$sid]['name']; }
             else { $key = $legacyMac; $nm = ''; }
 
-            $isW = isset($r['raw']) && is_numeric($r['raw']);   // 重量ノードの記録
+            $isW = isset($r['raw']) && is_numeric($r['raw']);   // 重量センサの記録
             $isA = !$isW && isset($r['al']) && is_numeric($r['al']);   // 電柵アラートの記録
             $s = $sens[$key] ?? ['name' => '', 'last_ts' => 0, 'last_seq' => 0];
             if ($isW && isset($r['sp']) && (int)$r['sp'] >= 65535) {
@@ -188,10 +188,10 @@ foreach ($sidMap as $e) {
     if (isset($sens[$e['mac']]) && $e['name'] !== '') $sens[$e['mac']]['name'] = $e['name'];
 }
 
-// 電柵アラートノードの記録が途切れていないか
+// HPX-A の記録が途切れていないか
 hpx_alert_check_missing($sens, $now, $name);
 
-// --- 重量センサの較正(HPX-core v1.14 以降の管理画面で較正したもの) ---
+// --- 重量センサの較正(HPX-Core v1.14 以降の管理画面で較正したもの) ---
 //   "wcal": [{mac, zero, per_kg, cal_raw?, cal_g?, common(0/1), ts}] を weight_cal.json に書く。
 //   差し引く重さ(offset_kg)など、サーバーで入れた項目はそのまま残す。
 if (isset($d['wcal']) && is_array($d['wcal'])) {

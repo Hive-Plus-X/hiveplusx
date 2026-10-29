@@ -1,6 +1,6 @@
 <?php
 // HPX サーバー設定。
-// 機器(HPX-core)のトークンは、アカウントごとに設定ページ(account.php)で発行する。
+// 機器(HPX-Core)のトークンは、アカウントごとに設定ページ(account.php)で発行する。
 // $HPX_TOKEN は前の版のトークン。初期設定(login.php)で、最初のアカウント(サイト管理者)の機器用トークンとして引き継ぐ。
 $HPX_TOKEN = 'CHANGE-ME-to-a-long-random-string';
 
@@ -24,17 +24,17 @@ $HPX_SMTP_PORT = 587;
 $HPX_SMTP_SECURE = 'tls';
 $HPX_SMTP_USER = '';
 $HPX_SMTP_PASS = '';
-$HPX_ALERT_MISSING_S = 3600;   // HPX-alert の記録がこの秒数来なければ知らせる
-$HPX_HUB_MISSING_S = 3600;     // ハブ(HPX-core)からこの秒数届かなければ知らせる(hpx_cron.php)
+$HPX_ALERT_MISSING_S = 3600;   // HPX-A の記録がこの秒数来なければ知らせる
+$HPX_HUB_MISSING_S = 3600;     // ハブ(HPX-Core)からこの秒数届かなければ知らせる(hpx_cron.php)
 // hpx_cron.php を URL から呼ぶときのトークン(ライトプランなど CRON が無いとき)。機器用の $HPX_TOKEN とは別の、英数字20文字以上にする
 $HPX_CRON_TOKEN = '';
 // 前の版の閲覧ページの共通パスワード(8文字以上)。今はアカウントでログインするので、初期設定(login.php)の本人確認にだけ使う
 $HPX_VIEW_PASSWORD = '';
 // 招待・再設定のメールに書くURLの元(例 'https://example.sakura.ne.jp/hpx')。空ならページを開いたときのURLから決める
 $HPX_SITE_URL = '';
-// 1つのアカウントにつなげる HPX-core の台数の上限(0 なら無制限。サイト管理者は無制限)
+// 1つのアカウントにつなげる HPX-Core の台数の上限(0 なら無制限。サイト管理者は無制限)
 $HPX_MAX_HUBS = 5;
-$HPX_ALERT_BATT_V = 2.6;       // HPX-alert の電池電圧(V)がこれ未満なら知らせる
+$HPX_ALERT_BATT_V = 2.6;       // HPX-A の電池電圧(V)がこれ未満なら知らせる
 $HPX_TODO_MAIL_HOUR = 7;       // タスクのお知らせメールを送る時刻(この時を過ぎた最初の hpx_cron.php の実行で、1日1回)
 
 // デモ用アカウント: このメールアドレスのアカウントはパスワードを公開して誰でも試せる (空ならデモなし)。

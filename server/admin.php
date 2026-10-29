@@ -53,7 +53,7 @@ if (is_post()) {
     if ($self) redirect('admin.php', '自分のアカウントは、ここでは停止・削除・権限の変更をできません。');
     if ($act === 'stop') {
         user_set($u['id'], ['status' => 'stopped', 'status_before' => (string)$u['status']]);
-        redirect('admin.php', $nm . 'を停止しました。ログインできず、HPX-core からの記録も受け付けません (データは残っています)。');
+        redirect('admin.php', $nm . 'を停止しました。ログインできず、HPX-Core からの記録も受け付けません (データは残っています)。');
     }
     if ($act === 'start' && ($u['status'] ?? '') === 'stopped') {
         user_set($u['id'], ['status' => (string)($u['pw'] ?? '') !== '' ? 'active' : 'invited']);
@@ -101,7 +101,7 @@ echo '<details class="addbox"><summary><span class="plus">＋</span>アカウン
 $users = users_all();
 uasort($users, fn($a, $b) => (int)($a['created'] ?? 0) <=> (int)($b['created'] ?? 0));
 $stText = ['active' => '<span class="ok">利用中</span>', 'invited' => '<span class="warn">招待中</span>', 'stopped' => '<span class="ng">停止中</span>'];
-echo '<h2>アカウント (' . count($users) . ')</h2><div class="wrap"><table><tr><th>表示名</th><th>メールアドレス</th><th>権限</th><th>状態</th><th>HPX-core</th><th>最終ログイン</th><th>操作</th></tr>';
+echo '<h2>アカウント (' . count($users) . ')</h2><div class="wrap"><table><tr><th>表示名</th><th>メールアドレス</th><th>権限</th><th>状態</th><th>HPX-Core</th><th>最終ログイン</th><th>操作</th></tr>';
 foreach ($users as $uid => $u) {
     $uid = (string)$uid;
     $st = (string)($u['status'] ?? '');
@@ -135,7 +135,7 @@ foreach ($users as $uid => $u) {
         . '<td>' . (!empty($u['last_login']) ? h(date('Y-m-d H:i', (int)$u['last_login'])) : '<span class="muted">-</span>') . '</td><td>' . $ops . '</td></tr>';
 }
 echo '</table></div>';
-echo '<p class="muted">停止したアカウントはログインできず、その HPX-core からの記録も受け付けません。削除は停止してからできます (データは deleted/ フォルダに残ります)。</p>';
+echo '<p class="muted">停止したアカウントはログインできず、その HPX-Core からの記録も受け付けません。削除は停止してからできます (データは deleted/ フォルダに残ります)。</p>';
 
 // デモ用アカウント
 if (demo_email() !== '') {

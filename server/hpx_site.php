@@ -7,7 +7,7 @@
 //       site.json  : 蜂場と巣箱
 //       memos.json : メモ(蜂場単位・巣箱単位。内検記録もここ)
 //       works.json : 作業記録(過去の作業時間)と タスク
-//   ・センサーの記録は、アカウントの hubs/<HPX-coreのID>/ の state.json / ble.csv / weight_cal.json を読むだけ(書き換えない)
+//   ・センサーの記録は、アカウントの hubs/<HPX-CoreのID>/ の state.json / ble.csv / weight_cal.json を読むだけ(書き換えない)
 declare(strict_types=1);
 require_once __DIR__ . '/hpx_auth.php';
 require_once __DIR__ . '/hpx_hive_alert.php';
@@ -697,7 +697,7 @@ function shared_devices(): array
     return $out;
 }
 
-// ハブ(HPX-core)の一覧: id => [dir, st, name, o(持ち主)]
+// ハブ(HPX-Core)の一覧: id => [dir, st, name, o(持ち主)]
 //   自分のハブはすべて。ほかの人のハブは、共有された蜂場・巣箱に紐づいているものだけ
 function hpx_hubs(): array
 {

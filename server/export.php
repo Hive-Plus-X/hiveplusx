@@ -1,7 +1,7 @@
 <?php
 // データ一括ダウンロード: 蜂場・巣箱・メモ・タスク・作業記録・センサの記録を、Excel で開ける CSV にして1つの ZIP で返す。
 //   設定ページ(account.php)のボタンから POST で呼ぶ。見えるのは、蜂場ページなどで見られるものと同じ(共有された蜂場の分も入る)。
-//   センサの記録は自分の HPX-core の分だけ(ble.csv の全期間。重量は較正があれば kg も付ける)。
+//   センサの記録は自分の HPX-Core の分だけ(ble.csv の全期間。重量は較正があれば kg も付ける)。
 //   写真は「写真も入れる」にしたときだけ(蜂場の写真と、メモの写真)。
 //   CSV は UTF-8 (BOM付き)。ZIP はデータフォルダの tmp/ に作り、送ったら消す。
 declare(strict_types=1);
@@ -48,7 +48,7 @@ foreach ($site['apiaries'] as $aid => $a) {
         $a['owner'] ?? '', $a['note'] ?? '', array_map($sname, (array)($a['hubs'] ?? [])), array_map($sname, (array)($a['fences'] ?? [])),
         $dt($a['created'] ?? 0), $dt($a['updated'] ?? 0)], $team ? [$who($a['_o'])] : [], [(string)$aid]);
 }
-csv_add($zip, '蜂場.csv', array_merge(['蜂場', '所在地住所', '緯度・経度', '巣箱数 (手入力)', '登録した巣箱', '地主・連絡先', '説明・備考', 'HPX-core', '電柵',
+csv_add($zip, '蜂場.csv', array_merge(['蜂場', '所在地住所', '緯度・経度', '巣箱数 (手入力)', '登録した巣箱', '地主・連絡先', '説明・備考', 'HPX-Core', '電柵',
     '作成', '更新'], $team ? ['持ち主'] : [], ['蜂場ID']), $rows);
 
 // ---- 巣箱 ----
@@ -101,7 +101,7 @@ foreach ($ls as $l) {
 }
 csv_add($zip, '作業記録.csv', ['日付', '蜂場', '巣箱', '作業', '開始', '終了', '時間 (分)', '人数', 'のべ時間 (分)', '担当者', 'メモ', '記入者', '作業記録ID'], $rows);
 
-// ---- センサの記録(自分の HPX-core ごとに、ble.csv の全期間。見出しを日本語にし、重量は kg も付ける) ----
+// ---- センサの記録(自分の HPX-Core ごとに、ble.csv の全期間。見出しを日本語にし、重量は kg も付ける) ----
 $label = ['time' => '日時', 'epoch' => 'epoch', 'seq' => 'seq', 'temp_c' => '温度 (℃)', 'humidity_pct' => '湿度 (%)', 'battery_pct' => '電池 (%)', 'rssi_dbm' => '電波 (dBm)',
     'ts_known' => '時刻確定', 'sensor' => 'センサ名', 'mac' => 'MAC', 'kind' => '種類', 'raw' => '重量 (生の値)', 'spread' => '重量のばらつき', 'batt_v' => '電池 (V)',
     'fence_state' => '電柵', 'fence_events' => '電柵 検出の通算回数', 'fence_ago' => '電柵 検出からの秒数'];
@@ -164,7 +164,7 @@ $zip->addFromString('はじめにお読みください.txt', "\xEF\xBB\xBF" . BR
     . '作成: ' . date('Y-m-d H:i', $now) . ' / ' . (string)($ME['email'] ?? '') . "\r\n\r\n"
     . "・CSV は Excel でそのまま開けます (UTF-8)。\r\n"
     . "・蜂場・巣箱・メモ・タスク・作業記録は、蜂場ページなどで見られるもの (チームで共有された蜂場の分も含む) です。\r\n"
-    . "・センサ_<HPX-core名>.csv は、自分の HPX-core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。\r\n"
+    . "・センサ_<HPX-Core名>.csv は、自分の HPX-Core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。\r\n"
     . (!empty($_POST['photos']) ? "・写真フォルダに、蜂場の写真とメモの写真が入っています。\r\n" : ''));
 $zip->close();
 foreach ($sensorTmp as $t) @unlink($t);

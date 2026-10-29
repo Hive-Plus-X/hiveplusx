@@ -9,7 +9,7 @@
 //   蜂場での役割(apiary_role): owner(持ち主) / admin(共有先チームの管理者) / member(共有先チームのメンバーで、その蜂場を見られる人)
 //     owner と admin は蜂場・巣箱の情報も変えられる。member はメモ・作業記録・タスクを書ける。蜂場の削除と共有は owner だけ。
 //     同じ人が、ある蜂場では member、別の蜂場では admin や owner になってよい(役割は蜂場ごとに決まる)。
-//   警報メール(電柵・HPX-core・巣箱の警報)は、その蜂場を見られるチームの人にも届く(apiary_alert_to)。
+//   警報メール(電柵・HPX-Core・巣箱の警報)は、その蜂場を見られるチームの人にも届く(apiary_alert_to)。
 declare(strict_types=1);
 
 const T_NAME_MAX = 40;
@@ -178,7 +178,7 @@ function apiary_people(string $owner, string $apiaryId): array
     return array_filter($out, fn($r, $m) => user_get((string)$m) !== null, ARRAY_FILTER_USE_BOTH);
 }
 
-// 警報メール(電柵・HPX-core が止まった・巣箱の警報)の送り先: 蜂場の持ち主の通知先と、その蜂場を見られるチームの人の通知先。
+// 警報メール(電柵・HPX-Core が止まった・巣箱の警報)の送り先: 蜂場の持ち主の通知先と、その蜂場を見られるチームの人の通知先。
 //   停止中・招待中のアカウントとデモ用アカウントには送らない。同じアドレスは1つにまとめる。カンマ区切り
 function apiary_alert_to(string $owner, array $apiaryIds): string
 {
@@ -195,7 +195,7 @@ function apiary_alert_to(string $owner, array $apiaryIds): string
     return implode(', ', array_keys($list));
 }
 
-// そのハブ(HPX-core)か、そのハブの電柵センサを紐づけている、持ち主の蜂場
+// そのハブ(HPX-Core)か、そのハブの電柵センサを紐づけている、持ち主の蜂場
 function hub_apiaries(string $owner, string $hubId): array
 {
     $out = [];

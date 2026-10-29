@@ -1,4 +1,4 @@
-# HPX-core の「送信先のトークン」(Authorization: Bearer ...) を PHP (receive.php) に渡す。
+# HPX-Core の「送信先のトークン」(Authorization: Bearer ...) を PHP (receive.php) に渡す。
 # さくらのレンタルサーバーでは、これが無いとトークン欄の方法では 401 になることがある (URL に ?k= を付ける方法はこれが無くても動く)。
 <IfModule mod_rewrite.c>
 RewriteEngine On
