@@ -21,7 +21,7 @@ function lp_head(string $title): void
         . 'input[type=email],input[type=password],input[type=text]{width:100%}button{margin-top:1em}'
         . 'label.show{display:inline-flex;align-items:center;gap:4px;color:#345;cursor:pointer;user-select:none}label.show input{width:auto;margin:0}.ok{color:#11734b;font-weight:bold}.ng{color:#c62828;font-weight:bold}.muted{color:#777;font-size:.9em}'
         . '.brand{text-align:center;margin:28px 0 6px}.brand img{width:200px;max-width:70%;height:auto}.brand p{margin:6px 0 0;color:#2F5D45;font-weight:bold;letter-spacing:.1em}'
-        . brand_css() . '</style></head><body><div class="brand"><img src="img/hivex_main.svg" alt="' . BRAND_NAME . '" width="200" height="57"><p>蜂場管理</p></div>';
+        . brand_css() . '</style></head><body><div class="brand"><img src="img/hivex_main.svg" alt="' . BRAND_NAME . '" width="200" height="57"><p>養蜂管理アプリ HPX-note</p></div>';
 }
 // パスワードの欄があるフォームに「パスワードを表示」を付ける(打ち間違いを確かめられるように。そのフォームのパスワード欄をまとめて切り替える)
 function lp_end(): void
@@ -257,7 +257,7 @@ if ($post) {
             : 'メールアドレスかパスワードが違います。');
     }
 }
-lp_head(L_TITLE . ' アプリ ログイン');
+lp_head('HPX-note ログイン - ' . L_TITLE);
 echo '<div class="card"><form method="post" action="login.php">' . $csrfField . '<input type="hidden" name="next" value="' . h($next) . '">'
     . ($err !== '' ? '<p class="ng">' . h($err) . '</p>' : '')
     . '<label>メールアドレス</label><input type="email" name="email" value="' . h($email) . '" autocomplete="username" required autofocus>'

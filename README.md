@@ -2,7 +2,7 @@
 
 養蜂のための、オープンソースIoT。 / Open-source IoT for beekeeping.
 
-巣箱の状態を計測するセンサー類とデータを送る仕組みを、自作可能な機器と小さなサーバーで実現します。データと養蜂家の記録を統合するための蜂場管理アプリも作ります。
+巣箱の状態を計測するセンサー類とデータを送る仕組みを、自作可能な機器と小さなサーバーで実現します。データと養蜂家の記録を統合するための養蜂管理アプリ HPX-note も作ります。
 趣味とプロの養蜂家には実用的な道具として、学生・研究者には仕組みを学び、改良するための土台として使ってもらうことを目指しています。
 
 ウェブサイト: https://hiveplusx.com
@@ -16,7 +16,7 @@
 | `firmware/hpx-alert/` | HPX-A (XIAO nRF52840)。アラームのLED点滅を光センサで読み、BLEで知らせる | MIT |
 | `firmware/hpx-temp/` | HPX-TH (XIAO nRF52840)。温湿度センサ (これから開発) | MIT |
 | `firmware/experiments/` | 試作・検討中のもの | MIT |
-| `server/` | 蜂場管理アプリ HPX-app (PHP。蜂場・巣箱・メモ・作業記録・センサ・チーム・アカウントなど) | MIT |
+| `server/` | 養蜂管理アプリ HPX-note (PHP。蜂場・巣箱・メモ・作業記録・センサ・チーム・アカウントなど) | MIT |
 | `site/` | HivePlusX.com のページ | MIT |
 | `hardware/` | 回路図・基板・ケースの図面 (これから追加) | CERN-OHL-P v2 |
 | `docs/` | 説明書・検討メモ | CC BY 4.0 |
@@ -43,7 +43,7 @@
 
 ## はじめかた
 
-- サーバー (蜂場管理アプリ) の置き方: [docs/server-setup.md](docs/server-setup.md)。`server/config.sample.php` を `config.php` にコピーして書き換えます
+- サーバー (養蜂管理アプリ HPX-note) の置き方: [docs/server-setup.md](docs/server-setup.md)。`server/config.sample.php` を `config.php` にコピーして書き換えます
 - ファームウェアは Arduino IDE で書き込みます。必要なボードとライブラリは各 `.ino` の先頭に書いてあります
 
 ## 参加のしかた
