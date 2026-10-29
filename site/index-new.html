@@ -113,6 +113,13 @@
   .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
   .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
 
+  /* ライセンスの注釈 (各1行) */
+  .lic-notes { margin-top:20px; font-size:14px; }
+  .lic-notes div { display:flex; gap:12px; padding:4px 0; }
+  .lic-notes dt { flex:none; width:112px; font-weight:700; }
+  .lic-notes dd { color:var(--sub); }
+  @media (max-width:760px) { .lic-notes div { flex-direction:column; gap:0; padding:6px 0; } .lic-notes dt { width:auto; } }
+
   /* フッター */
   footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
   footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
@@ -257,6 +264,11 @@
         <p class="eyebrow">Download</p>
         <h2>ダウンロード</h2>
         <p class="lead">ファームウェア、サーバーのプログラム、回路図は GitHub で公開しています。ソフトは MIT、ハードは CERN-OHL-P v2、文書は CC BY 4.0 です。</p>
+        <dl class="lic-notes">
+          <div><dt>MIT</dt><dd>ソフトの定番。著作権表示を残せば、改造・再配布・販売も自由</dd></div>
+          <div><dt>CERN-OHL-P v2</dt><dd>ハード版の MIT。回路図や基板を自由に作り、改造・販売できる</dd></div>
+          <div><dt>CC BY 4.0</dt><dd>出典を書けば、文章や図を自由に使い、手直しできる</dd></div>
+        </dl>
         <a class="more" href="download.html">ダウンロードのページへ</a>
       </div>
       <div class="visual files">
