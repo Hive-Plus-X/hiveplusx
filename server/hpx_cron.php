@@ -23,6 +23,8 @@ $hour = (int)($HPX_TODO_MAIL_HOUR ?? 7);
 $now = time();
 $today = date('Y-m-d', $now);
 
+demo_sensor_fill(true);   // デモ用アカウントのセンサの見本の値を今の時刻まで作り直す
+
 // 見る場所: [HPX-Core のフォルダの親, 蜂場などのフォルダ, 通知先(null は config.php の $HPX_MAIL_TO), アカウントid(初期設定の前は '')]
 $places = [];
 if (users_exist()) {

@@ -224,7 +224,7 @@ function team_on(): bool
 {
     global $UID;
     static $on = null;
-    return $on ??= teams_of($UID) !== [] || count(array_unique(array_column(site_load()['apiaries'], '_o'))) > 1;
+    return $on ??= demo_members_on() || teams_of($UID) !== [] || count(array_unique(array_column(site_load()['apiaries'], '_o'))) > 1;
 }
 
 // メモ・作業記録・タスクを持ち主ごとに読み合わせる。自分の分はすべて、ほかの人の分は見られる蜂場のものだけ。_o を付ける
@@ -261,7 +261,65 @@ function works_load(): array
     foreach (['logs', 'todos'] as $k) {
         $w[$k] = records_merge(function ($o) use ($k) { $v = site_read_of($o, 'works')[$k] ?? []; return is_array($v) ? $v : []; });
     }
+    if (demo_members_on()) $w['logs'] = array_merge($w['logs'], demo_work_logs(site_load()));
     return $cache = $w;
+}
+
+// デモ用アカウントの見本の作業記録: 架空のメンバー (DEMO_MEMBERS) が、今月までの12か月に作業した記録を作る。
+//   保存はせず、開くたびに同じ内容を作る (月ごとに乱数の種を決める)。demo => true のものは変更・削除できない
+function demo_work_logs(array $site): array
+{
+    $aids = array_keys($site['apiaries']);
+    if (!$aids) return [];
+    $hivesOf = [];
+    foreach ($site['hives'] as $hid => $x) $hivesOf[(string)($x['apiary'] ?? '')][] = (string)$hid;
+    // 月ごとの作業の回数と、作業の種類の重み (春〜初夏に多く、冬は少ない)
+    $count = [1 => 2, 2 => 3, 3 => 6, 4 => 9, 5 => 10, 6 => 9, 7 => 7, 8 => 6, 9 => 6, 10 => 5, 11 => 4, 12 => 2];
+    $kinds = [
+        '内検' => [1 => 1, 2 => 2, 3 => 5, 4 => 6, 5 => 6, 6 => 6, 7 => 5, 8 => 5, 9 => 5, 10 => 4, 11 => 2, 12 => 1],
+        '給餌' => [1 => 2, 2 => 3, 3 => 3, 4 => 1, 5 => 0, 6 => 0, 7 => 1, 8 => 2, 9 => 3, 10 => 3, 11 => 2, 12 => 1],
+        '採蜜' => [5 => 3, 6 => 3, 7 => 2, 8 => 1],
+        '分蜂対応' => [4 => 3, 5 => 3, 6 => 1],
+        '準備' => [1 => 2, 2 => 3, 3 => 2, 4 => 1, 9 => 1, 10 => 1, 12 => 1],
+        '片付け' => [7 => 1, 8 => 1, 10 => 1, 11 => 3, 12 => 3],
+        '移動' => [3 => 1, 6 => 1, 9 => 1, 11 => 1],
+    ];
+    $len = ['内検' => [60, 180], '給餌' => [30, 90], '採蜜' => [120, 300], '分蜂対応' => [45, 150], '準備' => [60, 180], '片付け' => [60, 150], '移動' => [90, 240]];
+    $notes = ['内検' => ['女王を確認', '王台なし', '巣板を1枚追加', 'ダニ検査も実施', ''], '給餌' => ['糖液 2L', '代用花粉', ''], '採蜜' => ['遠心分離機で採蜜', '巣板6枚', ''],
+        '分蜂対応' => ['王台を除去', '分蜂群を捕獲', ''], '準備' => ['巣枠の組み立て', '巣箱の修理', ''], '片付け' => ['巣箱の清掃', '越冬の準備', ''], '移動' => ['蜂場間で移動', '']];
+    $members = array_keys(DEMO_MEMBERS);
+    $today = date('Y-m-d');
+    $out = [];
+    for ($i = 11; $i >= 0; $i--) {
+        $ym = date('Y-m', strtotime(date('Y-m-01') . " -$i month"));
+        $mon = (int)substr($ym, 5, 2);
+        mt_srand(crc32('hpx-demo-work-' . $ym));
+        $days = (int)date('t', strtotime($ym . '-01'));
+        for ($n = 0; $n < $count[$mon]; $n++) {
+            // 作業の種類を重みで選ぶ
+            $pick = [];
+            foreach ($kinds as $t => $wt) for ($k = 0; $k < ($wt[$mon] ?? 0); $k++) $pick[] = $t;
+            $type = $pick[mt_rand(0, count($pick) - 1)];
+            $date = sprintf('%s-%02d', $ym, mt_rand(1, $days));
+            $aid = (string)$aids[mt_rand(0, count($aids) - 1)];
+            $hs = $hivesOf[$aid] ?? [];
+            $hive = $type === '内検' && $hs && mt_rand(0, 1) ? $hs[mt_rand(0, count($hs) - 1)] : '';
+            $who = $members;
+            shuffle($who);
+            $who = array_slice($who, 0, mt_rand(1, mt_rand(0, 2) ? 2 : 3));
+            sort($who);
+            $min = (int)(round(mt_rand($len[$type][0], $len[$type][1]) / 15) * 15);
+            $st = mt_rand(14, 30) * 30;   // 7:00〜15:00 に始める
+            $note = $notes[$type][mt_rand(0, count($notes[$type]) - 1)];
+            if ($date > $today) continue;   // 今月は今日まで
+            $out[] = ['id' => 'demo' . str_replace('-', '', $ym) . $n, 'demo' => true, '_o' => demo_uid(), 'apiary' => $aid, 'hive' => $hive, 'date' => $date,
+                'type' => $type, 'workers' => $who, 'start' => sprintf('%02d:%02d', intdiv($st, 60), $st % 60),
+                'end' => sprintf('%02d:%02d', intdiv($st + $min, 60) % 24, ($st + $min) % 60), 'minutes' => $min, 'people' => count($who),
+                'note' => $note, 'created' => strtotime($date), 'by' => $who[0]];
+        }
+    }
+    mt_srand();
+    return $out;
 }
 
 // id で記録を探す(_o で持ち主が分かる)。無ければ null

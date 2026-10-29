@@ -26,6 +26,8 @@ $migLock = migrate_lock(LOCK_SH);
 if (users_exist()) {
     $uid = token_uid($tok);
     if ($uid === null) fail(401, 'unauthorized');
+    // デモ用アカウントのセンサの記録は見本の値で作るので、届いた記録は保存しない (機器には受け取ったと返す)
+    if ($uid === demo_uid() && demo_dummy_on()) { echo json_encode(['ok' => true, 'saved' => 0]); exit; }
     $hubsDir = account_hubs_dir($uid);
     $notifyTo = account_notify($uid);
 } else {

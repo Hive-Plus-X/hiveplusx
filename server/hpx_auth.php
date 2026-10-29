@@ -159,6 +159,7 @@ function user_name(string $uid): string
 {
     static $cache = null;
     $cache ??= users_all();
+    if (isset(DEMO_MEMBERS[$uid]) && !isset($cache[$uid])) return DEMO_MEMBERS[$uid];
     return isset($cache[$uid]) ? (string)$cache[$uid]['name'] : ($uid === '' ? '' : '(削除したアカウント)');
 }
 
@@ -395,6 +396,7 @@ function auth_require(string $selfPage, bool $adminOnly = false): array
     if (is_demo($u)) {
         $u['admin'] = false;   // デモ用アカウントはサイト管理者にしない
         demo_guard(basename($selfPage));
+        demo_sensor_fill();
     }
     if ($adminOnly && empty($u['admin'])) {
         http_response_code(403);
@@ -447,6 +449,120 @@ function demo_guard(string $page): void
         exit;
     }
     if (!demo_editing()) $_FILES = [];
+}
+
+// デモ用アカウントのセンサの記録は、実際のセンサの値を使わずに、見本の値 (ダミー) で作る ($HPX_DEMO_DUMMY = false で止める)
+//   温湿度計: 温度は 34℃±1℃ でほぼ一定。湿度は昼 60%・夜 90% くらいの日変動
+//   重量センサ: 30日前の 30kg くらいから1日 0.3kg ずつ増える。1日の中では昼が夜より 0.5kg 軽い
+//   電柵アラート: ずっと正常
+//   デモのページを開いたとき (5分に1回まで) と hpx_cron.php で、デモ用アカウントの HPX-Core ごとに
+//   ble.csv を30日分作り直し、state.json の受信時刻を今にする。デモ用アカウントのトークンで届いた記録は保存しない (receive.php)
+//   作業記録も、架空のメンバー (Aさん・Bさん・Cさん) の分を12か月分足して見せる (hpx_site.php の demo_work_logs)
+// デモの架空のメンバー (チーム機能を使っていなくても、作業記録の担当者として出す。hpx_site.php の demo_work_logs)
+const DEMO_MEMBERS = ['u_de00000a' => 'Aさん', 'u_de00000b' => 'Bさん', 'u_de00000c' => 'Cさん'];
+function demo_members_on(): bool
+{
+    return demo_dummy_on() && ($GLOBALS['UID'] ?? '') === demo_uid();
+}
+const DEMO_DAYS = 30;
+const DEMO_STEP_S = 600;   // 10分ごとの記録
+function demo_dummy_on(): bool
+{
+    global $HPX_DEMO_DUMMY;
+    return ($HPX_DEMO_DUMMY ?? true) !== false && demo_uid() !== '';
+}
+// センサと時刻ごとに決まる -1〜1 のゆらぎ (作り直しても同じ値になるように)
+function demo_noise(string $key, int $t): float { return (crc32($key . '@' . $t) % 2001) / 1000 - 1; }
+function demo_sensor_fill(bool $force = false): void
+{
+    if (!demo_dummy_on()) return;
+    $hubsDir = account_hubs_dir(demo_uid());
+    $flag = $hubsDir . '/.demo_filled';
+    $now = time();
+    if (!$force && $now - (int)@filemtime($flag) < 300) return;
+    @mkdir($hubsDir, 0700, true);
+    @touch($flag);
+    $paths = glob($hubsDir . '/*/state.json') ?: [];
+    if (!$paths) {
+        // HPX-Core がまだ無ければ、見本の1台 (温湿度計2台・重量センサ1台) を作る
+        $dir = $hubsDir . '/DE000000DE01';
+        @mkdir($dir, 0700, true);
+        file_put_contents($dir . '/state.json', json_encode(['name' => 'hpx-demo', 'sensors' => [
+            'DE:00:00:00:00:01' => ['name' => '温湿度センサ1', 'kind' => 'th'],
+            'DE:00:00:00:00:02' => ['name' => '温湿度センサ2', 'kind' => 'th'],
+            'DE:00:00:00:00:03' => ['name' => '重量センサ1', 'kind' => 'w'],
+        ]], JSON_UNESCAPED_UNICODE));
+        $paths = [$dir . '/state.json'];
+    }
+    $end = intdiv($now, DEMO_STEP_S) * DEMO_STEP_S;
+    $start = $end - DEMO_DAYS * 86400;
+    foreach ($paths as $statePath) {
+        $dir = dirname($statePath);
+        $lock = fopen($dir . '/.lock', 'c');
+        if (!$lock || !flock($lock, LOCK_EX)) continue;
+        $st = json_decode((string)@file_get_contents($statePath), true);
+        $sens = is_array($st['sensors'] ?? null) ? $st['sensors'] : [];
+        // 重量: 較正 (生の値 ↔ kg) が無いセンサには見本の較正を入れる
+        $cal = wcal_with_inherit($dir);
+        $calAdd = false;
+        foreach ($sens as $mac => $s) {
+            if (is_array($s) && ($s['kind'] ?? '') === 'w' && !isset($cal[$mac]['per_kg'])) {
+                $cal[$mac] = ['zero' => 100000, 'per_kg' => 20000.0, 'src' => 'demo', 'updated' => date('Y-m-d H:i:s', $now)];
+                $calAdd = true;
+            }
+        }
+        if ($calAdd) file_put_contents($dir . '/weight_cal.json', json_encode($cal, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        // 初めて見本の値にするときは、それまでの実際の記録を ble_real_backup.csv に残す
+        if (is_file($dir . '/ble.csv') && !is_file($dir . '/.demo_dummy')) @copy($dir . '/ble.csv', $dir . '/ble_real_backup.csv');
+        @touch($dir . '/.demo_dummy');
+        $tmp = $dir . '/ble.csv.tmp';
+        $fp = fopen($tmp, 'wb');
+        if (!$fp) { flock($lock, LOCK_UN); fclose($lock); continue; }
+        fputcsv($fp, ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
+                      'fence_state', 'fence_events', 'fence_blink_ago_s']);
+        $seq = 0;
+        for ($t = $start; $t <= $end; $t += DEMO_STEP_S) {
+            $hr = (int)date('G', $t) + (int)date('i', $t) / 60;   // その日の時刻 (時)
+            foreach ($sens as $mac => $s) {
+                if (!is_array($s)) continue;
+                $mac = (string)$mac;
+                $kind = (string)($s['kind'] ?? 'th');
+                $nm = (string)($s['name'] ?? '');
+                $rssi = -60 + (int)round(demo_noise($mac . 'r', $t) * 5);
+                $amb = 15 + 6 * sin(2 * M_PI * ($hr - 9) / 24);   // まわりの気温 (ノード内部の温度に使う)
+                $seq++;
+                if ($kind === 'w') {
+                    $c = $cal[$mac];
+                    $kg = 30 + (crc32($mac) % 401) / 100 - 2 + 0.3 * ($t - $start) / 86400
+                        - 0.25 - 0.25 * cos(2 * M_PI * ($hr - 13) / 24) + 0.02 * demo_noise($mac, $t);
+                    $raw = (int)round(($kg + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '']);
+                } elseif ($kind === 'fa') {
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '']);
+                } else {
+                    $temp = 34 + 0.5 * sin(2 * M_PI * ($t / 86400 / 3 + (crc32($mac) % 100) / 100)) + 0.1 * demo_noise($mac . 't', $t);
+                    $hum = 75 - 15 * cos(2 * M_PI * ($hr - 14) / 24) + 2 * demo_noise($mac . 'h', $t);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round(max(33, min(35, $temp)), 2), round(max(50, min(95, $hum)), 2), 100, $rssi, 1, $nm, $mac, 'th',
+                                  '', '', '', '', '', '']);
+                }
+            }
+        }
+        fclose($fp);
+        rename($tmp, $dir . '/ble.csv');
+        foreach ($sens as $mac => &$s) {
+            if (!is_array($s)) continue;
+            $s['last_ts'] = $s['last_epoch'] = $end;
+            unset($s['w_fail'], $s['w_fail_epoch']);
+            if (($s['kind'] ?? '') === 'fa') { $s['fence_state'] = 0; $s['fence_events'] = 0; $s['fence_bv'] = 3.3; }
+        }
+        unset($s);
+        $st = ['name' => 'hpx-demo', 'last_rx' => $now, 'fw' => (string)($st['fw'] ?? '') !== '' ? (string)$st['fw'] : 'HPX-Core.1.14',
+               'build' => (int)($st['build'] ?? 0), 'vbat' => null, 'rssi' => -58, 'sensors' => $sens];
+        file_put_contents($statePath, json_encode($st, JSON_UNESCAPED_UNICODE));
+        @unlink($dir . '/.hub_missing');
+        flock($lock, LOCK_UN);
+        fclose($lock);
+    }
 }
 
 // デモの初期状態を保存する / 初期状態に戻す
@@ -506,7 +622,9 @@ function wcal_with_inherit(string $dir): array
     if (!$need) return $cal;
     if ($all === null) {
         $all = [];
+        $demoHubs = demo_dummy_on() ? account_hubs_dir(demo_uid()) . '/' : '';   // デモの見本の較正は、ほかのアカウントに引き継がない
         foreach (glob(data_dir() . '/accounts/*/hubs/*/weight_cal.json') ?: [] as $p) {
+            if ($demoHubs !== '' && str_starts_with($p, $demoHubs)) continue;
             $c = json_decode((string)@file_get_contents($p), true);
             foreach (is_array($c) ? $c : [] as $mac => $v) {
                 if (!is_array($v) || !isset($v['per_kg']) || (float)$v['per_kg'] == 0.0) continue;
