@@ -16,7 +16,7 @@ $HPX_DATA_DIR = __DIR__ . '/data';
 $HPX_MAIL_TO = 'you@example.com';
 // 送り元。下の $HPX_SMTP_USER と同じ Gmail のアドレスにする。
 $HPX_MAIL_FROM = 'you@gmail.com';
-// サイトのお問い合わせフォーム (hiveplusx.com/contact.php) の送り先。空なら $HPX_MAIL_TO に送る。
+// サイトのお問い合わせフォーム (hiveplusx.com/contact.php) の送り先。空なら support@hiveplusx.com に送る。
 $HPX_CONTACT_TO = '';
 // メールは Gmail のアカウントにログインして送る(SMTP認証)。
 //   Googleアカウントで2段階認証をオンにし、https://myaccount.google.com/apppasswords で作った16文字のアプリパスワードを入れる。

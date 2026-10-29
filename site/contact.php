@@ -1,7 +1,8 @@
 <?php
 // hiveplusx.com のお問い合わせフォーム。サイトに置いて (www/hiveplusx/contact.php)、届いた内容をメールで管理者に送る。
 //   メールアドレスをページに出さないための仕組み。送信はアプリ (hpx/) の config.php と hpx_smtp_send() を使う。
-//     送り先: config.php の $HPX_CONTACT_TO (無ければ $HPX_MAIL_TO)
+//     送り先: support@hiveplusx.com (config.php に $HPX_CONTACT_TO があれば、そちら)
+//     送信: アプリの通知メールと同じ送信設定 (config.php の $HPX_SMTP_* と $HPX_MAIL_FROM) を使う
 //   迷惑な送信を減らす工夫:
 //     ・人には見えない入力欄 (ロボットだけが埋める) が埋まっていたら捨てる
 //     ・ページを開いてから3秒未満、または2時間を過ぎた送信は受け付けない (署名付きの時刻で確かめる)
@@ -14,6 +15,7 @@ $APP = __DIR__ . '/hpx';
 require $APP . '/config.php';
 require_once $APP . '/hpx_alert.php';
 
+const C_TO = 'support@hiveplusx.com';
 const C_MIN_S = 3;
 const C_MAX_S = 7200;
 const C_PER_IP_HOUR = 5;
@@ -93,7 +95,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         if (!$err) {
             $rec = ['time' => date('c'), 'name' => $v['name'], 'email' => $v['email'], 'kind' => $v['kind'], 'body' => $v['body']];
             @file_put_contents($dir . '/messages.jsonl', json_encode($rec, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
-            $to = array_values(array_filter(array_map('trim', explode(',', (string)(($HPX_CONTACT_TO ?? '') !== '' ? $HPX_CONTACT_TO : ($HPX_MAIL_TO ?? ''))))));
+            $to = array_values(array_filter(array_map('trim', explode(',', (string)(($HPX_CONTACT_TO ?? '') !== '' ? $HPX_CONTACT_TO : C_TO)))));
             $subject = '【hiveplusx.com お問い合わせ】' . $v['kind'];
             $body = "hiveplusx.com のお問い合わせフォームから届きました。\n"
                 . "返信するときは、下の返信先へ新しくメールを送ってください。\n\n"
