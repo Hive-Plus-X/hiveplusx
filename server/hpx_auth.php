@@ -1,0 +1,600 @@
+<?php
+// HPX アカウントの共通部分。ログインの確認、アカウントの読み書き、機器用トークン、招待・再設定のリンク、メールの送信。
+//   読み込むだけでは何もしない(関数の定義だけ)。ページは auth_require() でログインを確かめる。receive.php・hpx_cron.php も使う。
+//   保存先(データフォルダ。data/.htaccess で外から開けない):
+//     users.json     アカウント一覧 {"users": {"u_3f9a1c7e": {email, name, pw, pwv, admin, status, created, last_login}}}
+//                      status: active=使える / invited=招待中(まだパスワードを決めていない) / stopped=停止中
+//     tokens.json    機器用トークンの sha256 → アカウントID
+//     ical_keys.json タスクのカレンダー配信の合言葉の sha256 → アカウントID
+//     links.json     招待・パスワード再設定・メールアドレス変更のリンク(コードの sha256 → 内容。期限付き、1回だけ使える)
+//     login_fail.json  ログインの失敗回数(メールアドレスごと。続けて間違えたらしばらく止める)
+//     accounts/<アカウントID>/
+//       account.json 通知先(notify)、機器用トークン(token)
+//       site/        蜂場・巣箱・メモ・作業記録(前の data/site/ と同じ中身)
+//       hubs/<HPX-coreのID>/  HPX-core 1台分の記録(前の data/<ID>/ と同じ中身)
+//   アカウントIDは内部の名前で変わらない。メールアドレスを変えてもIDはそのままなので、記録の記入者(by)などはそのまま。
+declare(strict_types=1);
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/hpx_alert.php';
+require_once __DIR__ . '/hpx_team.php';
+
+const A_SESSION_DAYS = 30;           // ログインを保つ日数
+const A_LINK_HOURS = 72;             // 招待・再設定・メール変更のリンクの有効時間
+const A_FAIL_MAX = 5;                // 同じメールアドレスでこの回数続けて間違えたら
+const A_FAIL_LOCK_S = 900;           // この秒数ログインを止める
+const A_PW_MIN = 8;                  // パスワードの最低文字数
+const A_NOTIFY_MAX = 5;              // 通知先のアドレスの数の上限
+
+function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+
+// ====================================================================
+// ブランド (Hive Plus X / ロゴ表記 hive+x)。配色はロゴに合わせる (brand/final/README.md)
+//   Charcoal #1F2328 = 文字、Honey #F2A900 = アクセント(選択中・巣箱)、Forest #2F5D45 = メニュー・ボタン・蜂場
+//   ロゴは img/ に置く。メニュー(Forest 背景)には白+Honey の版、明るい背景には Charcoal+Honey の版を使う
+// ====================================================================
+const BRAND_NAME = 'Hive Plus X';
+
+// <head> に入れるもの(アイコン)
+function brand_head(): string
+{
+    return '<link rel="icon" href="img/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#2F5D45">';
+}
+
+// メニュー左端のロゴ(蜂場ページへ戻る)
+function brand_nav_logo(): string
+{
+    return '<a href="apiary.php" class="logo" title="' . BRAND_NAME . '"><img src="img/hivex_reverse.svg" alt="' . BRAND_NAME . '" width="96" height="27"></a>';
+}
+
+// 各ページの <style> の最後に足す、ロゴの配色に合わせた色の指定(前の色の指定を上書きする)
+function brand_css(): string
+{
+    return 'body{background:#f7f7f4;color:#1F2328}a{color:#2F5D45}h2{border-bottom-color:#d5e0d9}th{background:#eef2ef}'
+        . 'nav{background:#2F5D45;min-height:40px}nav a{color:#fff}nav a.on{border-bottom-color:#F2A900}'
+        . 'nav .logo{display:flex;align-items:center;padding:4px 12px 4px 0;margin-right:2px;border:0}'
+        . 'nav .logo img{width:96px;height:auto;display:block}@media(max-width:600px){nav .logo img{width:84px}}'
+        . 'nav .setm{margin-left:auto;position:relative}nav .setm>summary{list-style:none;cursor:pointer;color:#fff;display:flex;align-items:center;padding:4px 2px;border-bottom:2px solid transparent}'
+        . 'nav .setm>summary::-webkit-details-marker{display:none}nav .setm>summary.on{border-bottom-color:#F2A900}nav .setm svg{background:none;border:0;width:22px;height:22px;display:block}@media(max-width:600px){nav{column-gap:8px!important;flex-wrap:nowrap!important}nav .setm{flex-shrink:0}nav .logo{padding-right:2px}nav .logo img{width:66px}nav>a{font-size:.95em}}nav .setm .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
+        . 'nav .setmenu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #c5cec8;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:160px;padding:4px 0;z-index:20}'
+        . 'nav .setmenu a{display:block;color:#1F2328;padding:8px 16px;border:0;font-size:.95rem;white-space:nowrap}nav .setmenu a:hover{background:#eef2ef}nav .setmenu a.on{font-weight:bold;background:#f4f1e4}'
+        . 'nav .setmenu .who{padding:6px 16px 6px;color:#666;font-size:.8rem;border-bottom:1px solid #e3e7e4;margin-bottom:4px;white-space:nowrap}'
+        . '.tabs a,.per a{color:#1F2328;border-color:#c5cec8}.tabs a.on,.per a.on{background:#2F5D45;border-color:#2F5D45;color:#fff}'
+        . '.card.flash{background:#e8f0eb;border-color:#b8cdbf}'
+        . '.hive{border-left-color:#F2A900}.apiary,.cols>.apiary{border-left-color:#2F5D45}'
+        . '.hbtns a{border-color:#F2A900;color:#1F2328}.hbtns a.on{background:#F2A900;color:#1F2328}'
+        . '.chip,.tagl span{background:#dbe8e0;color:#2F5D45}'
+        . '.tagc input:checked+span{background:#F2A900;border-color:#F2A900;color:#1F2328}'
+        . '#memo-form>summary{background:#fdf1cc;border-color:#F2A900;color:#1F2328}#memo-form>summary:hover,#memo-form[open]>summary{background:#fbe3a0}'
+        . 'button{border:1px solid #b9c3bd;border-radius:6px;background:#fff;color:#1F2328;cursor:pointer}button:hover{background:#f1f4f2}'
+        . 'button[type=submit]{background:#2F5D45;border-color:#2F5D45;color:#fff}button[type=submit]:hover{background:#264c39}'
+        . 'button:focus-visible{outline:2px solid #F2A900;outline-offset:1px}'
+        . 'button.link,button.link[type=submit]{background:none;border:none;color:#2F5D45;padding:0}';
+}
+
+// ====================================================================
+// ファイル
+// ====================================================================
+
+function data_dir(): string
+{
+    global $HPX_DATA_DIR;
+    return rtrim((string)$HPX_DATA_DIR, '/');
+}
+
+function json_load(string $path): array
+{
+    $v = json_decode((string)@file_get_contents($path), true);
+    return is_array($v) ? $v : [];
+}
+
+function json_save(string $path, array $data): bool
+{
+    $dir = dirname($path);
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    $tmp = $path . '.tmp';
+    return @file_put_contents($tmp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false && @rename($tmp, $path);
+}
+
+// 読んで、直して、書く(ロックを取る)。$fn は配列を受け取って直した配列を返す
+function json_update(string $path, callable $fn): bool
+{
+    $dir = dirname($path);
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    $lock = @fopen($path . '.lock', 'c');
+    if ($lock) flock($lock, LOCK_EX);
+    $ok = json_save($path, $fn(json_load($path)));
+    if ($lock) { flock($lock, LOCK_UN); fclose($lock); }
+    return $ok;
+}
+
+// ====================================================================
+// アカウント
+// ====================================================================
+
+function is_uid(string $uid): bool { return (bool)preg_match('/^u_[0-9a-f]{8}$/', $uid); }
+function email_norm(string $e): string { return strtolower(trim($e)); }
+function email_ok(string $e): bool { return strlen($e) <= 200 && filter_var($e, FILTER_VALIDATE_EMAIL) !== false; }
+
+function users_all(): array
+{
+    $u = json_load(data_dir() . '/users.json')['users'] ?? [];
+    return is_array($u) ? $u : [];
+}
+
+// アカウントが1つも無い = 初期設定の前
+function users_exist(): bool { return users_all() !== []; }
+
+// $fn はアカウント一覧(id => 内容)を受け取って直した一覧を返す
+function users_update(callable $fn): bool
+{
+    return json_update(data_dir() . '/users.json', function (array $d) use ($fn) {
+        $d['users'] = $fn(is_array($d['users'] ?? null) ? $d['users'] : []);
+        return $d;
+    });
+}
+
+function user_get(string $uid): ?array
+{
+    $u = users_all()[$uid] ?? null;
+    return is_array($u) ? ['id' => $uid] + $u : null;
+}
+
+function user_by_email(string $email): ?array
+{
+    $email = email_norm($email);
+    foreach (users_all() as $uid => $u) if (($u['email'] ?? '') === $email) return ['id' => (string)$uid] + $u;
+    return null;
+}
+
+function user_set(string $uid, array $fields): bool
+{
+    return users_update(function (array $us) use ($uid, $fields) {
+        if (isset($us[$uid])) $us[$uid] = array_merge($us[$uid], $fields);
+        return $us;
+    });
+}
+
+// 表示名(チーム機能で記入者・担当者を出すときにも使う)。消したアカウントは「(削除したアカウント)」
+function user_name(string $uid): string
+{
+    static $cache = null;
+    $cache ??= users_all();
+    return isset($cache[$uid]) ? (string)$cache[$uid]['name'] : ($uid === '' ? '' : '(削除したアカウント)');
+}
+
+function account_dir(string $uid): string
+{
+    if (!is_uid($uid)) throw new InvalidArgumentException('bad uid');
+    return data_dir() . '/accounts/' . $uid;
+}
+function account_site_dir(string $uid): string { return account_dir($uid) . '/site'; }
+function account_hubs_dir(string $uid): string { return account_dir($uid) . '/hubs'; }
+function account_load(string $uid): array { return json_load(account_dir($uid) . '/account.json'); }
+function account_update(string $uid, callable $fn): bool { return json_update(account_dir($uid) . '/account.json', $fn); }
+
+// 通知の送り先(カンマ区切りの文字列)。設定が無ければアカウントのメールアドレス
+function account_notify(string $uid): string
+{
+    $n = trim((string)(account_load($uid)['notify'] ?? ''));
+    return $n !== '' ? $n : (string)(user_get($uid)['email'] ?? '');
+}
+
+// アカウントを作る。$pwHash が空なら「招待中」(リンクからパスワードを決めるまでログインできない)
+function user_create(string $email, string $name, bool $admin, string $pwHash = ''): string
+{
+    $email = email_norm($email);
+    $uid = '';
+    users_update(function (array $us) use ($email, $name, $admin, $pwHash, &$uid) {
+        foreach ($us as $u) if (($u['email'] ?? '') === $email) return $us;   // 同じアドレスはもうある
+        do { $uid = 'u_' . bin2hex(random_bytes(4)); } while (isset($us[$uid]));
+        $us[$uid] = ['email' => $email, 'name' => $name, 'pw' => $pwHash, 'pwv' => 1, 'admin' => $admin,
+            'status' => $pwHash !== '' ? 'active' : 'invited', 'created' => time(), 'last_login' => 0];
+        return $us;
+    });
+    if ($uid === '') return '';
+    @mkdir(account_site_dir($uid), 0755, true);
+    @mkdir(account_hubs_dir($uid), 0755, true);
+    account_update($uid, fn(array $a) => $a + ['notify' => '']);
+    token_issue($uid);
+    return $uid;
+}
+
+// ====================================================================
+// 機器用トークン(HPX-core の「送信先のトークン」に入れる)。アカウントごとに1つ
+// ====================================================================
+
+// 新しいトークンを作る(前のトークンは使えなくなる)。$token を渡したらそれを使う(初期設定で config.php の $HPX_TOKEN を引き継ぐとき)
+function token_issue(string $uid, ?string $token = null): string
+{
+    $token ??= 'hpx' . bin2hex(random_bytes(20));
+    json_update(data_dir() . '/tokens.json', function (array $t) use ($uid, $token) {
+        $t = array_filter($t, fn($v) => $v !== $uid);
+        $t[hash('sha256', $token)] = $uid;
+        return $t;
+    });
+    account_update($uid, function (array $a) use ($token) { $a['token'] = $token; $a['token_at'] = time(); return $a; });
+    return $token;
+}
+
+// トークンからアカウントIDを引く。使えるアカウント(停止中でない)のときだけ
+function token_uid(string $token): ?string
+{
+    if ($token === '') return null;
+    $uid = (string)(json_load(data_dir() . '/tokens.json')[hash('sha256', $token)] ?? '');
+    if (!is_uid($uid)) return null;
+    $u = user_get($uid);
+    return $u && ($u['status'] ?? '') !== 'stopped' ? $uid : null;
+}
+
+function token_forget(string $uid): void
+{
+    json_update(data_dir() . '/tokens.json', fn(array $t) => array_filter($t, fn($v) => $v !== $uid));
+}
+
+// ====================================================================
+// タスクのカレンダー配信の合言葉(ical.php?k=…)。アカウントごとに1つ。Googleカレンダーなどに URL ごと登録する
+//   ical_keys.json に sha256 → アカウントID、account.json の ical に合言葉そのもの(ページに URL を出すため)
+// ====================================================================
+
+// 新しい合言葉を作る(前の URL は使えなくなる)
+function ical_issue(string $uid): string
+{
+    $key = bin2hex(random_bytes(20));
+    json_update(data_dir() . '/ical_keys.json', function (array $t) use ($uid, $key) {
+        $t = array_filter($t, fn($v) => $v !== $uid);
+        $t[hash('sha256', $key)] = $uid;
+        return $t;
+    });
+    account_update($uid, function (array $a) use ($key) { $a['ical'] = $key; $a['ical_at'] = time(); return $a; });
+    return $key;
+}
+
+// 合言葉からアカウントIDを引く。使えるアカウントのときだけ
+function ical_uid(string $key): ?string
+{
+    if (!preg_match('/^[0-9a-f]{40}$/', $key)) return null;
+    $uid = (string)(json_load(data_dir() . '/ical_keys.json')[hash('sha256', $key)] ?? '');
+    if (!is_uid($uid)) return null;
+    $u = user_get($uid);
+    return $u && ($u['status'] ?? '') === 'active' ? $uid : null;
+}
+
+// 配信をやめる
+function ical_forget(string $uid): void
+{
+    json_update(data_dir() . '/ical_keys.json', fn(array $t) => array_filter($t, fn($v) => $v !== $uid));
+    account_update($uid, function (array $a) { unset($a['ical'], $a['ical_at']); return $a; });
+}
+
+// ====================================================================
+// 招待・パスワード再設定・メールアドレス変更のリンク
+//   kind: invite / reset / email(email に新しいアドレス)
+// ====================================================================
+
+function link_issue(string $kind, string $uid, array $extra = []): string
+{
+    $code = bin2hex(random_bytes(16));
+    $now = time();
+    json_update(data_dir() . '/links.json', function (array $l) use ($code, $kind, $uid, $extra, $now) {
+        // 期限切れと、同じアカウントの同じ種類の古いリンクを消す(新しいリンクだけ使える)
+        $l = array_filter($l, fn($x) => (int)($x['exp'] ?? 0) > $now && !(($x['uid'] ?? '') === $uid && ($x['kind'] ?? '') === $kind));
+        $l[hash('sha256', $code)] = ['kind' => $kind, 'uid' => $uid, 'exp' => $now + A_LINK_HOURS * 3600] + $extra;
+        return $l;
+    });
+    return $code;
+}
+
+// リンクの内容を返す(無い・期限切れなら null)。$use = true なら使ったことにして消す
+function link_get(string $code, bool $use = false): ?array
+{
+    if (!preg_match('/^[0-9a-f]{32}$/', $code)) return null;
+    $key = hash('sha256', $code);
+    $x = json_load(data_dir() . '/links.json')[$key] ?? null;
+    if (!is_array($x) || (int)($x['exp'] ?? 0) <= time() || !user_get((string)($x['uid'] ?? ''))) return null;
+    if ($use) json_update(data_dir() . '/links.json', function (array $l) use ($key) { unset($l[$key]); return $l; });
+    return $x;
+}
+
+// リンクの URL(メールに書く)。config.php の $HPX_SITE_URL があればそれを使う
+function site_url(string $page): string
+{
+    global $HPX_SITE_URL;
+    $base = rtrim((string)($HPX_SITE_URL ?? ''), '/');
+    if ($base === '') {
+        $https = ($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off';
+        $dir = rtrim(str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/'))), '/');
+        $base = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $dir;
+    }
+    return $base . '/' . $page;
+}
+
+function link_url(string $code): string { return site_url('login.php?k=' . $code); }
+
+// アカウントのメール(招待・再設定など)を1通送る。[成功したか, 詳しく]。結果は data/account_mail.log に残す
+function account_mail(string $to, string $subject, string $body): array
+{
+    global $HPX_MAIL_FROM, $HPX_SMTP_HOST;
+    mb_language('Japanese');
+    mb_internal_encoding('UTF-8');
+    $from = (string)($HPX_MAIL_FROM ?? '');
+    if (demo_email() !== '' && email_norm($to) === demo_email()) $r = [false, 'デモ用アカウントにはメールを送りません'];
+    elseif (!email_ok($to) || !email_ok($from)) $r = [false, '送り先か送り元 ($HPX_MAIL_FROM) のアドレスが正しくありません'];
+    elseif ((string)($HPX_SMTP_HOST ?? '') === '') $r = [false, 'config.php の $HPX_SMTP_HOST などが設定されていません'];
+    else $r = hpx_smtp_send([$to], $from, $subject, $body . "\n-- \nHive Plus X\n");
+    @file_put_contents(data_dir() . '/account_mail.log', date('Y-m-d H:i:s') . ' ' . ($r[0] ? 'sent' : 'FAILED') . ' ' . $to . ' ' . $subject
+        . ($r[0] ? '' : ' | ' . mb_substr(trim(preg_replace('/\s+/', ' ', (string)$r[1]) ?? ''), 0, 200)) . "\n", FILE_APPEND);
+    return $r;
+}
+
+// ====================================================================
+// 蜂場を見てよいか・蜂場での役割
+//   持ち主なら 'owner'。チームに共有された蜂場なら 'admin' / 'member'(hpx_team.php)。見られなければ null
+//   $ownerUid: その蜂場を持っているアカウント(蜂場は持ち主のアカウントの site/site.json にある)
+// ====================================================================
+
+function apiary_role(string $ownerUid, string $apiaryId, string $uid): ?string
+{
+    if ($uid === '' || !is_uid($ownerUid)) return null;
+    if ($ownerUid === $uid) return 'owner';
+    return team_apiary_role($ownerUid, $apiaryId, $uid);
+}
+
+function can_access_apiary(string $ownerUid, string $apiaryId, string $uid): bool
+{
+    return apiary_role($ownerUid, $apiaryId, $uid) !== null;
+}
+
+// ====================================================================
+// ログイン(セッション)
+// ====================================================================
+
+function auth_session_start(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) return;
+    session_name('hpxfence');
+    session_set_cookie_params(['lifetime' => A_SESSION_DAYS * 86400, 'httponly' => true, 'samesite' => 'Lax',
+        'secure' => (($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off')]);
+    ini_set('session.gc_maxlifetime', (string)(A_SESSION_DAYS * 86400));
+    session_start();
+}
+
+// ログインした状態にする(パスワードを変えると pwv が増え、ほかの端末のログインは切れる)
+function auth_login(array $user): void
+{
+    auth_session_start();
+    session_regenerate_id(true);
+    $_SESSION = ['uid' => (string)$user['id'], 'pwv' => (int)($user['pwv'] ?? 1)];
+    user_set((string)$user['id'], ['last_login' => time()]);
+}
+
+function auth_logout(): void
+{
+    auth_session_start();
+    $_SESSION = [];
+    session_destroy();
+}
+
+// ページの最初に呼ぶ。ログインしていなければログインページへ移す。
+// ログインしていれば、そのアカウントを返し、グローバルの $ME(アカウント)・$UID(アカウントID)・$csrf を決める
+function auth_require(string $selfPage, bool $adminOnly = false): array
+{
+    global $ME, $UID, $csrf;
+    auth_session_start();
+    if (isset($_GET['logout'])) {
+        auth_logout();
+        header('Location: login.php');
+        exit;
+    }
+    $u = user_get((string)($_SESSION['uid'] ?? ''));
+    if (!$u || ($u['status'] ?? '') !== 'active' || (int)($u['pwv'] ?? 1) !== (int)($_SESSION['pwv'] ?? 0)) {
+        $_SESSION = [];
+        $back = basename($selfPage) . (($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
+        header('Location: login.php' . (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' ? '?next=' . rawurlencode($back) : ''));
+        exit;
+    }
+    if (is_demo($u)) {
+        $u['admin'] = false;   // デモ用アカウントはサイト管理者にしない
+        demo_guard(basename($selfPage));
+    }
+    if ($adminOnly && empty($u['admin'])) {
+        http_response_code(403);
+        exit('このページはサイト管理者だけが開けます。');
+    }
+    if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16));
+    $csrf = (string)$_SESSION['csrf'];
+    $ME = $u;
+    $UID = (string)$u['id'];
+    return $u;
+}
+
+// ====================================================================
+// デモ用アカウント (config.php の $HPX_DEMO_EMAIL)
+//   パスワードを公開して誰でも試せるようにするためのアカウント。
+//   設定・チームの変更、写真の追加、メールの送信はできない。$HPX_DEMO_READONLY = true なら何も書き込めない。
+//   管理ページで保存した初期状態 (data/demo_seed/) に、毎日 $HPX_DEMO_RESET_HOUR 時に戻す (hpx_cron.php)
+// ====================================================================
+
+function demo_email(): string
+{
+    global $HPX_DEMO_EMAIL;
+    return email_norm((string)($HPX_DEMO_EMAIL ?? ''));
+}
+function is_demo(?array $u): bool
+{
+    return $u && demo_email() !== '' && email_norm((string)($u['email'] ?? '')) === demo_email();
+}
+function demo_uid(): string
+{
+    $u = demo_email() !== '' ? user_by_email(demo_email()) : null;
+    return $u ? (string)$u['id'] : '';
+}
+function demo_seed_dir(): string { return data_dir() . '/demo_seed/site'; }
+// 見本の準備中 (管理ページで切り替え)。この間はデモ用アカウントで写真も追加でき、毎日の初期化もしない
+function demo_editing(): bool { return is_file(data_dir() . '/.demo_editing'); }
+function demo_set_editing(bool $on): void
+{
+    $on ? @file_put_contents(data_dir() . '/.demo_editing', date('Y-m-d H:i:s')) : @unlink(data_dir() . '/.demo_editing');
+}
+
+// デモ用アカウントの書き込みを止める。写真は黙って外す (ほかの入力は保存する)
+function demo_guard(string $page): void
+{
+    global $HPX_DEMO_READONLY;
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || $page === 'export.php') return;
+    if ((!empty($HPX_DEMO_READONLY) && !demo_editing()) || in_array($page, ['account.php', 'team.php', 'admin.php', 'sensor.php'], true)) {
+        $_SESSION['flash'] = 'デモ用アカウントでは、この変更はできません。';
+        header('Location: ' . $page);
+        exit;
+    }
+    if (!demo_editing()) $_FILES = [];
+}
+
+// デモの初期状態を保存する / 初期状態に戻す
+function dir_remove(string $dir): void
+{
+    if (!is_dir($dir)) return;
+    foreach (scandir($dir) ?: [] as $f) {
+        if ($f === '.' || $f === '..') continue;
+        $p = $dir . '/' . $f;
+        is_dir($p) && !is_link($p) ? dir_remove($p) : @unlink($p);
+    }
+    @rmdir($dir);
+}
+function dir_copy(string $from, string $to): void
+{
+    @mkdir($to, 0755, true);
+    foreach (scandir($from) ?: [] as $f) {
+        if ($f === '.' || $f === '..') continue;
+        is_dir("$from/$f") ? dir_copy("$from/$f", "$to/$f") : @copy("$from/$f", "$to/$f");
+    }
+}
+function demo_seed_save(): bool
+{
+    $uid = demo_uid();
+    if ($uid === '' || !is_dir(account_site_dir($uid))) return false;
+    dir_remove(demo_seed_dir());
+    dir_copy(account_site_dir($uid), demo_seed_dir());
+    return true;
+}
+function demo_reset(): bool
+{
+    $uid = demo_uid();
+    if ($uid === '' || !is_dir(demo_seed_dir())) return false;
+    dir_remove(account_site_dir($uid));
+    dir_copy(demo_seed_dir(), account_site_dir($uid));
+    return true;
+}
+
+// ====================================================================
+// 重量センサの較正の引き継ぎ
+//   較正はセンサそのもの(MAC)の値なので、HPX-core を別のアカウントに付け替えたり、センサを別の HPX-core に移したりしても使える。
+//   そのハブの weight_cal.json に無い重量センサは、ほかのハブ(どのアカウントでも)の weight_cal.json から
+//   同じ MAC の一番新しい較正を写して保存する(inherited に写した日時)。差し引く重さ(offset_kg)も一緒に写す
+// ====================================================================
+
+function wcal_with_inherit(string $dir): array
+{
+    static $all = null;
+    $path = $dir . '/weight_cal.json';
+    $cal = json_decode((string)@file_get_contents($path), true);
+    if (!is_array($cal)) $cal = [];
+    $st = json_decode((string)@file_get_contents($dir . '/state.json'), true);
+    $need = [];
+    foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $s) {
+        if (is_array($s) && ($s['kind'] ?? '') === 'w' && !isset($cal[$mac]['per_kg'])) $need[] = (string)$mac;
+    }
+    if (!$need) return $cal;
+    if ($all === null) {
+        $all = [];
+        foreach (glob(data_dir() . '/accounts/*/hubs/*/weight_cal.json') ?: [] as $p) {
+            $c = json_decode((string)@file_get_contents($p), true);
+            foreach (is_array($c) ? $c : [] as $mac => $v) {
+                if (!is_array($v) || !isset($v['per_kg']) || (float)$v['per_kg'] == 0.0) continue;
+                if (!isset($all[$mac]) || strcmp((string)($v['updated'] ?? ''), (string)($all[$mac]['updated'] ?? '')) > 0) $all[$mac] = $v;
+            }
+        }
+    }
+    $added = false;
+    foreach ($need as $mac) {
+        if (!isset($all[$mac])) continue;
+        $cal[$mac] = ['inherited' => date('Y-m-d H:i:s')] + $all[$mac];
+        $added = true;
+    }
+    if ($added && @file_put_contents($path . '.tmp', json_encode($cal, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false) @rename($path . '.tmp', $path);
+    return $cal;
+}
+
+// ログイン後に戻るページ(自分のページだけ許す)
+function auth_next(string $next): string
+{
+    return preg_match('/^(apiary|hive|memo|task|work|sensor|team|account|admin)\.php(\?[^\s<>"]*)?$/', $next) ? $next : 'apiary.php';
+}
+
+// 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・管理(サイト管理者だけ)が出る。蜂場ページとセンサページで共通
+function auth_nav_right(string $active): string
+{
+    global $ME;
+    $items = ['sensor.php' => 'センサ', 'team.php' => 'チーム', 'account.php' => 'アカウント'];
+    $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' ? ' class="on"' : '') . '>'
+        . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>'
+        . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
+    foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
+    $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
+    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>管理</a>';
+    // 外を押したら閉じる
+    return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';
+}
+
+// タスクの担当者(アカウントidの配列)。複数選べる assignees と、前の版の1人だけの assignee の両方を読む
+function todo_assignees(array $t): array
+{
+    if (isset($t['assignees']) && is_array($t['assignees'])) return array_values(array_filter(array_map('strval', $t['assignees']), 'is_uid'));
+    $as = (string)($t['assignee'] ?? '');
+    return is_uid($as) ? [$as] : [];
+}
+
+// ログインの失敗を数える。止めている間なら残り秒数を返す
+function login_locked(string $email): int
+{
+    $f = json_load(data_dir() . '/login_fail.json')[$email] ?? null;
+    return is_array($f) && (int)($f['until'] ?? 0) > time() ? (int)$f['until'] - time() : 0;
+}
+function login_fail(string $email, bool $failed): void
+{
+    if (demo_email() !== '' && email_norm($email) === demo_email()) return;   // パスワードを公開しているので、間違いが続いても止めない
+    json_update(data_dir() . '/login_fail.json', function (array $all) use ($email, $failed) {
+        $now = time();
+        $all = array_filter($all, fn($f) => is_array($f) && max((int)($f['until'] ?? 0), (int)($f['last'] ?? 0) + 86400) > $now);
+        if (!$failed) { unset($all[$email]); return $all; }
+        $f = $all[$email] ?? ['n' => 0];
+        $f['n'] = (int)$f['n'] + 1;
+        $f['last'] = $now;
+        if ($f['n'] >= A_FAIL_MAX) { $f['until'] = $now + A_FAIL_LOCK_S; $f['n'] = 0; }
+        $all[$email] = $f;
+        return $all;
+    });
+}
+
+function pw_check_new(string $pw, string $pw2): string
+{
+    if (mb_strlen($pw) < A_PW_MIN) return 'パスワードは ' . A_PW_MIN . ' 文字以上にしてください。';
+    if (strlen($pw) > 200) return 'パスワードが長すぎます。';
+    if ($pw !== $pw2) return '確認のパスワードが違います。';
+    return '';
+}
+
+// 通知先の入力(カンマ・空白・改行区切り)を確かめて「a@x, b@y」にする。正しくないアドレスがあれば null
+function notify_clean(string $v): ?string
+{
+    $list = array_values(array_unique(array_filter(array_map('email_norm', preg_split('/[\s,、]+/u', $v) ?: []), fn($x) => $x !== '')));
+    foreach ($list as $e) if (!email_ok($e)) return null;
+    return count($list) > A_NOTIFY_MAX ? null : implode(', ', $list);
+}
+
+// 初期設定の途中で receive.php が古い場所に書かないよう、移す間は全体のロックを取る(receive.php は共有ロック)
+function migrate_lock(int $mode)
+{
+    $f = @fopen(data_dir() . '/.migrate.lock', 'c');
+    if ($f) flock($f, $mode);
+    return $f;
+}

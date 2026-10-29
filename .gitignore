@@ -1,0 +1,9 @@
+# 本番の設定 (パスワード・トークンが入る)。見本は server/config.sample.php
+server/config.php
+# 利用者のデータ (外から開けないようにする .htaccess だけ入れる)
+server/data/*
+!server/data/.htaccess
+# バックアップ・一時ファイル
+*.bak
+*.tmp
+.DS_Store
