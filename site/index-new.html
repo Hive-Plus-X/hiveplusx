@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hive Plus X</title>
+<meta name="description" content="Hive Plus X は、養蜂のためのオープンソースIoTプロジェクトです。巣箱の重量・温湿度の計測と養蜂管理アプリを、自作できる機器と小さなサーバーで実現します。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:36px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 450px、スマホ 300px) */
+  section { padding:0; margin-top:450px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:300px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  .more { display:inline-block; margin-top:20px; font-weight:600; text-decoration:none; border-bottom:2px solid var(--honey); }
+
+  /* トピック: 左右2列。テキストは上から 左→右→左… (.rev がテキスト右) */
+  .topic { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+  .topic.rev .text { order:2; }
+  .topic.rev .visual { order:1; }
+  .topic .lead { max-width:none; }
+  .topic ul { margin-top:16px; padding-left:1.2em; color:var(--sub); }
+  .topic .entry { justify-content:flex-start; }
+  @media (max-width:760px) {
+    .topic { grid-template-columns:1fr; gap:36px; }
+    .topic.rev .text, .topic.rev .visual { order:0; }
+  }
+
+  /* しくみ図 (縦の流れ) */
+  .flow { display:flex; flex-direction:column; gap:22px; max-width:360px; margin:0 auto; }
+  .flow .node { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; text-align:center; position:relative; }
+  .flow .node b { display:block; font-size:15px; }
+  .flow .node span { display:block; font-size:12px; color:var(--sub); margin-top:2px; line-height:1.5; }
+  .flow .node:not(:last-child)::after { content:"↓"; position:absolute; left:50%; bottom:-22px; transform:translateX(-50%); color:var(--honey); font-weight:700; line-height:22px; }
+  .flow .node.core { border-color:var(--honey); background:var(--honey-soft); }
+
+  /* カード */
+  .cards { display:grid; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; display:block; }
+  a.card:hover { border-color:var(--honey); }
+  .card .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .card .tag { color:var(--honey); } }
+  .card h3 { font-size:17px; margin-top:8px; }
+  .card p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .card .soon { color:var(--sub); font-size:12px; }
+
+  /* 画面写真の場所 */
+  .shot { aspect-ratio:4/3; width:100%; border-radius:14px; border:1px dashed var(--line); background:var(--panel);
+          display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:13px; }
+
+  /* ダウンロードの図 (公開しているものの一覧) */
+  .files { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .files .row { display:flex; align-items:center; gap:14px; padding:18px 24px; }
+  .files .row + .row { border-top:1px solid var(--line); }
+  .files .name { flex:1; min-width:0; }
+  .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
+  .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
+
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* 画面写真のスライドショー (フェードで切り替え) */
+  .slides { position:relative; aspect-ratio:4/3; }
+  .slide { position:absolute; inset:0; opacity:0; transition:opacity 1.2s ease; }
+  .slide.shown { opacity:1; }
+  .slide img, .slide .shot { width:100%; height:100%; object-fit:cover; border-radius:14px; display:flex; }
+  .slide img { border:1px solid var(--line); background:var(--panel); object-position:top; }
+  .dots { position:absolute; left:0; right:0; bottom:-28px; display:flex; justify-content:center; gap:8px; }
+  .dots button { width:8px; height:8px; border-radius:50%; border:0; padding:0; background:var(--line); cursor:pointer; }
+  .dots button.on { background:var(--honey); }
+  @media (prefers-reduced-motion: reduce) { .slide { transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="system.html">しくみ</a></li>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <img class="logo logo-light" src="img/hivex_main.svg" alt="Hive Plus X">
+    <img class="logo logo-dark" src="img/hivex_reverse.svg" alt="">
+    <h1>養蜂のための、オープンソースIoT</h1>
+    <p>巣箱の様子を記録し、離れた場所から見守る。<br>機器も、サーバーも、記録アプリも、自分好みに作り上げるために。</p>
+    <div class="entry">
+      <a class="btn primary" href="/hpx/login.php?demo=1"><span class="hex"></span>アプリを試す</a>
+      <a class="btn ghost" href="devices.html">機器をつくる</a>
+      <a class="btn ghost" href="install.html">設置する</a>
+    </div>
+  </div>
+
+  <section id="system">
+    <div class="reveal wrap topic">
+      <div class="text">
+        <p class="eyebrow">System</p>
+        <h2>しくみ</h2>
+        <p class="lead">巣箱のセンサから Bluetooth で送られたデータをハブがまとめてサーバーに届けます。サーバーのデータを、スマートフォンやパソコンのウェブアプリから見られます。</p>
+      </div>
+      <div class="visual">
+        <div class="flow">
+          <div class="node"><b>センサ　HPXシリーズ</b><span>重量・温湿度、その他各種センサを開発中です</span></div>
+          <div class="node core"><b>ハブ　HPX-Core</b><span>センサを管理し、データをサーバーに送る中心的な機器です</span></div>
+          <div class="node"><b>ルーター</b><span>市販のLTEルーターなどをご利用ください</span></div>
+          <div class="node"><b>サーバー</b><span>レンタルサーバーなどに自分専用のシステムを構築します</span></div>
+          <div class="node"><b>養蜂管理アプリ　HPX-note</b><span>データと記録をグラフなどで確認できます</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="app">
+    <div class="reveal wrap topic rev">
+      <div class="text">
+        <p class="eyebrow">App</p>
+        <h2>養蜂管理アプリ HPX-note</h2>
+        <p class="lead">センサの記録と養蜂家の記録をひとつにまとめるウェブアプリです。</p>
+        <ul>
+          <li>蜂場・巣箱ごとの重量と温湿度のグラフ</li>
+          <li>内検のメモ、作業の予定と記録</li>
+          <li>巣箱や機器の異常をメールで通知</li>
+          <li>複数メンバーでの管理ができるチーム機能</li>
+        </ul>
+        <div class="entry">
+          <a class="btn primary" href="/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a>
+          <a class="btn ghost" href="app.html">詳しく見る</a>
+        </div>
+      </div>
+      <div class="visual">
+        <!-- 画面写真のスライドショー (デモアカウントの画面、img/app_1.png〜app_5.png) -->
+        <div class="slides" aria-label="HPX-note の画面">
+          <div class="slide shown"><img src="img/app_1.png" alt="蜂場の画面: 蜂場ごとの写真、3日間の天気、巣箱の重さと温度のグラフ"></div>
+          <div class="slide"><img src="img/app_2.png" alt="巣箱の画面: 巣箱ごとの重さ・温度・湿度のグラフ"></div>
+          <div class="slide"><img src="img/app_3.png" alt="センサの画面: HPX-Core の受信状況と、温湿度計・重量計の最新の値"></div>
+          <div class="slide"><img src="img/app_4.png" alt="メモの画面: 内検の記録や写真を蜂場・巣箱ごとに残せる"></div>
+          <div class="slide"><img src="img/app_5.png" alt="記録の画面: 作業時間を月ごとのグラフで集計"></div>
+          <div class="dots"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="devices">
+    <div class="reveal wrap topic">
+      <div class="text">
+        <p class="eyebrow">Devices</p>
+        <h2>機器をつくる</h2>
+        <p class="lead">どの機器も、部品表・配線図・プログラムを公開しています。改造や販売も自由です。</p>
+        <a class="more" href="devices.html">作り方を見る</a>
+      </div>
+      <div class="visual cards">
+        <a class="card" href="devices.html#core"><span class="tag">ハブ</span><h3>HPX-Core</h3><p>ESP32　センサの記録を集め、Wi-Fi でサーバーへ送る中心的機器</p></a>
+        <a class="card" href="devices.html#w"><span class="tag">重量</span><h3>HPX-W</h3><p>ロードセル + nRF52840　巣箱の重さを Bluetooth で発信</p></a>
+        <a class="card" href="devices.html#th"><span class="tag">温湿度</span><h3>HPX-TH</h3><p>温湿度センサ + nRF52840　巣箱内の温度と湿度を Bluetooth で発信</p></a>
+        <a class="card" href="devices.html#other"><span class="tag">その他センサー</span><h3>HPXシリーズ</h3><p>各種センサをnRF52840と組み合わせることで様々な拡張が可能です</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="reveal wrap topic rev">
+      <div class="text">
+        <p class="eyebrow">Install</p>
+        <h2>設置ガイド</h2>
+        <p class="lead">電気や電波が届きにくい山の蜂場で動かすための、実践的な情報を紹介します</p>
+        <a class="more" href="install.html">設置ガイドを見る</a>
+      </div>
+      <div class="visual cards">
+        <a class="card" href="install.html#power"><span class="tag">電源</span><h3>ソーラーパネルとバッテリー</h3><p>商用電源のない場所でも使うためのセッティング</p></a>
+        <a class="card" href="install.html#network"><span class="tag">通信</span><h3>通信方法と機種選択</h3><p>電波の届きにくい場所でどうすればいいか考えます</p></a>
+        <a class="card" href="install.html#sensor"><span class="tag">設置</span><h3>センサの取り付け</h3><p>実際の設置方法を説明します</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="reveal wrap topic">
+      <div class="text">
+        <p class="eyebrow">Download</p>
+        <h2>ダウンロード</h2>
+        <p class="lead">ファームウェア、サーバーのプログラム、回路図は GitHub で公開しています。ソフトは MIT、ハードは CERN-OHL-P v2、文書は CC BY 4.0 です。</p>
+        <a class="more" href="download.html">ダウンロードのページへ</a>
+      </div>
+      <div class="visual files">
+        <div class="row"><span class="name"><b>ファームウェア</b></span><span class="lic">MIT</span></div>
+        <div class="row"><span class="name"><b>サーバーのシステムファイル</b></span><span class="lic">MIT</span></div>
+        <div class="row"><span class="name"><b>回路図・基板・ケース</b></span><span class="lic">CERN-OHL-P v2</span></div>
+        <div class="row"><span class="name"><b>説明書・検討メモ</b></span><span class="lic">CC BY 4.0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="community">
+    <div class="reveal wrap topic rev">
+      <div class="text">
+        <p class="eyebrow">Community</p>
+        <h2>コミュニティ</h2>
+        <p class="lead">使ってみた感想、困ったこと、改良のアイデアを聞かせてください。養蜂家と技術者が意見を出し合い、一緒に育てていくプロジェクトです。</p>
+        <a class="more" href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラムを開く</a>
+      </div>
+      <div class="visual cards">
+        <a class="card" href="https://github.com/Hive-Plus-X/hiveplusx/discussions"><span class="tag">フォーラム</span><h3>質問・アイデア・使用報告</h3><p>GitHub Discussions で、誰でも読めます。書き込みには GitHub のアカウントが必要です。</p></a>
+        <a class="card" href="mailto:support@hiveplusx.com"><span class="tag">メール</span><h3>support@hiveplusx.com</h3><p>GitHub を使わない方は、メールでどうぞ。</p></a>
+        <a class="card" href="https://github.com/Hive-Plus-X/hiveplusx"><span class="tag">開発</span><h3>不具合の報告・改良の提案</h3><p>GitHub の Issue やプルリクエストで、コードや回路の改良を受け付けています。</p></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="mailto:support@hiveplusx.com">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+<script>
+(function () {
+  var box = document.querySelector('.slides'); if (!box) return;
+  var slides = box.querySelectorAll('.slide'), dots = box.querySelector('.dots'), i = 0, timer;
+  slides.forEach(function (_, n) {
+    var b = document.createElement('button'); b.setAttribute('aria-label', (n + 1) + '枚目');
+    b.onclick = function () { go(n); restart(); }; dots.appendChild(b);
+  });
+  function go(n) {
+    slides[i].classList.remove('shown'); dots.children[i].classList.remove('on');
+    i = n; slides[i].classList.add('shown'); dots.children[i].classList.add('on');
+  }
+  function restart() { clearInterval(timer); timer = setInterval(function () { go((i + 1) % slides.length); }, 4500); }
+  go(0); restart();
+})();
+</script>
+</body>
+</html>
