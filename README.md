@@ -44,3 +44,8 @@
 
 - サーバー (蜂場管理アプリ) の置き方: [docs/server-setup.md](docs/server-setup.md)。`server/config.sample.php` を `config.php` にコピーして書き換えます
 - ファームウェアは Arduino IDE で書き込みます。必要なボードとライブラリは各 `.ino` の先頭に書いてあります
+
+## 参加のしかた
+
+不具合の報告・質問・改良の提案は GitHub の Issues へ、直したものはプルリクエストでどうぞ。GitHub を使わない人は support@hiveplusx.com へ。
+詳しくは [CONTRIBUTING.md](CONTRIBUTING.md) (コミットに `Signed-off-by` の一行を付ける DCO 方式) と [行動規範](CODE_OF_CONDUCT.md) を見てください。
