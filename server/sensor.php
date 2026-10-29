@@ -1,12 +1,12 @@
 <?php
 // HPXセンサページ (前の名前は dashboard.php): 機器(ハブ)ごとに、温湿度・巣箱の重量・電柵アラートを1ページで表示する。
 //   receive.php と同じフォルダ(例 www/hpx/)に置き、ブラウザで https://<ドメイン>/hpx/sensor.php を開く。
-//   ログインはアカウントごと(hpx_auth.php。蜂場管理ページと同じセッション)。見えるのは、ログインしたアカウントの HPX-core だけ。
+//   ログインはアカウントごと(hpx_auth.php。蜂場管理ページと同じセッション)。見えるのは、ログインしたアカウントの HPX-Core だけ。
 //   ・機器が複数あるときは、上の機器名のボタンで切り替える
 //   ・グラフ(重量・温度・湿度)はそれぞれ期間を選べる(1日/3日/7日/30日/全期間。初めは3日)
 //   ・データダウンロード: 選んでいる機器の全期間の記録を CSV で保存する(日時ごとに1行、センサーごとに列を並べる。重量は kg)
 //   ・データクリア: 選んでいる機器の記録を消す。ファイルはデータフォルダの cleared/<日時>/ に移すだけなので、戻すこともできる
-//   重量ノードの較正(生の値 → kg)もこのページで入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
+//   重量センサの較正(生の値 → kg)もこのページで入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 
@@ -16,7 +16,7 @@ const D_PERIOD_DEFAULT = 3;
 const D_MAX_POINTS = 1200;           // グラフ1本あたりの点の数の上限(多いときは時間で区切って平均する)
 const D_TH_MISSING_S = 3600;         // 温湿度計の記録がこの秒数来なければ「受信できていません」
 const D_W_MISSING_S = 5400;          // 重量の記録がこの秒数来なければ「受信できていません」(ノードは30分ごとに測る)
-const D_W_LOW_BV = 2.8;              // 重量ノードの電池電圧(V)がこれ未満なら「そろそろ交換」(2.7V未満で測定を止める)
+const D_W_LOW_BV = 2.8;              // 重量センサの電池電圧(V)がこれ未満なら「そろそろ交換」(2.7V未満で測定を止める)
 const D_FENCE_DAYS = 7;              // 電柵の検出の履歴を出す日数
 const D_FENCE_MAX = 100;             // 電柵の検出の履歴の最大行数
 const D_MAIL_MAX = 50;               // メール送信履歴の最大行数
@@ -411,7 +411,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
             $done = 'cleared';
         }
     } elseif ($act === 'remove') {
-        // この HPX-core をアカウントから外す。記録と蜂場・巣箱の紐づけは残し (巣箱のグラフに出し続ける)、
+        // この HPX-Core をアカウントから外す。記録と蜂場・巣箱の紐づけは残し (巣箱のグラフに出し続ける)、
         // 見張りのメールを止め、蜂場・巣箱の選択肢から外す (.retired)。またこのアカウントのトークンで届けば元に戻る
         if (!password_verify((string)($_POST['pw2'] ?? ''), (string)($ME['pw'] ?? ''))) {
             sleep(2);
@@ -429,7 +429,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
         $done = 'unretired';
     } else {
         $mac = strtoupper((string)($_POST['mac'] ?? ''));
-        if (!preg_match('/^[0-9A-F]{2}(:[0-9A-F]{2}){5}$/', $mac)) $err = '重量ノードが見つかりません。';
+        if (!preg_match('/^[0-9A-F]{2}(:[0-9A-F]{2}){5}$/', $mac)) $err = '重量センサが見つかりません。';
         if ($err === '') {
             $all = cal_load($hub['dir']);
             $c = $all[$mac] ?? [];
@@ -599,7 +599,7 @@ echo '<h2 id="weight">重量</h2>';
 $wS = [];
 $cal = cal_load($dir);
 if (!$byKind['w']) {
-    echo '<p class="muted">重量ノードの記録はまだありません。</p>';
+    echo '<p class="muted">重量センサの記録はまだありません。</p>';
 } else {
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>重さ</th><th>24時間</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
@@ -649,7 +649,7 @@ if (!$byKind['w']) {
         if ($calOk) {
             $f .= '<p class="muted">今の較正: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
                 . (isset($c['cal_g']) ? ' (' . h(number_format((float)$c['cal_g'])) . 'g で較正)' : (!empty($c['common']) ? ' (全台共通の値)' : ''))
-                . (($c['src'] ?? '') === 'HPX-core' ? ' ・ HPX-core の管理画面で較正' : '')
+                . (($c['src'] ?? '') === 'HPX-core' ? ' ・ HPX-Core の管理画面で較正' : '')
                 . (!empty($c['offset_kg']) ? ' ・ 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg' : '')
                 . ' ・ ' . h((string)($c['updated'] ?? '')) . '</p>';
         }
@@ -683,7 +683,7 @@ if (!$byKind['w']) {
 // ---- アラート状況の表 ----
 echo '<h2 id="fence">電柵アラート</h2>';
 if (!$byKind['fa']) {
-    echo '<p class="muted">電柵アラート(HPX-alert)の記録はまだありません。</p>';
+    echo '<p class="muted">電柵アラート (HPX-A) の記録はまだありません。</p>';
 } else {
     $nodeLimit = (int)($HPX_ALERT_MISSING_S ?? 3600);
     echo '<div class="wrap"><table><tr><th>名前</th><th>蜂場</th><th>状態</th><th>電圧低下の回数(通算)</th><th>電池</th><th>最後の記録</th></tr>';
@@ -738,7 +738,7 @@ echo '</details>';
 // ---- グラフ ----
 echo '<h2 id="g-weight">重量のグラフ</h2>' . $perLinks('pw', 'g-weight');
 echo $wS ? chart_svg($wS, $range($per['pw']), $now, 'kg', 0.5)
-    : '<p class="muted">' . ($byKind['w'] ? '較正が済むと表示します。' : '重量ノードの記録はまだありません。') . '</p>';
+    : '<p class="muted">' . ($byKind['w'] ? '較正が済むと表示します。' : '重量センサの記録はまだありません。') . '</p>';
 echo '<h2 id="g-temp">温度のグラフ</h2>' . $perLinks('pt', 'g-temp');
 echo $tS ? chart_svg($tS, $range($per['pt']), $now, '℃', 2) : '<p class="muted">温湿度計の記録はまだありません。</p>';
 echo '<h2 id="g-hum">湿度のグラフ</h2>' . $perLinks('ph', 'g-hum');
@@ -760,12 +760,12 @@ echo '<details><summary><b>データクリア</b></summary><div class="card dang
     . '<p>ログインのパスワード<br><input type="password" name="pw2" autocomplete="current-password" required></p>'
     . '<button type="submit">データをクリア</button></form></div></details>';
 if (is_file($dir . '/.retired')) {
-    echo '<div class="card"><b>外した HPX-core</b><br><span class="muted">' . h(date('Y-m-d H:i', (int)@filemtime($dir . '/.retired'))) . ' に外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。'
+    echo '<div class="card"><b>外した HPX-Core</b><br><span class="muted">' . h(date('Y-m-d H:i', (int)@filemtime($dir . '/.retired'))) . ' に外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。'
         . '「届いていません」のメールは出しません。このアカウントのトークンでまた届くと、自動で元に戻ります。</span>'
         . '<form method="post"><input type="hidden" name="action" value="unretire"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
         . '<button type="submit">元に戻す</button></form></div>';
 } else {
-    echo '<details><summary><b>この HPX-core をアカウントから外す</b></summary><div class="card danger">'
+    echo '<details><summary><b>この HPX-Core をアカウントから外す</b></summary><div class="card danger">'
         . '<p>' . h($hub['name']) . ' をほかのアカウントのトークンに付け替えたときなどに使います。「届いていません」のメールが止まり、蜂場・巣箱の設定の選択肢からも消えます。<br>'
         . '<span class="muted">これまでの記録と、巣箱・蜂場への紐づけはそのまま残すので、過去のグラフは見られます。センサページにも「外した」として残ります。</span></p>'
         . '<form method="post" onsubmit="return window.confirm(\'' . h($hub['name']) . ' をこのアカウントから外します。よろしいですか?\')">'

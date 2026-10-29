@@ -1,7 +1,7 @@
 <?php
 // 巣箱ページ: 上の蜂場のボタンで蜂場を、その下の四角い巣箱のボタンで巣箱を切り替えて、1つの巣箱を表示する。
 //   巣箱ごとに温度・湿度・重量のグラフを出す(巣箱を切り替えてもグラフの位置は変わらない)。
-//   HPX-core と電柵アラートの状態は蜂場ページの「蜂場詳細」に出す。
+//   HPX-Core と電柵アラートの状態は蜂場ページの「蜂場詳細」に出す。
 //   温湿度センサと重量センサは巣箱に紐づける(1台のセンサは1つの巣箱にだけ)。
 //   チームに共有された蜂場の巣箱も出す。巣箱の追加・変更・削除は、蜂場の持ち主とチーム管理者だけ。
 declare(strict_types=1);
@@ -110,7 +110,7 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
         . '<p><label>並び順 (小さいほど上)</label><input type="number" name="order" value="' . (int)($hv['order'] ?? 0) . '"></p>'
         . '<p><label>この巣箱のセンサ (温湿度・重量)</label>';
     $list = array_filter($sensors, fn($s) => $s['kind'] === 'th' || $s['kind'] === 'w');
-    if (!$list) $o .= '<span class="muted">センサはまだ登録されていません (HPX-core の管理画面で登録します)。</span>';
+    if (!$list) $o .= '<span class="muted">センサはまだ登録されていません (HPX-Core の管理画面で登録します)。</span>';
     foreach ($list as $k => $s) {
         $o .= '<span style="display:block"><input type="checkbox" name="sensors[]" value="' . h($k) . '"' . (in_array($k, (array)($hv['sensors'] ?? []), true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">[' . h(kind_text($s['kind'])) . '] ' . h($s['hubName']) . ($s['retired'] ? ' (外した)' : '') . '</span>'

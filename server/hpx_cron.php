@@ -1,9 +1,9 @@
 <?php
-// HPX ハブの見張り: ハブ(HPX-core)からしばらくレポートが届かなければメールで知らせる。
+// HPX ハブの見張り: ハブ(HPX-Core)からしばらくレポートが届かなければメールで知らせる。
 //   ハブが止まると電柵アラートも届かなくなるので、それに気付くためのもの。
 //   巣箱ごとの警報(温度の上限・下限、基準日からの重量の増減。hpx_hive_alert.php)も見る。
 //   あわせて、タスクページの タスク(「メールで知らせる」にしたもの)を毎朝1回まとめて知らせる(担当者がいれば担当者へ)。
-//   アカウントごとに、そのアカウントの HPX-core とタスクを見て、そのアカウントの通知先へ送る(停止中のアカウントは見ない)。
+//   アカウントごとに、そのアカウントの HPX-Core とタスクを見て、そのアカウントの通知先へ送る(停止中のアカウントは見ない)。
 //   15分ごとなどに、次のどちらかで実行する。
 //     CRON(スタンダード以上のプラン): /usr/local/bin/php /home/<アカウント名>/www/hpx/hpx_cron.php
 //     URL(ライトプランなど。外部の定期実行サービスから呼ぶ):
@@ -23,7 +23,7 @@ $hour = (int)($HPX_TODO_MAIL_HOUR ?? 7);
 $now = time();
 $today = date('Y-m-d', $now);
 
-// 見る場所: [HPX-core のフォルダの親, 蜂場などのフォルダ, 通知先(null は config.php の $HPX_MAIL_TO), アカウントid(初期設定の前は '')]
+// 見る場所: [HPX-Core のフォルダの親, 蜂場などのフォルダ, 通知先(null は config.php の $HPX_MAIL_TO), アカウントid(初期設定の前は '')]
 $places = [];
 if (users_exist()) {
     foreach (users_all() as $uid => $u) {
@@ -46,12 +46,12 @@ foreach ($places as [$hubsDir, , $notifyTo, $owner]) {
 
         if ($now - $last >= $limit && !is_file($flag)) {
             hpx_alert_queue("【HPX】ハブ($hub)から届いていません",
-                "ハブ(HPX-core)から " . intdiv($now - $last, 60) . " 分レポートが届いていません。この間は電柵アラートも届きません。\n"
+                "ハブ(HPX-Core)から " . intdiv($now - $last, 60) . " 分レポートが届いていません。この間は電柵アラートも届きません。\n"
                 . "電源・Wi-Fi・ルーターを確認してください。\n\nハブ: $hub\n最後の受信: " . date('Y-m-d H:i', $last) . "\n");
             @touch($flag);
         } elseif ($now - $last < $limit && is_file($flag)) {
             hpx_alert_queue("【HPX】ハブ($hub)からの受信が戻りました",
-                "ハブ(HPX-core)からのレポートがまた届くようになりました。\n\nハブ: $hub\n最後の受信: " . date('Y-m-d H:i', $last) . "\n");
+                "ハブ(HPX-Core)からのレポートがまた届くようになりました。\n\nハブ: $hub\n最後の受信: " . date('Y-m-d H:i', $last) . "\n");
             @unlink($flag);
         }
         // 送り先: アカウントの通知先と、このハブを紐づけた蜂場を見られるチームの人
