@@ -2,7 +2,7 @@
 
 養蜂のための、オープンソースIoT。 / Open-source IoT for beekeeping.
 
-巣箱の重量・温湿度の計測と、電柵の電圧低下アラートを、手づくりできる機器と小さなサーバーで実現します。
+巣箱の状態を計測するセンサー類とデータを送る仕組みを、自作可能な機器と小さなサーバーで実現します。データと養蜂家の記録を統合するための蜂場管理アプリも作ります。
 趣味とプロの養蜂家には実用的な道具として、学生・研究者には仕組みを学び、改良するための土台として使ってもらうことを目指しています。
 
 ウェブサイト: https://hiveplusx.com
@@ -11,12 +11,13 @@
 
 | フォルダ | 内容 | ライセンス |
 |---|---|---|
-| `firmware/hpx-core/` | HPX-core (ESP32)。センサのBLE広告を受けて、Wi-Fi でサーバーへ送るハブ | MIT |
-| `firmware/hpx-weight/` | 重量センサ HPXW (XIAO nRF52840 + HX711 + ロードセル) | MIT |
-| `firmware/hpx-alert/` | HPX-alert (XIAO nRF52840)。電柵アラームのLED点滅を光センサで読み、BLEで知らせる | MIT |
+| `firmware/hpx-core/` | HPX-Core (ESP32)。センサのBLE広告を受けて、Wi-Fi でサーバーへ送るハブ | MIT |
+| `firmware/hpx-weight/` | HPX-W (XIAO nRF52840 + HX711 + ロードセル)。重量センサ | MIT |
+| `firmware/hpx-alert/` | HPX-A (XIAO nRF52840)。アラームのLED点滅を光センサで読み、BLEで知らせる | MIT |
+| `firmware/hpx-temp/` | HPX-TH (XIAO nRF52840)。温湿度センサ (これから開発) | MIT |
 | `firmware/experiments/` | 試作・検討中のもの | MIT |
-| `server/` | 蜂場管理アプリ (PHP。蜂場・巣箱・メモ・作業記録・センサ・チーム・アカウント) | MIT |
-| `site/` | hiveplusx.com のページ | MIT |
+| `server/` | 蜂場管理アプリ HPX-app (PHP。蜂場・巣箱・メモ・作業記録・センサ・チーム・アカウントなど) | MIT |
+| `site/` | HivePlusX.com のページ | MIT |
 | `hardware/` | 回路図・基板・ケースの図面 (これから追加) | CERN-OHL-P v2 |
 | `docs/` | 説明書・検討メモ | CC BY 4.0 |
 | `brand/` | ロゴ・ファビコン | 下の「名前とロゴ」を参照 |
@@ -38,9 +39,14 @@
 
 ## 安全について
 
-電柵・電池・ソーラーパネルを扱います。電柵本体の高電圧部には触れない・つながない作りになっていますが、作る・設置するときは各機器の説明書と安全上の注意に従ってください。
+電池・ソーラーパネルを扱います。製作・設置するときは各機器の説明書と安全上の注意に従ってください。
 
 ## はじめかた
 
 - サーバー (蜂場管理アプリ) の置き方: [docs/server-setup.md](docs/server-setup.md)。`server/config.sample.php` を `config.php` にコピーして書き換えます
 - ファームウェアは Arduino IDE で書き込みます。必要なボードとライブラリは各 `.ino` の先頭に書いてあります
+
+## 参加のしかた
+
+不具合の報告・質問・改良の提案は GitHub の Issues へ、直したものはプルリクエストでどうぞ。GitHub を使わない人は support@hiveplusx.com へ。
+詳しくは [CONTRIBUTING.md](CONTRIBUTING.md) (コミットに `Signed-off-by` の一行を付ける DCO 方式) と [行動規範](CODE_OF_CONDUCT.md) を見てください。
