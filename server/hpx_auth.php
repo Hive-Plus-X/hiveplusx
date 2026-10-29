@@ -452,8 +452,8 @@ function demo_guard(string $page): void
 }
 
 // デモ用アカウントのセンサの記録は、実際のセンサの値を使わずに、見本の値 (ダミー) で作る ($HPX_DEMO_DUMMY = false で止める)
-//   温湿度計: 温度は 34℃±1℃ でほぼ一定。湿度は昼 60%・夜 90% くらいの日変動
-//   重量センサ: 30日前の 30kg くらいから1日 0.3kg ずつ増える。1日の中では昼が夜より 0.5kg 軽い
+//   巣箱ごとに変化のパターンを変える (DEMO_PATTERNS)。1つめの巣箱は 温度 34℃±1℃・湿度 昼60%/夜90%・重さ 30kgから1日0.3kg増 (昼は0.5kg軽い)
+//   温湿度計・重量センサの無い巣箱には、見本の HPX-Core (hpx-demo-2) のセンサを作って紐づける (demo_link_hives)
 //   電柵アラート: ずっと正常
 //   デモのページを開いたとき (5分に1回まで) と hpx_cron.php で、デモ用アカウントの HPX-Core ごとに
 //   ble.csv を30日分作り直し、state.json の受信時刻を今にする。デモ用アカウントのトークンで届いた記録は保存しない (receive.php)
@@ -473,6 +473,86 @@ function demo_dummy_on(): bool
 }
 // センサと時刻ごとに決まる -1〜1 のゆらぎ (作り直しても同じ値になるように)
 function demo_noise(string $key, int $t): float { return (crc32($key . '@' . $t) % 2001) / 1000 - 1; }
+// 巣箱ごとの変化のパターン (巣箱の並び順に割り当てる。巣箱が多ければ初めから繰り返す)
+//   kg: 30日前の重さ  gain: 1日の増減  day: 昼に軽くなる量  temp: [中心, ゆれ幅] (null は外気に合わせて上下する弱い群)
+//   hum: [平均, 昼夜の差の半分]  harvest: 何日前に採蜜で減ったか (kg)  feed: 何日ごとに給餌で増えるか (kg)
+const DEMO_PATTERNS = [
+    ['label' => '標準',     'kg' => 30, 'gain' => 0.3,   'day' => 0.5, 'temp' => [34, 0.5],   'hum' => [75, 15]],
+    ['label' => '強群',     'kg' => 36, 'gain' => 0.5,   'day' => 0.9, 'temp' => [34.8, 0.3], 'hum' => [68, 12]],
+    ['label' => '採蜜あり', 'kg' => 40, 'gain' => 0.5,   'day' => 0.6, 'temp' => [34.2, 0.4], 'hum' => [72, 14], 'harvest' => [8, 10]],
+    ['label' => '弱群',     'kg' => 22, 'gain' => -0.05, 'day' => 0.2, 'temp' => null,        'hum' => [80, 12]],
+    ['label' => '給餌中',   'kg' => 25, 'gain' => -0.1,  'day' => 0.3, 'temp' => [33.8, 0.6], 'hum' => [74, 13], 'feed' => [7, 1.8]],
+    ['label' => '減少',     'kg' => 34, 'gain' => -0.15, 'day' => 0.4, 'temp' => [33.5, 1.0], 'hum' => [70, 16]],
+];
+// 見本の値: 温湿度計 [温度, 湿度]、重量センサ kg
+function demo_value(array $pt, string $kind, string $mac, int $t, int $start)
+{
+    $hr = (int)date('G', $t) + (int)date('i', $t) / 60;   // その日の時刻 (時)
+    $days = ($t - $start) / 86400;
+    if ($kind === 'w') {
+        $kg = $pt['kg'] + $pt['gain'] * $days - $pt['day'] / 2 - $pt['day'] / 2 * cos(2 * M_PI * ($hr - 13) / 24) + 0.02 * demo_noise($mac, $t);
+        if (isset($pt['harvest']) && $t >= $start + (DEMO_DAYS - $pt['harvest'][0]) * 86400) $kg -= $pt['harvest'][1];
+        if (isset($pt['feed'])) $kg += $pt['feed'][1] * floor($days / $pt['feed'][0]);
+        return $kg;
+    }
+    if ($pt['temp'] === null) {   // 弱い群: 巣の中の温度を保てず、外気と一緒に上下する
+        $temp = 27 + 4 * sin(2 * M_PI * ($hr - 9) / 24) + 0.3 * demo_noise($mac . 't', $t);
+    } else {
+        $temp = $pt['temp'][0] + $pt['temp'][1] * sin(2 * M_PI * ($days / 3 + (crc32($mac) % 100) / 100)) + 0.1 * demo_noise($mac . 't', $t);
+    }
+    $hum = $pt['hum'][0] - $pt['hum'][1] * cos(2 * M_PI * ($hr - 14) / 24) + 2 * demo_noise($mac . 'h', $t);
+    return [$temp, max(40, min(98, $hum))];
+}
+// 温湿度計・重量センサの無い巣箱に、見本の HPX-Core (DE000000DE02) のセンサを作って紐づける。
+// デモの site.json と初期状態 (demo_seed) の両方に書く。戻り値: "ハブid/mac" => パターンの番号
+function demo_link_hives(string $hubsDir): array
+{
+    $vHub = 'DE000000DE02';
+    $vDir = $hubsDir . '/' . $vHub;
+    $vSt = json_decode((string)@file_get_contents($vDir . '/state.json'), true);
+    $vSens = is_array($vSt['sensors'] ?? null) ? $vSt['sensors'] : [];
+    $kinds = [];   // "ハブid/mac" => th / w
+    foreach (glob($hubsDir . '/*/state.json') ?: [] as $p) {
+        $st = json_decode((string)@file_get_contents($p), true);
+        foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $sn) $kinds[basename(dirname($p)) . '/' . $mac] = (string)($sn['kind'] ?? 'th');
+    }
+    $pattern = [];
+    $vChanged = false;
+    foreach ([account_site_dir(demo_uid()), demo_seed_dir()] as $n => $siteDir) {
+        $path = $siteDir . '/site.json';
+        if (!is_file($path)) continue;
+        $site = json_decode((string)@file_get_contents($path), true);
+        if (!is_array($site['hives'] ?? null)) continue;
+        $changed = false;
+        $i = 0;
+        foreach ($site['hives'] as $hid => &$x) {
+            if (!is_array($x)) continue;
+            $sens = array_values((array)($x['sensors'] ?? []));
+            $has = array_map(fn($k) => $kinds[$k] ?? '', $sens);
+            foreach (['th' => '温湿度', 'w' => '重量'] as $kind => $label) {
+                if (in_array($kind, $has, true)) continue;
+                $mac = 'DE:02:' . implode(':', str_split(sprintf('%08X', crc32($hid . $kind)), 2));
+                $vSens[$mac] = ['name' => $label . ' ' . (string)($x['name'] ?? ''), 'kind' => $kind] + (is_array($vSens[$mac] ?? null) ? $vSens[$mac] : []);
+                $kinds[$vHub . '/' . $mac] = $kind;
+                $sens[] = $vHub . '/' . $mac;
+                $changed = $vChanged = true;
+            }
+            $x['sensors'] = $sens;
+            if ($n === 0) foreach ($sens as $k) $pattern[$k] = $i % count(DEMO_PATTERNS);
+            $i++;
+        }
+        unset($x);
+        if ($changed && @file_put_contents($path . '.tmp', json_encode($site, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false) {
+            @rename($path . '.tmp', $path);
+            if ($n === 0) owner_site(demo_uid(), true);
+        }
+    }
+    if ($vChanged) {
+        @mkdir($vDir, 0700, true);
+        file_put_contents($vDir . '/state.json', json_encode(['name' => 'hpx-demo-2', 'sensors' => $vSens] + (is_array($vSt) ? $vSt : []), JSON_UNESCAPED_UNICODE));
+    }
+    return $pattern;
+}
 function demo_sensor_fill(bool $force = false): void
 {
     if (!demo_dummy_on()) return;
@@ -482,8 +562,7 @@ function demo_sensor_fill(bool $force = false): void
     if (!$force && $now - (int)@filemtime($flag) < 300) return;
     @mkdir($hubsDir, 0700, true);
     @touch($flag);
-    $paths = glob($hubsDir . '/*/state.json') ?: [];
-    if (!$paths) {
+    if (!glob($hubsDir . '/*/state.json')) {
         // HPX-Core がまだ無ければ、見本の1台 (温湿度計2台・重量センサ1台) を作る
         $dir = $hubsDir . '/DE000000DE01';
         @mkdir($dir, 0700, true);
@@ -492,12 +571,13 @@ function demo_sensor_fill(bool $force = false): void
             'DE:00:00:00:00:02' => ['name' => '温湿度センサ2', 'kind' => 'th'],
             'DE:00:00:00:00:03' => ['name' => '重量センサ1', 'kind' => 'w'],
         ]], JSON_UNESCAPED_UNICODE));
-        $paths = [$dir . '/state.json'];
     }
+    $pattern = demo_link_hives($hubsDir);
     $end = intdiv($now, DEMO_STEP_S) * DEMO_STEP_S;
     $start = $end - DEMO_DAYS * 86400;
-    foreach ($paths as $statePath) {
+    foreach (glob($hubsDir . '/*/state.json') ?: [] as $statePath) {
         $dir = dirname($statePath);
+        $hubId = basename($dir);
         $lock = fopen($dir . '/.lock', 'c');
         if (!$lock || !flock($lock, LOCK_EX)) continue;
         $st = json_decode((string)@file_get_contents($statePath), true);
@@ -522,28 +602,24 @@ function demo_sensor_fill(bool $force = false): void
                       'fence_state', 'fence_events', 'fence_blink_ago_s']);
         $seq = 0;
         for ($t = $start; $t <= $end; $t += DEMO_STEP_S) {
-            $hr = (int)date('G', $t) + (int)date('i', $t) / 60;   // その日の時刻 (時)
+            $amb = 15 + 6 * sin(2 * M_PI * ((int)date('G', $t) + (int)date('i', $t) / 60 - 9) / 24);   // まわりの気温 (ノード内部の温度に使う)
             foreach ($sens as $mac => $s) {
                 if (!is_array($s)) continue;
                 $mac = (string)$mac;
                 $kind = (string)($s['kind'] ?? 'th');
                 $nm = (string)($s['name'] ?? '');
+                $pt = DEMO_PATTERNS[$pattern[$hubId . '/' . $mac] ?? 0];
                 $rssi = -60 + (int)round(demo_noise($mac . 'r', $t) * 5);
-                $amb = 15 + 6 * sin(2 * M_PI * ($hr - 9) / 24);   // まわりの気温 (ノード内部の温度に使う)
                 $seq++;
                 if ($kind === 'w') {
                     $c = $cal[$mac];
-                    $kg = 30 + (crc32($mac) % 401) / 100 - 2 + 0.3 * ($t - $start) / 86400
-                        - 0.25 - 0.25 * cos(2 * M_PI * ($hr - 13) / 24) + 0.02 * demo_noise($mac, $t);
-                    $raw = (int)round(($kg + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
+                    $raw = (int)round((demo_value($pt, 'w', $mac, $t, $start) + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '']);
                 } elseif ($kind === 'fa') {
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '']);
                 } else {
-                    $temp = 34 + 0.5 * sin(2 * M_PI * ($t / 86400 / 3 + (crc32($mac) % 100) / 100)) + 0.1 * demo_noise($mac . 't', $t);
-                    $hum = 75 - 15 * cos(2 * M_PI * ($hr - 14) / 24) + 2 * demo_noise($mac . 'h', $t);
-                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round(max(33, min(35, $temp)), 2), round(max(50, min(95, $hum)), 2), 100, $rssi, 1, $nm, $mac, 'th',
-                                  '', '', '', '', '', '']);
+                    [$temp, $hum] = demo_value($pt, 'th', $mac, $t, $start);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($temp, 2), round($hum, 2), 100, $rssi, 1, $nm, $mac, 'th', '', '', '', '', '', '']);
                 }
             }
         }
@@ -556,7 +632,8 @@ function demo_sensor_fill(bool $force = false): void
             if (($s['kind'] ?? '') === 'fa') { $s['fence_state'] = 0; $s['fence_events'] = 0; $s['fence_bv'] = 3.3; }
         }
         unset($s);
-        $st = ['name' => 'hpx-demo', 'last_rx' => $now, 'fw' => (string)($st['fw'] ?? '') !== '' ? (string)$st['fw'] : 'HPX-Core.1.14',
+        $st = ['name' => (string)($st['name'] ?? '') === 'hpx-demo-2' ? 'hpx-demo-2' : 'hpx-demo', 'last_rx' => $now,
+               'fw' => (string)($st['fw'] ?? '') !== '' ? (string)$st['fw'] : 'HPX-Core.1.14',
                'build' => (int)($st['build'] ?? 0), 'vbat' => null, 'rssi' => -58, 'sensors' => $sens];
         file_put_contents($statePath, json_encode($st, JSON_UNESCAPED_UNICODE));
         @unlink($dir . '/.hub_missing');
