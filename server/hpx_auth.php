@@ -40,10 +40,10 @@ function brand_head(): string
     return '<link rel="icon" href="img/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#2F5D45">';
 }
 
-// メニュー左端のロゴ(蜂場ページへ戻る)
+// メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)
 function brand_nav_logo(): string
 {
-    return '<a href="apiary.php" class="logo" title="' . BRAND_NAME . '"><img src="img/hivex_reverse.svg" alt="' . BRAND_NAME . '" width="96" height="27"></a>';
+    return '<a href="apiary.php" class="logo" title="' . BRAND_NAME . '"><img src="img/hivex_note_reverse.svg" alt="' . BRAND_NAME . ' note" width="166" height="27"></a>';
 }
 
 // 各ページの <style> の最後に足す、ロゴの配色に合わせた色の指定(前の色の指定を上書きする)
@@ -52,9 +52,9 @@ function brand_css(): string
     return 'body{background:#f7f7f4;color:#1F2328}a{color:#2F5D45}h2{border-bottom-color:#d5e0d9}th{background:#eef2ef}'
         . 'nav{background:#2F5D45;min-height:40px}nav a{color:#fff}nav a.on{border-bottom-color:#F2A900}'
         . 'nav .logo{display:flex;align-items:center;padding:4px 12px 4px 0;margin-right:2px;border:0}'
-        . 'nav .logo img{width:96px;height:auto;display:block}@media(max-width:600px){nav .logo img{width:84px}}'
+        . 'nav .logo img{width:166px;height:auto;display:block}@media(max-width:600px){nav .logo img{width:132px}}'
         . 'nav .setm{margin-left:auto;position:relative}nav .setm>summary{list-style:none;cursor:pointer;color:#fff;display:flex;align-items:center;padding:4px 2px;border-bottom:2px solid transparent}'
-        . 'nav .setm>summary::-webkit-details-marker{display:none}nav .setm>summary.on{border-bottom-color:#F2A900}nav .setm svg{background:none;border:0;width:22px;height:22px;display:block}@media(max-width:600px){nav{column-gap:8px!important;flex-wrap:nowrap!important}nav .setm{flex-shrink:0}nav .logo{padding-right:2px}nav .logo img{width:66px}nav>a{font-size:.95em}}nav .setm .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
+        . 'nav .setm>summary::-webkit-details-marker{display:none}nav .setm>summary.on{border-bottom-color:#F2A900}nav .setm svg{background:none;border:0;width:22px;height:22px;display:block}@media(max-width:600px){nav{column-gap:8px!important;flex-wrap:nowrap!important}nav .setm{flex-shrink:0}nav .logo{padding-right:2px}nav .logo img{width:84px}nav>a{font-size:.9em;word-break:keep-all}}nav .setm .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
         . 'nav .setmenu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #c5cec8;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:160px;padding:4px 0;z-index:20}'
         . 'nav .setmenu a{display:block;color:#1F2328;padding:8px 16px;border:0;font-size:.95rem;white-space:nowrap}nav .setmenu a:hover{background:#eef2ef}nav .setmenu a.on{font-weight:bold;background:#f4f1e4}'
         . 'nav .setmenu .who{padding:6px 16px 6px;color:#666;font-size:.8rem;border-bottom:1px solid #e3e7e4;margin-bottom:4px;white-space:nowrap}'
