@@ -48,5 +48,5 @@
 
 ## 参加のしかた
 
-質問・アイデア・使ってみた報告は [フォーラム (GitHub Discussions)](https://github.com/Hive-Plus-X/hiveplusx/discussions) へ、不具合の報告は Issues へ、直したものはプルリクエストでどうぞ。GitHub を使わない人は support@hiveplusx.com へ。
+質問・アイデア・使ってみた報告は [フォーラム (GitHub Discussions)](https://github.com/Hive-Plus-X/hiveplusx/discussions) へ、不具合の報告は Issues へ、直したものはプルリクエストでどうぞ。GitHub を使わない人は [お問い合わせフォーム](https://hiveplusx.com/contact.php) へ。
 詳しくは [CONTRIBUTING.md](CONTRIBUTING.md) (コミットに `Signed-off-by` の一行を付ける DCO 方式) と [行動規範](CODE_OF_CONDUCT.md) を見てください。

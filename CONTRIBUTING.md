@@ -2,7 +2,7 @@
 
 不具合の報告、使ってみた感想、改良の提案は、どれも歓迎です。プログラムを書かない人の「ここが分かりにくい」も大事な貢献です。
 
-1. **質問・アイデア・使ってみた報告**: [フォーラム (GitHub Discussions)](https://github.com/Hive-Plus-X/hiveplusx/discussions) に書く。GitHub を使わない人は support@hiveplusx.com へ
+1. **質問・アイデア・使ってみた報告**: [フォーラム (GitHub Discussions)](https://github.com/Hive-Plus-X/hiveplusx/discussions) に書く。GitHub を使わない人は [お問い合わせフォーム](https://hiveplusx.com/contact.php) へ
 2. **不具合の報告**: GitHub の Issues に書く。何をしたら、どうなったかを書く
 3. **直したものを送る**: GitHub でプルリクエストを送る。何を、なぜ直したかを一言添える
 4. **確認と取り込み**: 管理者が内容を見て、問題がなければ取り込む。機器に関わる変更は、できる範囲で実機で試してから取り込む
