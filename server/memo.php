@@ -188,7 +188,7 @@ function memo_form(array $m, array $site, string $back): string
     $fid = 'f' . substr(md5((string)($m['id'] ?? 'new')), 0, 6);
     // 対象は 蜂場(すべて・各蜂場) と 巣箱(空 = 蜂場全体)。巣箱は選んだ蜂場のものだけ出す(memoHives)
     $all = isset($m['id']) && $a === '';
-    $sa = '<select name="t_a" required onchange="memoHives(this)"><option value="*"' . ($all ? ' selected' : '') . '>すべて' . (team_on() ? ' (自分だけに見える)' : '') . '</option>';
+    $sa = '<select name="t_a" required onchange="memoHives(this)"><option value="*"' . ($all ? ' selected' : '') . '>すべて</option>';
     $sh = '<select name="t_h" onchange="memoWork(this.form)"' . ($all ? ' disabled' : '') . '><option value=""></option>';
     foreach ($site['apiaries'] as $aid => $ap) {
         $sa .= '<option value="' . h($aid) . '"' . (!$all && $a === $aid ? ' selected' : '') . '>' . h((string)$ap['name']) . '</option>';
@@ -227,7 +227,7 @@ function memo_form(array $m, array $site, string $back): string
     }
     // ダニ調査。寄生率は入れたそばから計算して見せる(miteRate)
     $mt = (array)($m['mite'] ?? []);
-    $o .= '<div class="wide mite"><label>ダニ調査</label><div class="mrow"><select name="mite_method" onchange="miteRate(this.form)"><option value="">調査方法 -</option>';
+    $o .= '<div class="wide mite"><label>ダニ調査</label><div class="mrow"><select name="mite_method" onchange="miteRate(this.form)"><option value="">-</option>';
     foreach (M_MITE_METHODS as $op) $o .= '<option' . (($mt['method'] ?? '') === $op ? ' selected' : '') . '>' . h($op) . '</option>';
     $o .= '</select><span>検査ミツバチ数 <input type="number" name="mite_bees" min="0" step="1" style="width:6em" value="' . h(isset($mt['bees']) ? (string)$mt['bees'] : '') . '" oninput="miteRate(this.form)"> 匹</span>'
         . '<span>ダニ数 <input type="number" name="mite_count" min="0" step="1" style="width:5em" value="' . h(isset($mt['mites']) ? (string)$mt['mites'] : '') . '" oninput="miteRate(this.form)"> 匹</span>'

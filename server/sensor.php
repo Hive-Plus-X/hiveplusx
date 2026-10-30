@@ -6,7 +6,7 @@
 //   ・グラフ(重量・温度・湿度)はそれぞれ期間を選べる(1日/3日/7日/30日/全期間。初めは3日)
 //   ・データダウンロード: 選んでいる機器の全期間の記録を CSV で保存する(日時ごとに1行、センサーごとに列を並べる。重量は kg)
 //   ・データクリア: 選んでいる機器の記録を消す。ファイルはデータフォルダの cleared/<日時>/ に移すだけなので、戻すこともできる
-//   重量センサの較正(生の値 → kg)もこのページで入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
+//   重量センサの較正(生の値 → kg)は HPX-Core の管理画面で行い、ここではゼロリセットと差し引く重さだけ入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 
@@ -434,23 +434,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
             $all = cal_load($hub['dir']);
             $c = $all[$mac] ?? [];
             $num = fn(string $k) => is_numeric(trim((string)($_POST[$k] ?? ''))) ? (float)trim((string)$_POST[$k]) : null;
-            if ($act === 'cal') {
-                $zero = $num('zero'); $calRaw = $num('cal_raw'); $calG = $num('cal_g');
-                if ($zero === null || $calRaw === null || $calG === null) $err = '3つの欄すべてに数字を入れてください。';
-                elseif ($calG < 100) $err = '重さは 100g 以上の物で較正してください(軽いと誤差が大きくなります)。';
-                elseif (abs($calRaw - $zero) < 1000) $err = '載せたときの値とゼロ点の差が小さすぎます。値を見直してください。';
+            if ($act === 'zero') {
+                // ゼロリセット: 最新の記録の生の値をゼロ点にする(較正は HPX-Core の管理画面で行う)
+                $wr = read_ble($hub['dir'] . '/ble.csv', $now - 7 * 86400)['w'][$mac] ?? [];
+                if (!isset($c['per_kg'])) $err = '先に HPX-Core の管理画面で較正してください。';
+                elseif (!$wr) $err = 'この1週間の記録がないので、ゼロリセットできません。';
                 else {
-                    $c['zero'] = round($zero);
-                    $c['per_kg'] = ($calRaw - $zero) / ($calG / 1000);
-                    $c['cal_raw'] = round($calRaw);
-                    $c['cal_g'] = $calG;
-                    unset($c['src'], $c['common']);
+                    $c['zero'] = (int)$wr[count($wr) - 1][1];
+                    $c['zero_reset'] = $now;   // receive.php: これより前に較正した HPX-Core の値でゼロ点を戻さない
                 }
-            } elseif ($act === 'zero') {
-                $zero = $num('zero');
-                if (!isset($c['per_kg'])) $err = '先に「較正」をしてください。';
-                elseif ($zero === null) $err = 'ゼロ点の値を入れてください。';
-                else $c['zero'] = round($zero);
             } elseif ($act === 'offset') {
                 $off = $num('offset_kg');
                 $c['offset_kg'] = $off === null ? 0 : $off;
@@ -491,7 +483,7 @@ echo '<nav>' . brand_nav_logo() . '<a href="apiary.php">蜂場</a><a href="hive.
     . auth_nav_right('sensor.php') . '</nav>';
 echo '<p class="muted" style="text-align:right;margin:0">' . h(date('Y-m-d H:i', $now)) . ' 現在 (5分ごとに自動で更新)</p>';
 if ($msg !== '') echo '<p class="ng">' . h($msg) . '</p>';
-if (isset($_GET['saved'])) echo '<p class="ok">較正を保存しました。</p>';
+if (isset($_GET['saved'])) echo '<p class="ok">重量センサの設定を保存しました。</p>';
 if (isset($_GET['tested'])) echo '<p class="ok">テストメールを送りました。結果は「メール送信履歴」に出ます(届くまで数分かかることがあります)。</p>';
 if (isset($_GET['cleared'])) echo '<p class="ok">データをクリアしました。</p>';
 if (isset($_GET['removed'])) echo '<p class="ok">' . h($hub['name'] ?? '') . ' をこのアカウントから外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。</p>';
@@ -645,7 +637,7 @@ if (!$byKind['w']) {
         $hid = '<input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
             . '<input type="hidden" name="mac" value="' . h($mac) . '">';
         foreach ($per as $k => $v) $hid .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
-        $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の較正' . ($calOk ? '' : ' <span class="warn">(まだです)</span>') . '</summary><div class="card">';
+        $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
         if ($calOk) {
             $f .= '<p class="muted">今の較正: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
                 . (isset($c['cal_g']) ? ' (' . h(number_format((float)$c['cal_g'])) . 'g で較正)' : (!empty($c['common']) ? ' (全台共通の値)' : ''))
@@ -653,19 +645,13 @@ if (!$byKind['w']) {
                 . (!empty($c['offset_kg']) ? ' ・ 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg' : '')
                 . ' ・ ' . h((string)($c['updated'] ?? '')) . '</p>';
         }
-        $f .= '<form method="post"><input type="hidden" name="action" value="cal">' . $hid
-            . '<p><b>1. 較正</b> <span class="muted">シリアルモニターの raw の値を入れます(3回の平均がおすすめ)。最後の記録の生の値は ' . h($latestRaw !== '' ? $latestRaw : '-') . ' です。</span><br>'
-            . '何も載せないときの値 <input type="number" step="1" name="zero" value="' . h(isset($c['zero']) ? (string)$c['zero'] : '') . '" required><br>'
-            . '載せたときの値 <input type="number" step="1" name="cal_raw" value="' . h(isset($c['cal_raw']) ? (string)$c['cal_raw'] : '') . '" required><br>'
-            . '載せた物の重さ <input type="number" step="1" min="100" name="cal_g" value="' . h(isset($c['cal_g']) ? (string)$c['cal_g'] : '') . '" required> g<br>'
-            . '<button type="submit">較正を保存</button></p></form>';
+        if (!$calOk) $f .= '<p>較正は HPX-Core の管理画面で行います。較正すると、次の送信でここに届いて kg で表示します。</p>';
         if ($calOk) {
-            $f .= '<form method="post"><input type="hidden" name="action" value="zero">' . $hid
-                . '<p><b>2. ゼロ点だけ直す</b> <span class="muted">台を付け直したときなど。1kg あたりの値はそのままです。</span><br>'
-                . '何も載せないときの値 <input type="number" step="1" name="zero" value="' . h($latestRaw) . '" required> '
-                . '<button type="submit">ゼロ点を保存</button></p></form>'
+            $f .= '<form method="post" onsubmit="return confirm(' . h(json_encode($nm . ' の今の重さを 0 kg にしますか?', JSON_UNESCAPED_UNICODE)) . ')"><input type="hidden" name="action" value="zero">' . $hid
+                . '<p><b>1. ゼロリセット</b> <span class="muted">何も載せていないときに押すと、最新の記録 (生の値 ' . h($latestRaw !== '' ? $latestRaw : '-') . ') を 0 kg にします。台を付け直したときなど。1kg あたりの値はそのままです。</span><br>'
+                . '<button type="submit">ゼロリセット</button></p></form>'
                 . '<form method="post"><input type="hidden" name="action" value="offset">' . $hid
-                . '<p><b>3. 差し引く重さ</b> <span class="muted">空の巣箱やふたの重さを入れると、中身の重さだけを表示します。0 で元に戻ります。</span><br>'
+                . '<p><b>2. 差し引く重さ</b> <span class="muted">空の巣箱やふたの重さを入れると、中身の重さだけを表示します。0 で元に戻ります。</span><br>'
                 . '<input type="number" step="0.01" name="offset_kg" value="' . h(isset($c['offset_kg']) ? (string)$c['offset_kg'] : '0') . '"> kg '
                 . '<button type="submit">保存</button></p></form>';
         }

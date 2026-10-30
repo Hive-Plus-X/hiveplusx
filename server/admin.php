@@ -87,7 +87,7 @@ if (is_post()) {
     redirect('admin.php');
 }
 
-page_head('管理', 'admin.php');
+page_head('アカウント管理', 'admin.php');
 echo flash_html();
 $link = $_SESSION['admin_link'] ?? null;
 unset($_SESSION['admin_link']);

@@ -50,7 +50,7 @@ if (is_post()) {
 
 $acct = account_load($UID);
 $hubCount = count(glob(account_hubs_dir($UID) . '/*/state.json') ?: []);
-page_head('設定', 'account.php');
+page_head('マイアカウント', 'account.php');
 echo flash_html();
 
 echo '<h2>アカウント</h2><div class="card form"><dl class="info"><dt>メールアドレス</dt><dd>' . h((string)$ME['email']) . ' <span class="muted">(ログインに使います)</span></dd>'
