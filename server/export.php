@@ -104,7 +104,7 @@ csv_add($zip, '作業記録.csv', ['日付', '蜂場', '巣箱', '作業', '開�
 // ---- センサの記録(自分の HPX-Core ごとに、ble.csv の全期間。見出しを日本語にし、重量は kg も付ける) ----
 $label = ['time' => '日時', 'epoch' => 'epoch', 'seq' => 'seq', 'temp_c' => '温度 (℃)', 'humidity_pct' => '湿度 (%)', 'battery_pct' => '電池 (%)', 'rssi_dbm' => '電波 (dBm)',
     'ts_known' => '時刻確定', 'sensor' => 'センサ名', 'mac' => 'MAC', 'kind' => '種類', 'raw' => '重量 (生の値)', 'spread' => '重量のばらつき', 'batt_v' => '電池 (V)',
-    'fence_state' => '電柵', 'fence_events' => '電柵 検出の通算回数', 'fence_ago' => '電柵 検出からの秒数'];
+    'fence_state' => '電柵', 'fence_events' => '電柵 検出の通算回数', 'fence_ago' => '電柵 検出からの秒数', 'temp2_c' => 'サーミスター温度 (℃)'];
 $nSensorFiles = 0;
 $sensorTmp = [];
 foreach ($hubs as $hubId => $hb) {

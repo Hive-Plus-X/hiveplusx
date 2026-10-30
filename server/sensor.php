@@ -15,6 +15,7 @@ const D_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '�
 const D_PERIOD_DEFAULT = 3;
 const D_MAX_POINTS = 1200;           // グラフ1本あたりの点の数の上限(多いときは時間で区切って平均する)
 const D_TH_MISSING_S = 3600;         // 温湿度計の記録がこの秒数来なければ「受信できていません」
+const D_TH_LOW_V = 2.7;              // HPX-TH の電池電圧(V)がこれ未満なら「交換」(CR123A は終わり近くで急に下がる)
 const D_W_MISSING_S = 5400;          // 重量の記録がこの秒数来なければ「受信できていません」(ノードは30分ごとに測る)
 const D_W_LOW_BV = 2.8;              // 重量センサの電池電圧(V)がこれ未満なら「そろそろ交換」(2.7V未満で測定を止める)
 const D_FENCE_DAYS = 7;              // 電柵の検出の履歴を出す日数
@@ -77,7 +78,7 @@ function rssi_text(?int $rssi): string
 }
 
 // ble.csv から $since 以降の記録を、種類ごと・センサーごとに古い順で返す
-//   th: mac => [[epoch, 温度, 湿度, 電池%], ...]
+//   th: mac => [[epoch, 温度, 湿度, 電池%, 電池V, サーミスター温度], ...]  (電池V・サーミスター温度は HPX-TH だけ)
 //   w : mac => [[epoch, 生の値, ばらつき, ノード内温度, 電池V], ...]
 //   fa: [[epoch, 名前, mac, 状態, 通算回数], ...]
 //   first: いちばん古い記録の時刻(全期間のグラフの左端に使う)
@@ -111,7 +112,7 @@ function read_ble(string $csv, int $since): array
         } else {
             $t = $num($g($r, 'temp_c'));
             if ($t === null) continue;
-            $out['th'][$mac][] = [$ep, $t, $num($g($r, 'humidity_pct')), $num($g($r, 'battery_pct'))];
+            $out['th'][$mac][] = [$ep, $t, $num($g($r, 'humidity_pct')), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $num($g($r, 'temp2_c'))];
         }
     }
     fclose($fh);
@@ -188,13 +189,14 @@ function chart_svg(array $series, int $from, int $to, string $unit, float $minSp
             [$px, $py] = explode(',', $pts[0]);
             $o .= '<circle cx="' . $px . '" cy="' . $py . '" r="3" fill="' . $s[1] . '"/>';
         } elseif ($pts) {
-            $o .= '<polyline fill="none" stroke="' . $s[1] . '" stroke-width="2" stroke-linejoin="round" points="' . implode(' ', $pts) . '"/>';
+            $o .= '<polyline fill="none" stroke="' . $s[1] . '" stroke-width="2" stroke-linejoin="round"'
+                . (($s[3] ?? '') !== '' ? ' stroke-dasharray="' . h((string)$s[3]) . '"' : '') . ' points="' . implode(' ', $pts) . '"/>';
         }
     }
     $o .= '</svg>';
     $data = ['W' => $W, 'x0' => $L, 'x1' => $W - $R, 'y0' => $T, 'y1' => $H - $B, 'f' => $from, 't' => $to, 's' => $tipS];
     $o = '<div class="tipw" data-tip="' . h(json_encode($data, JSON_UNESCAPED_UNICODE)) . '">' . $o . '</div><p class="muted">';
-    foreach ($series as $s) $o .= '<span style="color:' . $s[1] . '">■</span> ' . h($s[0]) . '　';
+    foreach ($series as $s) $o .= '<span style="color:' . $s[1] . '">' . (($s[3] ?? '') !== '' ? '┅' : '■') . '</span> ' . h($s[0]) . '　';
     return $o . '</p>';
 }
 
@@ -585,17 +587,21 @@ if (!$byKind['th']) {
         $le = (int)($s['last_epoch'] ?? 0);
         echo '<tr><td style="white-space:nowrap"><span style="color:' . $color . '">■</span> ' . h($nm) . '</td>'
             . $whereTd((string)$mac)
-            . '<td class="n">' . h($last ? number_format($last[1], 1) . ' ℃' : '-') . '</td>'
+            . '<td class="n">' . h($last ? number_format($last[1], 1) . ' ℃' : '-')
+            . ($last && ($last[5] ?? null) !== null ? '<br><small class="muted">サーミスター ' . h(number_format($last[5], 1)) . ' ℃</small>' : '') . '</td>'
             . '<td class="n">' . h($last && $last[2] !== null ? number_format($last[2], 1) . ' %' : '-') . '</td>'
-            . '<td class="n">' . ($last && $last[3] !== null ? h((int)$last[3] . ' %') . ($last[3] <= 20 ? ' <span class="warn">交換</span>' : '') : '-') . '</td>'
+            . '<td class="n">' . ($last && $last[3] !== null ? h((int)$last[3] . ' %') . ($last[3] <= 20 ? ' <span class="warn">交換</span>' : '')
+                : ($last && ($last[4] ?? null) !== null ? h(number_format($last[4], 2) . ' V') . ($last[4] < D_TH_LOW_V ? ' <span class="warn">交換</span>' : '') : '-')) . '</td>'
             . '<td>' . h($le ? date('m-d H:i', $le) . ' (' . ago_text($le, $now) . ')' : '-')
             . ($le > 0 && $now - $le >= D_TH_MISSING_S ? '<br><span class="ng">受信できていません</span>' : '') . '</td></tr>';
-        $tp = []; $hp = [];
+        $tp = []; $hp = []; $t2p = [];
         foreach ($rows as $r) {
             if ($r[0] >= $ft) $tp[] = [$r[0], $r[1]];
+            if ($r[0] >= $ft && ($r[5] ?? null) !== null) $t2p[] = [$r[0], $r[5]];
             if ($r[0] >= $fhm && $r[2] !== null) $hp[] = [$r[0], $r[2]];
         }
         $tS[] = [$nm, $color, $tp];
+        if ($t2p) $tS[] = [$nm . ' サーミスター', $color, $t2p, '5 4'];   // HPX-TH のサーミスターは点線
         $hS[] = [$nm, $color, $hp];
     }
     echo '</table></div>';

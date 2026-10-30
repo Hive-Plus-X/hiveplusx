@@ -88,12 +88,13 @@ foreach (($d['sensors']['ble_sensors'] ?? []) as $e) {
 $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以前
 
 // ble.csv の列: time, epoch, seq, temp_c, humidity_pct, battery_pct, rssi_dbm, ts_known, sensor, mac, kind, raw, spread, batt_v,
-//               fence_state, fence_events, fence_blink_ago_s
+//               fence_state, fence_events, fence_blink_ago_s, temp2_c
 //   kind: th=温湿度計 / w=重量センサ(temp_c はノード内部の温度、raw は重量の生の値、spread は読み取りのばらつき、batt_v は電池電圧)
 //         fa=電柵アラート(temp_c はノード内部の温度、fence_state は 0=正常 1=電圧低下 2=常時点灯、
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
+//   HPX-TH は kind=th のまま。temp_c・humidity_pct は SHT40、temp2_c はサーミスターの温度、batt_v は電池電圧(battery_pct は空)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
-              'fence_state', 'fence_events', 'fence_blink_ago_s'];
+              'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c'];
 
 // --- BLE温湿度計の記録 ---
 $ble = $d['sensors']['ble'] ?? [];
@@ -131,7 +132,10 @@ if (is_array($ble) && count($ble) > 0) {
         if ($isNew) fputcsv($fp, $csvHeader);
         usort($ble, fn($a, $b) => ((int)($a['seq'] ?? 0)) <=> ((int)($b['seq'] ?? 0)));
         foreach ($ble as $r) {
-            if (!is_array($r) || !isset($r['t']) || !is_numeric($r['t'])) continue;
+            if (!is_array($r)) continue;
+            $hasT2 = isset($r['t2']) && is_numeric($r['t2']);   // HPX-TH のサーミスター温度
+            // 温度が無い記録は飛ばす(HPX-TH は SHT40 が読めなくてもサーミスター温度があれば残す)
+            if (!(isset($r['t']) && is_numeric($r['t'])) && !$hasT2) continue;
             $seq = (int)($r['seq'] ?? 0);
             $ts  = (int)($r['ts'] ?? 0);
             $known = $ts > 1000000000;   // 時刻が分かっている記録
@@ -159,7 +163,7 @@ if (is_array($ble) && count($ble) > 0) {
             $epoch = $known ? $ts : $now;
             fputcsv($fp, [
                 date('Y-m-d H:i:s', $epoch), $epoch, $seq,
-                round((float)$r['t'], 2),
+                isset($r['t']) && is_numeric($r['t']) ? round((float)$r['t'], 2) : '',
                 isset($r['h']) && is_numeric($r['h']) ? round((float)$r['h'], 2) : '',
                 isset($r['bat']) && is_numeric($r['bat']) ? (int)$r['bat'] : '',
                 isset($r['rssi']) && is_numeric($r['rssi']) ? (int)$r['rssi'] : '',
@@ -168,10 +172,11 @@ if (is_array($ble) && count($ble) > 0) {
                 $isW ? 'w' : ($isA ? 'fa' : 'th'),
                 $isW ? (int)$r['raw'] : '',
                 $isW && isset($r['sp']) && is_numeric($r['sp']) ? (int)$r['sp'] : '',
-                ($isW || $isA) && isset($r['bv']) && is_numeric($r['bv']) ? round((float)$r['bv'], 2) : '',
+                isset($r['bv']) && is_numeric($r['bv']) ? round((float)$r['bv'], 2) : '',
                 $isA ? (int)$r['al'] : '',
                 $isA && isset($r['ev']) && is_numeric($r['ev']) ? (int)$r['ev'] : '',
                 $isA && isset($r['ago']) && is_numeric($r['ago']) ? (int)$r['ago'] : '',
+                $hasT2 ? round((float)$r['t2'], 2) : '',
             ]);
             if ($known) $s['last_ts'] = max((int)$s['last_ts'], $ts);
             else $s['last_seq'] = max((int)$s['last_seq'], $seq);
