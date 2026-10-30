@@ -1,79 +1,248 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTowNDA0ODJjNS04ODYwLTQ5YWMtYWUwOC1jMWYyOTA0ZjBkZTQAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaMySAnwsFDPWlVWnEFQA5GAAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDphYjMyYjIxMC1hMGQxLTRlZGMtYjUzMS01Nzc4ZDJlMzEyZDdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoq2XH8qAHmC8UYoILo3McsAAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggsbNsLs5kkvaeBrf/ICOtDA7CFX6xBuMGLpqNhacdB7OkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaCXY9UShS6rMKSMXHhtvvBcAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCUR89uIWh/OsIIgPFg4ygN9ZktJE6ko0yQLnx9gb+8CWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiYZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjA0MDQ4MmM1LTg4NjAtNDlhYy1hZTA4LWMxZjI5MDRmMGRlNC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjdjMTRjYWFlLWIwNWUtNDM4OC1iZTM0LTg0YWI2OGI1ODUwMXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCCxs2wuzmSS9p4Gt/8gI60MDsIVfrEG4wYumo2Fpx0Hs6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggAaPskLWwzeczIB1kNklpPUZi/YzKEbLilab251rJuKaiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg6dgqNSUnKVyOLWHldnomZN12hYmnb0Vsj44h6TQo/Mx0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQJVG6qdRm6SXdc4oW8oKVL2iN7vCedqcw/J6Tq2FCvBpkGbHtT96UsOTa+PzSYp5HiRweVlhcx2EtkvTMfUJsp0=</c2pa:manifest></metadata>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1640" viewBox="0 0 1280 1640">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
-<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-Core（親機）配線図</text>
-<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ファーム HPX_Core v1.15 ／ Freenove ESP32（ESP32-WROOM-32E）</text>
-<rect x="520" y="160" width="240" height="400" rx="10" fill="#263238" stroke="#111" stroke-width="3"/>
-<rect x="560" y="190" width="160" height="170" rx="6" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
-<text x="640" y="270" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ESP32-</text>
-<text x="640" y="292" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">WROOM-32E</text>
-<rect x="605" y="545" width="70" height="30" rx="6" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
-<rect x="550" y="480" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
-<text x="570" y="530" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">BOOT</text>
-<rect x="690" y="480" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
-<text x="710" y="530" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">RESET</text>
-<circle cx="640" cy="420" r="10" fill="#42a5f5" stroke="#0d47a1" stroke-width="2"/>
-<text x="660" y="426" font-size="13" text-anchor="start" font-weight="normal" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">LED（GPIO2）</text>
-<circle cx="534" cy="200" r="5" fill="#d4af37"/>
-<circle cx="746" cy="200" r="5" fill="#d4af37"/>
-<circle cx="534" cy="222" r="5" fill="#d4af37"/>
-<circle cx="746" cy="222" r="5" fill="#d4af37"/>
-<circle cx="534" cy="244" r="5" fill="#d4af37"/>
-<circle cx="746" cy="244" r="5" fill="#d4af37"/>
-<circle cx="534" cy="266" r="5" fill="#d4af37"/>
-<circle cx="746" cy="266" r="5" fill="#d4af37"/>
-<circle cx="534" cy="288" r="5" fill="#d4af37"/>
-<circle cx="746" cy="288" r="5" fill="#d4af37"/>
-<circle cx="534" cy="310" r="5" fill="#d4af37"/>
-<circle cx="746" cy="310" r="5" fill="#d4af37"/>
-<circle cx="534" cy="332" r="5" fill="#d4af37"/>
-<circle cx="746" cy="332" r="5" fill="#d4af37"/>
-<circle cx="534" cy="354" r="5" fill="#d4af37"/>
-<circle cx="746" cy="354" r="5" fill="#d4af37"/>
-<circle cx="534" cy="376" r="5" fill="#d4af37"/>
-<circle cx="746" cy="376" r="5" fill="#d4af37"/>
-<circle cx="534" cy="398" r="5" fill="#d4af37"/>
-<circle cx="746" cy="398" r="5" fill="#d4af37"/>
-<circle cx="534" cy="420" r="5" fill="#d4af37"/>
-<circle cx="746" cy="420" r="5" fill="#d4af37"/>
-<circle cx="534" cy="442" r="5" fill="#d4af37"/>
-<circle cx="746" cy="442" r="5" fill="#d4af37"/>
-<circle cx="534" cy="464" r="5" fill="#d4af37"/>
-<circle cx="746" cy="464" r="5" fill="#d4af37"/>
-<circle cx="534" cy="486" r="5" fill="#d4af37"/>
-<circle cx="746" cy="486" r="5" fill="#d4af37"/>
-<circle cx="534" cy="508" r="5" fill="#d4af37"/>
-<circle cx="746" cy="508" r="5" fill="#d4af37"/>
-<text x="640" y="130" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Freenove ESP32 ボード</text>
-<text x="640" y="150" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（図はイメージ。ボタンの位置は実物で確認）</text>
-<rect x="580" y="640" width="120" height="70" rx="10" fill="#eeeeee" stroke="#999" stroke-width="2"/>
-<text x="640" y="680" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB 電源</text>
-<text x="640" y="700" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（5V・コンセント）</text>
-<path d="M640,575 L640,640" stroke="#424242" stroke-width="9" stroke-linecap="round"/>
-<text x="655" y="610" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB ケーブル</text>
-<rect x="70" y="210" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
-<text x="90" y="240" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-W</text>
-<text x="90" y="264" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">重量（BLE）</text>
-<path d="M380,245 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
-<rect x="70" y="320" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
-<text x="90" y="350" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-TH / Inkbird IBS-TH2</text>
-<text x="90" y="374" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">温湿度（BLE）</text>
-<path d="M380,355 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
-<rect x="70" y="430" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
-<text x="90" y="460" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-A</text>
-<text x="90" y="484" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電柵アラート（BLE）</text>
-<path d="M380,465 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
-<text x="220" y="190" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電線なし（電波で受信）</text>
-<rect x="830" y="270" width="360" height="84" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
-<text x="850" y="295" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi ルーター → サーバー</text>
-<text x="850" y="322" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi で送る（電線なし）</text>
-<path d="M770,310 L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
-<rect x="830" y="420" width="360" height="210" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
-<text x="850" y="455" font-size="15" text-anchor="start" font-weight="bold" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-Core には外付けの部品も</text>
-<text x="850" y="479" font-size="15" text-anchor="start" font-weight="bold" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">配線もありません。</text>
-<text x="850" y="503" font-size="15" text-anchor="start" font-weight="bold" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB 電源をつなぐだけで動きます。</text>
-<text x="850" y="527" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
-<text x="850" y="551" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">BOOT：工場出荷リセットに使う</text>
-<text x="850" y="575" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（RESET を押して離し、3秒以内に</text>
-<text x="850" y="599" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">　BOOT を5秒長押し）</text>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-Core（親機）部品表と配線図</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ファーム HPX_Core v1.15 ／ Freenove FNK0090B（ESP32-WROOM-32E）／ 電源 CR123A（試験）</text>
+<rect x="470" y="170" width="240" height="400" rx="10" fill="#263238" stroke="#111" stroke-width="3"/>
+<rect x="510" y="200" width="160" height="170" rx="6" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+<text x="590" y="280" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ESP32-</text>
+<text x="590" y="302" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">WROOM-32E</text>
+<rect x="500" y="490" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="520" y="540" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">BOOT</text>
+<rect x="640" y="490" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="660" y="540" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">RESET</text>
+<circle cx="590" cy="430" r="10" fill="#42a5f5" stroke="#0d47a1" stroke-width="2"/>
+<text x="610" y="436" font-size="13" text-anchor="start" font-weight="normal" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">LED（GPIO2）</text>
+<circle cx="696" cy="210" r="5" fill="#d4af37"/>
+<circle cx="696" cy="232" r="5" fill="#d4af37"/>
+<circle cx="484" cy="254" r="5" fill="#d4af37"/>
+<circle cx="696" cy="254" r="5" fill="#d4af37"/>
+<circle cx="484" cy="276" r="5" fill="#d4af37"/>
+<circle cx="696" cy="276" r="5" fill="#d4af37"/>
+<circle cx="484" cy="298" r="5" fill="#d4af37"/>
+<circle cx="696" cy="298" r="5" fill="#d4af37"/>
+<circle cx="484" cy="320" r="5" fill="#d4af37"/>
+<circle cx="696" cy="320" r="5" fill="#d4af37"/>
+<circle cx="484" cy="342" r="5" fill="#d4af37"/>
+<circle cx="696" cy="342" r="5" fill="#d4af37"/>
+<circle cx="484" cy="364" r="5" fill="#d4af37"/>
+<circle cx="696" cy="364" r="5" fill="#d4af37"/>
+<circle cx="484" cy="386" r="5" fill="#d4af37"/>
+<circle cx="696" cy="386" r="5" fill="#d4af37"/>
+<circle cx="484" cy="408" r="5" fill="#d4af37"/>
+<circle cx="696" cy="408" r="5" fill="#d4af37"/>
+<circle cx="484" cy="430" r="5" fill="#d4af37"/>
+<circle cx="696" cy="430" r="5" fill="#d4af37"/>
+<circle cx="484" cy="452" r="5" fill="#d4af37"/>
+<circle cx="696" cy="452" r="5" fill="#d4af37"/>
+<circle cx="484" cy="474" r="5" fill="#d4af37"/>
+<circle cx="696" cy="474" r="5" fill="#d4af37"/>
+<circle cx="484" cy="496" r="5" fill="#d4af37"/>
+<circle cx="696" cy="496" r="5" fill="#d4af37"/>
+<circle cx="484" cy="518" r="5" fill="#d4af37"/>
+<circle cx="696" cy="518" r="5" fill="#d4af37"/>
+<circle cx="484" cy="210" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="484" cy="232" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="498" y="215" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">3V3</text>
+<text x="498" y="237" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">GND</text>
+<text x="590" y="140" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Freenove FNK0090B</text>
+<text x="590" y="160" font-size="12" text-anchor="middle" font-weight="bold" fill="#b23" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（図はイメージ。3V3・GND の位置はボードの印字で確認）</text>
+<rect x="555" y="555" width="70" height="30" rx="6" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
+<path d="M540,550 L640,600 M640,550 L540,600" stroke="#d32f2f" stroke-width="6" stroke-linecap="round"/>
+<text x="720" y="570" font-size="14" text-anchor="start" font-weight="bold" fill="#d32f2f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池をつないだら</text>
+<text x="720" y="590" font-size="14" text-anchor="start" font-weight="bold" fill="#d32f2f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB は挿さない</text>
+<rect x="140" y="658" width="780" height="84" rx="8" fill="#f1efe6" stroke="#cfc8b0" stroke-width="2"/>
+<line x1="160" y1="666" x2="900" y2="666" stroke="#1e88e5" stroke-width="2"/>
+<line x1="160" y1="734" x2="900" y2="734" stroke="#e53935" stroke-width="2"/>
+<rect x="157" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="157" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="179" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="179" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="201" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="201" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="223" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="223" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="245" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="245" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="267" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="267" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="289" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="289" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="311" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="311" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="333" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="333" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="355" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="355" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="377" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="377" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="399" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="399" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="421" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="421" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="443" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="443" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="465" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="465" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="487" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="487" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="509" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="509" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="531" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="531" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="553" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="553" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="575" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="575" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="597" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="597" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="619" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="619" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="641" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="641" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="663" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="663" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="685" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="685" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="707" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="707" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="729" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="729" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="751" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="751" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="773" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="773" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="795" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="795" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="817" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="817" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="839" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="839" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="861" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="861" y="717" width="6" height="6" fill="#bdb6a0"/>
+<rect x="883" y="677" width="6" height="6" fill="#bdb6a0"/>
+<rect x="883" y="717" width="6" height="6" fill="#bdb6a0"/>
+<text x="148" y="685" font-size="18" text-anchor="end" font-weight="bold" fill="#1e88e5" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
+<text x="148" y="725" font-size="16" text-anchor="end" font-weight="bold" fill="#e53935" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
+<text x="620" y="766" font-size="13" text-anchor="start" font-weight="bold" fill="#555" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電源レール: 上の列 − ＝GND（青線）、下の列 ＋＝3V（赤線）</text>
+<path d="M484,232 L420,232 L420,680" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M484,232 L420,232 L420,680" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M484,232 L420,232 L420,680" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M484,210 L400,210 L400,720" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M484,210 L400,210 L400,720" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M484,210 L400,210 L400,720" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="254" y1="630" x2="254" y2="680" stroke="#888" stroke-width="3"/>
+<line x1="266" y1="630" x2="266" y2="720" stroke="#888" stroke-width="3"/>
+<rect x="245.0" y="602" width="30" height="28" rx="8" fill="#f0c419" stroke="#555" stroke-width="1.5"/>
+<line x1="494" y1="630" x2="494" y2="680" stroke="#888" stroke-width="3"/>
+<line x1="506" y1="630" x2="506" y2="720" stroke="#888" stroke-width="3"/>
+<rect x="489.0" y="610" width="22" height="22" rx="8" fill="#3f6fb5" stroke="#555" stroke-width="1.5"/>
+<rect x="300" y="800" width="260" height="70" rx="10" fill="#37474f" stroke="#222" stroke-width="3"/>
+<rect x="320" y="814" width="220" height="42" rx="20" fill="#b0bec5" stroke="#607d8b" stroke-width="2"/>
+<rect x="536" y="826" width="10" height="18" rx="2" fill="#90a4ae" stroke="#607d8b" stroke-width="1"/>
+<text x="430" y="841" font-size="15" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A（3V）</text>
+<text x="314" y="822" font-size="18" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
+<text x="552" y="822" font-size="14" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
+<text x="430" y="896" font-size="14" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ＋ CR123A 電池</text>
+<path d="M300,835 L230,835 L230,680" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M300,835 L230,835 L230,680" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M300,835 L230,835 L230,680" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M560,835 L600,835 L600,720" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M560,835 L600,835 L600,720" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M560,835 L600,835 L600,720" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="880" y="150" width="320" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="900" y="180" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-W</text>
+<text x="900" y="204" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">重量（BLE）</text>
+<path d="M875,185 L720,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="880" y="250" width="320" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="900" y="280" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-TH / Inkbird IBS-TH2</text>
+<text x="900" y="304" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">温湿度（BLE）</text>
+<path d="M875,285 L720,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="880" y="350" width="320" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="900" y="380" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-A</text>
+<text x="900" y="404" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電柵アラート（BLE）</text>
+<path d="M875,385 L720,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="880" y="450" width="320" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="900" y="480" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi ルーター → サーバー</text>
+<text x="900" y="504" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi で送る</text>
+<path d="M875,485 L720,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<text x="1040" y="140" font-size="14" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電線なし（電波）</text>
+<text x="60" y="978" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">つなぐ線</text>
+<rect x="60" y="990" width="920" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1011" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線</text>
+<text x="180" y="1011" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">どこから</text>
+<text x="400" y="1011" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">どこへ</text>
+<text x="570" y="1011" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">役目</text>
+<rect x="60" y="1020" width="920" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1029" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
+<text x="180" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ボードの 3V3 ピン</text>
+<text x="400" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ レール</text>
+<text x="570" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">3V を直接入れる（5V ピンではない）</text>
+<rect x="60" y="1050" width="920" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1059" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
+<text x="180" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ボードの GND ピン</text>
+<text x="400" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">− レール</text>
+<text x="570" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">マイナス</text>
+<rect x="60" y="1080" width="920" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1089" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
+<text x="180" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケース ＋</text>
+<text x="400" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ レール</text>
+<text x="570" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<rect x="60" y="1110" width="920" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1119" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
+<text x="180" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケース −</text>
+<text x="400" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">− レール</text>
+<text x="570" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<text x="60" y="1178" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品表</text>
+<rect x="60" y="1190" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1211" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品</text>
+<text x="630" y="1211" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">数</text>
+<text x="680" y="1211" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">使うところ・メモ</text>
+<rect x="60" y="1220" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ESP32 開発ボード Freenove FNK0090B 4MB</text>
+<text x="630" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">本体（親機）</text>
+<rect x="60" y="1250" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">積層セラミックコンデンサー 0.1µF 50V C0G 5mm</text>
+<text x="630" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ と − の間（ボードの近く）</text>
+<rect x="60" y="1280" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</text>
+<text x="630" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ と − の間。向きなし</text>
+<rect x="60" y="1310" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ／ CR123A 電池</text>
+<text x="630" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
+<text x="680" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ を 3V3、− を GND へ</text>
+<rect x="60" y="1340" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">その他: 配線用の線・ブレッドボードかユニバーサル基板</text>
+<text x="630" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<text x="680" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">手持ちに合わせて</text>
+<rect x="60" y="1390" width="1160" height="164" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="1416" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
+<text x="78" y="1444" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・電池をつないだまま USB を挿さない（USB の電気が電池へ流れ込み、充電できない CR123A が熱を持つおそれ）。書き込みは電池を外して。</text>
+<text x="78" y="1470" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・ESP32 の推奨電圧は 3.0〜3.6V。CR123A（約3V、使うほど下がる）だと Wi-Fi で送る瞬間に電圧が下がり、再起動することがある。</text>
+<text x="78" y="1496" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">　動くかどうかは試してみないとわかりません（試験用の構成です）。</text>
+<text x="78" y="1522" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・常時稼働のままだと、半日ほどで電池が切れる見込み（目安）。管理画面の動作モードを「ディープスリープ（電池）」にする。</text>
+<text x="78" y="1548" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">　ディープスリープでどれだけ持つかは、まだ計算していません。</text>
+<circle cx="484" cy="232" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="420" cy="680" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="484" cy="210" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="400" cy="720" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="254" cy="680" r="4" fill="#666"/>
+<circle cx="266" cy="720" r="4" fill="#666"/>
+<text x="284" y="612" font-size="14" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">100µF</text>
+<text x="284" y="630" font-size="12" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電源の安定</text>
+<circle cx="494" cy="680" r="4" fill="#666"/>
+<circle cx="506" cy="720" r="4" fill="#666"/>
+<text x="524" y="612" font-size="14" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">0.1µF</text>
+<text x="524" y="630" font-size="12" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ボードの近く</text>
+<circle cx="300" cy="835" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="230" cy="680" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="560" cy="835" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="600" cy="720" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 </svg>
