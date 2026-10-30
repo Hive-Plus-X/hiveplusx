@@ -137,7 +137,7 @@ function thin(array $pts, int $from, int $to): array
 }
 
 // 折れ線グラフ(SVG)と凡例。$series: [[名前, 色, [[epoch, 値], ...]], ...]  $unit: 縦軸の単位
-function chart_svg(array $series, int $from, int $to, string $unit, float $minSpan): string
+function chart_svg(array $series, int $from, int $to, string $unit, float $minSpan, int $dec = 1): string
 {
     $W = 600; $H = 280; $L = 50; $R = 10; $T = 14; $B = 30;
     $min = INF; $max = -INF;
@@ -176,9 +176,14 @@ function chart_svg(array $series, int $from, int $to, string $unit, float $minSp
         if ($lb !== '') $o .= '<text x="' . $xx . '" y="' . ($H - 10) . '" text-anchor="middle" fill="#666">' . h($lb) . '</text>';
     }
     $o .= '<text x="4" y="' . ($T + 4) . '" fill="#666">' . h($unit) . '</text>';
+    $tipS = [];   // マウスを乗せたときに値を出すための記録(chart_tip_js)
     foreach ($series as $s) {
-        $pts = [];
-        foreach (thin($s[2], $from, $to) as $p) $pts[] = round($x((int)$p[0]), 1) . ',' . round($y((float)$p[1]), 1);
+        $pts = []; $tp = [];
+        foreach (thin($s[2], $from, $to) as $p) {
+            $pts[] = round($x((int)$p[0]), 1) . ',' . round($y((float)$p[1]), 1);
+            $tp[] = [(int)$p[0], round((float)$p[1], $dec), round($y((float)$p[1]), 1)];
+        }
+        if ($tp) $tipS[] = ['n' => (string)$s[0], 'u' => $unit, 'd' => $dec, 'c' => $s[1], 'p' => $tp];
         if (count($pts) === 1) {
             [$px, $py] = explode(',', $pts[0]);
             $o .= '<circle cx="' . $px . '" cy="' . $py . '" r="3" fill="' . $s[1] . '"/>';
@@ -186,7 +191,9 @@ function chart_svg(array $series, int $from, int $to, string $unit, float $minSp
             $o .= '<polyline fill="none" stroke="' . $s[1] . '" stroke-width="2" stroke-linejoin="round" points="' . implode(' ', $pts) . '"/>';
         }
     }
-    $o .= '</svg><p class="muted">';
+    $o .= '</svg>';
+    $data = ['W' => $W, 'x0' => $L, 'x1' => $W - $R, 'y0' => $T, 'y1' => $H - $B, 'f' => $from, 't' => $to, 's' => $tipS];
+    $o = '<div class="tipw" data-tip="' . h(json_encode($data, JSON_UNESCAPED_UNICODE)) . '">' . $o . '</div><p class="muted">';
     foreach ($series as $s) $o .= '<span style="color:' . $s[1] . '">■</span> ' . h($s[0]) . '　';
     return $o . '</p>';
 }
@@ -732,12 +739,12 @@ echo '</details>';
 
 // ---- グラフ ----
 echo '<h2 id="g-weight">重量のグラフ</h2>' . $perLinks('pw', 'g-weight');
-echo $wS ? chart_svg($wS, $range($per['pw']), $now, 'kg', 0.5)
+echo $wS ? chart_svg($wS, $range($per['pw']), $now, 'kg', 0.5, 2)
     : '<p class="muted">' . ($byKind['w'] ? '較正が済むと表示します。' : '重量センサの記録はまだありません。') . '</p>';
 echo '<h2 id="g-temp">温度のグラフ</h2>' . $perLinks('pt', 'g-temp');
 echo $tS ? chart_svg($tS, $range($per['pt']), $now, '℃', 2) : '<p class="muted">温湿度計の記録はまだありません。</p>';
 echo '<h2 id="g-hum">湿度のグラフ</h2>' . $perLinks('ph', 'g-hum');
-echo $hS ? chart_svg($hS, $range($per['ph']), $now, '%', 5) : '<p class="muted">温湿度計の記録はまだありません。</p>';
+echo $hS ? chart_svg($hS, $range($per['ph']), $now, '%', 5, 0) : '<p class="muted">温湿度計の記録はまだありません。</p>';
 
 // ---- データダウンロード・データクリア ----
 echo '<h2 id="data">データ</h2>';
@@ -769,4 +776,4 @@ if (is_file($dir . '/.retired')) {
         . '<p>ログインのパスワード<br><input type="password" name="pw2" autocomplete="current-password" required></p>'
         . '<button type="submit">アカウントから外す</button></form></div></details>';
 }
-echo '</body></html>';
+echo chart_tip_js() . '</body></html>';
