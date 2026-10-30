@@ -210,7 +210,7 @@ if (isset($d['wcal']) && is_array($d['wcal'])) {
         $c = is_array($cal[$mac] ?? null) ? $cal[$mac] : [];
         if ((int)($c['zero_reset'] ?? 0) <= $ts) {   // サーバーでゼロリセットしたあとなら、前の較正のゼロ点で戻さない
             $c['zero'] = (int)round((float)$w['zero']);
-            unset($c['zero_reset']);
+            unset($c['zero_reset'], $c['zero_before']);   // 新しい較正が来たら、ゼロリセットの解除はできなくなる
         }
         $c['per_kg'] = (float)$w['per_kg'];
         if (!empty($w['common'])) {
