@@ -313,7 +313,7 @@ notes(s, 60, y + 20, COMMON_NOTES + [
 s.save("HPX-W_pcb.svg")
 
 # ================================================================== HPX-TH
-s = S(1280, 1900)
+s = S(1280, 1940)
 title(s, "HPX-TH（温湿度センサ）基板の配線図", "ユニバーサル基板版 ／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A")
 board(s)
 p = xiao_pcb(s, 12, 3)
@@ -334,22 +334,21 @@ s.add(f'<path d="M{tx},{ty+30} L{tx-60},{ty+30} L{tx-60},{ty+20} L70,{ty+20}" fi
 s.add(f'<ellipse cx="56" cy="{ty+15}" rx="18" ry="13" fill="#5d4037" stroke="#3e2723" stroke-width="2"/>')
 s.text(40, ty - 30, "サーミスター 10kΩ", 14, weight="bold")
 s.text(40, ty - 12, "（向きなし・巣箱の中へ）", 12, fill="#666")
-# SHT40 用の 4ピン (基板の外へケーブル)
-conn_pcb(s, [(6, 13), (7, 13), (8, 13), (9, 13)], ["", "", "", ""], "")
 wireh(s, [(6, 13), (6, 15)], "black")
 wireh(s, [(7, 13), (7, 14), (20, 14)], "red")
 wireh(s, [p["D4"], (10, 7), (10, 11), (8, 11), (8, 13)], "green")
 wireh(s, [p["D5"], (11, 8), (11, 12), (9, 12), (9, 13)], "blue")
-mx, my = 380, 760
-s.rect(mx, my, 210, 90, "#5e35b1", "#311b92", 8, 3)
-s.rect(mx + 150, my + 22, 40, 40, "#cfd8dc", "#78909c", 3)
-for i, (n, c) in enumerate([("GND", "black"), ("VIN", "red"), ("SDA", "green"), ("SCL", "blue")]):
-    px = mx + 20 + i * 38
-    hx_, hy_ = H(6 + i, 13)
-    s.add(f'<path d="M{hx_},{hy_} L{hx_},{690 + i*8} L{px},{690 + i*8} L{px},{my}" fill="none" stroke="{COL[c]}" stroke-width="4"/>')
-    s.text(px, my + 22, n, 11, "middle", "bold", "#fff")
-s.text(mx + 105, my + 116, "SHT40 モジュール（ケーブルで巣箱の中へ）", 13, "middle", "bold")
-s.text(mx + 105, my + 134, "ピンの並びは基板の印字で確認", 12, "middle", fill="#b23", weight="bold")
+# SHT40 モジュールをピンヘッダで基板に直付け (G14〜J14)。本体は下側に張り出す
+x1, y1 = H(6, 13); x2, _ = H(9, 13)
+s.top.append(f'<rect x="{x1-16}" y="{y1-16}" width="{x2-x1+32}" height="110" rx="6" fill="#5e35b1" fill-opacity="0.5" stroke="#311b92" stroke-width="2"/>')
+s.top.append(f'<rect x="{(x1+x2)/2-16}" y="{y1+40}" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>')
+s.text((x1 + x2) / 2, y1 + 88, "SHT40", 12, "middle", "bold", "#fff", layer=s.top)
+for i, n in enumerate(["GND", "VIN", "SDA", "SCL"]):
+    x, y = H(6 + i, 13)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, y + 24, n, 10, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 118, "SHT40 モジュール（ピンヘッダで直付け）", 12, "middle", "bold", "#311b92", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 134, "ピンの並びは基板の印字で確認", 11, "middle", fill="#b23", weight="bold", layer=s.top)
 battery_off(s)
 y = table(s, 60, 1000, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
@@ -367,17 +366,18 @@ y = table(s, 60, 1000, [
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
     ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2", "1", f"{hn(12,3)}〜{hn(18,9)}"],
-    ["SHT40 モジュール（温湿度、I2C）", "1", f"4ピン（{hn(6,13)}〜{hn(9,13)}）からケーブルで"],
+    ["SHT40 モジュール（温湿度、I2C）", "1", f"ピンヘッダ 4ピンで {hn(6,13)}〜{hn(9,13)} に直付け"],
     ["サーミスター 10kΩ（平行線タイプ）", "1", f"2ピン（{hn(2,9)}・{hn(2,10)}）へ"],
     ["抵抗 10kΩ 1%（金属皮膜） ★リストに無い・必要", "1", f"{hn(6,3)}・{hn(10,3)}"],
     ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(3,7)}・{hn(5,7)}（測る点と GND の間）"],
     ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(20,9)}・{hn(22,9)}"],
-    ["端子台 2P（5mm）・ピンヘッダかコネクター 2ピン・4ピン", "各1", "電池・サーミスター・SHT40 用"],
+    ["端子台 2P（5mm）・ピンヘッダかコネクター 2ピン・ピンヘッダ 4ピン", "各1", "電池・サーミスター・SHT40 用"],
     ["CR123A 用電池ケース ／ CR123A 電池", "各1", "端子台へ"],
     ["ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線", "", "手持ちに合わせて"],
 ], [560, 60, 540], "部品表")
 notes(s, 60, y + 20, COMMON_NOTES + [
     "・HPX-TH のファームはまだありません。この配線に合わせて作ります。SHT40 は 3.6V まで（5V にはつながない）。",
+    "・SHT40 は基板に直付けなので、基板ごと巣箱の中の湿度を測りたい場所に置く。電池やケースで空気がこもらないよう、風の通るケースに。",
 ])
 s.save("HPX-TH_pcb.svg")
 
