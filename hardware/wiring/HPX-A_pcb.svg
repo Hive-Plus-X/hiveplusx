@@ -901,7 +901,7 @@
 <text x="630" y="1221" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">数</text>
 <text x="690" y="1221" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">置き場所・メモ</text>
 <rect x="60" y="1230" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1251" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2</text>
+<text x="70" y="1251" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</text>
 <text x="630" y="1251" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="690" y="1251" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">M4〜S10</text>
 <rect x="60" y="1260" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
@@ -936,7 +936,7 @@
 <text x="78" y="1516" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
 <text x="78" y="1544" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（被覆のあるすずめっき線やジャンパー線）でつなぐ。</text>
 <text x="78" y="1570" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・線が重なって見えるところは、被覆のある線どうしなので交差してかまわない。隣の穴とはんだでつながないよう注意。</text>
-<text x="78" y="1596" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO はピンヘッダ（7ピン×2）で基板に付けると、外して書き込みや交換ができる。</text>
+<text x="78" y="1596" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</text>
 <text x="78" y="1622" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
 <text x="78" y="1648" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。</text>
 <rect x="676" y="254" width="208" height="232" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>
@@ -972,7 +972,7 @@
 <text x="858" y="435" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">D8</text>
 <circle cx="870" cy="460" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <text x="858" y="465" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">D7</text>
-<text x="780.0" y="504" font-size="12" text-anchor="middle" font-weight="bold" fill="#1b5e20" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO（ピンヘッダで付ける）</text>
+<text x="780.0" y="504" font-size="12" text-anchor="middle" font-weight="bold" fill="#1b5e20" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO（ピンソケットに差す）</text>
 <circle cx="870" cy="340" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 <circle cx="930" cy="610" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 <circle cx="870" cy="310" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
