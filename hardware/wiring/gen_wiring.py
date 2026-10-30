@@ -116,7 +116,7 @@ def rails(s, x1, x2, ym, yp):
             s.add(f'<rect x="{xx-3}" y="{yy-3}" width="6" height="6" fill="#bdb6a0"/>')
     s.text(x1 - 12, ym + 5, "−", 18, "end", "bold", "#1e88e5")
     s.text(x1 - 12, yp + 5, "＋", 16, "end", "bold", "#e53935")
-    s.text(620, yp + 46, "電源レール: 上の列 − ＝GND（青線）、下の列 ＋＝3V（赤線）", 13, fill="#555", weight="bold")
+    s.text(250, yp + 46, "電源レール: 上の列 − ＝GND（青線）、下の列 ＋＝3V（赤線）", 13, fill="#555", weight="bold")
 
 def cap(s, x, ytop, y1, y2, name, sub, big=False, right=False, left=False):
     """ラジアルリードのコンデンサー。足は (x-6,y1) と (x+6,y2) に刺さる。向きなし"""
@@ -208,8 +208,8 @@ notes(s, 60, y + 20, [
 s.save("HPX-W_wiring.svg")
 
 # ------------------------------------------------------------------ HPX-TH
-s = S(1280, 1690)
-title(s, "HPX-TH（温度センサ）部品表と配線図", "試験スケッチ HPX_Thermistor_Test の割り当て ／ D3→10kΩ→A2 ／ 電源 CR123A")
+s = S(1280, 2000)
+title(s, "HPX-TH（温湿度センサ）部品表と配線図", "SHT31: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A")
 p = xiao(s, 190, 200)
 bx, by = 560, 170
 s.rect(bx, by, 340, 380, "#f1efe6", "#cfc8b0", 10, 2)
@@ -252,7 +252,21 @@ cap(s, 300, 610, YM, YP, "100µF", "電源の安定", big=True, right=True)
 bp, bm = cr123a(s, 300, 800)
 s.wire([bm, (230, bm[1]), (230, YM)], "black")
 s.wire([bp, (600, bp[1]), (600, YP)], "red")
-y = table(s, 60, 990, [
+# SHT31 モジュール (温湿度、I2C)。ピンは左側
+mx, my = 700, 790
+s.rect(mx, my, 200, 210, "#5e35b1", "#311b92", 8, 3)
+s.rect(mx + 120, my + 80, 44, 44, "#cfd8dc", "#78909c", 3)
+s.text(mx + 142, my + 146, "SHT31", 14, "middle", "bold", "#fff")
+m = {}
+for i, n in enumerate(["VIN", "GND", "SCL", "SDA", "ADR", "AL"]):
+    py = my + 30 + i * 30; s.pad(mx, py, n, "L"); m[n] = (mx, py)
+s.text(mx + 100, my + 236, "SHT31 モジュール（温湿度）", 15, "middle", "bold")
+s.text(mx + 100, my + 256, "ピンの並びは基板の印字で確認。ADR・AL は使わない", 12, "middle", fill="#b23", weight="bold")
+s.wire([m["VIN"], (680, m["VIN"][1]), (680, YP)], "red")
+s.wire([m["GND"], (660, m["GND"][1]), (660, YM)], "black")
+s.wire([m["SCL"], (620, m["SCL"][1]), (620, 1060), (100, 1060), (100, p["D5"][1]), p["D5"]], "blue", "SCL → D5", (300, 1066))
+s.wire([m["SDA"], (640, m["SDA"][1]), (640, 1080), (80, 1080), (80, p["D4"][1]), p["D4"]], "green", "SDA → D4", (440, 1086))
+y = table(s, 60, 1150, [
     ["線", "どこから", "どこへ", "役目"],
     ["purple", "XIAO D3", "抵抗 10kΩ の片方", "測る瞬間だけ電気を流す"],
     ["yellow", "抵抗のもう片方", "XIAO D2（A2）", "温度を電圧で読む（測る点）"],
@@ -260,10 +274,15 @@ y = table(s, 60, 990, [
     ["black", "サーミスターのもう片方・0.1µF", "− レール", "マイナス"],
     ["red", "XIAO 3V3 ／ 電池 ＋", "＋ レール", "電池を 3V3 に直接つなぐ"],
     ["black", "XIAO GND ／ 電池 −", "− レール", ""],
+    ["red", "SHT31 VIN", "＋ レール", "SHT31 の電源（3V）"],
+    ["black", "SHT31 GND", "− レール", ""],
+    ["green", "SHT31 SDA", "XIAO D4", "データ（I2C）"],
+    ["blue", "SHT31 SCL", "XIAO D5", "合図（I2C）"],
 ], [110, 290, 330, 330], "つなぐ線")
 y = table(s, 60, y + 50, [
     ["部品", "数", "使うところ・メモ"],
     ["Seeed XIAO BLE nRF52840", "1", "本体（マイコン）"],
+    ["SHT31 モジュール（温湿度、I2C）", "1", "湿度と温度。VIN・GND・SDA(D4)・SCL(D5)"],
     ["サーミスター 10kΩ（平行線タイプ）", "1", "測る点と − の間。巣箱の中へ"],
     ["抵抗 10kΩ 1%（金属皮膜） ★リストに無い・必要", "1", "D3 と測る点の間"],
     ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", "測る点と − の間（ノイズよけ）"],
@@ -273,7 +292,9 @@ y = table(s, 60, y + 50, [
 ], [560, 50, 550], "部品表")
 notes(s, 60, y + 20, [
     "・サーミスターの電圧を読むには 10kΩ の固定抵抗が要ります（リストに無いので追加してください）。",
-    "・HPX-TH のファームはまだありません。今あるのはシリアルに温度を出す試験スケッチだけです（無線では送りません）。",
+    "・HPX-TH のファームはまだありません（サーミスターの試験スケッチだけ）。この配線に合わせたファームはこれから作ります。",
+    "・SHT31 は巣箱の中の空気に触れる場所へ。基板がむき出しなので、結露や蜂のプロポリスで汚れないよう通気性のあるカバーを。",
+    "・SHT31 モジュールに電源ランプ（LED）が付いていると、電池が早く減ります。付いていたら教えてください。",
     "・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。",
 ])
 s.save("HPX-TH_wiring.svg")
@@ -354,151 +375,49 @@ notes(s, 60, y + 20, [
 s.save("HPX-A_wiring.svg")
 
 # ------------------------------------------------------------------ HPX-Core
-s = S(1280, 1640)
-title(s, "HPX-Core（親機）部品表と配線図", "ファーム HPX_Core v1.15 ／ Freenove FNK0090B（ESP32-WROOM-32E）／ 電源 CR123A（試験）")
-cx, cy = 470, 170
+s = S(1280, 1260)
+title(s, "HPX-Core（親機）部品表と配線図", "ファーム HPX_Core v1.15 ／ Freenove FNK0090B（ESP32-WROOM-32E）／ 電源 USB")
+cx, cy = 520, 160
 s.rect(cx, cy, 240, 400, "#263238", "#111", 10, 3)
 s.rect(cx + 40, cy + 30, 160, 170, "#b0bec5", "#78909c", 6, 2)
 s.text(cx + 120, cy + 110, "ESP32-", 16, "middle", "bold", "#263238")
 s.text(cx + 120, cy + 132, "WROOM-32E", 16, "middle", "bold", "#263238")
+s.rect(cx + 85, cy + 385, 70, 30, "#b0b0b0", "#777", 6)
 s.rect(cx + 30, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 50, cy + 370, "BOOT", 13, "middle", "bold", "#eee")
 s.rect(cx + 170, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 190, cy + 370, "RESET", 13, "middle", "bold", "#eee")
 s.add(f'<circle cx="{cx+120}" cy="{cy+260}" r="10" fill="#42a5f5" stroke="#0d47a1" stroke-width="2"/>')
 s.text(cx + 140, cy + 266, "LED（GPIO2）", 13, fill="#eee")
 for i in range(15):
-    if i > 1: s.add(f'<circle cx="{cx+14}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
+    s.add(f'<circle cx="{cx+14}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
     s.add(f'<circle cx="{cx+226}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
-P3, PG = (cx + 14, cy + 40), (cx + 14, cy + 62)
-s.add(f'<circle cx="{P3[0]}" cy="{P3[1]}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-s.add(f'<circle cx="{PG[0]}" cy="{PG[1]}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-s.text(P3[0] + 14, P3[1] + 5, "3V3", 14, weight="bold", fill="#fff")
-s.text(PG[0] + 14, PG[1] + 5, "GND", 14, weight="bold", fill="#fff")
 s.text(cx + 120, cy - 30, "Freenove FNK0090B", 15, "middle", "bold")
-s.text(cx + 120, cy - 10, "（図はイメージ。3V3・GND の位置はボードの印字で確認）", 12, "middle", fill="#b23", weight="bold")
-# USB は挿さない
-s.rect(cx + 85, cy + 385, 70, 30, "#b0b0b0", "#777", 6)
-s.add(f'<path d="M{cx+70},{cy+380} L{cx+170},{cy+430} M{cx+170},{cy+380} L{cx+70},{cy+430}" stroke="#d32f2f" stroke-width="6" stroke-linecap="round"/>')
-s.text(cx + 250, cy + 400, "電池をつないだら", 14, "start", "bold", "#d32f2f")
-s.text(cx + 250, cy + 420, "USB は挿さない", 14, "start", "bold", "#d32f2f")
-YM, YP = 680, 720
-rails(s, 160, 900, YM, YP)
-s.wire([PG, (420, PG[1]), (420, YM)], "black")
-s.wire([P3, (400, P3[1]), (400, YP)], "red")
-cap(s, 260, 610, YM, YP, "100µF", "電源の安定", big=True, right=True)
-cap(s, 500, 610, YM, YP, "0.1µF", "ボードの近く", right=True)
-bp, bm = cr123a(s, 300, 800)
-s.wire([bm, (230, bm[1]), (230, YM)], "black")
-s.wire([bp, (600, bp[1]), (600, YP)], "red")
-for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH / Inkbird IBS-TH2", "温湿度（BLE）"), ("HPX-A", "電柵アラート（BLE）"), ("Wi-Fi ルーター → サーバー", "Wi-Fi で送る")]):
-    yy = 150 + i * 100
-    s.rect(880, yy, 320, 70, "#ffffff", "#c9c2a8", 10, 2)
-    s.text(900, yy + 30, n, 16, weight="bold"); s.text(900, yy + 54, d, 14, fill="#666")
-    s.add(f'<path d="M875,{yy+35} L{cx+250},{cy+150}" stroke="{"#43a047" if i == 3 else "#1e88e5"}" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
-s.text(1040, 140, "電線なし（電波）", 14, "middle", "bold", "#1565c0")
-y = table(s, 60, 990, [
-    ["線", "どこから", "どこへ", "役目"],
-    ["red", "ボードの 3V3 ピン", "＋ レール", "3V を直接入れる（5V ピンではない）"],
-    ["black", "ボードの GND ピン", "− レール", "マイナス"],
-    ["red", "電池ケース ＋", "＋ レール", ""],
-    ["black", "電池ケース −", "− レール", ""],
-], [110, 220, 170, 420], "つなぐ線")
-y = table(s, 60, y + 50, [
+s.text(cx + 120, cy - 10, "（図はイメージ。ボタンの位置は実物で確認）", 12, "middle", fill="#666")
+s.rect(cx + 60, 680 - 40, 120, 70, "#eeeeee", "#999", 10, 2)
+s.text(cx + 120, 680, "USB 電源", 15, "middle", "bold")
+s.text(cx + 120, 700, "（5V・コンセント）", 12, "middle", fill="#666")
+s.add(f'<path d="M{cx+120},{cy+415} L{cx+120},640" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+s.text(cx + 135, 610, "USB ケーブル", 14, fill="#333")
+for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-A", "電柵アラート（BLE）")]):
+    yy = 210 + i * 110
+    s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
+    s.text(90, yy + 30, n, 16, weight="bold"); s.text(90, yy + 54, d, 14, fill="#666")
+    s.add(f'<path d="M380,{yy+35} L{cx-20},{cy+150}" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+s.text(220, 190, "電線なし（電波で受信）", 15, "middle", "bold", "#1565c0")
+s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
+s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
+s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
+s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+y = table(s, 60, 800, [
     ["部品", "数", "使うところ・メモ"],
     ["ESP32 開発ボード Freenove FNK0090B 4MB", "1", "本体（親機）"],
-    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", "＋ と − の間（ボードの近く）"],
-    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", "＋ と − の間。向きなし"],
-    ["CR123A 用電池ケース ／ CR123A 電池", "各1", "＋ を 3V3、− を GND へ"],
-    ["その他: 配線用の線・ブレッドボードかユニバーサル基板", "", "手持ちに合わせて"],
+    ["USB ケーブル（ボードの差し込み口に合うもの）", "1", "電源と書き込み"],
+    ["USB 電源アダプター 5V（1A 以上）", "1", "コンセントから電源を取る"],
 ], [560, 50, 550], "部品表")
 notes(s, 60, y + 20, [
-    "・電池をつないだまま USB を挿さない（USB の電気が電池へ流れ込み、充電できない CR123A が熱を持つおそれ）。書き込みは電池を外して。",
-    "・ESP32 の推奨電圧は 3.0〜3.6V。CR123A（約3V、使うほど下がる）だと Wi-Fi で送る瞬間に電圧が下がり、再起動することがある。",
-    "　動くかどうかは試してみないとわかりません（試験用の構成です）。",
-    "・常時稼働のままだと、半日ほどで電池が切れる見込み（目安）。管理画面の動作モードを「ディープスリープ（電池）」にする。",
-    "　ディープスリープでどれだけ持つかは、まだ計算していません。",
+    "・HPX-Core には外付けの部品も配線もありません。USB 電源をつなぐだけで動きます。",
+    "・コンデンサー（0.1µF・100µF）と電池ケースは、USB 電源なら要りません。",
+    "・管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
+    "・BOOT：工場出荷リセットに使う（RESET を押して離し、3秒以内に BOOT を5秒長押し）。",
 ])
 s.save("HPX-Core_wiring.svg")
 print("ok")
-
-# ------------------------------------------------------------------ HPX-Core (18650 案)
-s = S(1280, 1700)
-title(s, "HPX-Core（親機）18650 電池案 部品表と配線図", "18650 → 3.3V レギュレーター（LDO）→ ボードの 3V3 ／ 動作モード: ディープスリープ")
-cx, cy = 720, 170
-s.rect(cx, cy, 240, 400, "#263238", "#111", 10, 3)
-s.rect(cx + 40, cy + 30, 160, 170, "#b0bec5", "#78909c", 6, 2)
-s.text(cx + 120, cy + 110, "ESP32-", 16, "middle", "bold", "#263238")
-s.text(cx + 120, cy + 132, "WROOM-32E", 16, "middle", "bold", "#263238")
-s.rect(cx + 30, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 50, cy + 370, "BOOT", 13, "middle", "bold", "#eee")
-s.rect(cx + 170, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 190, cy + 370, "RESET", 13, "middle", "bold", "#eee")
-for i in range(15):
-    if i > 1: s.add(f'<circle cx="{cx+14}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
-    s.add(f'<circle cx="{cx+226}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
-P3, PG = (cx + 14, cy + 40), (cx + 14, cy + 62)
-for pp, nm in ((P3, "3V3"), (PG, "GND")):
-    s.add(f'<circle cx="{pp[0]}" cy="{pp[1]}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-    s.text(pp[0] + 14, pp[1] + 5, nm, 14, weight="bold", fill="#fff")
-s.text(cx + 120, cy - 30, "Freenove FNK0090B", 15, "middle", "bold")
-s.text(cx + 120, cy - 10, "（図はイメージ。3V3・GND はボードの印字で確認）", 12, "middle", fill="#b23", weight="bold")
-s.rect(cx + 85, cy + 385, 70, 30, "#b0b0b0", "#777", 6)
-s.add(f'<path d="M{cx+70},{cy+380} L{cx+170},{cy+430} M{cx+170},{cy+380} L{cx+70},{cy+430}" stroke="#d32f2f" stroke-width="6" stroke-linecap="round"/>')
-s.text(cx + 250, cy + 400, "電池をつないだら", 14, "start", "bold", "#d32f2f")
-s.text(cx + 250, cy + 420, "USB は挿さない", 14, "start", "bold", "#d32f2f")
-# LDO
-lx, ly = 360, 330
-s.rect(lx, ly, 160, 90, "#212121", "#000", 6)
-s.rect(lx + 10, ly - 30, 140, 34, "#9e9e9e", "#616161", 4)
-s.text(lx + 80, ly + 40, "3.3V LDO", 16, "middle", "bold", "#fff")
-s.text(lx + 80, ly + 58, "（1A・低ドロップ）", 12, "middle", fill="#ddd")
-IN, GN, LOUT = (lx + 30, ly + 90), (lx + 80, ly + 90), (lx + 130, ly + 90)
-for pp, nm in ((IN, "IN"), (GN, "GND"), (LOUT, "OUT")):
-    s.add(f'<line x1="{pp[0]}" y1="{ly+90}" x2="{pp[0]}" y2="{ly+110}" stroke="#bbb" stroke-width="5"/>')
-    s.text(pp[0], ly + 82, nm, 12, "middle", "bold", "#ffd54f")
-IN, GN, LOUT = (IN[0], ly + 110), (GN[0], ly + 110), (LOUT[0], ly + 110)
-s.text(lx + 80, ly - 44, "ピンの並びは部品ごとに違う（データシートで確認）", 12, "middle", fill="#b23", weight="bold")
-GB = 820   # GND の線の高さ
-# 18650 ホルダー
-hx, hy = 30, 680
-s.rect(hx, hy, 300, 70, "#37474f", "#222", 10, 3)
-s.rect(hx + 16, hy + 12, 268, 46, "#4caf50", "#1b5e20", 22, 2)
-s.text(hx + 150, hy + 41, "18650（保護回路付き）", 15, "middle", "bold", "#fff")
-s.text(hx + 14, hy + 22, "−", 18, "start", "bold", "#fff"); s.text(hx + 292, hy + 22, "＋", 14, "end", "bold", "#fff")
-s.text(hx + 150, hy + 96, "18650 電池ホルダー（1本用）", 14, "middle", "bold")
-BP, BM = (hx + 300, hy + 35), (hx, hy + 35)
-s.wire([BP, (IN[0], BP[1]), IN], "orange", "電池＋（3.0〜4.2V）", (hx + 380, hy + 60))
-s.wire([BM, (14, BM[1]), (14, GB), (GN[0], GB)], "black")
-s.wire([GN, (GN[0], GB)], "black")
-s.dot(GN[0], GB, "black")
-s.wire([LOUT, (LOUT[0], 520), (660, 520), (660, P3[1]), P3], "red", "3.3V", (560, 512))
-s.wire([PG, (690, PG[1]), (690, GB), (GN[0], GB)], "black")
-# コンデンサー
-s.wire([(IN[0], 600), (354, 600)], "orange"); s.dot(IN[0], 600, "orange")
-cap(s, 360, 630, 600, GB, "10µF", "入力側（追加）", left=True)
-cap(s, 560, 600, 520, GB, "100µF", "出力側", big=True, right=True)
-cap(s, 630, 640, 520, GB, "0.1µF", "ボード近く", right=True)
-s.dot(554, 520, "red"); s.dot(624, 520, "red")
-y = table(s, 60, 900, [
-    ["線", "どこから", "どこへ", "役目"],
-    ["orange", "電池ホルダー ＋", "LDO の IN", "電池の電圧（3.0〜4.2V）"],
-    ["red", "LDO の OUT", "ボードの 3V3 ピン", "3.3V に下げた電気（5V ピンではない）"],
-    ["black", "電池 − ・LDO GND・ボード GND", "すべてつなぐ", "マイナス（共通）"],
-    ["", "コンデンサー 10µF", "LDO の IN と GND の間", "LDO の入力側"],
-    ["", "コンデンサー 100µF・0.1µF", "3.3V と GND の間", "出力側・ボードの近く"],
-], [110, 330, 270, 420], "つなぐ線")
-y = table(s, 60, y + 50, [
-    ["部品", "数", "使うところ・メモ"],
-    ["ESP32 開発ボード Freenove FNK0090B 4MB", "1", "本体（親機）"],
-    ["18650 リチウムイオン電池（保護回路付き、3000mAh 前後）", "1〜2", "予備を1本用意して交換すると止まらない"],
-    ["18650 電池ホルダー（保護回路付きの長い電池が入るもの）", "1", "保護付きは少し長いので、入るか確認"],
-    ["3.3V 低ドロップ LDO（1A 程度、例: XC6220B331 など）", "1", "電池の電圧を 3.3V に下げる"],
-    ["積層セラミックコンデンサー 10µF ★追加", "1", "LDO の入力側"],
-    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V", "1", "LDO の出力側"],
-    ["積層セラミックコンデンサー 0.1µF 50V C0G", "1", "ボードの近く"],
-    ["18650 用の充電器（家で充電する）", "1", "巣箱では充電しない（寒いときの充電は危ない）"],
-], [560, 70, 530], "部品表")
-notes(s, 60, y + 20, [
-    "・LDO は「1A 程度流せる」「低ドロップ（0.2V 前後）」「待機電流が小さい」ものを選ぶ。250mA 以下の小さな LDO は ESP32 には足りない。",
-    "・電池は家の充電器で充電して交換する方式。巣箱側に充電回路を付けない（0℃以下の充電は電池を傷めるため）。",
-    "・管理画面の動作モードを「ディープスリープ（電池）」にする。常時稼働のままだと1日もたない。",
-    "・電池をつないでいる間は USB を挿さない。書き込みは電池を外してから。",
-])
-s.save("HPX-Core_18650_wiring.svg")
