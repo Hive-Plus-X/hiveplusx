@@ -917,24 +917,20 @@
 <text x="630" y="1371" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="690" y="1371" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">U12・W12</text>
 <rect x="60" y="1380" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台 2P（5mm ピッチ）</text>
-<text x="630" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">U15（＋）・W15（−）</text>
+<text x="70" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ／ CR123A 電池</text>
+<text x="630" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
+<text x="690" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤線を U15（＋）、黒線を W15（−）にはんだ付け</text>
 <rect x="60" y="1410" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ／ CR123A 電池</text>
-<text x="630" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
-<text x="690" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台へ</text>
-<rect x="60" y="1440" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線</text>
-<text x="630" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
-<text x="690" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">手持ちに合わせて</text>
-<rect x="60" y="1490" width="1160" height="164" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
-<text x="78" y="1516" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
-<text x="78" y="1544" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（被覆のあるすずめっき線やジャンパー線）でつなぐ。</text>
-<text x="78" y="1570" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・線が重なって見えるところは、被覆のある線どうしなので交差してかまわない。隣の穴とはんだでつながないよう注意。</text>
-<text x="78" y="1596" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO はピンヘッダ（7ピン×2）で基板に付けると、外して書き込みや交換ができる。</text>
-<text x="78" y="1622" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
-<text x="78" y="1648" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・多くの HX711 モジュールには電源用のコンデンサーが載っているので、0.1µF は XIAO の電源の近くにまとめた。</text>
+<text x="70" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線</text>
+<text x="630" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<text x="690" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">手持ちに合わせて</text>
+<rect x="60" y="1460" width="1160" height="164" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="1486" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
+<text x="78" y="1514" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（被覆のあるすずめっき線やジャンパー線）でつなぐ。</text>
+<text x="78" y="1540" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・線が重なって見えるところは、被覆のある線どうしなので交差してかまわない。隣の穴とはんだでつながないよう注意。</text>
+<text x="78" y="1566" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO はピンヘッダ（7ピン×2）で基板に付けると、外して書き込みや交換ができる。</text>
+<text x="78" y="1592" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
+<text x="78" y="1618" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・多くの HX711 モジュールには電源用のコンデンサーが載っているので、0.1µF は XIAO の電源の近くにまとめた。</text>
 <rect x="676" y="254" width="208" height="232" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>
 <rect x="754.0" y="242" width="52" height="22" rx="5" fill="#b0b0b0" stroke="#777"/>
 <rect x="746.0" y="340.0" width="68" height="60" rx="3" fill="#cfd8dc" stroke="#90a4ae"/>
@@ -980,13 +976,12 @@
 <circle cx="990" cy="460" r="4" fill="#666"/>
 <rect x="936.0" y="402" width="48" height="16" rx="3" fill="#fffdf6e6"/>
 <text x="960.0" y="414" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">100µF</text>
-<rect x="917" y="597" width="86" height="26" rx="4" fill="#1e88e5" stroke="#555" stroke-width="1.5"/>
-<circle cx="930" cy="610" r="5" fill="#d4af37" stroke="#555"/>
-<circle cx="990" cy="610" r="5" fill="#d4af37" stroke="#555"/>
+<circle cx="930" cy="610" r="8" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
+<circle cx="990" cy="610" r="8" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <text x="908" y="616" font-size="15" text-anchor="end" font-weight="bold" fill="#e53935" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
 <text x="1012" y="616" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
-<text x="1050" y="602" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池の</text>
-<text x="1050" y="618" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台</text>
+<text x="1050" y="602" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケースの</text>
+<text x="1050" y="618" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線をはんだ付け</text>
 <line x1="930" y1="520" x2="956.0" y2="506" stroke="#888" stroke-width="2.5"/>
 <line x1="990" y1="520" x2="964.0" y2="506" stroke="#888" stroke-width="2.5"/>
 <rect x="950.0" y="486" width="20" height="20" rx="7" fill="#3f6fb5" stroke="#555" stroke-width="1.5"/>

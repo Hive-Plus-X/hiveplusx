@@ -964,13 +964,13 @@
 <text x="630" y="1581" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="690" y="1581" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">U10・W10</text>
 <rect x="60" y="1590" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台 2P（5mm）・ピンヘッダかコネクター 2ピン・ピンヘッダ 4ピン</text>
+<text x="70" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンヘッダかコネクター 2ピン・ピンヘッダ 4ピン</text>
 <text x="630" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
-<text x="690" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池・サーミスター・SHT40 用</text>
+<text x="690" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">サーミスター・SHT40 用</text>
 <rect x="60" y="1620" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="1641" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ／ CR123A 電池</text>
 <text x="630" y="1641" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
-<text x="690" y="1641" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台へ</text>
+<text x="690" y="1641" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤線を U15（＋）、黒線を W15（−）にはんだ付け</text>
 <rect x="60" y="1650" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="1671" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線</text>
 <text x="630" y="1671" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
@@ -1028,13 +1028,12 @@
 <circle cx="990" cy="460" r="4" fill="#666"/>
 <rect x="936.0" y="402" width="48" height="16" rx="3" fill="#fffdf6e6"/>
 <text x="960.0" y="414" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">100µF</text>
-<rect x="917" y="597" width="86" height="26" rx="4" fill="#1e88e5" stroke="#555" stroke-width="1.5"/>
-<circle cx="930" cy="610" r="5" fill="#d4af37" stroke="#555"/>
-<circle cx="990" cy="610" r="5" fill="#d4af37" stroke="#555"/>
+<circle cx="930" cy="610" r="8" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
+<circle cx="990" cy="610" r="8" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <text x="908" y="616" font-size="15" text-anchor="end" font-weight="bold" fill="#e53935" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
 <text x="1012" y="616" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
-<text x="1050" y="602" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池の</text>
-<text x="1050" y="618" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">端子台</text>
+<text x="1050" y="602" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケースの</text>
+<text x="1050" y="618" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線をはんだ付け</text>
 <line x1="510" y1="280" x2="630" y2="280" stroke="#888" stroke-width="3"/>
 <rect x="540.0" y="270" width="60" height="20" rx="9" fill="#e8c88f" stroke="#a07c3c" stroke-width="1.5"/>
 <rect x="548.0" y="270" width="5" height="20" fill="#8d5524"/>
