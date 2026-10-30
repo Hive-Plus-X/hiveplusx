@@ -87,9 +87,9 @@
   .flow .node b { display:block; font-size:15px; }
   .flow .node span { display:block; font-size:12px; color:var(--sub); margin-top:2px; line-height:1.5; }
   .flow .node:not(:last-child)::after { content:"↓"; position:absolute; left:50%; bottom:-22px; transform:translateX(-50%); color:var(--honey); font-weight:700; line-height:22px; }
-  /* このプロジェクトで作るもの (センサ・ハブ・サーバー・アプリ) は淡い黄色、市販品のルーターは白のまま */
-  .flow .node.own { border-color:rgba(242,169,0,.45); background:#FEF9EC; }
-  @media (prefers-color-scheme: dark) { .flow .node.own { background:rgba(242,169,0,.10); } }
+  /* 市販品を使うルーターだけ、少し灰色にして控えめに */
+  .flow .node.shop { background:#F0EFEB; }
+  @media (prefers-color-scheme: dark) { .flow .node.shop { background:rgba(0,0,0,.18); } }
 
   /* カード */
   .cards { display:grid; gap:14px; }
@@ -184,11 +184,11 @@
       </div>
       <div class="visual">
         <div class="flow">
-          <div class="node own"><b>センサ　HPXシリーズ</b><span>重量・温湿度、その他各種センサを開発中です</span></div>
-          <div class="node own"><b>ハブ　HPX-Core</b><span>センサを管理し、データをサーバーに送る中心的な機器です</span></div>
-          <div class="node"><b>ルーター</b><span>市販のLTEルーターなどをご利用ください</span></div>
-          <div class="node own"><b>サーバー</b><span>レンタルサーバーなどに自分専用のシステムを構築します</span></div>
-          <div class="node own"><b>養蜂管理アプリ　HPX-note</b><span>データと記録をグラフなどで確認できます</span></div>
+          <div class="node"><b>センサ　HPXシリーズ</b><span>重量・温湿度、その他各種センサを開発中です</span></div>
+          <div class="node"><b>ハブ　HPX-Core</b><span>センサを管理し、データをサーバーに送る中心的な機器です</span></div>
+          <div class="node shop"><b>ルーター</b><span>市販のLTEルーターなどをご利用ください</span></div>
+          <div class="node"><b>サーバー</b><span>レンタルサーバーなどに自分専用のシステムを構築します</span></div>
+          <div class="node"><b>養蜂管理アプリ　HPX-note</b><span>データと記録をグラフなどで確認できます</span></div>
         </div>
       </div>
     </div>
