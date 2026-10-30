@@ -19,7 +19,7 @@ StaFIX フェンスアラートの LED の点滅を HPX-A が数え、BLE で HP
 | `server/receive.php` | 既存の受信 PHP に、電柵の列とメール通知の呼び出しを追加 |
 | `server/config.php` | 既存の設定に、メールの送り先などを追加 |
 | `server/hpx_alert.php` | メール通知の本体 (新規) |
-| `server/sensor.php` | センサページ: 温湿度・巣箱の重量 (kg 表示と較正)・電柵を1ページで表示 (新規) |
+| `server/sensor.php` | センサページ: 温湿度・巣箱の重量 (kg 表示・ゼロリセット・差し引く重さ。較正は HPX-Core の管理画面)・電柵を1ページで表示 (新規) |
 | `server/img/` | ロゴ (hivex_reverse.svg = メニュー用、hivex_main.svg = ログイン画面用) とブラウザのアイコン (favicon.svg)。brand/final/ からのコピー |
 | `server/index.php` | フォルダ (https://<ドメイン>/hpx/) を開いたときに蜂場ページへ移す |
 | `server/dashboard.php` | 前のセンサページの名前。今は sensor.php へ移すだけ |

@@ -737,13 +737,13 @@ function auth_next(string $next): string
 function auth_nav_right(string $active): string
 {
     global $ME;
-    $items = ['sensor.php' => 'センサ', 'team.php' => 'チーム', 'account.php' => 'アカウント'];
+    $items = ['sensor.php' => 'センサ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント'];
     $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' ? ' class="on"' : '') . '>'
         . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>'
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
     foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
     $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
-    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>管理</a>';
+    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>アカウント管理</a>';
     // 外を押したら閉じる
     return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';
 }
@@ -800,4 +800,52 @@ function migrate_lock(int $mode)
     $f = @fopen(data_dir() . '/.migrate.lock', 'c');
     if ($f) flock($f, $mode);
     return $f;
+}
+
+// chart_dual($tip 付き、hpx_site.php)・センサページの chart_svg のグラフに、マウスを乗せる・タッチすると縦線と一番近い記録の日時と値を出す
+function chart_tip_js(): string
+{
+    return <<<'JS'
+<style>.tipw{position:relative;touch-action:pan-y}.tip{display:none;position:absolute;top:4px;z-index:5;background:rgba(255,255,255,.95);border:1px solid #aab;border-radius:4px;padding:3px 7px;font-size:.8em;line-height:1.35;white-space:nowrap;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.15)}.tip .tt{font-weight:bold;color:#333}</style>
+<script>
+(function(){
+  var NS = 'http://www.w3.org/2000/svg';
+  function near(p, e){ var lo = 0, hi = p.length - 1; while (hi - lo > 1){ var m = (lo + hi) >> 1; if (p[m][0] < e) lo = m; else hi = m; } return Math.abs(p[lo][0] - e) <= Math.abs(p[hi][0] - e) ? p[lo] : p[hi]; }
+  function two(n){ return (n < 10 ? '0' : '') + n; }
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  document.querySelectorAll('.tipw').forEach(function(w){
+    var d = JSON.parse(w.getAttribute('data-tip')); if (!d.s.length) return;
+    var svg = w.querySelector('svg'), g = document.createElementNS(NS, 'g'), box = document.createElement('div');
+    box.className = 'tip'; w.appendChild(box); svg.appendChild(g); g.style.display = 'none';
+    var ln = document.createElementNS(NS, 'line'); ln.setAttribute('y1', d.y0); ln.setAttribute('y2', d.y1); ln.setAttribute('stroke', '#888'); ln.setAttribute('stroke-dasharray', '3 3'); g.appendChild(ln);
+    var dots = d.s.map(function(s){ var c = document.createElementNS(NS, 'circle'); c.setAttribute('r', d.W < 400 ? 3.5 : 4); c.setAttribute('fill', s.c); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', '1.5'); g.appendChild(c); return c; });
+    var gap = (d.t - d.f) / 25;   // これより離れた記録しかないところ(記録の途切れ)では値を出さない
+    function show(ev){
+      var r = svg.getBoundingClientRect(), k = d.W / r.width, vx = (ev.clientX - r.left) * k;
+      if (vx < d.x0 || vx > d.x1){ hide(); return; }
+      var e = d.f + (vx - d.x0) / (d.x1 - d.x0) * (d.t - d.f), best = null, rows = '';
+      d.s.forEach(function(s, i){
+        var p = near(s.p, e);
+        if (Math.abs(p[0] - e) > gap){ dots[i].style.display = 'none'; return; }
+        if (!best || Math.abs(p[0] - e) < Math.abs(best[0] - e)) best = p;
+        dots[i].style.display = ''; dots[i].setAttribute('cx', d.x0 + (p[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0)); dots[i].setAttribute('cy', p[2]);
+        rows += '<div><span style="color:' + s.c + '">●</span> ' + esc(s.n) + ' <b>' + p[1].toFixed(s.d) + '</b> ' + esc(s.u) + '</div>';
+      });
+      if (!best){ hide(); return; }
+      var bx = d.x0 + (best[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0), t = new Date(best[0] * 1000);
+      ln.setAttribute('x1', bx); ln.setAttribute('x2', bx); g.style.display = '';
+      box.innerHTML = '<div class="tt">' + (t.getMonth() + 1) + '/' + t.getDate() + ' ' + two(t.getHours()) + ':' + two(t.getMinutes()) + '</div>' + rows;
+      box.style.display = 'block';
+      var px = bx / k, bw = box.offsetWidth;   // 線の右に出す。右端に近いときは左に出す
+      box.style.left = (px + 10 + bw > r.width ? Math.max(0, px - 10 - bw) : px + 10) + 'px';
+    }
+    function hide(){ g.style.display = 'none'; box.style.display = 'none'; }
+    w.addEventListener('pointermove', show);
+    w.addEventListener('pointerdown', show);
+    w.addEventListener('pointerleave', function(ev){ if (ev.pointerType === 'mouse') hide(); });
+    document.addEventListener('pointerdown', function(ev){ if (!w.contains(ev.target)) hide(); });
+  });
+})();
+</script>
+JS;
 }

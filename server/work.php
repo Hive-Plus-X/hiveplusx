@@ -336,16 +336,18 @@ else {
     foreach ($open as $t) {
         echo '<tr><td style="white-space:nowrap">' . due_html((string)($t['due'] ?? '')) . (!empty($t['notify']) ? ' <span title="メールで知らせる">✉</span>' : '') . '</td>'
             . '<td>' . tag_show((array)($t['tags'] ?? [])) . h((string)$t['title']) . by_html($t) . (($t['note'] ?? '') !== '' ? '<br><span class="muted">' . nl((string)$t['note']) . '</span>' : '')
-            . '<details><summary class="muted">変更・削除</summary>' . todo_form($t, $site, $selfUrl([], 'todo'))
-            . '<form method="post" onsubmit="return confirm(\'この タスクを削除しますか?\');">' . csrf_field()
-            . '<input type="hidden" name="act" value="todo_delete"><input type="hidden" name="id" value="' . h((string)$t['id']) . '">'
-            . '<input type="hidden" name="back" value="' . h($selfUrl([], 'todo')) . '"><button type="submit">削除</button></form></details></td>'
+            . '</td>'
             . (team_on() ? '<td>' . h(implode('・', array_map('user_name', todo_assignees($t))) ?: '-') . '</td>' : '')
             . '<td>' . h(target_label($site, (string)$t['apiary'], (string)($t['hive'] ?? ''))) . '</td>'
             . '<td><div class="tbtn"><form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="todo_done">'
             . '<input type="hidden" name="id" value="' . h((string)$t['id']) . '"><input type="hidden" name="back" value="' . h($selfUrl([], 'todo')) . '">'
             . '<button type="submit">完了</button></form>'
-            . '<a href="' . h($selfUrl(['copy' => (string)$t['id']], 'todo-copy')) . '"><button type="button">コピー</button></a></div></td></tr>';
+            . '<a href="' . h($selfUrl(['copy' => (string)$t['id']], 'todo-copy')) . '"><button type="button">コピー</button></a>'
+            . '<button type="button" onclick="var r=this.closest(\'tr\').nextElementSibling;r.hidden=!r.hidden">変更</button>'
+            . '<form method="post" class="inl" onsubmit="return confirm(\'この タスクを削除しますか?\');">' . csrf_field()
+            . '<input type="hidden" name="act" value="todo_delete"><input type="hidden" name="id" value="' . h((string)$t['id']) . '">'
+            . '<input type="hidden" name="back" value="' . h($selfUrl([], 'todo')) . '"><button type="submit" class="del">削除</button></form></div></td></tr>'
+            . '<tr hidden class="tedit"><td colspan="' . (team_on() ? 5 : 4) . '">' . todo_form($t, $site, $selfUrl([], 'todo')) . '</td></tr>';
     }
     echo '</table></div>';
 }
