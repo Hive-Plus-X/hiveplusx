@@ -279,62 +279,77 @@ notes(s, 60, y + 20, [
 s.save("HPX-TH_wiring.svg")
 
 # ------------------------------------------------------------------ HPX-A
-s = S(1280, 1220)
-title(s, "HPX-A（電柵アラート）配線図", "ファーム HPX_Alert v1.02 ／ 光センサ: D1→抵抗→D0（A0）")
+s = S(1280, 1720)
+title(s, "HPX-A（電柵アラート）部品表と配線図", "ファーム HPX_Alert v1.02 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
 p = xiao(s, 190, 200)
-# ブレッドボード上の 10kΩ とフォトトランジスタ
 bx, by = 560, 170
-s.rect(bx, by, 330, 360, "#f1efe6", "#cfc8b0", 10, 2)
-for gx in range(14):
-    for gy in range(14):
-        s.add(f'<rect x="{bx+20+gx*22}" y="{by+20+gy*24}" width="6" height="6" fill="#bdb6a0"/>')
-s.text(bx + 330, by - 10, "ブレッドボード（はんだ付けでも可）", 14, "end", fill="#666")
-# 抵抗 (縦向き)
-rx_, r1, r2 = bx + 110, by + 60, by + 200
+s.rect(bx, by, 340, 380, "#f1efe6", "#cfc8b0", 10, 2)
+for gx in range(15):
+    for gy in range(15):
+        s.add(f'<rect x="{bx+15+gx*22}" y="{by+18+gy*24}" width="6" height="6" fill="#bdb6a0"/>')
+s.text(bx + 340, by - 10, "ブレッドボード（はんだ付けでも可）", 14, "end", fill="#666")
+rx_, r1, r2 = 660, 230, 350
 s.add(f'<line x1="{rx_}" y1="{r1}" x2="{rx_}" y2="{r2}" stroke="#888" stroke-width="3"/>')
-s.rect(rx_ - 13, r1 + 30, 26, 80, "#e8c88f", "#a07c3c", 10, 2)
+s.rect(rx_ - 13, r1 + 20, 26, 80, "#e8c88f", "#a07c3c", 10, 2)
 for i, c in enumerate(["#8d5524", "#212121", "#f57c00", "#d4af37"]):   # 茶黒橙金 = 10kΩ
-    s.rect(rx_ - 13, r1 + 40 + i * 16, 26, 7, c, rx=0)
-s.rect(rx_ + 18, r1 + 52, 150, 70, "#fffdf6dd", rx=6)
-s.text(rx_ + 26, r1 + 75, "抵抗 10kΩ", 15, weight="bold")
-s.text(rx_ + 26, r1 + 95, "（茶 黒 橙 金）", 13, fill="#666")
-s.text(rx_ + 26, r1 + 113, "向きはどちらでもよい", 13, fill="#666")
-# フォトトランジスタ
-px_, py_ = bx + 230, by + 250
-s.add(f'<circle cx="{px_}" cy="{py_}" r="26" fill="#cfe8ff" stroke="#5a8ab0" stroke-width="3" opacity=".9"/>')
-s.add(f'<line x1="{px_-10}" y1="{py_+26}" x2="{px_-10}" y2="{py_+80}" stroke="#888" stroke-width="3"/>')
-s.add(f'<line x1="{px_+10}" y1="{py_+26}" x2="{px_+10}" y2="{py_+70}" stroke="#888" stroke-width="3"/>')
-s.rect(px_ + 30, py_ - 22, 200, 46, "#fffdf6dd", rx=6)
-s.text(px_ + 36, py_ - 4, "フォトトランジスタ", 15, weight="bold")
-s.text(px_ + 36, py_ + 16, "（TPS601A・PT204-6B など）", 13, fill="#666")
-s.top.append('<rect x="%d" y="%d" width="22" height="22" rx="4" fill="#fffdf6"/>' % (px_ - 40, py_ + 38))
-s.text(px_ - 29, py_ + 55, "C", 15, "middle", "bold", "#1565c0", layer=s.top)
-s.top.append('<rect x="%d" y="%d" width="22" height="22" rx="4" fill="#fffdf6"/>' % (px_ + 18, py_ + 38))
-s.text(px_ + 29, py_ + 55, "E", 15, "middle", "bold", "#1565c0", layer=s.top)
-C = (px_ - 10, py_ + 80); E = (px_ + 10, py_ + 70)
-# 配線
-s.wire([p["D1"], (140, p["D1"][1]), (140, 130), (rx_, 130), (rx_, r1)], "purple", "D1→抵抗の片方", (300, 120))
-s.wire([p["D0"], (160, p["D0"][1]), (160, 150), (520, 150), (520, r2 + 30), (rx_, r2 + 30), (rx_, r2)], "yellow", "D0", (530, 290))
-s.dot(rx_, r2 + 30, "yellow")
-s.wire([(rx_, r2 + 30), (rx_, C[1] + 40), (C[0], C[1] + 40), C], "yellow", "D0→コレクタ C", (rx_ + 10, C[1] + 66))
-s.wire([p["GND"], (470, p["GND"][1]), (470, 590), (E[0] + 40, 590), (E[0] + 40, E[1]), E], "black", "GND→エミッタ E", (480, 584))
-bp, bm = battery(s, 220, 640)
-s.wire([bp, (540, bp[1]), (540, 470), (440, 470), (440, p["3V3"][1]), p["3V3"]], "red", "電池＋→3V3", (548, 640))
-s.wire([bm, (160, bm[1]), (160, 610), (470, 610), (470, 590)], "black", "電池−→GND", (240, 600))
-s.dot(470, 590, "black")
-table(s, 60, 820, [
+    s.rect(rx_ - 13, r1 + 30 + i * 16, 26, 7, c, rx=0)
+s.rect(rx_ + 18, r1 + 30, 170, 64, "#fffdf6dd", rx=6)
+s.text(rx_ + 26, r1 + 52, "抵抗 10kΩ", 15, weight="bold")
+s.text(rx_ + 26, r1 + 72, "★リストに無い・必要", 13, fill="#b23", weight="bold")
+s.text(rx_ + 26, r1 + 88, "向きはどちらでもよい", 12, fill="#666")
+NODE = 420
+s.wire([p["D1"], (130, p["D1"][1]), (130, 120), (rx_, 120), (rx_, r1)], "purple", "D1→抵抗の片方", (300, 110))
+s.wire([p["D0"], (150, p["D0"][1]), (150, 150), (600, 150), (600, NODE), (rx_, NODE)], "yellow", "D0（A0）", (290, 140))
+s.wire([(rx_, r2), (rx_, NODE), (880, NODE)], "yellow")
+s.dot(rx_, NODE, "yellow")
+s.top.append(f'<rect x="{rx_+14}" y="{NODE-30}" width="120" height="20" rx="4" fill="#ffffffdd"/>')
+s.text(rx_ + 20, NODE - 14, "ここが測る点", 13, weight="bold", fill="#7a5a00", layer=s.top)
+YM, YP = 680, 720
+rails(s, 160, 900, YM, YP)
+# CdS セル (足 2本、向きなし)
+tx, ty = 1110, 470
+s.add(f'<path d="M{tx},{ty-6} L960,{ty-6} L960,{NODE} L880,{NODE}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
+s.add(f'<path d="M{tx},{ty+6} L980,{ty+6} L980,{YM} L880,{YM}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
+s.add(f'<circle cx="{tx+20}" cy="{ty}" r="20" fill="#f3e5ab" stroke="#8d6e63" stroke-width="3"/>')
+s.add(f'<path d="M{tx+6},{ty-8} Q{tx+20},{ty-2} {tx+34},{ty-8} M{tx+6},{ty} Q{tx+20},{ty+6} {tx+34},{ty} M{tx+6},{ty+8} Q{tx+20},{ty+14} {tx+34},{ty+8}" stroke="#c62828" stroke-width="2" fill="none"/>')
+s.top.append(f'<circle cx="880" cy="{NODE}" r="5" fill="#666"/>')
+s.top.append(f'<circle cx="880" cy="{YM}" r="5" fill="#666"/>')
+s.text(1000, ty - 56, "CdS セル 5506（φ5mm）", 15, weight="bold")
+s.text(1000, ty - 36, "向きなし。線で延長してよい", 13, fill="#666")
+s.text(1000, ty + 44, "警報器の赤いカバーに向け、", 13, fill="#666")
+s.text(1000, ty + 62, "カバーごと黒いもので遮光", 13, fill="#666")
+s.wire([p["GND"], (450, p["GND"][1]), (450, YM)], "black")
+s.wire([p["3V3"], (420, p["3V3"][1]), (420, YP)], "red")
+cap(s, 300, 610, YM, YP, "100µF", "電源の安定", big=True, right=True)
+cap(s, 520, 610, YM, YP, "0.1µF", "XIAO の近く", right=True)
+bp, bm = cr123a(s, 300, 800)
+s.wire([bm, (230, bm[1]), (230, YM)], "black")
+s.wire([bp, (600, bp[1]), (600, YP)], "red")
+y = table(s, 60, 990, [
     ["線", "どこから", "どこへ", "役目"],
     ["purple", "XIAO D1", "抵抗 10kΩ の片方", "読む瞬間だけ光センサに電気を流す"],
-    ["yellow", "抵抗のもう片方", "XIAO D0（A0）", "光の強さを電圧で読む"],
-    ["yellow", "同じ点", "フォトトランジスタ C", "（D0 と同じ線）"],
-    ["black", "XIAO GND", "フォトトランジスタ E", "マイナス"],
-    ["red", "電池 ＋（単3リチウム×2 か CR123A）", "XIAO 3V3", "電池を直接つなぐ"],
-    ["black", "電池 −", "XIAO GND", ""],
-], [110, 330, 230, 330], "つなぐ線")
-notes(s, 60, 1062, [
+    ["yellow", "抵抗のもう片方", "XIAO D0（A0）", "光の強さを電圧で読む（測る点）"],
+    ["yellow", "測る点", "CdS セルの片方", ""],
+    ["black", "CdS セルのもう片方", "− レール", "マイナス"],
+    ["red", "XIAO 3V3 ／ 電池 ＋", "＋ レール", "電池を 3V3 に直接つなぐ"],
+    ["black", "XIAO GND ／ 電池 −", "− レール", ""],
+], [110, 290, 290, 370], "つなぐ線")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "使うところ・メモ"],
+    ["Seeed XIAO BLE nRF52840", "1", "本体（マイコン）"],
+    ["CdS セル（フォトレジスタ）5506 φ5mm", "1", "測る点と − の間。向きなし"],
+    ["抵抗 10kΩ（1/4W） ★リストに無い・必要", "1", "D1 と測る点の間。調整で 4.7k〜47kΩ に替えることも"],
+    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", "＋ と − の間（XIAO の近く）。測る点には付けない"],
+    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", "＋ と − の間。向きなし"],
+    ["CR123A 用電池ケース ／ CR123A 電池", "各1", "＋ を 3V3、− を GND へ"],
+    ["その他: 配線用の線・基板・黒い遮光キャップ（熱収縮チューブなど）", "", "手持ちに合わせて"],
+], [560, 50, 550], "部品表")
+notes(s, 60, y + 20, [
     "・フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。",
-    "・C（コレクタ）と E（エミッタ）の見分け方は部品ごとに違う。データシートで確認する（逆だと反応しないだけで壊れにくい）。",
-    "・センサは赤いカバーに向けて貼り、カバーごと黒いもので覆って日光をさえぎる。USB 接続時は電池を外す。",
+    "・0.1µF を測る点（D0）に付けると、ファームの読み取り（電源を入れて 50µs 後に読む）に間に合わなくなるので付けない。",
+    "・CdS セルは反応が遅め。警報器の点滅が短いと数えられないかもしれません。実機でシリアルの「blink」が出るか確かめる。",
+    "・抵抗の目安: シリアルの light が 3900 近くに張り付くなら 4.7kΩ、点滅の peak が 200 に届かないなら 22k〜47kΩ。",
+    "・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。",
 ])
 s.save("HPX-A_wiring.svg")
 
