@@ -10,6 +10,8 @@
 | HPX-A (電柵アラート) | [HPX-A_wiring.png](HPX-A_wiring.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.02)。電源 CR123A |
 | HPX-Core (親機) | [HPX-Core_wiring.png](HPX-Core_wiring.png) | CR123A をボードの 3V3 ピンへ (試験用の構成、HPX_Core v1.15) |
 
+| HPX-Core 18650 案 | [HPX-Core_18650_wiring.png](HPX-Core_18650_wiring.png) | 18650 → 3.3V LDO → ボードの 3V3。ディープスリープ・15分ごとで約1〜2か月の見込み (目安、未実測) |
+
 部品表は [部品表.md](部品表.md) にあります。
 
 ## まだ確かめていないこと
