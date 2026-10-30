@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2000" viewBox="0 0 1280 2000">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2060" viewBox="0 0 1280 2060">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-TH（温湿度センサ）部品表と配線図</text>
-<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A</text>
 <rect x="190" y="200" width="200" height="330" rx="10" fill="#1b5e20" stroke="#0d3311" stroke-width="3"/>
 <rect x="260" y="186" width="60" height="30" rx="6" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
 <text x="290" y="178" font-size="13" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB-C</text>
@@ -404,9 +404,9 @@
 <path d="M560,835 L600,835 L600,720" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M560,835 L600,835 L600,720" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M560,835 L600,835 L600,720" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="700" y="790" width="200" height="210" rx="8" fill="#5e35b1" stroke="#311b92" stroke-width="3"/>
-<rect x="820" y="870" width="44" height="44" rx="3" fill="#cfd8dc" stroke="#78909c" stroke-width="2"/>
-<text x="842" y="936" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31</text>
+<rect x="700" y="790" width="200" height="150" rx="8" fill="#5e35b1" stroke="#311b92" stroke-width="3"/>
+<rect x="820" y="830" width="44" height="44" rx="3" fill="#cfd8dc" stroke="#78909c" stroke-width="2"/>
+<text x="842" y="898" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40</text>
 <circle cx="700" cy="820" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="700" cy="820" r="3" fill="#5a4a14"/>
 <text x="714" y="825" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">VIN</text>
@@ -419,14 +419,8 @@
 <circle cx="700" cy="910" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="700" cy="910" r="3" fill="#5a4a14"/>
 <text x="714" y="915" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SDA</text>
-<circle cx="700" cy="940" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="700" cy="940" r="3" fill="#5a4a14"/>
-<text x="714" y="945" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ADR</text>
-<circle cx="700" cy="970" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="700" cy="970" r="3" fill="#5a4a14"/>
-<text x="714" y="975" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">AL</text>
-<text x="800" y="1026" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 モジュール（温湿度）</text>
-<text x="800" y="1046" font-size="12" text-anchor="middle" font-weight="bold" fill="#b23" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンの並びは基板の印字で確認。ADR・AL は使わない</text>
+<text x="800" y="966" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 モジュール（温湿度）</text>
+<text x="800" y="986" font-size="12" text-anchor="middle" font-weight="bold" fill="#b23" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンの並びは基板の印字で確認</text>
 <path d="M700,820 L680,820 L680,720" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M700,820 L680,820 L680,720" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M700,820 L680,820 L680,720" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -484,25 +478,25 @@
 <rect x="60" y="1360" width="1060" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1369" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
-<text x="180" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 VIN</text>
+<text x="180" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 VIN</text>
 <text x="470" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋ レール</text>
-<text x="800" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 の電源（3V）</text>
+<text x="800" y="1381" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 の電源（3V）</text>
 <rect x="60" y="1390" width="1060" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1399" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1411" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
-<text x="180" y="1411" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 GND</text>
+<text x="180" y="1411" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 GND</text>
 <text x="470" y="1411" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">− レール</text>
 <text x="800" y="1411" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
 <rect x="60" y="1420" width="1060" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1429" width="34" height="12" rx="3" fill="#43a047" stroke="#555" stroke-width="1"/>
 <text x="112" y="1441" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">緑</text>
-<text x="180" y="1441" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 SDA</text>
+<text x="180" y="1441" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 SDA</text>
 <text x="470" y="1441" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO D4</text>
 <text x="800" y="1441" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">データ（I2C）</text>
 <rect x="60" y="1450" width="1060" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1459" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
 <text x="112" y="1471" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">青</text>
-<text x="180" y="1471" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 SCL</text>
+<text x="180" y="1471" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 SCL</text>
 <text x="470" y="1471" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO D5</text>
 <text x="800" y="1471" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">合図（I2C）</text>
 <text x="60" y="1518" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品表</text>
@@ -515,7 +509,7 @@
 <text x="630" y="1581" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="680" y="1581" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">本体（マイコン）</text>
 <rect x="60" y="1590" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT31 モジュール（温湿度、I2C）</text>
+<text x="70" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 モジュール（温湿度、I2C）</text>
 <text x="630" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="680" y="1611" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">湿度と温度。VIN・GND・SDA(D4)・SCL(D5)</text>
 <rect x="60" y="1620" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
@@ -542,13 +536,14 @@
 <text x="70" y="1791" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">その他: 配線用の線・ブレッドボードかユニバーサル基板・ピンヘッダー</text>
 <text x="630" y="1791" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
 <text x="680" y="1791" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">手持ちに合わせて</text>
-<rect x="60" y="1820" width="1160" height="164" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<rect x="60" y="1820" width="1160" height="190" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
 <text x="78" y="1846" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
 <text x="78" y="1874" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・サーミスターの電圧を読むには 10kΩ の固定抵抗が要ります（リストに無いので追加してください）。</text>
 <text x="78" y="1900" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・HPX-TH のファームはまだありません（サーミスターの試験スケッチだけ）。この配線に合わせたファームはこれから作ります。</text>
-<text x="78" y="1926" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT31 は巣箱の中の空気に触れる場所へ。基板がむき出しなので、結露や蜂のプロポリスで汚れないよう通気性のあるカバーを。</text>
-<text x="78" y="1952" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT31 モジュールに電源ランプ（LED）が付いていると、電池が早く減ります。付いていたら教えてください。</text>
-<text x="78" y="1978" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
+<text x="78" y="1926" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT40 は巣箱の中の空気に触れる場所へ。基板がむき出しなので、結露や蜂のプロポリスで汚れないよう通気性のあるカバーを。</text>
+<text x="78" y="1952" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT40 モジュールに電源ランプ（LED）が付いていると、電池が早く減ります。付いていたら教えてください。</text>
+<text x="78" y="1978" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT40 チップは 3.6V まで。電池（約3V）につなぐのは OK、5V にはつながない。</text>
+<text x="78" y="2004" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
 <circle cx="190" cy="366" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
 <circle cx="660" cy="230" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
 <rect x="296" y="95" width="120" height="21" rx="4" fill="#ffffffdd"/>
