@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>養蜂管理アプリ HPX-note | Hive Plus X</title>
+<meta name="description" content="HPX-note は、巣箱のセンサの記録と、内検のメモ・作業の予定と記録をひとつにまとめる養蜂管理ウェブアプリです。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ページの見出し */
+  .hero { padding:200px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:140px 20px 0; } }
+  .hero h1 { font-size:clamp(26px, 4.4vw, 38px); margin-top:6px; line-height:1.4; }
+  .hero p.lead { margin:14px auto 0; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+  .jump { display:flex; justify-content:center; gap:8px; margin-top:28px; flex-wrap:wrap; list-style:none; }
+  .jump a { display:block; padding:5px 16px; border-radius:999px; border:1px solid var(--line); background:var(--panel); text-decoration:none; font-size:14px; }
+  .jump a:hover { border-color:var(--honey); }
+
+  /* 画面ごとのトピック (余白だけで区切る: パソコン 300px、スマホ 200px) */
+  section { margin-top:300px; scroll-margin-top:80px; }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { section { margin-top:200px; } main { padding-bottom:200px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  section h2, section .lead { text-align:center; margin-left:auto; margin-right:auto; }
+
+  /* 引き出し線つきの画面写真
+     パソコン: 画像の左右に説明 (幅 --side) を置き、画像の上の点から横線で結ぶ。
+     スマホ: 画像の点に番号だけ出し、説明は画像の下に番号順に並べる。 */
+  .wide { max-width:1240px; }
+  .anno { --side:200px; --gap:18px; position:relative; margin:40px 0 0; padding:0 var(--side); container-type:inline-size; }
+  .anno .box { position:relative; }
+  .anno img { display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--line); background:var(--panel); }
+  /* 点: パソコンでは小さな丸、スマホでは番号つきの丸 */
+  .anno .pt {
+    position:absolute; left:calc(var(--x) * 100%); top:calc(var(--y) * 100%);
+    width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%; z-index:2; font-size:0;
+    background:var(--honey); border:2px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,.25);
+  }
+  .anno .notes { list-style:none; counter-reset:n; }
+  .anno .notes li { counter-increment:n; position:absolute; top:calc(var(--y) * 100% - .9em); width:calc(var(--side) - var(--gap));
+                    font-size:13px; line-height:1.55; color:var(--sub); }
+  .anno .notes li b { display:block; font-size:15px; color:var(--text); }
+  .anno .notes li.L { left:0; text-align:right; }
+  .anno .notes li.R { right:0; }
+  /* 引き出し線: 説明の1行目の高さで、点まで横に伸ばす */
+  .anno .notes li::after { content:""; position:absolute; top:.9em; height:2px; background:var(--honey); border-radius:1px; }
+  .anno .notes li.L::after { left:100%; width:calc(var(--gap) + var(--x) * 100cqw); }
+  .anno .notes li.R::after { right:100%; width:calc(var(--gap) + (1 - var(--x)) * 100cqw); }
+  @media (max-width:900px) {
+    .anno { padding:0; }
+    .anno .pt { width:22px; height:22px; margin:-11px 0 0 -11px; font-size:11px; font-weight:700;
+                line-height:18px; text-align:center; color:#1F2328; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+    .anno .notes { margin-top:22px; display:grid; gap:12px; }
+    .anno .notes li { position:static; width:auto; text-align:left !important; padding-left:34px; }
+    .anno .notes li::after { display:none; }
+    .anno .notes li b::before { content:counter(n); position:absolute; margin-left:-34px; width:24px; height:24px; border-radius:50%;
+                                background:var(--honey); color:#1F2328; font-size:12px; line-height:24px; text-align:center; }
+    .anno .notes li { position:relative; top:auto; }
+  }
+
+  .closing { text-align:center; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <p class="eyebrow">App</p>
+    <h1>養蜂管理アプリ HPX-note</h1>
+    <p class="lead">センサの記録と養蜂家の記録をひとつにまとめるウェブアプリです。スマートフォンでもパソコンでも使えます。</p>
+    <div class="entry">
+      <a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a>
+    </div>
+    <ul class="jump">
+      <li><a href="#apiary">蜂場</a></li><li><a href="#hive">巣箱</a></li><li><a href="#memo">メモ</a></li><li><a href="#task">タスク</a></li><li><a href="#work">記録</a></li>
+    </ul>
+  </div>
+
+  <section id="apiary">
+    <div class="reveal wrap wide">
+      <h2>蜂場</h2>
+      <p class="lead">蜂場ごとに、天気と巣箱の様子をひと目で確かめられます。</p>
+      <figure class="anno">
+        <div class="box"><img src="img/app_apiary.png" alt="蜂場の画面" loading="lazy">
+          <span class="pt" style="--x:0.08;--y:0.21">1</span><span class="pt" style="--x:0.16;--y:0.35">2</span><span class="pt" style="--x:0.16;--y:0.51">3</span><span class="pt" style="--x:0.15;--y:0.68">4</span><span class="pt" style="--x:0.15;--y:0.87">5</span><span class="pt" style="--x:0.86;--y:0.155">6</span><span class="pt" style="--x:0.75;--y:0.4">7</span><span class="pt" style="--x:0.79;--y:0.962">8</span></div>
+        <ol class="notes">
+            <li class="L" style="--x:0.08;--y:0.21"><b>ハブの状態</b>蜂場に置いた HPX-Core が受信中かどうか</li>
+            <li class="L" style="--x:0.16;--y:0.35"><b>蜂場の写真</b>蜂場ごとに写真を登録できます</li>
+            <li class="L" style="--x:0.16;--y:0.51"><b>3日間の天気</b>今日・明日・明後日の気温と降水確率</li>
+            <li class="L" style="--x:0.15;--y:0.68"><b>巣箱の重さ</b>直近3日の、巣箱の平均の重さ</li>
+            <li class="L" style="--x:0.15;--y:0.87"><b>巣箱の温度</b>直近3日の、巣箱の中心温度</li>
+            <li class="R" style="--x:0.86;--y:0.155"><b>巣箱の数</b>登録した巣箱と、蜂場全体の群数</li>
+            <li class="R" style="--x:0.75;--y:0.4"><b>蜂場を並べて表示</b>いくつもの蜂場を1画面で見比べられます</li>
+            <li class="R" style="--x:0.79;--y:0.962"><b>巣箱ページへ</b>巣箱ごとの詳しいグラフに移ります</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section id="hive">
+    <div class="reveal wrap wide">
+      <h2>巣箱</h2>
+      <p class="lead">巣箱ごとに、重さと温度・湿度の変化をグラフで追えます。</p>
+      <figure class="anno">
+        <div class="box"><img src="img/app_hive.png" alt="巣箱の画面" loading="lazy">
+          <span class="pt" style="--x:0.06;--y:0.205">1</span><span class="pt" style="--x:0.1;--y:0.6">2</span><span class="pt" style="--x:0.25;--y:0.127">3</span><span class="pt" style="--x:0.2;--y:0.29">4</span><span class="pt" style="--x:0.86;--y:0.85">5</span></div>
+        <ol class="notes">
+            <li class="L" style="--x:0.06;--y:0.205"><b>巣箱を選ぶ</b>蜂場の中の巣箱を切り替え。＋で巣箱を追加</li>
+            <li class="L" style="--x:0.1;--y:0.6"><b>重さのグラフ</b>基準日からの増減も表示。蜜の貯まり具合や分蜂の目安に</li>
+            <li class="R" style="--x:0.25;--y:0.127"><b>蜂場を選ぶ</b>数字はその蜂場の巣箱の数</li>
+            <li class="R" style="--x:0.2;--y:0.29"><b>表示する期間</b>1日・3日・7日・30日・全期間</li>
+            <li class="R" style="--x:0.86;--y:0.85"><b>温度と湿度</b>巣箱の中の温度と湿度を1つのグラフに</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section id="memo">
+    <div class="reveal wrap wide">
+      <h2>メモ</h2>
+      <p class="lead">内検の結果や、蜂の様子、外敵、開花植物などを書き残せます。</p>
+      <figure class="anno">
+        <div class="box"><img src="img/app_memo.png" alt="メモの画面" loading="lazy">
+          <span class="pt" style="--x:0.1;--y:0.17">1</span><span class="pt" style="--x:0.06;--y:0.625">2</span><span class="pt" style="--x:0.1;--y:0.8">3</span><span class="pt" style="--x:0.6;--y:0.275">4</span><span class="pt" style="--x:0.3;--y:0.4">5</span><span class="pt" style="--x:0.6;--y:0.66">6</span></div>
+        <ol class="notes">
+            <li class="L" style="--x:0.1;--y:0.17"><b>メモを書く</b>蜂場全体、または巣箱ごとに記録</li>
+            <li class="L" style="--x:0.06;--y:0.625"><b>タグ</b>分蜂・スズメバチ・クマなど、クリックで付けられます</li>
+            <li class="L" style="--x:0.1;--y:0.8"><b>写真</b>1つのメモに5枚まで</li>
+            <li class="R" style="--x:0.6;--y:0.275"><b>メモを探す</b>蜂場・巣箱・内容・記入者・ことばで探せます</li>
+            <li class="R" style="--x:0.3;--y:0.4"><b>いつ・どこ・だれ</b>日付・内容・蜂場と巣箱・記入した人</li>
+            <li class="R" style="--x:0.6;--y:0.66"><b>内検の項目</b>女王・卵・蜂児・王台・蜂数・貯蜜。ダニの寄生率も自動計算</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section id="task">
+    <div class="reveal wrap wide">
+      <h2>タスク</h2>
+      <p class="lead">これからの作業を予定にして、チームで分担できます。</p>
+      <figure class="anno">
+        <div class="box"><img src="img/app_task.png" alt="タスクの画面" loading="lazy">
+          <span class="pt" style="--x:0.05;--y:0.127">1</span><span class="pt" style="--x:0.07;--y:0.59">2</span><span class="pt" style="--x:0.05;--y:0.725">3</span><span class="pt" style="--x:0.17;--y:0.187">4</span><span class="pt" style="--x:0.6;--y:0.41">5</span><span class="pt" style="--x:0.84;--y:0.595">6</span><span class="pt" style="--x:0.85;--y:0.85">7</span></div>
+        <ol class="notes">
+            <li class="L" style="--x:0.05;--y:0.127"><b>蜂場を選ぶ</b>蜂場ごと、またはすべての蜂場のタスク</li>
+            <li class="L" style="--x:0.07;--y:0.59"><b>期限</b>近づくと色が変わり「あと何日」と表示。✉ の付いたタスクはメールでお知らせ</li>
+            <li class="L" style="--x:0.05;--y:0.725"><b>月を切り替え</b>前の月・次の月のカレンダーへ</li>
+            <li class="R" style="--x:0.17;--y:0.187"><b>タスクを追加</b>やること・タグ・期限・担当・対象を入れて登録</li>
+            <li class="R" style="--x:0.6;--y:0.41"><b>担当と対象</b>担当は何人でも。対象は蜂場か巣箱</li>
+            <li class="R" style="--x:0.84;--y:0.595"><b>完了・コピー</b>終わったら完了に。ほかの蜂場へもコピーできます</li>
+            <li class="R" style="--x:0.85;--y:0.85"><b>月のカレンダー</b>タスクを日付ごとに確認。Google カレンダーにも表示できます</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="reveal wrap wide">
+      <h2>記録</h2>
+      <p class="lead">作業にかかった時間を残し、月ごと・人ごとに集計します。</p>
+      <figure class="anno">
+        <div class="box"><img src="img/app_work.png" alt="記録の画面" loading="lazy">
+          <span class="pt" style="--x:0.05;--y:0.125">1</span><span class="pt" style="--x:0.05;--y:0.3">2</span><span class="pt" style="--x:0.12;--y:0.65">3</span><span class="pt" style="--x:0.15;--y:0.187">4</span><span class="pt" style="--x:0.3;--y:0.445">5</span><span class="pt" style="--x:0.62;--y:0.96">6</span></div>
+        <ol class="notes">
+            <li class="L" style="--x:0.05;--y:0.125"><b>蜂場を選ぶ</b>蜂場ごと、またはすべての蜂場の記録</li>
+            <li class="L" style="--x:0.05;--y:0.3"><b>この月の合計</b>合計時間と、作業内容ごとの内訳</li>
+            <li class="L" style="--x:0.12;--y:0.65"><b>12か月のグラフ</b>作業時間を、作業内容ごとに色分け</li>
+            <li class="R" style="--x:0.15;--y:0.187"><b>作業を記録</b>準備・内検・給餌・採蜜などの作業と時間</li>
+            <li class="R" style="--x:0.3;--y:0.445"><b>人ごとに見る</b>メンバーごとの作業時間に切り替え</li>
+            <li class="R" style="--x:0.62;--y:0.96"><b>作業の一覧</b>日付・対象・作業・担当・時間・メモ</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="reveal wrap wide">
+      <h2>まずはデモで試してみる</h2>
+      <p class="lead">見本のデータが入ったデモ用アカウントで、すべての画面を自由に触れます。</p>
+      <div class="entry">
+        <a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a>
+        <a class="btn ghost" href="./">トップへ戻る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
