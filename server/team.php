@@ -88,6 +88,17 @@ if (is_post()) {
         teams_update(function (array $ts) use ($tid, $uid, $role) { if (isset($ts[$tid]['members'][$uid])) $ts[$tid]['members'][$uid] = $role; return $ts; });
         redirect($back, user_name($uid) . ' さんを' . T_ROLES[$role] . 'にしました。');
     }
+    if ($act === 'member_name') {
+        // チーム管理者はメンバーの表示名を直せる(表示名はアカウントに1つなので、ほかのチームでも変わる)
+        $t = team_admin_or_back($tid);
+        $uid = (string)($_POST['uid'] ?? '');
+        $u = isset($t['members'][$uid]) ? user_get($uid) : null;
+        if (!$u) redirect($back);
+        $name = str_in('name', 40);
+        if ($name === '') redirect($back, '表示名を入れてください。');
+        user_set($uid, ['name' => $name]);
+        redirect($back, (string)$u['name'] . ' さんの表示名を「' . $name . '」にしました。');
+    }
     if ($act === 'member_remove') {
         // 管理者はほかの人を外せる。自分で抜けるのはだれでもできる
         $uid = (string)($_POST['uid'] ?? '');
@@ -169,7 +180,9 @@ foreach ($mine as $tid => $myRole) {
     foreach ($mem as $m => $r) {
         $m = (string)$m;
         $u = user_get($m);
-        echo '<tr><td>' . h(user_name($m)) . ($m === $UID ? ' <span class="muted">(自分)</span>' : '') . (($u['status'] ?? '') === 'stopped' ? ' <span class="muted">(停止中)</span>' : '') . '</td>'
+        echo '<tr><td>' . h(user_name($m)) . ($m === $UID ? ' <span class="muted">(自分)</span>' : '') . (($u['status'] ?? '') === 'stopped' ? ' <span class="muted">(停止中)</span>' : '')
+            . ($isAdmin && $u ? '<details class="rn"><summary class="muted">名前を変更</summary><form method="post">' . $hidden($tid) . '<input type="hidden" name="act" value="member_name"><input type="hidden" name="uid" value="' . h($m) . '">'
+                . '<input type="text" name="name" maxlength="40" required value="' . h((string)$u['name']) . '"> <button type="submit">保存</button></form></details>' : '') . '</td>'
             . ($isAdmin ? '<td>' . h((string)($u['email'] ?? '')) . '</td>' : '') . '<td>';
         if ($isAdmin && $u) {
             echo '<form method="post" class="inl">' . $hidden($tid) . '<input type="hidden" name="act" value="member_role"><input type="hidden" name="uid" value="' . h($m) . '">'

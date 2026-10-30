@@ -50,6 +50,12 @@ if (is_post()) {
     $nm = '「' . $u['name'] . '」';
     if ($act === 'invite' && ($u['status'] ?? '') === 'invited') { send_link($u, 'invite'); redirect('admin.php', $nm . 'に招待メールを送り直しました。'); }
     if ($act === 'reset' && ($u['status'] ?? '') === 'active') { send_link($u, 'reset'); redirect('admin.php', $nm . 'のパスワード再設定のリンクを出しました。'); }
+    if ($act === 'name_set') {
+        $name = str_in('name', 40);
+        if ($name === '') redirect('admin.php', '表示名を入れてください。');
+        user_set($u['id'], ['name' => $name]);
+        redirect('admin.php', $nm . 'の表示名を「' . $name . '」にしました。');
+    }
     if ($self) redirect('admin.php', '自分のアカウントは、ここでは停止・削除・権限の変更をできません。');
     if ($act === 'stop') {
         user_set($u['id'], ['status' => 'stopped', 'status_before' => (string)$u['status']]);
@@ -130,7 +136,9 @@ foreach ($users as $uid => $u) {
             . '<select name="role" onchange="this.form.submit()"><option value="admin"' . ($isAdm ? ' selected' : '') . '>サイト管理者</option>'
             . '<option value="general"' . (!$isAdm ? ' selected' : '') . '>一般アカウント</option></select></form>';
     }
-    echo '<tr><td>' . h((string)($u['name'] ?? '')) . ($uid === $UID ? ' <span class="muted">(自分)</span>' : '') . '</td>'
+    echo '<tr><td>' . h((string)($u['name'] ?? '')) . ($uid === $UID ? ' <span class="muted">(自分)</span>' : '')
+        . '<details class="rn"><summary class="muted">名前を変更</summary><form method="post">' . csrf_field() . '<input type="hidden" name="uid" value="' . h($uid) . '"><input type="hidden" name="act" value="name_set">'
+        . '<input type="text" name="name" maxlength="40" required value="' . h((string)($u['name'] ?? '')) . '"> <button type="submit">保存</button></form></details></td>'
         . '<td>' . h((string)($u['email'] ?? '')) . '</td><td style="white-space:nowrap">' . $role . '</td><td>' . ($stText[$st] ?? h($st)) . '</td><td class="n">' . $hubs . ' 台</td>'
         . '<td>' . (!empty($u['last_login']) ? h(date('Y-m-d H:i', (int)$u['last_login'])) : '<span class="muted">-</span>') . '</td><td>' . $ops . '</td></tr>';
 }
