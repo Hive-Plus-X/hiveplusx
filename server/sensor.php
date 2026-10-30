@@ -633,7 +633,6 @@ if (!$byKind['w']) {
             . ($seen > 0 && $now - $seen >= D_W_MISSING_S ? '<br><span class="ng">受信できていません</span>' : '') . '</td></tr>';
 
         // 較正の入力(表の下にまとめて出す)
-        $latestRaw = $last ? (string)$last[1] : '';
         $hid = '<input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
             . '<input type="hidden" name="mac" value="' . h($mac) . '">';
         foreach ($per as $k => $v) $hid .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
@@ -648,10 +647,10 @@ if (!$byKind['w']) {
         if (!$calOk) $f .= '<p>較正は HPX-Core の管理画面で行います。較正すると、次の送信でここに届いて kg で表示します。</p>';
         if ($calOk) {
             $f .= '<form method="post" onsubmit="return confirm(' . h(json_encode($nm . ' の今の重さを 0 kg にしますか?', JSON_UNESCAPED_UNICODE)) . ')"><input type="hidden" name="action" value="zero">' . $hid
-                . '<p><b>1. ゼロリセット</b> <span class="muted">何も載せていないときに押すと、最新の記録 (生の値 ' . h($latestRaw !== '' ? $latestRaw : '-') . ') を 0 kg にします。台を付け直したときなど。1kg あたりの値はそのままです。</span><br>'
+                . '<p><b>1. ゼロリセット</b> <span class="muted">現在の状態を0kgとします。</span><br>'
                 . '<button type="submit">ゼロリセット</button></p></form>'
                 . '<form method="post"><input type="hidden" name="action" value="offset">' . $hid
-                . '<p><b>2. 差し引く重さ</b> <span class="muted">空の巣箱やふたの重さを入れると、中身の重さだけを表示します。0 で元に戻ります。</span><br>'
+                . '<p><b>2. 差し引く重さ</b> <span class="muted">巣箱に乗せる重しなどの重さを入れると、巣箱だけの重さを表示できます。</span><br>'
                 . '<input type="number" step="0.01" name="offset_kg" value="' . h(isset($c['offset_kg']) ? (string)$c['offset_kg'] : '0') . '"> kg '
                 . '<button type="submit">保存</button></p></form>';
         }
