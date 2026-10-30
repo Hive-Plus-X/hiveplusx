@@ -646,7 +646,7 @@ if (!$byKind['w']) {
         foreach ($per as $k => $v) $hid .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
         $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
         if ($calOk) {
-            $f .= '<p class="muted">今の較正: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
+            $f .= '<p class="muted">今の較正値: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
                 . (isset($c['cal_g']) ? ' (' . h(number_format((float)$c['cal_g'])) . 'g で較正)' : (!empty($c['common']) ? ' (全台共通の値)' : ''))
                 . (($c['src'] ?? '') === 'HPX-core' ? ' ・ HPX-Core の管理画面で較正' : '')
                 . (!empty($c['offset_kg']) ? ' ・ 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg' : '')
