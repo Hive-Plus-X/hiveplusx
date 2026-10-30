@@ -71,8 +71,8 @@
   /* 引き出し線つきの画面写真
      パソコン: 画像の左右に説明 (幅 --side) を置き、画像の上の点から横線で結ぶ。
      スマホ: 画像の点に番号だけ出し、説明は画像の下に番号順に並べる。 */
-  .wide { max-width:1240px; }
-  .anno { --side:200px; --gap:18px; position:relative; margin:40px 0 0; padding:0 var(--side); container-type:inline-size; }
+  .wide { max-width:1300px; }
+  .anno { --side:230px; --gap:18px; position:relative; margin:40px 0 0; padding:0 var(--side); container-type:inline-size; }
   .anno .box { position:relative; }
   .anno img { display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--line); background:var(--panel); }
   /* 点: パソコンでは小さな丸、スマホでは番号つきの丸 */
@@ -157,16 +157,16 @@
         <div class="box"><img src="img/app_apiary.png" alt="蜂場の画面" loading="lazy">
           <span class="pt" style="--x:0.86;--y:0.064">1</span><span class="pt" style="--x:0.08;--y:0.087">2</span><span class="pt" style="--x:0.16;--y:0.14">3</span><span class="pt" style="--x:0.85;--y:0.15">4</span><span class="pt" style="--x:0.16;--y:0.21">5</span><span class="pt" style="--x:0.15;--y:0.27">6</span><span class="pt" style="--x:0.15;--y:0.355">7</span><span class="pt" style="--x:0.78;--y:0.397">8</span><span class="pt" style="--x:0.07;--y:0.43">9</span><span class="pt" style="--x:0.54;--y:0.474">10</span><span class="pt" style="--x:0.6;--y:0.535">11</span><span class="pt" style="--x:0.215;--y:0.72">12</span><span class="pt" style="--x:0.07;--y:0.885">13</span></div>
         <ol class="notes">
-            <li class="R" style="--x:0.86;--y:0.064"><b>巣箱の数</b>登録した巣箱と、蜂場全体の群数</li>
+            <li class="R" style="--x:0.86;--y:0.064"><b>巣箱の数</b>登録した巣箱数と、蜂場全体の巣箱数</li>
             <li class="L" style="--x:0.08;--y:0.087"><b>ハブの状態</b>蜂場に置いた HPX-Core が受信中かどうか</li>
             <li class="L" style="--x:0.16;--y:0.14"><b>蜂場の写真</b>蜂場ごとに写真を登録できます</li>
-            <li class="R" style="--x:0.85;--y:0.15"><b>地図</b>住所か緯度・経度から、蜂場の場所を Google マップで表示</li>
+            <li class="R" style="--x:0.85;--y:0.15"><b>地図</b>緯度・経度を登録すると、蜂場の場所を Google マップで表示</li>
             <li class="L" style="--x:0.16;--y:0.21"><b>3日間の天気</b>今日・明日・明後日の気温と降水確率</li>
-            <li class="L" style="--x:0.15;--y:0.27"><b>巣箱の重さ</b>直近3日の、巣箱の平均の重さ</li>
-            <li class="L" style="--x:0.15;--y:0.355"><b>巣箱の温度</b>直近3日の、巣箱の中心温度</li>
-            <li class="R" style="--x:0.78;--y:0.397"><b>巣箱ページへ</b>巣箱ごとの詳しいグラフに移ります</li>
-            <li class="L" style="--x:0.07;--y:0.43"><b>蜂場のタスク</b>近いタスクを表示。その場で完了・追加</li>
-            <li class="R" style="--x:0.54;--y:0.474"><b>蜂場詳細</b>住所・巣箱数・HPX-Core などの登録内容</li>
+            <li class="L" style="--x:0.15;--y:0.27"><b>巣箱の重さ</b>直近3日の平均巣箱重量の変化（センサを複数入れると蜂場の傾向がわかります）</li>
+            <li class="L" style="--x:0.15;--y:0.355"><b>巣箱の温度</b>直近3日の巣箱の中心温度の変化</li>
+            <li class="R" style="--x:0.78;--y:0.397"><b>巣箱ページへ</b>巣箱ごとの詳しいグラフに移動します</li>
+            <li class="L" style="--x:0.07;--y:0.43"><b>蜂場のタスク</b>設定日が近いタスクを表示。この画面から完了・追加もできます</li>
+            <li class="R" style="--x:0.54;--y:0.474"><b>蜂場詳細</b>住所・地主さんの連絡先・巣箱数・HPX-Core などの登録内容</li>
             <li class="R" style="--x:0.6;--y:0.535"><b>蜂場を追加</b>＋から新しい蜂場を登録</li>
             <li class="L" style="--x:0.215;--y:0.72"><b>重さの急な変化</b>継箱や採蜜で重さが変わったこともグラフで分かります</li>
             <li class="L" style="--x:0.07;--y:0.885"><b>期限が近いタスク</b>色が変わり、担当者と対象の巣箱も表示</li>
@@ -178,20 +178,20 @@
   <section id="hive">
     <div class="reveal wrap wide">
       <h2>巣箱</h2>
-      <p class="lead">巣箱ごとに、重さと温度・湿度の変化をグラフで追えます。</p>
+      <p class="lead">巣箱ごとに、重さと温度・湿度の変化をグラフで表示します。</p>
       <figure class="anno">
         <div class="box"><img src="img/app_hive.png" alt="巣箱の画面" loading="lazy">
           <span class="pt" style="--x:0.25;--y:0.077">1</span><span class="pt" style="--x:0.06;--y:0.13">2</span><span class="pt" style="--x:0.2;--y:0.177">3</span><span class="pt" style="--x:0.1;--y:0.32">4</span><span class="pt" style="--x:0.86;--y:0.52">5</span><span class="pt" style="--x:0.05;--y:0.668">6</span><span class="pt" style="--x:0.25;--y:0.723">7</span><span class="pt" style="--x:0.07;--y:0.775">8</span><span class="pt" style="--x:0.4;--y:0.875">9</span></div>
         <ol class="notes">
-            <li class="R" style="--x:0.25;--y:0.077"><b>蜂場を選ぶ</b>数字はその蜂場の巣箱の数</li>
+            <li class="R" style="--x:0.25;--y:0.077"><b>蜂場を選ぶ</b>蜂場名の横の数字はその蜂場の巣箱の数</li>
             <li class="L" style="--x:0.06;--y:0.13"><b>巣箱を選ぶ</b>蜂場の中の巣箱を切り替え。＋で巣箱を追加</li>
-            <li class="R" style="--x:0.2;--y:0.177"><b>表示する期間</b>1日・3日・7日・30日・全期間</li>
-            <li class="L" style="--x:0.1;--y:0.32"><b>重さのグラフ</b>基準日からの増減も表示。蜜の貯まり具合や分蜂の目安に</li>
-            <li class="R" style="--x:0.86;--y:0.52"><b>温度と湿度</b>巣箱の中の温度と湿度を1つのグラフに</li>
-            <li class="L" style="--x:0.05;--y:0.668"><b>重さの警報</b>増減が設定を超えたらメールでお知らせ</li>
+            <li class="R" style="--x:0.2;--y:0.177"><b>表示する期間</b>1日・3日・7日・30日・全期間を切り替えます</li>
+            <li class="L" style="--x:0.1;--y:0.32"><b>重さのグラフ</b>基準日を決めて、その日からの増減も表示。蜜の貯まり具合の把握に</li>
+            <li class="R" style="--x:0.86;--y:0.52"><b>温度と湿度</b>巣箱の中の温度と湿度を1つのグラフに表示</li>
+            <li class="L" style="--x:0.05;--y:0.668"><b>重さと温度の警報</b>増減量が設定を超えたらメールでお知らせ</li>
             <li class="R" style="--x:0.25;--y:0.723"><b>巣箱のタスク</b>この巣箱の予定を表示</li>
             <li class="L" style="--x:0.07;--y:0.775"><b>最近のメモ</b>内検の結果などを表示。ここからメモや作業記録も追加</li>
-            <li class="R" style="--x:0.4;--y:0.875"><b>群の詳細</b>状態・群を入れた日・女王・巣箱の種類</li>
+            <li class="R" style="--x:0.4;--y:0.875"><b>群の詳細</b>群の状態や導入日・女王・巣箱の種類などを記録しておきます</li>
         </ol>
       </figure>
     </div>
@@ -200,24 +200,24 @@
   <section id="memo">
     <div class="reveal wrap wide">
       <h2>メモ</h2>
-      <p class="lead">内検の結果や、蜂の様子、外敵、開花植物などを書き残せます。</p>
+      <p class="lead">内検の結果や、蜂の様子、外敵、開花植物など“ミツバチと周辺”のメモを書き残せます。</p>
       <figure class="anno">
         <div class="box"><img src="img/app_memo.png" alt="メモの画面: メモを書く欄を開き、内検の項目を入力したところ" loading="lazy">
-          <span class="pt" style="--x:0.1;--y:0.056">1</span><span class="pt" style="--x:0.1;--y:0.095">2</span><span class="pt" style="--x:0.15;--y:0.128">3</span><span class="pt" style="--x:0.06;--y:0.16">4</span><span class="pt" style="--x:0.55;--y:0.287">5</span><span class="pt" style="--x:0.82;--y:0.349">6</span><span class="pt" style="--x:0.06;--y:0.372">7</span><span class="pt" style="--x:0.06;--y:0.41">8</span><span class="pt" style="--x:0.5;--y:0.45">9</span><span class="pt" style="--x:0.1;--y:0.508">10</span><span class="pt" style="--x:0.6;--y:0.575">11</span><span class="pt" style="--x:0.6;--y:0.7">12</span><span class="pt" style="--x:0.1;--y:0.863">13</span><span class="pt" style="--x:0.4;--y:0.925">14</span></div>
+          <span class="pt" style="--x:0.1;--y:0.056">1</span><span class="pt" style="--x:0.1;--y:0.095">2</span><span class="pt" style="--x:0.15;--y:0.128">3</span><span class="pt" style="--x:0.06;--y:0.16">4</span><span class="pt" style="--x:0.55;--y:0.287">5</span><span class="pt" style="--x:0.82;--y:0.349">6</span><span class="pt" style="--x:0.06;--y:0.372">7</span><span class="pt" style="--x:0.45;--y:0.41">8</span><span class="pt" style="--x:0.5;--y:0.472">9</span><span class="pt" style="--x:0.1;--y:0.508">10</span><span class="pt" style="--x:0.6;--y:0.575">11</span><span class="pt" style="--x:0.6;--y:0.7">12</span><span class="pt" style="--x:0.1;--y:0.863">13</span><span class="pt" style="--x:0.4;--y:0.925">14</span></div>
         <ol class="notes">
             <li class="L" style="--x:0.1;--y:0.056"><b>メモを書く</b>押すと入力欄が開きます</li>
-            <li class="L" style="--x:0.1;--y:0.095"><b>対象と日付</b>蜂場全体、または巣箱ごとに記録</li>
-            <li class="R" style="--x:0.15;--y:0.128"><b>内容</b>内検・ミツバチ・トラブル・開花植物・その他</li>
-            <li class="L" style="--x:0.06;--y:0.16"><b>内検の項目</b>女王・卵・蜂児・王台・蜂数・貯蜜を選ぶだけ</li>
+            <li class="L" style="--x:0.1;--y:0.095"><b>対象と日付</b>蜂場全体、または巣箱ごとに記録ができます</li>
+            <li class="R" style="--x:0.15;--y:0.128"><b>内容</b>内検・ミツバチ・トラブル・開花植物・その他などについて記録できます</li>
+            <li class="L" style="--x:0.06;--y:0.16"><b>内検の項目</b>女王・卵・蜂児・王台・蜂数・貯蜜など主な項目は選ぶだけ</li>
             <li class="R" style="--x:0.55;--y:0.287"><b>行った処置</b>給餌・ダニ管理・管理をクリックで選択 (複数可)</li>
-            <li class="R" style="--x:0.82;--y:0.349"><b>ダニ調査</b>方法と数を入れると、寄生率を自動で計算</li>
-            <li class="L" style="--x:0.06;--y:0.372"><b>作業記録にも追加</b>内検の時間を記録ページにも</li>
-            <li class="L" style="--x:0.06;--y:0.41"><b>タグ</b>分蜂・スズメバチ・クマなど。自分で追加もできます</li>
-            <li class="R" style="--x:0.5;--y:0.45"><b>メモ</b>気づいたことを自由に</li>
+            <li class="R" style="--x:0.82;--y:0.349"><b>ダニ調査</b>検査したミツバチ数と見つかったダニ数を入れると、寄生率を自動で計算</li>
+            <li class="L" style="--x:0.06;--y:0.372"><b>作業記録にも追加</b>内検にかかった時間は作業記録と連動して残せます</li>
+            <li class="R" style="--x:0.45;--y:0.41"><b>タグ</b>分蜂・スズメバチ・クマなどよく使うキーワードはタグを押すだけ。自分で追加もできます</li>
+            <li class="R" style="--x:0.5;--y:0.472"><b>メモ</b>気づいたことを自由に</li>
             <li class="L" style="--x:0.1;--y:0.508"><b>写真</b>1つのメモに5枚まで</li>
-            <li class="R" style="--x:0.6;--y:0.575"><b>メモを探す</b>蜂場・巣箱・内容・記入者・ことばで探せます</li>
+            <li class="R" style="--x:0.6;--y:0.575"><b>メモを探す</b>蜂場・巣箱・内容・記入者・キーワード検索できます</li>
             <li class="R" style="--x:0.6;--y:0.7"><b>保存した内検</b>選んだ項目と寄生率が一覧に並びます</li>
-            <li class="L" style="--x:0.1;--y:0.863"><b>開花植物</b>何がいつ咲いたかを写真と一緒に</li>
+            <li class="L" style="--x:0.1;--y:0.863"><b>開花植物</b>どんな花がいつ咲いたかを写真と一緒に記録できます</li>
             <li class="R" style="--x:0.4;--y:0.925"><b>ミツバチの様子</b>分蜂など、蜂の様子の記録</li>
         </ol>
       </figure>
@@ -227,19 +227,19 @@
   <section id="task">
     <div class="reveal wrap wide">
       <h2>タスク</h2>
-      <p class="lead">これからの作業を予定にして、チームで分担できます。</p>
+      <p class="lead">これからの作業を予定にして、チームで分担することもできます。</p>
       <figure class="anno">
         <div class="box"><img src="img/app_task.png" alt="タスクの画面" loading="lazy">
           <span class="pt" style="--x:0.05;--y:0.088">1</span><span class="pt" style="--x:0.17;--y:0.13">2</span><span class="pt" style="--x:0.6;--y:0.283">3</span><span class="pt" style="--x:0.07;--y:0.41">4</span><span class="pt" style="--x:0.84;--y:0.41">5</span><span class="pt" style="--x:0.05;--y:0.502">6</span><span class="pt" style="--x:0.9;--y:0.868">7</span><span class="pt" style="--x:0.05;--y:0.957">8</span></div>
         <ol class="notes">
-            <li class="L" style="--x:0.05;--y:0.088"><b>蜂場を選ぶ</b>蜂場ごと、またはすべての蜂場のタスク</li>
+            <li class="L" style="--x:0.05;--y:0.088"><b>蜂場を選ぶ</b>蜂場ごと、または蜂場に限らない作業のタスクも入力可能</li>
             <li class="R" style="--x:0.17;--y:0.13"><b>タスクを追加</b>やること・タグ・期限・担当・対象を入れて登録</li>
-            <li class="R" style="--x:0.6;--y:0.283"><b>担当と対象</b>担当は何人でも。対象は蜂場か巣箱</li>
-            <li class="L" style="--x:0.07;--y:0.41"><b>期限</b>近づくと色付きで「あと何日」。✉ はメールでお知らせ</li>
-            <li class="R" style="--x:0.84;--y:0.41"><b>完了・コピー</b>終わったら完了に。ほかの蜂場へもコピーできます</li>
+            <li class="R" style="--x:0.6;--y:0.283"><b>担当と対象</b>担当者は複数人でも入れられます。対象は蜂場か巣箱</li>
+            <li class="L" style="--x:0.07;--y:0.41"><b>期限</b>近づくと色付きで「あと何日」と表示。✉ ：メールでお知らせします</li>
+            <li class="R" style="--x:0.84;--y:0.41"><b>完了・コピー</b>終わったら完了に。同じタスクはコピーして、入力の手間を省きます</li>
             <li class="L" style="--x:0.05;--y:0.502"><b>月を切り替え</b>前の月・次の月のカレンダーへ</li>
-            <li class="R" style="--x:0.9;--y:0.868"><b>月のカレンダー</b>タスクを期限の日に表示。今日の日付に色</li>
-            <li class="L" style="--x:0.05;--y:0.957"><b>Google カレンダー</b>期限のあるタスクを自分のカレンダーにも表示できます</li>
+            <li class="R" style="--x:0.9;--y:0.868"><b>月のカレンダー</b>タスクをカレンダー形式で表示。</li>
+            <li class="L" style="--x:0.05;--y:0.957"><b>Google カレンダー</b>タスクを自分のGoogleカレンダーにも表示できます</li>
         </ol>
       </figure>
     </div>
@@ -248,18 +248,18 @@
   <section id="work">
     <div class="reveal wrap wide">
       <h2>記録</h2>
-      <p class="lead">作業にかかった時間を残し、月ごと・人ごとに集計します。</p>
+      <p class="lead">作業にかかった時間を記録し、月ごと・人ごとに集計します。</p>
       <figure class="anno">
         <div class="box"><img src="img/app_work.png" alt="記録の画面" loading="lazy">
           <span class="pt" style="--x:0.05;--y:0.08">1</span><span class="pt" style="--x:0.15;--y:0.118">2</span><span class="pt" style="--x:0.05;--y:0.2">3</span><span class="pt" style="--x:0.3;--y:0.282">4</span><span class="pt" style="--x:0.12;--y:0.45">5</span><span class="pt" style="--x:0.55;--y:0.637">6</span><span class="pt" style="--x:0.83;--y:0.725">7</span></div>
         <ol class="notes">
-            <li class="L" style="--x:0.05;--y:0.08"><b>蜂場を選ぶ</b>蜂場ごと、またはすべての蜂場の記録</li>
+            <li class="L" style="--x:0.05;--y:0.08"><b>蜂場を選ぶ</b>蜂場ごと、または蜂場に限定しない作業も記録します</li>
             <li class="R" style="--x:0.15;--y:0.118"><b>作業を記録</b>準備・内検・給餌・採蜜などの作業と時間</li>
-            <li class="L" style="--x:0.05;--y:0.2"><b>この月の合計</b>合計時間と、作業内容ごとの内訳</li>
-            <li class="R" style="--x:0.3;--y:0.282"><b>人ごとに見る</b>メンバーごとの作業時間に切り替え</li>
-            <li class="L" style="--x:0.12;--y:0.45"><b>12か月のグラフ</b>作業時間を、作業内容ごとに色分け</li>
+            <li class="L" style="--x:0.05;--y:0.2"><b>この月の合計</b>合計時間と、作業内容ごとの内訳を表示</li>
+            <li class="R" style="--x:0.3;--y:0.282"><b>人ごとに見る</b>メンバーごとの作業時間に切り替えできます</li>
+            <li class="L" style="--x:0.12;--y:0.45"><b>12か月のグラフ</b>作業時間を作業内容ごとに色分け</li>
             <li class="R" style="--x:0.55;--y:0.637"><b>作業の一覧</b>作業した人は複数選べます。時間×人数で、のべ時間も</li>
-            <li class="R" style="--x:0.83;--y:0.725"><b>メモと連動</b>内検メモを書くと、作業記録にも自動で入ります</li>
+            <li class="R" style="--x:0.83;--y:0.725"><b>メモと連動</b>内検メモを書くと、作業記録にも連動して自動で入ります</li>
         </ol>
       </figure>
     </div>
