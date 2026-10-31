@@ -4,7 +4,7 @@ id,category,name,detail,shop,url,pack,unit,price,alt_of,core,core_wp,w_cr,w_aa,t
 ,ケース用基板,WC90-21-N用基板,タカチ　WCPB-90,,https://www.monotaro.com/p/5513/0364/,1,枚,129,,,1,,,,,
 ,ケース,小型 汎用プラスチックケース TWシリーズ,タカチ　TW5-3-9B,秋月電子通商,https://akizukidenshi.com/catalog/g/g117042/,1,個,220,,,,1,,,,
 ,ケース,TW5-3-9用基板,タカチ TNF39-70,,https://www.monotaro.com/g/00965857/,1,枚,289,,,,1,,,,
-,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,330,,,,,1,,,
+,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,359,,,,,1,,,
 ,ケース,SW-130用基板,タカチ TNF34-124,モノタロウ,https://www.monotaro.com/g/00965857/,1,枚,349,,,,,1,,,
 ,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-65B,秋月電子通商,https://akizukidenshi.com/catalog/g/g115128/,1,個,170,,,,,,1,,
 ,ケース,SW-65用基板,タカチ　TNF39-59,モノタロウ,https://www.monotaro.com/g/00965857/,1,枚,239,,,,,,1,,
@@ -45,4 +45,3 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,代わり,CdSセル (1MΩ) GL5528,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105886/,4,個,100,cds,,,,,,,
 ,代わり,アルミ不等辺アングル t3.0 25×50×300,,山新,,30,cm,648,angle,,,,,,,
 ,代わり,タカチ LCS115H-M2-DR (シリコンカバー付き),,,https://www.takachi-el.co.jp/products/LCS,1,個,1098,lc115,,,,,,,
-,電子部品,ユニバーサル基板 Fタイプ,両面スルーホールガラスコンポジット・ユニバーサル基板 Fタイプ (23.5×18mm),秋月電子通商,https://akizukidenshi.com/catalog/g/g112731/,1,枚,40,,,,,,,,
