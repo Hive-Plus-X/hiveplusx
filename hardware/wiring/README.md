@@ -1,0 +1,21 @@
+# 配線図
+
+各機器の配線図です。HPX-W・HPX-TH・HPX-A は、小さめのユニバーサル基板 (2.54mm ピッチ、穴 24×16 ≒ 61×41mm 以上) に部品を載せてはんだ付けする図です。穴の位置は「列の文字＋行の数字」(例: M4) で書いてあります。PNG はそのまま見る用、SVG は拡大しても荒れない元データです。
+
+| 機器 | 図 | ピン (ファーム) |
+|---|---|---|
+| HPX-W (重量) | [HPX-W_pcb.png](HPX-W_pcb.png) | HX711 DT=D0, SCK=D1 (HPX_WeightNode v1.01)。電源 CR123A |
+| HPX-TH (温湿度) | [HPX-TH_pcb.png](HPX-TH_pcb.png) | SHT40 (SDA=D4, SCL=D5) + サーミスター (D3 → 10kΩ → A2、A2–GND)。電源 CR123A |
+| HPX-A (電柵アラート) | [HPX-A_pcb.png](HPX-A_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.02)。電源 CR123A |
+| HPX-Core (親機) | [HPX-Core_wiring.png](HPX-Core_wiring.png) | 外付けの配線なし。USB 電源 (HPX_Core v1.15) |
+
+部品表は [部品表.md](部品表.md) にあります。
+
+図は `gen_pcb.py` (基板の図) と `gen_wiring.py` (HPX-Core の図) で作っています。`python3 gen_pcb.py <出力フォルダ>` で SVG を作り直せます。
+
+## まだ確かめていないこと
+
+- ロードセル SC601 の線の色の割り当て (図は一般的な 赤=E+ 黒=E- 白=A- 緑=A+)
+- HPX-A の CdS セルで警報器の点滅を数えられるか (CdS は反応が遅め)
+- SHT40 モジュール・HX711 モジュールのピンの並び (基板の印字で確認)
+- 基板の図は実際に組んで確かめていません

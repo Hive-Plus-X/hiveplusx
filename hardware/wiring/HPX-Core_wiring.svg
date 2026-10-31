@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1260" viewBox="0 0 1280 1260">
+<rect width="100%" height="100%" fill="#fffdf6"/>
+<rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-Core（親機）部品表と配線図</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ファーム HPX_Core v1.15 ／ Freenove FNK0090B（ESP32-WROOM-32E）／ 電源 USB</text>
+<rect x="520" y="160" width="240" height="400" rx="10" fill="#263238" stroke="#111" stroke-width="3"/>
+<rect x="560" y="190" width="160" height="170" rx="6" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+<text x="640" y="270" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ESP32-</text>
+<text x="640" y="292" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">WROOM-32E</text>
+<rect x="605" y="545" width="70" height="30" rx="6" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
+<rect x="550" y="480" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="570" y="530" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">BOOT</text>
+<rect x="690" y="480" width="40" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="710" y="530" font-size="13" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">RESET</text>
+<circle cx="640" cy="420" r="10" fill="#42a5f5" stroke="#0d47a1" stroke-width="2"/>
+<text x="660" y="426" font-size="13" text-anchor="start" font-weight="normal" fill="#eee" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">LED（GPIO2）</text>
+<circle cx="534" cy="200" r="5" fill="#d4af37"/>
+<circle cx="746" cy="200" r="5" fill="#d4af37"/>
+<circle cx="534" cy="222" r="5" fill="#d4af37"/>
+<circle cx="746" cy="222" r="5" fill="#d4af37"/>
+<circle cx="534" cy="244" r="5" fill="#d4af37"/>
+<circle cx="746" cy="244" r="5" fill="#d4af37"/>
+<circle cx="534" cy="266" r="5" fill="#d4af37"/>
+<circle cx="746" cy="266" r="5" fill="#d4af37"/>
+<circle cx="534" cy="288" r="5" fill="#d4af37"/>
+<circle cx="746" cy="288" r="5" fill="#d4af37"/>
+<circle cx="534" cy="310" r="5" fill="#d4af37"/>
+<circle cx="746" cy="310" r="5" fill="#d4af37"/>
+<circle cx="534" cy="332" r="5" fill="#d4af37"/>
+<circle cx="746" cy="332" r="5" fill="#d4af37"/>
+<circle cx="534" cy="354" r="5" fill="#d4af37"/>
+<circle cx="746" cy="354" r="5" fill="#d4af37"/>
+<circle cx="534" cy="376" r="5" fill="#d4af37"/>
+<circle cx="746" cy="376" r="5" fill="#d4af37"/>
+<circle cx="534" cy="398" r="5" fill="#d4af37"/>
+<circle cx="746" cy="398" r="5" fill="#d4af37"/>
+<circle cx="534" cy="420" r="5" fill="#d4af37"/>
+<circle cx="746" cy="420" r="5" fill="#d4af37"/>
+<circle cx="534" cy="442" r="5" fill="#d4af37"/>
+<circle cx="746" cy="442" r="5" fill="#d4af37"/>
+<circle cx="534" cy="464" r="5" fill="#d4af37"/>
+<circle cx="746" cy="464" r="5" fill="#d4af37"/>
+<circle cx="534" cy="486" r="5" fill="#d4af37"/>
+<circle cx="746" cy="486" r="5" fill="#d4af37"/>
+<circle cx="534" cy="508" r="5" fill="#d4af37"/>
+<circle cx="746" cy="508" r="5" fill="#d4af37"/>
+<text x="640" y="130" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Freenove FNK0090B</text>
+<text x="640" y="150" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（図はイメージ。ボタンの位置は実物で確認）</text>
+<rect x="580" y="640" width="120" height="70" rx="10" fill="#eeeeee" stroke="#999" stroke-width="2"/>
+<text x="640" y="680" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB 電源</text>
+<text x="640" y="700" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（5V・コンセント）</text>
+<path d="M640,575 L640,640" stroke="#424242" stroke-width="9" stroke-linecap="round"/>
+<text x="655" y="610" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB ケーブル</text>
+<rect x="70" y="210" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="240" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-W</text>
+<text x="90" y="264" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">重量（BLE）</text>
+<path d="M380,245 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="70" y="320" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="350" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-TH</text>
+<text x="90" y="374" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">温湿度（BLE）</text>
+<path d="M380,355 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="70" y="430" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="460" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-A</text>
+<text x="90" y="484" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電柵アラート（BLE）</text>
+<path d="M380,465 L500,310" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<text x="220" y="190" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電線なし（電波で受信）</text>
+<rect x="830" y="270" width="360" height="84" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="850" y="305" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi ルーター → サーバー</text>
+<text x="850" y="332" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Wi-Fi で送る（電線なし）</text>
+<path d="M770,310 L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<text x="60" y="788" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品表</text>
+<rect x="60" y="800" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="821" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品</text>
+<text x="630" y="821" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">数</text>
+<text x="680" y="821" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">使うところ・メモ</text>
+<rect x="60" y="830" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="851" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ESP32 開発ボード Freenove FNK0090B 4MB</text>
+<text x="630" y="851" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="851" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">本体（親機）</text>
+<rect x="60" y="860" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="881" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB ケーブル（ボードの差し込み口に合うもの）</text>
+<text x="630" y="881" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="881" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電源と書き込み</text>
+<rect x="60" y="890" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">USB 電源アダプター 5V（1A 以上）</text>
+<text x="630" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="680" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">コンセントから電源を取る</text>
+<rect x="60" y="940" width="1160" height="138" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="966" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
+<text x="78" y="994" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・HPX-Core には外付けの部品も配線もありません。USB 電源をつなぐだけで動きます。</text>
+<text x="78" y="1020" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・コンデンサー（0.1µF・100µF）と電池ケースは、USB 電源なら要りません。</text>
+<text x="78" y="1046" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</text>
+<text x="78" y="1072" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・BOOT：工場出荷リセットに使う（RESET を押して離し、3秒以内に BOOT を5秒長押し）。</text>
+</svg>
