@@ -197,7 +197,7 @@ def solder_mark(s, c, r):
 
 # ------------------------------------------------------------------ タカチ基板版
 P = 40                      # 穴の間隔 (px) = 2.54mm
-ROWS = "ABCDEFGHIJKLMNOP"
+ROWS = "ABCDEFGHIJKLMNOPQRSTU"
 OX, OY = 340, 230           # 基板の穴 (行A, 列1) の位置
 CX, CY = 0, 0               # 回路 (ローカル座標) を基板のどこに置くか
 BW = BH = 0                 # 基板の穴の数 (列, 行)
@@ -689,3 +689,5 @@ def make_TH_on(fname):
 make_TH_on("HPX-TH_CR123A_TNF39-59.svg")
 #make_TH("HPX-TH_CR123A_TNF39-59.svg", "TNF39-59", 59, 39, 21, 14, 6, 2, "CR123A", 6)
 print("ok")
+
+make_TH("HPX-TH_AA_LC115H.svg", "（仮）LC115H-M2-D 用", 56, 50, 21, 19, 6, 4, "単3リチウム×2", 6)
