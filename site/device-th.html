@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPX-TH の作り方 | Hive Plus X</title>
+<meta name="description" content="HPX-TH を作るのに必要な部品の一覧です。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ページの見出し */
+  .hero { padding:200px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:140px 20px 0; } }
+  .hero h1 { font-size:clamp(26px, 4.4vw, 38px); margin-top:6px; line-height:1.4; }
+  .hero p.lead { margin:14px auto 0; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+  .jump { display:flex; justify-content:center; gap:8px; margin-top:28px; flex-wrap:wrap; list-style:none; }
+  .jump a { display:block; padding:5px 16px; border-radius:999px; border:1px solid var(--line); background:var(--panel); text-decoration:none; font-size:14px; }
+  .jump a:hover { border-color:var(--honey); }
+
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  section { margin-top:200px; scroll-margin-top:80px; }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { section { margin-top:140px; } main { padding-bottom:200px; } }
+  .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .tag { color:var(--honey); } }
+  h2 { font-size:clamp(22px, 3vw, 28px); margin-top:6px; line-height:1.4; }
+  .note { color:var(--sub); margin-top:8px; }
+
+  /* 機器の一覧 (devices.html) */
+  .devs { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; margin-top:56px; }
+  @media (max-width:760px) { .devs { grid-template-columns:1fr; } }
+  .dev { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; text-decoration:none; display:block; scroll-margin-top:80px; }
+  a.dev:hover { border-color:var(--honey); }
+  .dev h3 { font-size:20px; margin-top:8px; }
+  .dev p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .dev .vars { font-size:13px; margin-top:10px; color:var(--text); }
+  .dev.soon { border-style:dashed; }
+
+  /* 部品表 */
+  .parts { width:100%; border-collapse:collapse; margin-top:24px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
+  .parts th, .parts td { padding:10px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .parts thead th { border-top:0; font-size:13px; color:var(--sub); font-weight:700; white-space:nowrap; }
+  .parts .cat th { background:rgba(47,93,69,.07); color:var(--forest); font-size:13px; padding:6px 14px; }
+  @media (prefers-color-scheme: dark) { .parts .cat th { background:rgba(0,0,0,.18); color:var(--honey); } }
+  .parts td.n { text-align:center; white-space:nowrap; font-weight:700; width:96px; }
+  .parts td.n.none { color:var(--sub); font-weight:400; }
+  .parts .part b { display:block; font-weight:600; }
+  .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tr.diff td { background:var(--honey-soft); }
+  .legend { font-size:13px; color:var(--sub); margin-top:10px; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
+  /* スマホ: 1部品ずつのかたまりにする */
+  @media (max-width:760px) {
+    .parts, .parts tbody, .parts tr, .parts td, .parts th { display:block; width:auto; }
+    .parts thead { display:none; }
+    .parts tr { border-top:1px solid var(--line); padding:10px 14px; }
+    .parts .cat { padding:0; }
+    .parts td { border:0; padding:0; }
+    .parts tr.diff { background:var(--honey-soft); }
+    .parts tr.diff td { background:none; }
+    .parts td.shop { margin-top:2px; font-size:13px; }
+    .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
+    .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+  }
+  .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
+  .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <p class="eyebrow">Devices</p>
+    <h1>HPX-TH</h1>
+    <p class="lead">巣箱の中の温度と湿度を測り、Bluetooth で発信します。</p>
+    <p class="lead">電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。</p>
+  </div>
+
+  <section id="parts">
+    <div class="reveal wrap">
+      <span class="tag">温湿度</span>
+      <h2>部品表</h2>
+      <p class="note">必要な部品と数です。版ごとの数を並べています (CR123A 版 / 単三リチウム版)。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">CR123A 版</th><th class="n">単三リチウム版</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="4">チップボード</th></tr>
+        <tr><td class="part"><b>nRF52840</b><span>Seeed XIAO BLE nRF52840</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">電子部品</th></tr>
+        <tr><td class="part"><b>絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</b><span>コンデンサー100μF</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b>積層セラミックコンデンサー 0.1μF50V C0G 5mm</b><span>コンデンサー0.1μF</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b>サーミスター</b><span>10kΩ(平行線タイプ)</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b>SHT40</b><span>温湿度センサ
+SHT31,SHT41などでも可</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b>ジャンパー線</b><span>被覆ありのもの</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">8</td><td class="n" data-v="単三リチウム版">8</td></tr>
+        <tr class="cat"><th colspan="4">電源</th></tr>
+        <tr><td class="part"><b>単三リチウム電池</b><span>エナジャイザー リチウム乾電池 単3形</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">2</td><td class="n" data-v="単三リチウム版">2</td></tr>
+        <tr class="cat"><th colspan="4">ケース</th></tr>
+        <tr class="diff"><td class="part"><b>プラスチックケース 小型・低価格型 SWシリーズ</b><span>タカチ　SW-65B</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="diff"><td class="part"><b>ハンドタイプ プラスチックケース LCシリーズ
+単3×2電池ボックス</b><span>タカチ　LC115H-M2-D</span></td><td class="shop">—</td><td class="n none" data-v="CR123A 版">—</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">ケース用基板</th></tr>
+        <tr class="diff"><td class="part"><b>SW-65用基板</b><span>タカチ　TNF39-59</span></td><td class="shop">モノタロウ</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="cat"><th colspan="4">部材</th></tr>
+        <tr><td class="part"><b>基板固定用タッピングビス EMシリーズ</b><span>M2.5ビス　EM-2.3-8</span></td><td class="shop">モノタロウ</td><td class="n" data-v="CR123A 版">4</td><td class="n" data-v="単三リチウム版">4</td></tr>
+        </tbody>
+      </table>
+      <p class="legend"><i></i>色の付いた行は、版によって違う部品です。</p>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="reveal wrap">
+      <h2>作り方</h2>
+      <div class="soonbox">配線図と組み立ての手順は、準備ができしだい掲載します。</div>
+      <a class="back" href="devices.html">機器の一覧へ戻る</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
