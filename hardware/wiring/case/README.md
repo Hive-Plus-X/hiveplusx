@@ -5,8 +5,8 @@
 
 | 機器 | 電池 | 基板 | 図 |
 |---|---|---|---|
-| HPX-W | CR123A | TNF39-70 (70×39.5mm、穴 25×14) | [HPX-W_CR123A_TNF39-70.png](HPX-W_CR123A_TNF39-70.png) |
-| HPX-W | 単3リチウム×2 | TNF34-124 (124×34mm、穴 47×12) | [HPX-W_AA_TNF34-124.png](HPX-W_AA_TNF34-124.png) |
+| HPX-W | CR123A | TNF39-70 (70×39.5mm、穴 25×14)。左下 44×22mm を切り取り、CR123A ケース (秋月 110192) を置く | [HPX-W_CR123A_TNF39-70.png](HPX-W_CR123A_TNF39-70.png) |
+| HPX-W | 単3リチウム×2 | TNF34-124 (124×34mm、穴 47×12)。右側に電池ボックス (秋月 117271) を両面テープで貼る | [HPX-W_AA_TNF34-124.png](HPX-W_AA_TNF34-124.png) |
 | HPX-TH | CR123A | TNF39-59 (59×39mm、穴 21×14) | [HPX-TH_CR123A_TNF39-59.png](HPX-TH_CR123A_TNF39-59.png) |
 | HPX-TH | 単3リチウム×2 | ケース LC115H-M2-D の推奨基板 | (寸法の確認待ち) |
 

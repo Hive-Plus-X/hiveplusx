@@ -209,19 +209,33 @@ def H(c, r):
 def hn(c, r):
     return f"{ROWS[r+CY]}{c+CX+1}"
 
-def board_tnf(s, model, wmm, hmm, nc, nr):
-    """タカチ TNF 基板。横が長い向きで描く。穴は 行の文字 (A〜) ＋ 列の数字 (1〜)"""
-    global BW, BH, BOT
+GEO = None
+
+def board_tnf(s, model, wmm, hmm, nc, nr, cut=None):
+    """タカチ TNF 基板。横が長い向きで描く。穴は 行の文字 (A〜) ＋ 列の数字 (1〜)。
+    cut=(幅mm, 高さmm) なら左下を切り欠く"""
+    global BW, BH, BOT, GEO
     BW, BH = nc, nr
     k = P / 2.54
     gw, gh = (nc - 1) * P, (nr - 1) * P
     bw, bh = wmm * k, hmm * k
     x0, y0 = OX + gw / 2 - bw / 2, OY + gh / 2 - bh / 2
     BOT = y0 + bh
-    s.rect(x0, y0, bw, bh, "#e8d3a8", "#8d6e3f", 8, 2.5)
+    GEO = (x0, y0, bw, bh, k)
+    def in_cut(x, y, pad=0):
+        return cut and x < x0 + cut[0] * k + pad and y > y0 + bh - cut[1] * k - pad
+    if cut:
+        cx, cy = x0 + cut[0] * k, y0 + bh - cut[1] * k
+        s.add(f'<rect x="{x0}" y="{cy}" width="{cx-x0}" height="{y0+bh-cy}" fill="none" stroke="#b71c1c" stroke-width="2" stroke-dasharray="8 5"/>')
+        s.add(f'<path d="M{x0},{y0} L{x0+bw},{y0} L{x0+bw},{y0+bh} L{cx},{y0+bh} L{cx},{cy} L{x0},{cy} Z" fill="#e8d3a8" stroke="#8d6e3f" stroke-width="2.5" stroke-linejoin="round"/>')
+        s.text((x0 + cx) / 2, y0 + bh + 26, f"ここを切り取る（{cut[0]}×{cut[1]}mm）", 14, "middle", "bold", "#b71c1c")
+    else:
+        s.rect(x0, y0, bw, bh, "#e8d3a8", "#8d6e3f", 8, 2.5)
     for c in range(nc):
         for r in range(nr):
             x, y = OX + c * P, OY + r * P
+            if in_cut(x, y, 1.0 * k):
+                continue
             s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#d9a441" stroke="#a87b24" stroke-width="1"/>')
             s.add(f'<circle cx="{x}" cy="{y}" r="2.6" fill="#5d4520"/>')
     for c in range(nc):
@@ -232,20 +246,53 @@ def board_tnf(s, model, wmm, hmm, nc, nr):
     # 四すみの取付穴 (位置は目安)。すぐ内側の穴は使わない
     m = 3.5 * k
     for hx, hy in ((x0 + m, y0 + m), (x0 + bw - m, y0 + m), (x0 + m, y0 + bh - m), (x0 + bw - m, y0 + bh - m)):
+        if in_cut(hx, hy):
+            continue
         s.add(f'<circle cx="{hx}" cy="{hy}" r="{1.6*k}" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2" stroke-dasharray="4 3"/>')
     for c, r in ((0, 0), (nc - 1, 0), (0, nr - 1), (nc - 1, nr - 1)):
         x, y = OX + c * P, OY + r * P
+        if in_cut(x, y, 1.0 * k):
+            continue
         s.add(f'<path d="M{x-7},{y-7} L{x+7},{y+7} M{x-7},{y+7} L{x+7},{y-7}" stroke="#9e9e9e" stroke-width="2.5"/>')
     s.text(x0 + bw / 2, y0 - 34, f"タカチ {model}（{wmm}×{hmm}mm、穴 {nc}×{nr}、2.54mm ピッチ）", 16, "middle", "bold", "#5d4520")
     return x0, y0, bw, bh
 
-def flat_module(s, rows, names, color, cols, label, lab2):
+def mmxy(xm, ym):
+    x0, y0, bw, bh, k = GEO
+    return x0 + xm * k, y0 + ym * k
+
+def aa_holder_on(s, xm, wm=57.1, hm=32):
+    """単3×2本ボックス (秋月 117271、57.1×32mm) を基板の上に載せる。左端からリード線"""
+    x0, y0, bw, bh, k = GEO
+    x, y = mmxy(xm, (bh / k - hm) / 2)
+    w, h = wm * k, hm * k
+    s.top.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="#455a64" fill-opacity="0.9" stroke="#263238" stroke-width="3"/>')
+    for i in range(2):
+        cy = y + h * (0.27 + 0.46 * i)
+        s.top.append(f'<rect x="{x+18}" y="{cy-h*0.19}" width="{w-36}" height="{h*0.38}" rx="20" fill="#c0ca33" stroke="#827717" stroke-width="2"/>')
+        s.text(x + w / 2, cy + 5, "単3リチウム", 14, "middle", "bold", "#333", layer=s.top)
+    s.text(x + w / 2, y + h / 2 + 5, "電池ボックス 単3×2本（秋月 117271、57.1×32mm）両面テープで貼る", 14, "middle", "bold", "#fff", layer=s.top)
+    return x, y, w, h
+
+def cr123a_in_cut(s, xm, ym):
+    """CR123A ケース (秋月 110192、43×18mm、ピン付き) を切り欠きに置く"""
+    x0, y0, bw, bh, k = GEO
+    x, y = mmxy(xm, ym)
+    w, h = 43 * k, 18 * k
+    s.top.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="#37474f" stroke="#222" stroke-width="3"/>')
+    s.top.append(f'<rect x="{x+22}" y="{y+16}" width="{w-44}" height="{h-32}" rx="30" fill="#b0bec5" stroke="#607d8b" stroke-width="2"/>')
+    s.text(x + w / 2, y + h / 2 + 6, "CR123A（3V）", 15, "middle", "bold", "#263238", layer=s.top)
+    s.text(x + 10, y + 24, "＋", 15, "start", "bold", "#fff", layer=s.top)
+    s.text(x + w - 10, y + 26, "−", 18, "end", "bold", "#fff", layer=s.top)
+    return (x + 6, y + h / 2), (x + w - 6, y + h / 2)
+
+def flat_module(s, rows, names, color, cols, label, lab2, col=0):
     """モジュールをピンヘッダで寝かせて付ける (基板と平行)。ピンはローカル列 0、本体は左へ cols 穴分"""
-    xa, ytop = H(0, rows[0]); _, ybot = H(0, rows[-1])
+    xa, ytop = H(col, rows[0]); _, ybot = H(col, rows[-1])
     w = cols * P
     s.top.append(f'<rect x="{xa-w}" y="{ytop-22}" width="{w+18}" height="{ybot-ytop+44}" rx="6" fill="{color}" fill-opacity="0.82" stroke="#333" stroke-width="2"/>')
     for r, n in zip(rows, names):
-        x, y = H(0, r)
+        x, y = H(col, r)
         s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
         s.text(x - 14, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
     s.text(xa - w / 2, ybot + 44, label, 13, "middle", "bold", "#222", layer=s.top)
@@ -308,7 +355,7 @@ def rail_rows(cp, cm, p):
     ]
 
 # ------------------------------------------------------------------ HPX-W
-def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols):
+def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols, onboard=None):
     global CX, CY
     CX, CY = 0, 0
     width = max(1280, OX + (nc - 1) * P + 260)
@@ -323,8 +370,8 @@ def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols):
     wireh(s, [(0, 4), (0, 9), (9, 9)], "red")
     wireh(s, [p["D0"], (0, 2)], "yellow")
     wireh(s, [p["D1"], (0, 3)], "blue")
-    cap_flat(s, (9, 6), (11, 6), "100µF", True, (H(11, 6)[0] + 22, H(11, 6)[1] - 16))
-    cap_flat(s, (9, 8), (11, 8), "0.1µF", False, (H(11, 8)[0] + 22, H(11, 8)[1] - 16))
+    cap_flat(s, (9, 6), (11, 6), "100µF", True, (H(10, 6)[0], H(10, 6)[1] - 22), "middle")
+    cap_flat(s, (9, 8), (11, 8), "0.1µF", False, (H(10, 8)[0], H(10, 8)[1] - 18), "middle")
     lx, ty, by = flat_module(s, [1, 2, 3, 4], ["GND", "DT", "SCK", "VCC"], "#2e7d32", hxcols,
                              "HX711 モジュール", "ピンヘッダで寝かせて付ける（基板と平行）")
     s.top.append(f'<rect x="{lx+90}" y="{(ty+by)/2-24}" width="48" height="48" fill="#212121"/>')
@@ -343,8 +390,16 @@ def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols):
             s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
         else:
             s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
-    yb = battery_case_below(s, 9, 11, 10, batt)
-    bname = "CR123A 用電池ケース ／ CR123A 電池" if batt == "CR123A" else "単3×2本 直列の電池ケース ／ 単3リチウム電池（例 エナジャイザー L91）"
+    if onboard is None:
+        yb = battery_case_below(s, 9, 11, 10, batt)
+    else:
+        hx, hy, hw, hh = aa_holder_on(s, onboard)
+        tp, tm = H(9, 10), H(11, 10)
+        s.wire([(hx + 10, tm[1]), tm], "black")
+        s.wire([(hx + 10, tm[1] + 24), (tp[0], tm[1] + 24), tp], "red")
+        solder_mark(s, 9, 10); solder_mark(s, 11, 10)
+        yb = BOT + 30
+    bname = "CR123A 用電池ケース ／ CR123A 電池" if batt == "CR123A" else "電池ボックス 単3×2本 リード線（秋月 117271）／ 単3リチウム電池 2本"
     y = table(s, 60, yb + 40, [
         ["線", "どこから（穴）", "どこへ（穴）", "役目"],
         ["yellow", f"XIAO D0（{hn(2,2)}）", f"HX711 DT（{hn(0,2)}）", "重さのデータ"],
@@ -364,7 +419,8 @@ def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols):
     ], [560, 60, 540], "部品表")
     extra = ["・HX711 は、ピンヘッダの上に基板と平行に寝かせて付ける。モジュールの大きさは製品によって違うので、取付穴やロードセルの線に当たらないか確認する。"]
     if batt != "CR123A":
-        extra.append(f"・基板の右側（{hn(12,0)} から右）は空いている。電池ケースを基板に載せるなら、この部分を使える（ケースの大きさは実物で確認）。")
+        extra.append(f"・電池ボックスは基板の右側（{hn(12,0)} より右、右はしから約 6mm 手前まで）に両面テープで貼る。右の取付穴 2つはネジが通るよう空けておく。")
+        extra.append("・電池ボックスのリード線（赤＝＋、黒＝−）は、長さを合わせて切り、赤丸の穴にはんだ付けする。")
     L = NOTES + extra
     notes(s, 60, y + 20, L)
     s.h = int(y + 20 + 34 + 26 * len(L) + 40)
@@ -434,7 +490,88 @@ def make_TH(fname, model, wmm, hmm, nc, nr, cx, cy, batt, shtcols):
     s.h = int(y + 20 + 34 + 26 * len(L) + 40)
     s.save(fname)
 
-make_W("HPX-W_CR123A_TNF39-70.svg", "TNF39-70", 70, 39.5, 25, 14, 11, 2, "CR123A", 10)
-make_W("HPX-W_AA_TNF34-124.svg", "TNF34-124", 124, 34, 47, 12, 12, 1, "単3リチウム×2", 11)
+
+# ------------------------------------------------------------------ HPX-W CR123A 切り欠き版
+def make_W_cut(fname):
+    global CX, CY
+    CX, CY = 0, 0
+    s = S(1400, 1900)
+    title(s, "HPX-W（重量センサ）CR123A 版の配線図", "基板 タカチ TNF39-70（左下を切り欠いて電池ケースを置く）／ HX711 DT=D0, SCK=D1")
+    board_tnf(s, "TNF39-70", 70, 39.5, 25, 14, cut=(44, 22))
+    p = xiao_pcb(s, 17, 1)
+    wireh(s, [(15, 0), (24, 0), (24, 8), (23, 8), (23, 13)], "black")
+    wireh(s, [p["GND"], (24, 2)], "black")
+    wireh(s, [p["3V3"], (22, 3), (22, 8), (21, 8), (21, 13)], "red")
+    x1, y1 = H(22, 3); _, y2 = H(22, 8)
+    s.top.append(f'<path d="M{x1},{y1} L{x1},{y2}" stroke="#e53935" stroke-width="4" stroke-dasharray="7 5"/>')
+    s.text(x1 - 8, (y1 + y2) / 2 + 30, "XIAO の下", 11, "end", "bold", "#ffcdd2", layer=s.top)
+    s.text(x1 - 8, (y1 + y2) / 2 + 45, "を通す", 11, "end", "bold", "#ffcdd2", layer=s.top)
+    wireh(s, [(15, 3), (16, 3), (16, 9), (21, 9)], "red")
+    wireh(s, [p["D0"], (15, 1)], "yellow")
+    wireh(s, [p["D1"], (15, 2)], "blue")
+    cap_flat(s, (21, 10), (23, 10), "100µF", True, (H(24, 10)[0] + 30, H(24, 10)[1] + 5))
+    cap_flat(s, (21, 12), (23, 12), "0.1µF", False, (H(24, 12)[0] + 30, H(24, 12)[1] + 5))
+    lx, ty, by = flat_module(s, [0, 1, 2, 3], ["GND", "DT", "SCK", "VCC"], "#2e7d32", 11,
+                             "HX711 モジュール", "ピンヘッダで寝かせて付ける（基板と平行）", col=15)
+    s.top.append(f'<rect x="{lx+120}" y="{(ty+by)/2-24}" width="48" height="48" fill="#212121"/>')
+    s.text(lx + 144, (ty + by) / 2 + 5, "HX711", 11, "middle", "bold", "#eee", layer=s.top)
+    for i, n in enumerate(["E+", "E-", "A-", "A+"]):
+        y = ty + 26 + i * 30
+        s.top.append(f'<circle cx="{lx+18}" cy="{y}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="1.5"/>')
+        s.text(lx + 30, y + 4, n, 11, "start", "bold", "#fff", layer=s.top)
+    s.rect(20, ty - 10, 170, 130, "#b0bec5", "#78909c", 6, 3)
+    s.text(105, ty + 50, "ロードセル", 15, "middle", "bold", "#263238")
+    s.text(105, ty + 72, "SC601（120kg）", 12, "middle", fill="#263238")
+    s.text(105, ty + 144, "線の色は説明書で確認", 12, "middle", fill="#b23", weight="bold")
+    for i, c in enumerate(["red", "black", "white", "green"]):
+        y = ty + 26 + i * 30
+        if c == "white":
+            s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
+        else:
+            s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
+    # 電池ケースを切り欠きに置く (− を左、＋を右に向ける)
+    bp_left, bp_right = cr123a_in_cut(s, 0.5, 19.5)
+    x0, y0, bw, bh, k = GEO
+    s.top[-2] = s.top[-2].replace(">＋<", ">−<").replace('font-size="15"', 'font-size="18"')
+    s.top[-1] = s.top[-1].replace(">−<", ">＋<").replace('font-size="18"', 'font-size="15"')
+    mneg, mpos = bp_left, bp_right
+    tp, tm = H(21, 13), H(23, 13)
+    s.wire([mpos, (mpos[0] + 30, mpos[1]), (mpos[0] + 30, BOT + 40), (tp[0], BOT + 40), tp], "red")
+    s.wire([mneg, (mneg[0] - 30, mneg[1]), (mneg[0] - 30, BOT + 70), (tm[0], BOT + 70), tm], "black")
+    solder_mark(s, 21, 13); solder_mark(s, 23, 13)
+    s.text(mmxy(21.5, 0)[0], BOT + 110, "CR123A 用電池ケース（秋月 110192、43×18×14mm、ピン付き）を切り欠きに置く", 14, "middle", "bold", "#263238")
+    y = table(s, 60, BOT + 170, [
+        ["線", "どこから（穴）", "どこへ（穴）", "役目"],
+        ["yellow", f"XIAO D0（{hn(17,1)}）", f"HX711 DT（{hn(15,1)}）", "重さのデータ"],
+        ["blue", f"XIAO D1（{hn(17,2)}）", f"HX711 SCK（{hn(15,2)}）", "読み取りの合図"],
+        ["black", f"HX711 GND（{hn(15,0)}）", f"{hn(24,0)} → {hn(24,8)} → {hn(23,8)} → {hn(23,13)}", f"−の線。XIAO GND（{hn(23,2)}）も {hn(24,2)} でつなぐ"],
+        ["red", f"XIAO 3V3（{hn(23,3)}）", f"{hn(22,3)} → {hn(22,8)}（XIAO の下）→ {hn(21,8)} → {hn(21,13)}", "＋の線"],
+        ["red", f"HX711 VCC（{hn(15,3)}）", f"{hn(16,3)} → {hn(16,9)} → {hn(21,9)}（＋の線）", "HX711 の電源"],
+        ["red", "電池ケースの ＋ ピン", f"{hn(21,13)}", "線ではんだ付け"],
+        ["black", "電池ケースの − ピン", f"{hn(23,13)}", "線ではんだ付け"],
+    ], [100, 260, 470, 450], "つなぐ線（穴の位置は 行の文字＋列の数字）")
+    y = table(s, 60, y + 50, [
+        ["部品", "数", "置き場所・メモ"],
+        ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(17,1)}〜{hn(23,7)}"],
+        ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(15,0)}〜{hn(15,3)}（GND・DT・SCK・VCC）。本体は左へ寝かせる"],
+        ["ロードセル SC601 120kg", "1", "HX711 の E+・E-・A-・A+ に直接はんだ付け"],
+        ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(21,10)}・{hn(23,10)}（向きなし）"],
+        ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(21,12)}・{hn(23,12)}"],
+        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", "切り欠きに置き、ピンと基板を線でつなぐ"],
+        ["タカチ ユニバーサル基板 TNF39-70・すずめっき線・被覆線", "1", "左下 44×22mm を切り取る"],
+    ], [560, 60, 540], "部品表")
+    L = NOTES + [
+        "・左下の 44×22mm を、のこぎりやニッパーで切り取る（切り口はやすりで平らに）。電池ケース（43×18mm）が入る大きさ。左下の取付穴はなくなるので、残りの 3つで留める。",
+        f"・＋の線は {hn(22,3)}〜{hn(22,8)} で XIAO の下を通す（ピンソケットの高さの分、すき間がある）。XIAO を差す前に配線する。",
+        "・電池ケースのピンには、ケースを置いてから長さを合わせた線をはんだ付けする。ケースは両面テープなどでケースの底に固定。",
+        "・HX711 の大きさは製品によって違う。幅が広いと切り欠きの上に張り出すので、電池ケース（高さ 14mm）に当たらないか確認する。",
+    ]
+    notes(s, 60, y + 20, L)
+    s.h = int(y + 20 + 34 + 26 * len(L) + 40)
+    s.save(fname)
+
+make_W_cut("HPX-W_CR123A_TNF39-70.svg")
+#make_W("HPX-W_CR123A_TNF39-70.svg", "TNF39-70", 70, 39.5, 25, 14, 11, 2, "CR123A", 10)
+make_W("HPX-W_AA_TNF34-124.svg", "TNF34-124", 124, 34, 47, 12, 11, 1, "単3リチウム×2", 10, onboard=60.5)
 make_TH("HPX-TH_CR123A_TNF39-59.svg", "TNF39-59", 59, 39, 21, 14, 6, 2, "CR123A", 6)
 print("ok")
