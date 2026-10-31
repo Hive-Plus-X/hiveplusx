@@ -143,10 +143,12 @@ def cr123a(s, x, y):
 
 
 
-P = 30                      # 穴の間隔 (px) = 2.54mm
-NC, NR = 24, 16             # 穴の数 (列 A〜X、行 1〜16) ≒ 61 × 41mm
-OX, OY = 330, 190           # 穴 A1 の位置
-COLS = "ABCDEFGHIJKLMNOPQRSTUVWX"
+
+# ------------------------------------------------------------------ 小さな基板版
+P = 40                      # 穴の間隔 (px) = 2.54mm
+OX, OY = 600, 200           # 穴 A1 の位置
+COLS = "ABCDEFGHIJKLMNOP"
+NC, NR = 12, 11             # 図ごとに変える
 
 def H(c, r):
     return (OX + c * P, OY + r * P)
@@ -154,276 +156,279 @@ def H(c, r):
 def hn(c, r):
     return f"{COLS[c]}{r+1}"
 
-def board(s):
-    x0, y0 = OX - 22, OY - 22
-    w, h = (NC - 1) * P + 44, (NR - 1) * P + 44
+def mm(n):
+    return round((n - 1) * 2.54 + 5)
+
+def board(s, nc, nr):
+    global NC, NR
+    NC, NR = nc, nr
+    x0, y0 = OX - 26, OY - 26
+    w, h = (nc - 1) * P + 52, (nr - 1) * P + 52
     s.rect(x0 - 6, y0 - 6, w + 12, h + 12, "#c8a165", "#8d6e3f", 10, 2)
     s.rect(x0, y0, w, h, "#e8d3a8", "#b08d57", 6, 1.5)
-    for c in range(NC):
-        s.text(OX + c * P, y0 - 12, COLS[c], 11, "middle", fill="#8d6e3f", weight="bold")
-        for r in range(NR):
+    for c in range(nc):
+        s.text(OX + c * P, y0 - 12, COLS[c], 13, "middle", fill="#8d6e3f", weight="bold")
+        for r in range(nr):
             x, y = H(c, r)
-            s.add(f'<circle cx="{x}" cy="{y}" r="6" fill="#d9a441" stroke="#a87b24" stroke-width="1"/>')
-            s.add(f'<circle cx="{x}" cy="{y}" r="2.2" fill="#5d4520"/>')
-    for r in range(NR):
-        s.text(x0 - 12, OY + r * P + 4, str(r + 1), 11, "end", fill="#8d6e3f", weight="bold")
-    s.text(x0, y0 - 34, "ユニバーサル基板（2.54mm ピッチ、穴 24×16 ≒ 61×41mm 以上。図は部品の面から見たところ）", 13, fill="#555", weight="bold")
+            s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#d9a441" stroke="#a87b24" stroke-width="1"/>')
+            s.add(f'<circle cx="{x}" cy="{y}" r="2.6" fill="#5d4520"/>')
+    for r in range(nr):
+        s.text(x0 + w + 14, OY + r * P + 5, str(r + 1), 13, "start", fill="#8d6e3f", weight="bold")
+    s.text(x0 + w / 2, y0 - 40, f"ユニバーサル基板 穴 {nc}×{nr}（約 {mm(nc)}×{mm(nr)}mm）", 15, "middle", "bold", "#5d4520")
 
-def wireh(s, pts, color, label=None, lpos=None):
-    s.wire([H(*p) for p in pts], color, label, lpos)
+def wireh(s, pts, color):
+    s.wire([H(*p) for p in pts], color)
 
 def xiao_pcb(s, c0, r0):
-    """XIAO をピンヘッダで基板に付ける。左列 c0 (D0〜D6)、右列 c0+6 (5V,GND,3V3,D10〜D7)"""
+    """XIAO をピンソケットに差す。左列 c0 (D0〜D6)、右列 c0+6 (5V,GND,3V3,D10〜D7)"""
     x1, y1 = H(c0, r0); x2, y2 = H(c0 + 6, r0 + 6)
-    s.top.append(f'<rect x="{x1-14}" y="{y1-26}" width="{x2-x1+28}" height="{y2-y1+52}" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>')
-    s.top.append(f'<rect x="{(x1+x2)/2-26}" y="{y1-38}" width="52" height="22" rx="5" fill="#b0b0b0" stroke="#777"/>')
-    s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{(y1+y2)/2-30}" width="68" height="60" rx="3" fill="#cfd8dc" stroke="#90a4ae"/>')
-    s.text((x1 + x2) / 2, (y1 + y2) / 2 - 2, "XIAO", 14, "middle", "bold", "#37474f", layer=s.top)
-    s.text((x1 + x2) / 2, (y1 + y2) / 2 + 16, "nRF52840", 11, "middle", fill="#37474f", layer=s.top)
+    s.top.append(f'<rect x="{x1-14}" y="{y1-24}" width="{x2-x1+28}" height="{y2-y1+48}" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>')
+    s.top.append(f'<rect x="{(x1+x2)/2-24}" y="{y1-32}" width="48" height="18" rx="5" fill="#b0b0b0" stroke="#777"/>')
+    cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
+    s.top.append(f'<rect x="{cx-44}" y="{cy-56}" width="88" height="76" rx="3" fill="#cfd8dc" stroke="#90a4ae"/>')
+    s.text(cx, cy - 22, "XIAO", 16, "middle", "bold", "#37474f", layer=s.top)
+    s.text(cx, cy - 2, "nRF52840", 12, "middle", fill="#37474f", layer=s.top)
+    s.text(cx, cy + 50, "ピンソケットに差す", 12, "middle", "bold", "#e8f5e9", layer=s.top)
     p = {}
     for i, n in enumerate(XL):
         x, y = H(c0, r0 + i); p[n] = (c0, r0 + i)
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-        s.text(x + 12, y + 5, n, 12, "start", "bold", "#fff", layer=s.top)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(x + 14, y + 5, n, 13, "start", "bold", "#fff", layer=s.top)
     for i, n in enumerate(XR):
         x, y = H(c0 + 6, r0 + i); p[n] = (c0 + 6, r0 + i)
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-        s.text(x - 12, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
-    s.text((x1 + x2) / 2, y2 + 44, "XIAO（ピンソケットに差す）", 12, "middle", "bold", "#1b5e20", layer=s.top)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(x - 14, y + 5, n, 13, "end", "bold", "#fff", layer=s.top)
     return p
 
-def res_pcb(s, a, b, label, bands):
+def res_stand(s, a, b, label, bands, lx, ly, anchor="end"):
+    """抵抗を立てて付ける。本体は a の穴の上、もう一方の足を b へ折り返す"""
     (x1, y1), (x2, y2) = H(*a), H(*b)
     s.top.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#888" stroke-width="3"/>')
-    cx = (x1 + x2) / 2
-    s.top.append(f'<rect x="{cx-30}" y="{y1-10}" width="60" height="20" rx="9" fill="#e8c88f" stroke="#a07c3c" stroke-width="1.5"/>')
-    for i, c in enumerate(bands):
-        s.top.append(f'<rect x="{cx-22+i*11}" y="{y1-10}" width="5" height="20" fill="{c}"/>')
-    for x, y in ((x1, y1), (x2, y2)):
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="4" fill="#666"/>')
-    s.text(cx, y1 - 16, label, 12, "middle", "bold", "#333", layer=s.top)
+    s.top.append(f'<circle cx="{x1}" cy="{y1}" r="13" fill="#e8c88f" stroke="#a07c3c" stroke-width="2"/>')
+    for i, c in enumerate(bands[:3]):
+        s.top.append(f'<circle cx="{x1}" cy="{y1}" r="{10-i*3}" fill="none" stroke="{c}" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{x2}" cy="{y2}" r="4" fill="#666"/>')
+    s.text(lx, ly, label, 13, anchor, "bold", "#333", layer=s.top)
+    s.text(lx, ly + 16, "（立てて付ける）", 11, anchor, fill="#666", layer=s.top)
 
-def cap_pcb(s, a, b, label, big=False):
-    """足 2本 (5mm = 穴 2つ分)。本体は上に描く"""
+def cap_flat(s, a, b, label, big=False, lpos=None, anchor="start"):
+    """足の間隔 5mm（穴 2つ分）。本体は 2つの穴の間に描く"""
     (x1, y1), (x2, y2) = H(*a), H(*b)
-    cx = (x1 + x2) / 2
-    w = 26 if big else 20
-    s.top.append(f'<line x1="{x1}" y1="{y1}" x2="{cx-4}" y2="{y1-14}" stroke="#888" stroke-width="2.5"/>')
-    s.top.append(f'<line x1="{x2}" y1="{y2}" x2="{cx+4}" y2="{y2-14}" stroke="#888" stroke-width="2.5"/>')
-    s.top.append(f'<rect x="{cx-w/2}" y="{y1-14-w}" width="{w}" height="{w}" rx="7" fill="{"#f0c419" if big else "#3f6fb5"}" stroke="#555" stroke-width="1.5"/>')
+    cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
+    w = 30 if big else 22
+    s.top.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#888" stroke-width="3"/>')
+    s.top.append(f'<rect x="{cx-w/2}" y="{cy-w/2}" width="{w}" height="{w}" rx="7" fill="{"#f0c419" if big else "#3f6fb5"}" stroke="#555" stroke-width="1.5"/>')
     for x, y in ((x1, y1), (x2, y2)):
         s.top.append(f'<circle cx="{x}" cy="{y}" r="4" fill="#666"/>')
-    ty = y1 - 14 - w - 6
-    s.top.append(f'<rect x="{cx-len(label)*4-4}" y="{ty-12}" width="{len(label)*8+8}" height="16" rx="3" fill="#fffdf6e6"/>')
-    s.text(cx, ty, label, 12, "middle", "bold", "#333", layer=s.top)
+    if lpos:
+        s.text(lpos[0], lpos[1], label, 13, anchor, "bold", "#333", layer=s.top)
 
-def conn_pcb(s, holes, names, title, color="#fafafa", tpos="below"):
-    xs = [H(*h)[0] for h in holes]; ys = [H(*h)[1] for h in holes]
-    s.top.append(f'<rect x="{min(xs)-13}" y="{min(ys)-13}" width="{max(xs)-min(xs)+26}" height="{max(ys)-min(ys)+26}" rx="4" fill="{color}" stroke="#555" stroke-width="1.5"/>')
-    for (x, y), n in zip(zip(xs, ys), names):
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="5" fill="#d4af37" stroke="#555"/>')
-    return xs, ys
+def solder_mark(s, c, r):
+    x, y = H(c, r)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>')
 
-def power_block(s, p):
-    """3V3 と GND を右の 2列 (U列=赤、W列=黒) にまとめ、電池ケースの線とコンデンサーを付ける"""
-    wireh(s, [p["3V3"], (20, 5), (20, 14)], "red")
-    wireh(s, [p["GND"], (22, 4), (22, 15)], "black")
-    cap_pcb(s, (20, 9), (22, 9), "100µF", big=True)
-    for c in (20, 22):
-        x, y = H(c, 14)
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="none" stroke="#d32f2f" stroke-width="2.5"/>')
-    s.text(H(20, 14)[0] - 22, H(20, 14)[1] + 6, "＋", 15, "end", "bold", "#e53935", layer=s.top)
-    s.text(H(22, 14)[0] + 22, H(22, 14)[1] + 6, "−", 16, "start", "bold", "#333", layer=s.top)
-    s.text(H(23, 14)[0] + 30, H(23, 14)[1] - 8, "電池ケースの", 12, "start", "bold", layer=s.top)
-    s.text(H(23, 14)[0] + 30, H(23, 14)[1] + 8, "線をはんだ付け", 12, "start", "bold", layer=s.top)
+def cable_in(s, holes, ytext, name, sub, shape):
+    """基板の外から 2本の線を穴に直接はんだ付け"""
+    for i, h in enumerate(holes):
+        x, y = H(*h)
+        s.add(f'<path d="M{x},{y} L{OX-60},{y} L{OX-90},{ytext+40+i*12} L150,{ytext+40+i*12}" fill="none" stroke="#9e9e9e" stroke-width="4" stroke-linejoin="round"/>')
+        solder_mark(s, *h)
+    shape(130, ytext + 46)
+    s.text(60, ytext, name, 15, weight="bold")
+    s.text(60, ytext + 18, sub, 12, fill="#666")
 
-def battery_off(s):
-    """基板の下に CR123A ケース。線を U15・W15 に直接はんだ付けする"""
-    bp, bm = cr123a(s, 700, 740)
-    tp, tm = H(20, 14), H(22, 14)
-    s.wire([bp, (tp[0] + 30, bp[1]), (tp[0] + 30, 700), (tp[0], 700), tp], "red")
-    s.wire([bm, (680, bm[1]), (680, 880), (1060, 880), (1060, 700), (tm[0], 700), tm], "black")
+def standing(s, rows, names, title, sub, color, width):
+    """モジュールをピンヘッダで A 列に立てて付ける（図では左に倒して描く）。ピンは A 列"""
+    xa, ytop = H(0, rows[0]); _, ybot = H(0, rows[-1])
+    s.top.append(f'<rect x="{xa-width}" y="{ytop-22}" width="{width+16}" height="{ybot-ytop+44}" rx="6" fill="{color}" fill-opacity="0.88" stroke="#333" stroke-width="2"/>')
+    for r, n in zip(rows, names):
+        x, y = H(0, r)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(x - 14, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
+    return xa - width, ytop - 22, ybot + 22
+
+def battery_below(s, cp, cm, r):
+    """CR123A ケースを基板の下に置く（＋を左、−を右に向ける）。線を ＋の列・−の列の端に直接はんだ付け"""
+    tp, tm = H(cp, r), H(cm, r)
+    x, y = tp[0] - 190, OY + (NR - 1) * P + 90
+    s.rect(x, y, 260, 70, "#37474f", "#222", 10, 3)
+    s.rect(x + 20, y + 14, 220, 42, "#b0bec5", "#607d8b", 20, 2)
+    s.rect(x + 14, y + 26, 10, 18, "#90a4ae", "#607d8b", 2, 1)
+    s.text(x + 130, y + 41, "CR123A（3V）", 15, "middle", "bold", "#263238")
+    s.text(x + 10, y + 22, "＋", 14, "start", "bold", "#fff")
+    s.text(x + 250, y + 22, "−", 18, "end", "bold", "#fff")
+    s.text(x + 130, y + 96, "CR123A 用電池ケース ＋ CR123A 電池", 14, "middle", "bold")
+    bp, bm = (x, y + 35), (x + 260, y + 35)
+    s.wire([bp, (x - 30, bp[1]), (x - 30, y - 30), (tp[0], y - 30), tp], "red")
+    s.wire([bm, (x + 290, bm[1]), (x + 290, y - 50), (tm[0], y - 50), tm], "black")
+    solder_mark(s, cp, r); solder_mark(s, cm, r)
 
 COMMON_NOTES = [
-    "・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（被覆のあるすずめっき線やジャンパー線）でつなぐ。",
-    "・線が重なって見えるところは、被覆のある線どうしなので交差してかまわない。隣の穴とはんだでつながないよう注意。",
+    "・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（すずめっき線や被覆線）でつなぐ。",
     "・XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。",
+    "・赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。",
     "・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。",
 ]
 
+def rail_rows(cp, cm):
+    return [
+        ["red", "XIAO 3V3（" + hn(*P3) + "）", f"{hn(cp,P3[1])} → {hn(cp,10)}（＋の列）", "電池＋・コンデンサーもこの列"],
+        ["black", "XIAO GND（" + hn(*PG) + "）", f"{hn(cm,PG[1])}（−の列 {hn(cm,0)}〜{hn(cm,10)}）", "電池−・コンデンサーもこの列"],
+    ]
+
 # ================================================================== HPX-W
-s = S(1280, 1740)
-title(s, "HPX-W（重量センサ）基板の配線図", "ユニバーサル基板版 ／ HX711 DT=D0, SCK=D1 ／ 電源 CR123A")
-board(s)
-p = xiao_pcb(s, 12, 3)
-power_block(s, p)
-cap_pcb(s, (20, 11), (22, 11), "0.1µF")
-# HX711 モジュール (ピンヘッダで H列に付ける)
-x1, y1 = H(0, 2); x2, y2 = H(7, 7)
-s.top.append(f'<rect x="{x1-14}" y="{y1-14}" width="{x2-x1+28}" height="{y2-y1+28}" rx="6" fill="#2e7d32" fill-opacity="0.93" stroke="#1b5e20" stroke-width="2"/>')
-s.top.append(f'<rect x="{(x1+x2)/2-26}" y="{(y1+y2)/2-26}" width="52" height="52" fill="#212121"/>')
-s.text((x1 + x2) / 2, (y1 + y2) / 2 + 5, "HX711", 12, "middle", "bold", "#eee", layer=s.top)
-hx = {}
-for i, n in enumerate(["GND", "DT", "SCK", "VCC"]):
-    x, y = H(7, 3 + i); hx[n] = (7, 3 + i)
-    s.top.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-    s.text(x - 12, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
-lc = {}
-for i, n in enumerate(["E+", "E-", "A-", "A+", "B-", "B+"]):
-    x, y = H(0, 2 + i); lc[n] = (x, y)
-    s.top.append(f'<circle cx="{x}" cy="{y}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="1.5"/>')
-    s.text(x + 11, y + 4, n, 11, "start", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y2 + 34, "HX711 モジュール（ピンヘッダで付ける）", 12, "middle", "bold", "#1b5e20", layer=s.top)
-# ロードセル (基板の外)
-s.rect(30, 200, 200, 150, "#b0bec5", "#78909c", 6, 3)
-s.text(130, 270, "ロードセル", 15, "middle", "bold", "#263238")
-s.text(130, 292, "SC601（120kg）", 12, "middle", fill="#263238")
-s.text(130, 380, "線の色は説明書で確認", 12, "middle", fill="#b23", weight="bold")
-for n, c in [("E+", "red"), ("E-", "black"), ("A-", "white"), ("A+", "green")]:
-    x, y = lc[n]
-    s.top.append(f'<path d="M{x},{y} L{x-40},{y} L230,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>' if c != "white" else
-                 f'<path d="M{x},{y} L230,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{x},{y} L230,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
-# 配線
-wireh(s, [p["D0"], (10, 3), (10, 4), hx["DT"]], "yellow")
-wireh(s, [p["D1"], (11, 4), (11, 5), hx["SCK"]], "blue")
-wireh(s, [(22, 4), (22, 1), (7, 1), hx["GND"]], "black")
-wireh(s, [(20, 12), (9, 12), (9, 6), hx["VCC"]], "red")
-battery_off(s)
-y = table(s, 60, 940, [
+s = S(1280, 1660)
+title(s, "HPX-W（重量センサ）基板の配線図", "小さい基板版 ／ HX711 DT=D0, SCK=D1 ／ 電源 CR123A")
+board(s, 12, 11)
+p = xiao_pcb(s, 2, 2)
+P3, PG = p["3V3"], p["GND"]
+wireh(s, [(0, 1), (0, 0), (11, 0), (11, 10)], "black")
+wireh(s, [p["GND"], (11, 3)], "black")
+wireh(s, [p["3V3"], (9, 4), (9, 10)], "red")
+wireh(s, [(0, 4), (0, 9), (9, 9)], "red")
+wireh(s, [p["D0"], (0, 2)], "yellow")
+wireh(s, [p["D1"], (0, 3)], "blue")
+cap_flat(s, (9, 6), (11, 6), "100µF", True, (H(11, 6)[0] + 80, H(11, 6)[1] + 5))
+cap_flat(s, (9, 8), (11, 8), "0.1µF", False, (H(11, 8)[0] + 80, H(11, 8)[1] + 5))
+lx, ty, by = standing(s, [1, 2, 3, 4], ["GND", "DT", "SCK", "VCC"], "", "", "#2e7d32", 230)
+s.top.append(f'<rect x="{lx+60}" y="{(ty+by)/2-24}" width="48" height="48" fill="#212121"/>')
+s.text(lx + 84, (ty + by) / 2 + 5, "HX711", 11, "middle", "bold", "#eee", layer=s.top)
+for i, n in enumerate(["E+", "E-", "A-", "A+"]):
+    y = ty + 26 + i * 30
+    s.top.append(f'<circle cx="{lx+16}" cy="{y}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="1.5"/>')
+    s.text(lx + 28, y + 4, n, 11, "start", "bold", "#fff", layer=s.top)
+s.text(OX - 36, by + 22, "HX711 モジュール", 14, "end", "bold", "#1b5e20", layer=s.top)
+s.text(OX - 36, by + 40, "A 列に立てて付ける（図では倒して描いた）", 11, "end", fill="#555", layer=s.top)
+s.rect(40, 230, 200, 130, "#b0bec5", "#78909c", 6, 3)
+s.text(140, 290, "ロードセル", 15, "middle", "bold", "#263238")
+s.text(140, 312, "SC601（120kg）", 12, "middle", fill="#263238")
+s.text(140, 384, "線の色は説明書で確認", 12, "middle", fill="#b23", weight="bold")
+for i, c in enumerate(["red", "black", "white", "green"]):
+    y = ty + 26 + i * 30
+    if c == "white":
+        s.add(f'<path d="M{lx+16},{y} L240,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{lx+16},{y} L240,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
+    else:
+        s.add(f'<path d="M{lx+16},{y} L240,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
+battery_below(s, 9, 11, 10)
+y = table(s, 60, 900, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-    ["yellow", f"XIAO D0（{hn(12,3)}）", f"HX711 DT（{hn(7,4)}）", "重さのデータ"],
-    ["blue", f"XIAO D1（{hn(12,4)}）", f"HX711 SCK（{hn(7,5)}）", "読み取りの合図"],
-    ["red", f"XIAO 3V3（{hn(18,5)}）", f"{hn(20,5)} → {hn(20,14)}（＋の列）", "3V の列。電池＋・100µF・0.1µF もこの列"],
-    ["black", f"XIAO GND（{hn(18,4)}）", f"{hn(22,4)} → {hn(22,15)}（−の列）", "GND の列。電池−・コンデンサーもこの列"],
-    ["red", f"＋の列（{hn(20,12)}）", f"HX711 VCC（{hn(7,6)}）", "HX711 の電源"],
-    ["black", f"−の列（{hn(22,1)}）", f"HX711 GND（{hn(7,3)}）", ""],
-], [100, 300, 330, 430], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    ["yellow", f"XIAO D0（{hn(2,2)}）", f"HX711 DT（{hn(0,2)}）", "重さのデータ"],
+    ["blue", f"XIAO D1（{hn(2,3)}）", f"HX711 SCK（{hn(0,3)}）", "読み取りの合図"],
+    ["black", f"HX711 GND（{hn(0,1)}）", f"{hn(0,0)} → {hn(11,0)} → {hn(11,10)}（−の列）", "上の端を回って −の列へ"],
+    ["red", f"HX711 VCC（{hn(0,4)}）", f"{hn(0,9)} → {hn(9,9)}（＋の列）", "下を回って ＋の列へ"],
+] + rail_rows(9, 11), [100, 280, 400, 380], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(12,3)}〜{hn(18,9)}"],
-    ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(7,3)}〜{hn(7,6)}（GND・DT・SCK・VCC）"],
+    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(2,2)}〜{hn(8,8)}"],
+    ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(0,1)}〜{hn(0,4)}（GND・DT・SCK・VCC）に立てて付ける"],
     ["ロードセル SC601 120kg", "1", "HX711 の E+・E-・A-・A+ に直接はんだ付け"],
-    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(20,9)}・{hn(22,9)}（向きなし）"],
-    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(20,11)}・{hn(22,11)}"],
-    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(20,14)}（＋）、黒線を {hn(22,14)}（−）にはんだ付け"],
-    ["ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線", "", "手持ちに合わせて"],
+    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(9,6)}・{hn(11,6)}（向きなし）"],
+    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(9,8)}・{hn(11,8)}"],
+    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(9,10)}（＋）、黒線を {hn(11,10)}（−）にはんだ付け"],
+    ["ユニバーサル基板（穴 12×11 以上）・すずめっき線・被覆線", "", "大きい基板を切って使ってもよい"],
 ], [560, 60, 540], "部品表")
 notes(s, 60, y + 20, COMMON_NOTES + [
-    "・多くの HX711 モジュールには電源用のコンデンサーが載っているので、0.1µF は XIAO の電源の近くにまとめた。",
+    "・HX711 は基板に寝かせず、A 列にピンヘッダで立てて付ける（場所を取らないため）。倒れないよう、ケースの中で軽く固定するとよい。",
 ])
 s.save("HPX-W_pcb.svg")
 
 # ================================================================== HPX-TH
-s = S(1280, 1940)
-title(s, "HPX-TH（温湿度センサ）基板の配線図", "ユニバーサル基板版 ／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A")
-board(s)
-p = xiao_pcb(s, 12, 3)
-power_block(s, p)
-res_pcb(s, (6, 3), (10, 3), "10kΩ 1%", ["#8d5524", "#212121", "#212121", "#e53935", "#8d5524"])
-wireh(s, [p["D2"], (10, 5), (10, 3)], "yellow")
-wireh(s, [p["D3"], (6, 6), (6, 3)], "purple")
-wireh(s, [(10, 3), (10, 2), (2, 2), (2, 9)], "yellow")
-wireh(s, [(2, 7), (3, 7)], "yellow")
-cap_pcb(s, (3, 7), (5, 7), "0.1µF")
-wireh(s, [(5, 7), (5, 15)], "black")
-wireh(s, [(2, 10), (2, 15), (22, 15)], "black")
-conn_pcb(s, [(2, 9), (2, 10)], ["", ""], "")
-# サーミスター (基板の外、左)
-tx, ty = H(2, 9)[0], H(2, 9)[1]
-s.add(f'<path d="M{tx},{ty} L{tx-60},{ty} L{tx-60},{ty+10} L70,{ty+10}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
-s.add(f'<path d="M{tx},{ty+30} L{tx-60},{ty+30} L{tx-60},{ty+20} L70,{ty+20}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
-s.add(f'<ellipse cx="56" cy="{ty+15}" rx="18" ry="13" fill="#5d4037" stroke="#3e2723" stroke-width="2"/>')
-s.text(40, ty - 30, "サーミスター 10kΩ", 14, weight="bold")
-s.text(40, ty - 12, "（向きなし・巣箱の中へ）", 12, fill="#666")
-wireh(s, [(6, 13), (6, 15)], "black")
-wireh(s, [(7, 13), (7, 14), (20, 14)], "red")
-wireh(s, [p["D4"], (10, 7), (10, 11), (8, 11), (8, 13)], "green")
-wireh(s, [p["D5"], (11, 8), (11, 12), (9, 12), (9, 13)], "blue")
-# SHT40 モジュールをピンヘッダで基板に直付け (G14〜J14)。本体は下側に張り出す
-x1, y1 = H(6, 13); x2, _ = H(9, 13)
-s.top.append(f'<rect x="{x1-16}" y="{y1-16}" width="{x2-x1+32}" height="110" rx="6" fill="#5e35b1" fill-opacity="0.5" stroke="#311b92" stroke-width="2"/>')
-s.top.append(f'<rect x="{(x1+x2)/2-16}" y="{y1+40}" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>')
-s.text((x1 + x2) / 2, y1 + 88, "SHT40", 12, "middle", "bold", "#fff", layer=s.top)
-for i, n in enumerate(["GND", "VIN", "SDA", "SCL"]):
-    x, y = H(6 + i, 13)
-    s.top.append(f'<circle cx="{x}" cy="{y}" r="7" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-    s.text(x, y + 24, n, 10, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 118, "SHT40 モジュール（ピンヘッダで直付け）", 12, "middle", "bold", "#311b92", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 134, "ピンの並びは基板の印字で確認", 11, "middle", fill="#b23", weight="bold", layer=s.top)
-battery_off(s)
-y = table(s, 60, 1000, [
+s = S(1280, 1860)
+title(s, "HPX-TH（温湿度センサ）基板の配線図", "小さい基板版 ／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 CR123A")
+board(s, 13, 11)
+p = xiao_pcb(s, 3, 2)
+P3, PG = p["3V3"], p["GND"]
+wireh(s, [(0, 4), (0, 0), (12, 0), (12, 10)], "black")
+wireh(s, [(0, 5), (1, 5), (1, 1), (10, 1), (10, 10)], "red")
+wireh(s, [p["3V3"], (10, 4)], "red")
+wireh(s, [p["GND"], (12, 3)], "black")
+x, y = H(10, 3)
+s.top.append(f'<circle cx="{x}" cy="{y}" r="13" fill="none" stroke="#7b1fa2" stroke-width="2" stroke-dasharray="4 3"/>')
+s.text(x + 4, y - 18, "またぐ", 11, "middle", "bold", "#7b1fa2", layer=s.top)
+wireh(s, [p["D4"], (0, 6)], "green")
+wireh(s, [p["D5"], (0, 7)], "blue")
+wireh(s, [p["D2"], (2, 4)], "yellow")
+wireh(s, [p["D3"], (2, 5)], "purple")
+wireh(s, [(2, 4), (2, 2)], "yellow")
+res_stand(s, (2, 4), (2, 5), "10kΩ 1%", ["#8d5524", "#212121", "#212121"], OX - 50, H(0, 9)[1] + 20, "end")
+s.top.append(f'<line x1="{H(2,5)[0]-6}" y1="{H(2,5)[1]+6}" x2="{OX-46}" y2="{H(0,9)[1]+16}" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/>')
+cap_flat(s, (0, 2), (2, 2), "0.1µF")
+s.text(H(1, 2)[0], H(1, 2)[1] + 30, "0.1µF", 12, "middle", "bold", "#1a237e", layer=s.top)
+cap_flat(s, (10, 6), (12, 6), "100µF", True, (H(12, 6)[0] + 80, H(12, 6)[1] + 5))
+def thermo(x, y):
+    s.add(f'<ellipse cx="{x-50}" cy="{y}" rx="18" ry="13" fill="#5d4037" stroke="#3e2723" stroke-width="2"/>')
+cable_in(s, [(0, 3), (2, 3)], 214, "サーミスター 10kΩ", "（向きなし・巣箱の中へ）", thermo)
+lx, ty, by = standing(s, [4, 5, 6, 7], ["GND", "VIN", "SDA", "SCL"], "", "", "#5e35b1", 150)
+s.top.append(f'<rect x="{lx+30}" y="{(ty+by)/2-16}" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>')
+s.text(OX - 36, by + 22, "SHT40 モジュール", 14, "end", "bold", "#311b92", layer=s.top)
+s.text(OX - 36, by + 40, "A 列に立てて付ける（図では倒して描いた）", 11, "end", fill="#555", layer=s.top)
+s.text(OX - 36, by + 56, "ピンの並びは基板の印字で確認", 11, "end", fill="#b23", weight="bold", layer=s.top)
+battery_below(s, 10, 12, 10)
+y = table(s, 60, 900, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-    ["purple", f"XIAO D3（{hn(12,6)}）", f"10kΩ の片方（{hn(6,3)}）", "測る瞬間だけ電気を流す"],
-    ["yellow", f"XIAO D2/A2（{hn(12,5)}）", f"10kΩ のもう片方（{hn(10,3)}）", "測る点"],
-    ["yellow", f"測る点（{hn(10,3)}）", f"サーミスター端子（{hn(2,9)}）・0.1µF（{hn(3,7)}）", ""],
-    ["black", f"サーミスター端子（{hn(2,10)}）・0.1µF（{hn(5,7)}）", f"GND の行（{hn(2,15)}〜{hn(22,15)}）", ""],
-    ["green", f"XIAO D4（{hn(12,7)}）", f"SHT40 SDA（{hn(8,13)}）", "データ（I2C）"],
-    ["blue", f"XIAO D5（{hn(12,8)}）", f"SHT40 SCL（{hn(9,13)}）", "合図（I2C）"],
-    ["red", f"＋の列（{hn(20,14)}）", f"SHT40 VIN（{hn(7,13)}）", "SHT40 の電源"],
-    ["black", f"GND の行（{hn(6,15)}）", f"SHT40 GND（{hn(6,13)}）", ""],
-    ["red", f"XIAO 3V3（{hn(18,5)}）", f"{hn(20,5)} → {hn(20,14)}（＋の列）", "電池＋・100µF もこの列"],
-    ["black", f"XIAO GND（{hn(18,4)}）", f"{hn(22,4)} → {hn(22,15)}（−の列）", "電池−・100µF もこの列"],
-], [100, 360, 380, 320], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    ["purple", f"XIAO D3（{hn(3,5)}）", f"10kΩ の下の足（{hn(2,5)}）", "測る瞬間だけ電気を流す"],
+    ["yellow", f"XIAO D2/A2（{hn(3,4)}）", f"10kΩ の上の足（{hn(2,4)}）→ {hn(2,2)}", "測る点（C3〜C5）"],
+    ["green", f"XIAO D4（{hn(3,6)}）", f"SHT40 SDA（{hn(0,6)}）", "データ（I2C）"],
+    ["blue", f"XIAO D5（{hn(3,7)}）", f"SHT40 SCL（{hn(0,7)}）", "合図（I2C）"],
+    ["black", f"SHT40 GND（{hn(0,4)}）", f"{hn(0,0)} → {hn(12,0)} → {hn(12,10)}（−の列）", "A1〜A5 も GND"],
+    ["red", f"SHT40 VIN（{hn(0,5)}）", f"{hn(1,5)} → {hn(1,1)} → {hn(10,1)} → {hn(10,10)}（＋の列）", "SHT40 の電源"],
+] + rail_rows(10, 12), [100, 280, 470, 310], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(12,3)}〜{hn(18,9)}"],
-    ["SHT40 モジュール（温湿度、I2C）", "1", f"ピンヘッダ 4ピンで {hn(6,13)}〜{hn(9,13)} に直付け"],
-    ["サーミスター 10kΩ（平行線タイプ）", "1", f"2ピン（{hn(2,9)}・{hn(2,10)}）へ"],
-    ["抵抗 10kΩ 1%（金属皮膜） ★リストに無い・必要", "1", f"{hn(6,3)}・{hn(10,3)}"],
-    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(3,7)}・{hn(5,7)}（測る点と GND の間）"],
-    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(20,9)}・{hn(22,9)}"],
-    ["ピンヘッダかコネクター 2ピン・ピンヘッダ 4ピン", "各1", "サーミスター・SHT40 用"],
-    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(20,14)}（＋）、黒線を {hn(22,14)}（−）にはんだ付け"],
-    ["ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線", "", "手持ちに合わせて"],
+    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(3,2)}〜{hn(9,8)}"],
+    ["SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン", "1", f"{hn(0,4)}〜{hn(0,7)}（GND・VIN・SDA・SCL）に立てて付ける"],
+    ["サーミスター 10kΩ（平行線タイプ）", "1", f"線を {hn(0,3)}（GND）・{hn(2,3)}（測る点）に直接はんだ付け"],
+    ["抵抗 10kΩ 1%（金属皮膜）", "1", f"{hn(2,4)}・{hn(2,5)}（立てて付ける）"],
+    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(0,2)}・{hn(2,2)}（測る点と GND の間）"],
+    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(10,6)}・{hn(12,6)}"],
+    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(10,10)}（＋）、黒線を {hn(12,10)}（−）にはんだ付け"],
+    ["ユニバーサル基板（穴 13×11 以上）・すずめっき線・被覆線", "", "大きい基板を切って使ってもよい"],
 ], [560, 60, 540], "部品表")
 notes(s, 60, y + 20, COMMON_NOTES + [
-    "・HPX-TH のファームはまだありません。この配線に合わせて作ります。SHT40 は 3.6V まで（5V にはつながない）。",
-    "・SHT40 は基板に直付けなので、基板ごと巣箱の中の湿度を測りたい場所に置く。電池やケースで空気がこもらないよう、風の通るケースに。",
+    f"・{hn(10,3)} の紫の点線の丸: 黒線（XIAO GND → −の列）が赤い ＋の列をまたぐ。被覆線を使い、{hn(10,3)} の穴には通さない。",
+    f"・0.1µF は B3 の赤線をまたいで {hn(0,2)}・{hn(2,2)} に付ける。サーミスターの線も B4 をまたぐので、被覆のある線を使う。",
+    "・ファームは HPX_TH v1.00（D4/D5 に SHT40、D3→10kΩ→A2 にサーミスター）。SHT40 は 3.6V まで（5V にはつながない）。",
+    "・SHT40 は基板の端に立っているので、基板ごと巣箱の中の湿度を測りたい場所に置く。風の通るケースに。",
 ])
 s.save("HPX-TH_pcb.svg")
 
 # ================================================================== HPX-A
-s = S(1280, 1740)
-title(s, "HPX-A（電柵アラート）基板の配線図", "ユニバーサル基板版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
-board(s)
-p = xiao_pcb(s, 12, 3)
-power_block(s, p)
-cap_pcb(s, (20, 11), (22, 11), "0.1µF")
-res_pcb(s, (6, 2), (10, 2), "10kΩ", ["#8d5524", "#212121", "#f57c00", "#d4af37"])
-wireh(s, [p["D1"], (10, 4), (10, 2)], "purple")
-wireh(s, [p["D0"], (11, 3), (11, 1), (6, 1), (6, 2)], "yellow")
-wireh(s, [(6, 2), (2, 2), (2, 9)], "yellow")
-wireh(s, [(2, 10), (2, 15), (22, 15)], "black")
-conn_pcb(s, [(2, 9), (2, 10)], ["", ""], "")
-tx, ty = H(2, 9)
-s.add(f'<path d="M{tx},{ty} L{tx-60},{ty} L{tx-60},{ty+10} L90,{ty+10}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
-s.add(f'<path d="M{tx},{ty+30} L{tx-60},{ty+30} L{tx-60},{ty+20} L90,{ty+20}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
-s.add(f'<circle cx="68" cy="{ty+15}" r="20" fill="#f3e5ab" stroke="#8d6e63" stroke-width="3"/>')
-s.add(f'<path d="M54,{ty+7} Q68,{ty+13} 82,{ty+7} M54,{ty+15} Q68,{ty+21} 82,{ty+15} M54,{ty+23} Q68,{ty+29} 82,{ty+23}" stroke="#c62828" stroke-width="2" fill="none"/>')
-s.text(40, ty - 34, "CdS セル 5506", 14, weight="bold")
-s.text(40, ty - 16, "（向きなし・線で延長）", 12, fill="#666")
-s.text(40, ty + 62, "警報器の赤いカバーに向け、", 12, fill="#666")
-s.text(40, ty + 78, "黒いもので遮光", 12, fill="#666")
-battery_off(s)
-y = table(s, 60, 940, [
+s = S(1280, 1620)
+title(s, "HPX-A（電柵アラート）基板の配線図", "小さい基板版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
+board(s, 12, 11)
+p = xiao_pcb(s, 2, 2)
+P3, PG = p["3V3"], p["GND"]
+wireh(s, [(0, 1), (0, 0), (11, 0), (11, 10)], "black")
+wireh(s, [p["GND"], (11, 3)], "black")
+wireh(s, [p["3V3"], (9, 4), (9, 10)], "red")
+wireh(s, [p["D0"], (1, 2), (0, 2)], "yellow")
+wireh(s, [p["D1"], (1, 3)], "purple")
+res_stand(s, (1, 2), (1, 3), "10kΩ", ["#8d5524", "#212121", "#f57c00"], OX - 50, H(1, 4)[1] + 4, "end")
+s.top.append(f'<line x1="{H(1,2)[0]-10}" y1="{H(1,2)[1]+10}" x2="{OX-46}" y2="{H(1,4)[1]}" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/>')
+cap_flat(s, (9, 6), (11, 6), "100µF", True, (H(11, 6)[0] + 80, H(11, 6)[1] + 5))
+cap_flat(s, (9, 8), (11, 8), "0.1µF", False, (H(11, 8)[0] + 80, H(11, 8)[1] + 5))
+def cds(x, y):
+    s.add(f'<circle cx="{x-50}" cy="{y}" r="20" fill="#f3e5ab" stroke="#8d6e63" stroke-width="3"/>')
+    s.add(f'<path d="M{x-64},{y-8} Q{x-50},{y-2} {x-36},{y-8} M{x-64},{y} Q{x-50},{y+6} {x-36},{y} M{x-64},{y+8} Q{x-50},{y+14} {x-36},{y+8}" stroke="#c62828" stroke-width="2" fill="none"/>')
+cable_in(s, [(0, 1), (0, 2)], 214, "CdS セル 5506", "（向きなし・線で延長）", cds)
+s.text(60, 340, "警報器の赤いカバーに向け、", 12, fill="#666")
+s.text(60, 356, "黒いもので遮光", 12, fill="#666")
+battery_below(s, 9, 11, 10)
+y = table(s, 60, 900, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-    ["purple", f"XIAO D1（{hn(12,4)}）", f"10kΩ の片方（{hn(10,2)}）", "読む瞬間だけ電気を流す"],
-    ["yellow", f"XIAO D0/A0（{hn(12,3)}）", f"10kΩ のもう片方（{hn(6,2)}）", "測る点"],
-    ["yellow", f"測る点（{hn(6,2)}）", f"CdS 端子（{hn(2,9)}）", ""],
-    ["black", f"CdS 端子（{hn(2,10)}）", f"GND の行（{hn(2,15)}〜{hn(22,15)}）", ""],
-    ["red", f"XIAO 3V3（{hn(18,5)}）", f"{hn(20,5)} → {hn(20,14)}（＋の列）", "電池＋・100µF・0.1µF もこの列"],
-    ["black", f"XIAO GND（{hn(18,4)}）", f"{hn(22,4)} → {hn(22,15)}（−の列）", "電池−・コンデンサーもこの列"],
-], [100, 330, 360, 370], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    ["purple", f"XIAO D1（{hn(2,3)}）", f"10kΩ の下の足（{hn(1,3)}）", "読む瞬間だけ電気を流す"],
+    ["yellow", f"XIAO D0/A0（{hn(2,2)}）", f"10kΩ の上の足（{hn(1,2)}）→ CdS（{hn(0,2)}）", "測る点"],
+    ["black", f"CdS のもう片方（{hn(0,1)}）", f"{hn(0,0)} → {hn(11,0)} → {hn(11,10)}（−の列）", "上の端を回って −の列へ"],
+] + rail_rows(9, 11), [100, 300, 420, 340], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(12,3)}〜{hn(18,9)}"],
-    ["CdS セル（フォトレジスタ）5506 φ5mm", "1", f"2ピン（{hn(2,9)}・{hn(2,10)}）から線で延長"],
-    ["抵抗 10kΩ ★リストに無い・必要", "1", f"{hn(6,2)}・{hn(10,2)}"],
-    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(20,11)}・{hn(22,11)}（電源側。測る点には付けない）"],
-    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(20,9)}・{hn(22,9)}"],
-    ["ピンヘッダかコネクター 2ピン", "1", "CdS 用"],
-    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(20,14)}（＋）、黒線を {hn(22,14)}（−）にはんだ付け"],
-    ["ユニバーサル基板（穴 24×16 以上）・すずめっき線・被覆線", "", "手持ちに合わせて"],
+    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(2,2)}〜{hn(8,8)}"],
+    ["CdS セル（フォトレジスタ）5506 φ5mm", "1", f"線で延長して {hn(0,1)}・{hn(0,2)} に直接はんだ付け"],
+    ["抵抗 10kΩ", "1", f"{hn(1,2)}・{hn(1,3)}（立てて付ける）"],
+    ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(9,8)}・{hn(11,8)}（電源側。測る点には付けない）"],
+    ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(9,6)}・{hn(11,6)}"],
+    ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(9,10)}（＋）、黒線を {hn(11,10)}（−）にはんだ付け"],
+    ["ユニバーサル基板（穴 12×11 以上）・すずめっき線・被覆線", "", "大きい基板を切って使ってもよい"],
 ], [560, 60, 540], "部品表")
 notes(s, 60, y + 20, COMMON_NOTES + [
     "・フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。",
