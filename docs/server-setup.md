@@ -324,3 +324,16 @@ PHP 8.3 で、3つのテストアカウント (持ち主・メンバー・メン
 - 使い方: SwitchBot アプリでファームウェアを最新にする → HPX-Core の管理画面「温湿度計の登録」→「周辺のセンサを探す」→ `[SwitchBot 防水温湿度計]` などと出た行に名前を付けて登録。
 - 広告の読み方: メーカーデータ (会社ID 0x0969) の [10]〜[12] に温度の小数・符号と整数・湿度、サービスデータ (UUID 0xFD3D) の [0] に機種 ('w' 防水 / 'T' 温湿度計 / 'i' プラス)、[2] に電池%。温度の符号は bit7=1 が0℃以上。出典: [OpenWonderLabs/SwitchBotAPI-BLE](https://github.com/OpenWonderLabs/SwitchBotAPI-BLE/blob/latest/devicetypes/meter.md)、pySwitchbot。
 - 確認したこと: arduino-esp32 3.3.12 + NimBLE-Arduino 2.x でコンパイルできる (パーティションは Minimal SPIFFS)。解読部分は PC で単体テスト (防水 23.5℃/65%/電池100%、温湿度計 -5.3℃/60%、Inkbird の9バイトを SwitchBot と取り違えないこと)。実機での受信は未確認。
+
+## 10. 温湿度センサ HPX-TH を受け取る — 2026-10-30 追加
+
+| ファイル | 内容 |
+|---|---|
+| `firmware/hpx-temp/HPX_TH_v1_00/` | HPX-TH v1.00 (XIAO nRF52840 + SHT40 + サーミスター)。使い方は `firmware/hpx-temp/README.md` |
+| `firmware/hpx-core/HPX_Core_v1_16/` | HPX-Core v1.16。v1.15 に HPX-TH の受信を追加 |
+| `server/receive.php`・`sensor.php`・`export.php` | サーミスターの温度 (ble.csv の新しい列 `temp2_c`) と HPX-TH の電池電圧 (`batt_v`) を保存・表示 |
+
+- HPX-Core は温度 `t`・湿度 `h` (SHT40) に加えて、サーミスターの温度 `t2` と電池電圧 `bv` を送ります。SHT40 が読めなかったときは `t` を送らず、`t2` だけでも保存します。
+- ble.csv は、最初に HPX-TH 以外の記録も含めて受け取ったときに列を1つ足した形に書き直します (前の記録はそのまま)。
+- センサページの温湿度計の表では、温度の下に「サーミスター」の温度、電池の欄に電圧 (2.7V 未満で「交換」) を出します。温度のグラフにはサーミスターを点線で足します。
+- サーバーを先に新しくしてから、HPX-Core を v1.16 にしてください (逆の順だと、HPX-TH のサーミスター温度は保存されません)。

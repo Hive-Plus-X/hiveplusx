@@ -609,7 +609,7 @@ function demo_sensor_fill(bool $force = false): void
         $fp = fopen($tmp, 'wb');
         if (!$fp) { flock($lock, LOCK_UN); fclose($lock); continue; }
         fputcsv($fp, ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
-                      'fence_state', 'fence_events', 'fence_blink_ago_s']);
+                      'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c']);
         $seq = 0;
         for ($t = $start; $t <= $end; $t += DEMO_STEP_S) {
             $amb = 15 + 6 * sin(2 * M_PI * ((int)date('G', $t) + (int)date('i', $t) / 60 - 9) / 24);   // まわりの気温 (ノード内部の温度に使う)
@@ -624,12 +624,12 @@ function demo_sensor_fill(bool $force = false): void
                 if ($kind === 'w') {
                     $c = $cal[$mac];
                     $raw = (int)round((demo_value($pt, 'w', $mac, $t, $start) + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
-                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '']);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '', '']);
                 } elseif ($kind === 'fa') {
-                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '']);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '', '']);
                 } else {
                     [$temp, $hum] = demo_value($pt, 'th', $mac, $t, $start);
-                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($temp, 2), round($hum, 2), 100, $rssi, 1, $nm, $mac, 'th', '', '', '', '', '', '']);
+                    fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($temp, 2), round($hum, 2), 100, $rssi, 1, $nm, $mac, 'th', '', '', '', '', '', '', '']);
                 }
             }
         }
