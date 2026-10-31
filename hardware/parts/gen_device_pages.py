@@ -15,18 +15,24 @@ DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
          lead='センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。',
          variants=[('core', '通常版'), ('core_wp', '防水版')],
+         wiring=[('HPX-Core_wiring.png', '配線図 (通常版・防水版とも同じ)', 'USB 電源をつなぐだけで、外付けの配線はありません。')],
          note='屋内や軒下に置く通常版と、屋外に置ける防水版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム版')],
+         wiring=[('HPX-W_CR123A_TNF39-70.png', 'CR123A 版の配線図', '基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。'),
+                 ('HPX-W_AA_TNF34-124.png', '単三リチウム版の配線図', '基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。')],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='th', file='device-th.html', tag='温湿度', name='HPX-TH',
          lead='巣箱の中の温度と湿度を測り、Bluetooth で発信します。',
          variants=[('th_cr', 'CR123A 版'), ('th_aa', '単三リチウム版')],
+         wiring=[('HPX-TH_CR123A_TNF39-59.png', 'CR123A 版の配線図', 'ケース SW-65B 用の基板 TNF39-59 に、CR123A 電池ケースを載せます。'),
+                 ('HPX-TH_pcb.png', '単三リチウム版の配線図 (小さい基板版)', 'ケース LC115H-M2-D に合わせた図は準備中です。回路とピンはこの図と同じです。')],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
-         variants=[('a', '数')], note=''),
+         variants=[('a', '数')], note='',
+         wiring=[('HPX-A_pcb.png', '配線図', '小さいユニバーサル基板 (穴 12×11) に載せる図です。')]),
 ]
 # 表に出す分類の順
 CATS = ['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', 'ケーブル', '部材']
@@ -118,6 +124,11 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
     .parts tfoot tr { border-top:2px solid var(--line); }
     .parts tfoot td { border:0; }
   }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
 '''
@@ -228,6 +239,20 @@ def parts_table(dev, rows):
     return t
 
 
+def wiring_html(dev):
+    """配線図 (site/img/wiring/ の PNG)。押すと大きな画像が開く"""
+    figs = []
+    for f, cap, note in dev.get('wiring', []):
+        figs.append(f'''      <figure class="wiring">
+        <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
+        <a href="img/wiring/{f}" target="_blank" rel="noopener"><img src="img/wiring/{f}" alt="{esc(dev["name"])} {esc(cap)}" loading="lazy"></a>
+      </figure>''')
+    if not figs:
+        return ''
+    return ('      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。'
+            '取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>\n' + '\n'.join(figs))
+
+
 def device_page(dev, rows, parts):
     vs = ' / '.join(v for _, v in dev['variants']) if len(dev['variants']) > 1 else ''
     body = f'''  <div class="hero wrap">
@@ -249,7 +274,8 @@ def device_page(dev, rows, parts):
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <div class="soonbox">配線図と組み立ての手順は、準備ができしだい掲載します。</div>
+{wiring_html(dev)}
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>'''

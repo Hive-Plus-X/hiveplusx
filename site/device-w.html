@@ -117,6 +117,11 @@
     .parts tfoot tr { border-top:2px solid var(--line); }
     .parts tfoot td { border:0; }
   }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -207,7 +212,16 @@
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <div class="soonbox">配線図と組み立ての手順は、準備ができしだい掲載します。</div>
+      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring">
+        <figcaption><b>CR123A 版の配線図</b>基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。</figcaption>
+        <a href="img/wiring/HPX-W_CR123A_TNF39-70.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-W_CR123A_TNF39-70.png" alt="HPX-W CR123A 版の配線図" loading="lazy"></a>
+      </figure>
+      <figure class="wiring">
+        <figcaption><b>単三リチウム版の配線図</b>基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。</figcaption>
+        <a href="img/wiring/HPX-W_AA_TNF34-124.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-W_AA_TNF34-124.png" alt="HPX-W 単三リチウム版の配線図" loading="lazy"></a>
+      </figure>
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>

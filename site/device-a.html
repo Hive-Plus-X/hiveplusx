@@ -117,6 +117,11 @@
     .parts tfoot tr { border-top:2px solid var(--line); }
     .parts tfoot td { border:0; }
   }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -194,7 +199,12 @@
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <div class="soonbox">配線図と組み立ての手順は、準備ができしだい掲載します。</div>
+      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring">
+        <figcaption><b>配線図</b>小さいユニバーサル基板 (穴 12×11) に載せる図です。</figcaption>
+        <a href="img/wiring/HPX-A_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-A_pcb.png" alt="HPX-A 配線図" loading="lazy"></a>
+      </figure>
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
