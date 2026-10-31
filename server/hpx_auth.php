@@ -37,7 +37,9 @@ const BRAND_NAME = 'Hive Plus X';
 // <head> に入れるもの(アイコン)
 function brand_head(): string
 {
-    return '<link rel="icon" href="img/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#2F5D45">';
+    // iPhone で「ホーム画面に追加」したときのアイコン(180px の PNG。角は iPhone が丸める)と名前
+    return '<link rel="icon" href="img/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="img/apple-touch-icon.png">'
+        . '<meta name="apple-mobile-web-app-title" content="HPX-note"><meta name="theme-color" content="#2F5D45">';
 }
 
 // メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)
