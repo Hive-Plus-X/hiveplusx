@@ -83,6 +83,8 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .parts td.n { text-align:center; white-space:nowrap; font-weight:700; width:96px; }
   .parts td.n.none { color:var(--sub); font-weight:400; }
   .parts .part b { display:block; font-weight:600; }
+  .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
   .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
   .parts td.shop { color:var(--sub); white-space:nowrap; }
   .parts tr.diff td { background:var(--honey-soft); }
@@ -154,7 +156,10 @@ def parts_table(dev, rows):
         for r in rs:
             diff = len(vs) > 1 and len({r[k] for k, _ in vs}) > 1
             ns = ''.join(f'<td class="n{"" if r[k] else " none"}" data-v="{esc(v)}">{esc(r[k]) if r[k] else "—"}</td>' for k, v in vs)
-            out.append(f'        <tr{" class=\"diff\"" if diff else ""}><td class="part"><b>{esc(r["name"])}</b>'
+            nm = esc(r['name'])
+            if r.get('url'):   # 部品のページへのリンク (parts.csv の url 列)
+                nm = f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">{nm}</a>'
+            out.append(f'        <tr{" class=\"diff\"" if diff else ""}><td class="part"><b>{nm}</b>'
                        f'{"<span>" + esc(r["detail"]) + "</span>" if r["detail"] else ""}</td>'
                        f'<td class="shop">{esc(r["shop"]) or "—"}</td>{ns}</tr>')
     out.append('        </tbody>\n      </table>')
