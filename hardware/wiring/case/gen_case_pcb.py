@@ -197,7 +197,7 @@ def solder_mark(s, c, r):
 
 # ------------------------------------------------------------------ タカチ基板版
 P = 40                      # 穴の間隔 (px) = 2.54mm
-ROWS = "ABCDEFGHIJKLMNOPQRSTU"
+ROWS = "ABCDEFGHIJKLMNOPQRSTUVWX"
 OX, OY = 340, 230           # 基板の穴 (行A, 列1) の位置
 CX, CY = 0, 0               # 回路 (ローカル座標) を基板のどこに置くか
 BW = BH = 0                 # 基板の穴の数 (列, 行)
@@ -427,13 +427,13 @@ def make_W(fname, model, wmm, hmm, nc, nr, cx, cy, batt, hxcols, onboard=None):
     s.save(fname)
 
 # ------------------------------------------------------------------ HPX-TH
-def make_TH(fname, model, wmm, hmm, nc, nr, cx, cy, batt, shtcols):
+def make_TH(fname, model, wmm, hmm, nc, nr, cx, cy, batt, shtcols, board_fn=None):
     global CX, CY
     CX, CY = 0, 0
     width = max(1280, OX + (nc - 1) * P + 260)
     s = S(width, 1960)
     title(s, f"HPX-TH（温湿度センサ）{batt} 版の配線図", f"基板 タカチ {model} ／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 {batt}")
-    board_tnf(s, model, wmm, hmm, nc, nr)
+    (board_fn or board_tnf)(s, model, wmm, hmm, nc, nr)
     CX, CY = cx, cy
     p = xiao_pcb(s, 3, 2)
     wireh(s, [(0, 4), (0, 0), (12, 0), (12, 10)], "black")
@@ -690,4 +690,66 @@ make_TH_on("HPX-TH_CR123A_TNF39-59.svg")
 #make_TH("HPX-TH_CR123A_TNF39-59.svg", "TNF39-59", 59, 39, 21, 14, 6, 2, "CR123A", 6)
 print("ok")
 
-make_TH("HPX-TH_AA_LC115H.svg", "（仮）LC115H-M2-D 用", 56, 50, 21, 19, 6, 4, "単3リチウム×2", 6)
+def board_lc115(s, model, wmm, hmm, nc, nr):
+    """LC115H-M2 の推奨基板 (本体 60×54.5mm、上に 46×8.5mm の出っぱり、取付穴 φ2.5 ×4: 53×40mm 間隔)。
+    ユニバーサル基板をこの形に切る。穴の並びは 23×24 (列 1〜23、行 A〜X)"""
+    global BW, BH, BOT, GEO
+    BW, BH = nc, nr
+    k = P / 2.54
+    gx0, gy0 = 2.06, 1.75                     # 穴 A1 の位置 (mm、基板の左上から)
+    x0, y0 = OX - gx0 * k, OY - gy0 * k
+    BOT = y0 + 63 * k
+    GEO = (x0, y0, 60 * k, 63 * k, k)
+    X = lambda m: x0 + m * k
+    Y = lambda m: y0 + m * k
+    r = 3.5 * k
+    d = (f"M{X(7)},{Y(0)} L{X(53)},{Y(0)} L{X(53)},{Y(8.5)-r} Q{X(53)},{Y(8.5)} {X(53)+r},{Y(8.5)} "
+         f"L{X(60)},{Y(8.5)} L{X(60)},{Y(63)} L{X(0)},{Y(63)} L{X(0)},{Y(8.5)} L{X(7)-r},{Y(8.5)} "
+         f"Q{X(7)},{Y(8.5)} {X(7)},{Y(8.5)-r} Z")
+    s.add(f'<path d="{d}" fill="#e8d3a8" stroke="#8d6e3f" stroke-width="2.5"/>')
+    holes = [(3.5, 15), (56.5, 15), (3.5, 55), (56.5, 55)]
+    def inside(xm, ym):
+        mg = 1.3
+        if ym < 8.5 + mg:
+            ok = 7 + mg < xm < 53 - mg and ym > mg
+        else:
+            ok = mg < xm < 60 - mg and ym < 63 - mg
+        return ok and all((xm - hx) ** 2 + (ym - hy) ** 2 > 3.0 ** 2 for hx, hy in holes)
+    for c in range(nc):
+        for rr in range(nr):
+            xm, ym = gx0 + c * 2.54, gy0 + rr * 2.54
+            if not inside(xm, ym):
+                continue
+            x, y = OX + c * P, OY + rr * P
+            s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#d9a441" stroke="#a87b24" stroke-width="1"/>')
+            s.add(f'<circle cx="{x}" cy="{y}" r="2.6" fill="#5d4520"/>')
+    for hx, hy in holes:
+        s.add(f'<circle cx="{X(hx)}" cy="{Y(hy)}" r="{1.25*k}" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+    for c in range(nc):
+        if c % 2 == 0:
+            s.text(OX + c * P, y0 - 10, str(c + 1), 12, "middle", fill="#8d6e3f", weight="bold")
+    for rr in range(nr):
+        s.text(x0 - 10, OY + rr * P + 5, ROWS[rr], 13, "end", fill="#8d6e3f", weight="bold")
+    # 寸法
+    s.add(f'<path d="M{X(0)},{Y(63)+24} L{X(60)},{Y(63)+24}" stroke="#2e7d32" stroke-width="1.5"/>')
+    s.text(X(30), Y(63) + 44, "60mm", 13, "middle", "bold", "#2e7d32")
+    s.add(f'<path d="M{X(60)+40},{Y(0)} L{X(60)+40},{Y(63)}" stroke="#2e7d32" stroke-width="1.5"/>')
+    s.text(X(60) + 48, Y(32), "63mm", 13, "start", "bold", "#2e7d32")
+    s.text(X(30), y0 - 34, "LC115H-M2-D の推奨基板の形（本体 60×54.5mm ＋ 上の出っぱり 46×8.5mm）。ユニバーサル基板を切って作る", 15, "middle", "bold", "#5d4520")
+
+make_TH("HPX-TH_AA_LC115H.svg", "LC115H-M2-D 用", 60, 63, 23, 24, 7, 5, "単3リチウム×2", 6, board_fn=board_lc115)
+
+# LC115H 版の文言を差し替える
+_p = os.path.join(OUT, "HPX-TH_AA_LC115H.svg")
+_s = open(_p, encoding="utf-8").read()
+for _a, _b in [
+    ("基板 タカチ LC115H-M2-D 用 ／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2 ／ 電源 単3リチウム×2", "ケース タカチ LC115H-M2-D（推奨基板の形）／ SHT40: D4・D5 ／ サーミスター: D3→10kΩ→A2"),
+    ("単3×2本 直列の電池ケース ＋ 単3リチウム電池 2本", "LC115H-M2-D の電池室（単3×2本）＋ 単3リチウム電池 2本"),
+    ("単3×2本 直列の電池ケース ／ 単3リチウム電池", "ケースの電池室の端子 ／ 単3リチウム電池 2本"),
+    ("タカチ ユニバーサル基板 LC115H-M2-D 用・すずめっき線・被覆線", "ユニバーサル基板（推奨基板の形 60×63mm に切る）・すずめっき線・被覆線"),
+    ("・四すみの点線の丸は取付穴（位置は目安。実物で確認）。すぐ内側の × の穴は、ネジやスペーサーに当たらないよう使わない。",
+     "・白い丸は取付穴 φ2.5（4つ、左右 53mm・上下 40mm 間隔）。ケースのボスにネジで留める。穴のまわりの穴は使わない。"),
+]:
+    assert _a in _s, _a
+    _s = _s.replace(_a, _b)
+open(_p, "w", encoding="utf-8").write(_s)
