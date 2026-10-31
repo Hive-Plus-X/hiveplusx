@@ -1,6 +1,8 @@
 # 機器のページ (site/devices.html と site/device-*.html) を parts.csv から作る。
 #   使い方: python3 hardware/parts/gen_device_pages.py   (リポジトリの一番上で)
 #   部品や数を変えるときは parts.csv を直してから、これを動かす。
+#   parts.csv の列: id (代わりの品から指すときだけ), url (部品名のリンク), pack・unit・price (入数・単位・価格),
+#   alt_of (その id の部品の「代わりに使えるもの」), 残りは機器の版ごとの数 (空ならその版では使わない)。
 #   ヘッダー・フッター・色は site/app.html から取るので、サイトの見た目を変えたらこれも動かし直す。
 import csv, html, re
 from pathlib import Path
@@ -31,13 +33,19 @@ CATS = ['チップボード', '電子部品', '電源', 'ケース', 'ケース�
 
 
 def load_parts():
-    rows = []
+    """部品の行と、代わりに使えるもの {id: [行]} を返す"""
+    rows, alts = [], {}
     with open(Path(__file__).with_name('parts.csv'), encoding='utf-8') as f:
         for r in csv.DictReader(f):
             r = {k: (v or '').strip() for k, v in r.items()}
             if r['name'].endswith('用基板'):
                 r['category'] = 'ケース用基板'   # 表の上ではケースの基板をまとめる
-            rows.append(r)
+            if r.get('alt_of'):
+                alts.setdefault(r['alt_of'], []).append(r)
+            else:
+                rows.append(r)
+    for r in rows:
+        r['alts'] = alts.get(r.get('id'), [])
     return rows
 
 
@@ -86,7 +94,12 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
   .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts .part .price { margin-top:2px; }
+  .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
+  .parts .part .alt a { font-weight:400; }
   .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
+  .parts tfoot td.n { width:auto; }
   .parts tr.diff td { background:var(--honey-soft); }
   .legend { font-size:13px; color:var(--sub); margin-top:10px; }
   .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
@@ -102,6 +115,8 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
     .parts td.shop { margin-top:2px; font-size:13px; }
     .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
     .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+    .parts tfoot tr { border-top:2px solid var(--line); }
+    .parts tfoot td { border:0; }
   }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
@@ -142,6 +157,38 @@ def doc(title, desc, body, parts):
 '''
 
 
+def yen(n):
+    return f'{round(n):,}円'
+
+
+def price_text(r):
+    """「280円 / 10個入り」"""
+    if not r.get('price'):
+        return ''
+    pk = r.get('pack') or '1'
+    if pk == '1' and r.get('unit') in ('個', '本', '枚', ''):
+        return yen(int(r['price']))
+    return f'{yen(int(r["price"]))} / {pk}{r.get("unit", "")}入り' if r.get('unit') not in ('cm', 'm') else f'{yen(int(r["price"]))} / {pk}{r["unit"]}'
+
+
+def cost(r, n):
+    """その数を使ったときの部品代 (数が「適宜」などなら None)"""
+    if not r.get('price') or not n:
+        return None
+    m = re.match(r'^([0-9.]+)\s*(cm|m)?$', n)
+    if not m:
+        return None
+    q = float(m.group(1))
+    if m.group(2) == 'm' and r.get('unit') == 'cm':
+        q *= 100
+    return q * int(r['price']) / float(r.get('pack') or 1)
+
+
+def link(name, url):
+    name = esc(name)
+    return f'<a href="{esc(url)}" target="_blank" rel="noopener">{name}</a>' if url else name
+
+
 def parts_table(dev, rows):
     vs = dev['variants']
     use = [r for r in rows if any(r[k] for k, _ in vs)]
@@ -156,16 +203,28 @@ def parts_table(dev, rows):
         for r in rs:
             diff = len(vs) > 1 and len({r[k] for k, _ in vs}) > 1
             ns = ''.join(f'<td class="n{"" if r[k] else " none"}" data-v="{esc(v)}">{esc(r[k]) if r[k] else "—"}</td>' for k, v in vs)
-            nm = esc(r['name'])
-            if r.get('url'):   # 部品のページへのリンク (parts.csv の url 列)
-                nm = f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">{nm}</a>'
-            out.append(f'        <tr{" class=\"diff\"" if diff else ""}><td class="part"><b>{nm}</b>'
-                       f'{"<span>" + esc(r["detail"]) + "</span>" if r["detail"] else ""}</td>'
+            nm = link(r['name'], r.get('url'))   # 部品のページへのリンク (parts.csv の url 列)
+            sub = f'<span>{esc(r["detail"])}</span>' if r['detail'] else ''
+            if price_text(r):
+                sub += f'<span class="price">{esc(price_text(r))}</span>'
+            for a in r['alts']:
+                info = '、'.join(x for x in (a['shop'], price_text(a)) if x)
+                sub += f'<span class="alt">代わりに: {link(a["name"], a.get("url"))}{"（" + esc(info) + "）" if info else ""}</span>'
+            out.append(f'        <tr{" class=\"diff\"" if diff else ""}><td class="part"><b>{nm}</b>{sub}</td>'
                        f'<td class="shop">{esc(r["shop"]) or "—"}</td>{ns}</tr>')
-    out.append('        </tbody>\n      </table>')
+    out.append('        </tbody>')
+    # 部品代の目安: 1台に使う分だけを、入数で割って足す (適宜のもの・送料は入れない)
+    tot = []
+    for k, v in vs:
+        c = [cost(r, r[k]) for r in use if r[k]]
+        tot.append(f'<td class="n" data-v="{esc(v)}">約 {yen(sum(x for x in c if x))}</td>')
+    out.append(f'        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td>{"".join(tot)}</tr></tfoot>')
+    out.append('      </table>')
     t = '\n'.join(out)
+    notes = ['部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。']
     if len(vs) > 1:
-        t += '\n      <p class="legend"><i></i>色の付いた行は、版によって違う部品です。</p>'
+        notes.insert(0, '<i></i>色の付いた行は、版によって違う部品です。')
+    t += ''.join(f'\n      <p class="legend">{n}</p>' for n in notes)
     return t
 
 

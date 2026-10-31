@@ -93,7 +93,12 @@
   .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
   .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts .part .price { margin-top:2px; }
+  .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
+  .parts .part .alt a { font-weight:400; }
   .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
+  .parts tfoot td.n { width:auto; }
   .parts tr.diff td { background:var(--honey-soft); }
   .legend { font-size:13px; color:var(--sub); margin-top:10px; }
   .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
@@ -109,6 +114,8 @@
     .parts td.shop { margin-top:2px; font-size:13px; }
     .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
     .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+    .parts tfoot tr { border-top:2px solid var(--line); }
+    .parts tfoot td { border:0; }
   }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
@@ -161,24 +168,26 @@
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
         <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span><span class="price">1,780円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</a></b><span>コンデンサー100μF</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a></b><span>コンデンサー0.1μF</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b>CDSセル</b><span>φ5mm CDSセル フォトレジスタ</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>金属皮膜抵抗 1/4W 1%</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b>ピンソケット（メス）</b><span>2.54mmピッチ ピンソケット</span></td><td class="shop">amazon</td><td class="n" data-v="数">4</td></tr>
-        <tr><td class="part"><b>ジャンパー線</b><span>スズメッキ線 TCW 0.5mm</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr><td class="part"><b>ジャンパー線</b><span>被覆ありのもの</span></td><td class="shop">amazon</td><td class="n" data-v="数">8</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</a></b><span>コンデンサー100μF</span><span class="price">280円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105002/" target="_blank" rel="noopener">アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5</a>（秋月電子通商、20円）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g110271/" target="_blank" rel="noopener">電解コンデンサー 100μF16V 105℃ ルビコン PX</a>（秋月電子通商、50円）</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a></b><span>コンデンサー0.1μF</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506" target="_blank" rel="noopener">CDSセル</a></b><span>Moechando φ5mm CdS セル 5506 (10個入り)</span><span class="price">395円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105886/" target="_blank" rel="noopener">CdSセル (1MΩ) GL5528</a>（秋月電子通商、100円 / 4個入り）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=2.54mm%E3%83%94%E3%83%83%E3%83%81%20%E3%83%94%E3%83%B3%E3%82%BD%E3%82%B1%E3%83%83%E3%83%88%2040%E3%83%94%E3%83%B3%20%E5%8D%98%E5%88%97%2010%E5%80%8B" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>2.54mmピッチ ピンソケット 1×40P 10本入り (切って使う)</span><span class="price">650円 / 10本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">4</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">ジャンパー線</a></b><span>ジャンパーワイヤー 840個セット (14サイズ)</span><span class="price">935円 / 840本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">8</td></tr>
         <tr class="cat"><th colspan="3">電源</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">単三リチウム電池</a></b><span>エナジャイザー リチウム乾電池 単3形</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">単三リチウム電池</a></b><span>エナジャイザー リチウム乾電池 単3形 4本入り</span><span class="price">1,283円 / 4本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
         <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.takachi-el.co.jp/products/WH" target="_blank" rel="noopener">IP67防水ハンドヘルドケース</a></b><span>タカチ　WH145-25-M2-</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.takachi-el.co.jp/products/WH" target="_blank" rel="noopener">IP67防水ハンドヘルドケース</a></b><span>タカチ　WH145-25-M2-</span><span class="price">1,754円</span><span class="alt">代わりに: <a href="https://www.amazon.co.jp/s?k=%E3%82%BF%E3%82%AB%E3%83%81%20WH145-25-M3-BR" target="_blank" rel="noopener">タカチ WH145-25-M3-BR (単3×3 電池ボックス付き・黒/赤)</a>（amazon、1,754円）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b>ゴムクッション</b><span>iteck　KGR-40　40×3mm</span></td><td class="shop">山新</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
+        <tr><td class="part"><b>ゴムクッション</b><span>iteck　KGR-40　40×3mm</span><span class="price">238円 / 4個入り</span></td><td class="shop">山新</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span><span class="price">249円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
         </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 4,619円</td></tr></tfoot>
       </table>
+      <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
     </div>
   </section>
 
