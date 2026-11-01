@@ -192,6 +192,8 @@ def cost(r, n):
     q = float(m.group(1))
     if m.group(2) == 'm' and r.get('unit') == 'cm':
         q *= 100
+    elif m.group(2) == 'cm' and r.get('unit') == 'm':
+        q /= 100
     return q * int(r['price']) / float(r.get('pack') or 1)
 
 
