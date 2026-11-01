@@ -147,7 +147,7 @@ def cr123a(s, x, y):
 # ------------------------------------------------------------------ 小さな基板版
 P = 40                      # 穴の間隔 (px) = 2.54mm
 OX, OY = 600, 200           # 穴 A1 の位置
-COLS = "ABCDEFGHIJKLMNOP"
+COLS = "ABCDEFGHIJKLMNOPQRSTUVWX"
 NC, NR = 12, 11             # 図ごとに変える
 
 def H(c, r):
@@ -159,7 +159,7 @@ def hn(c, r):
 def mm(n):
     return round((n - 1) * 2.54 + 5)
 
-def board(s, nc, nr):
+def board(s, nc, nr, label=None):
     global NC, NR
     NC, NR = nc, nr
     x0, y0 = OX - 26, OY - 26
@@ -174,7 +174,7 @@ def board(s, nc, nr):
             s.add(f'<circle cx="{x}" cy="{y}" r="2.6" fill="#5d4520"/>')
     for r in range(nr):
         s.text(x0 + w + 14, OY + r * P + 5, str(r + 1), 13, "start", fill="#8d6e3f", weight="bold")
-    s.text(x0 + w / 2, y0 - 40, f"ユニバーサル基板 穴 {nc}×{nr}（約 {mm(nc)}×{mm(nr)}mm）", 15, "middle", "bold", "#5d4520")
+    s.text(x0 + w / 2, y0 - 40, label or f"ユニバーサル基板 穴 {nc}×{nr}（約 {mm(nc)}×{mm(nr)}mm）", 15, "middle", "bold", "#5d4520")
 
 def wireh(s, pts, color):
     s.wire([H(*p) for p in pts], color)
@@ -393,42 +393,62 @@ notes(s, 60, y + 20, COMMON_NOTES + [
 s.save("HPX-TH_pcb.svg")
 
 # ================================================================== HPX-A
-s = S(1280, 1620)
-title(s, "HPX-A（電柵アラート）基板の配線図", "小さい基板版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
-board(s, 12, 11)
+OX, OY = 300, 330           # 5×7cm 基板は大きいので左へ寄せる
+s = S(1280, 2010)
+title(s, "HPX-A（電柵アラート）基板の配線図", "ユニバーサル基板 5×7cm 版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
+board(s, 24, 18, "ユニバーサル基板 5×7cm（穴 A〜X × 1〜18）")
 p = xiao_pcb(s, 2, 2)
 P3, PG = p["3V3"], p["GND"]
-wireh(s, [(0, 1), (0, 0), (11, 0), (11, 10)], "black")
+wireh(s, [(2, 0), (11, 0), (11, 10)], "black")
 wireh(s, [p["GND"], (11, 3)], "black")
 wireh(s, [p["3V3"], (9, 4), (9, 10)], "red")
-wireh(s, [p["D0"], (1, 2), (0, 2)], "yellow")
+wireh(s, [p["D0"], (1, 2), (1, 0)], "yellow")
 wireh(s, [p["D1"], (1, 3)], "purple")
 res_stand(s, (1, 2), (1, 3), "10kΩ", ["#8d5524", "#212121", "#f57c00"], OX - 50, H(1, 4)[1] + 4, "end")
 s.top.append(f'<line x1="{H(1,2)[0]-10}" y1="{H(1,2)[1]+10}" x2="{OX-46}" y2="{H(1,4)[1]}" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/>')
-cap_flat(s, (9, 6), (11, 6), "100µF", True, (H(11, 6)[0] + 80, H(11, 6)[1] + 5))
-cap_flat(s, (9, 8), (11, 8), "0.1µF", False, (H(11, 8)[0] + 80, H(11, 8)[1] + 5))
-def cds(x, y):
-    s.add(f'<circle cx="{x-50}" cy="{y}" r="20" fill="#f3e5ab" stroke="#8d6e63" stroke-width="3"/>')
-    s.add(f'<path d="M{x-64},{y-8} Q{x-50},{y-2} {x-36},{y-8} M{x-64},{y} Q{x-50},{y+6} {x-36},{y} M{x-64},{y+8} Q{x-50},{y+14} {x-36},{y+8}" stroke="#c62828" stroke-width="2" fill="none"/>')
-cable_in(s, [(0, 1), (0, 2)], 214, "CdS セル 5506", "（向きなし・線で延長）", cds)
-s.text(60, 340, "警報器の赤いカバーに向け、", 12, fill="#666")
-s.text(60, 356, "黒いもので遮光", 12, fill="#666")
+def tag(x, y, t, size=13, anchor="start", fill="#333", w=None):
+    w = w or len(t) * size + 10
+    bx = x - 5 if anchor == "start" else x - w / 2
+    s.top.append(f'<rect x="{bx}" y="{y-size-2}" width="{w}" height="{size+9}" rx="4" fill="#fffdf6" fill-opacity="0.95"/>')
+    s.text(x, y, t, size, anchor, "bold", fill, layer=s.top)
+cap_flat(s, (9, 6), (11, 6), "100µF", True)
+cap_flat(s, (9, 8), (11, 8), "0.1µF")
+tag(H(11, 6)[0] + 26, H(11, 6)[1] + 5, "100µF", w=52)
+tag(H(11, 8)[0] + 26, H(11, 8)[1] + 5, "0.1µF", w=46)
+# CdS セルの線は基板の上から B1・C1 へ（白→B1、黒→C1。向きはないので逆でも動く）
+cx, cy = 120, 175
+s.add(f'<circle cx="{cx}" cy="{cy}" r="20" fill="#f3e5ab" stroke="#8d6e63" stroke-width="3"/>')
+s.add(f'<path d="M{cx-14},{cy-8} Q{cx},{cy-2} {cx+14},{cy-8} M{cx-14},{cy} Q{cx},{cy+6} {cx+14},{cy} M{cx-14},{cy+8} Q{cx},{cy+14} {cx+14},{cy+8}" stroke="#c62828" stroke-width="2" fill="none"/>')
+for i, (h, col) in enumerate([((1, 0), "#fafafa"), ((2, 0), "#212121")]):
+    x, y = H(*h)
+    yy = cy - 6 + i * 12
+    s.add(f'<path d="M{cx+20},{yy} L{x},{yy} L{x},{y}" fill="none" stroke="#555" stroke-width="6" stroke-linejoin="round"/>')
+    s.add(f'<path d="M{cx+20},{yy} L{x},{yy} L{x},{y}" fill="none" stroke="{col}" stroke-width="4" stroke-linejoin="round"/>')
+    solder_mark(s, *h)
+s.text(60, 120, "CdS セル 5506", 15, weight="bold")
+s.text(60, 138, "（向きなし・シールド線で延長）", 12, fill="#666")
+s.text(60, 222, "白い線 → B1、黒い線 → C1", 12, fill="#333", weight="bold")
+s.text(60, 240, "警報器の赤いカバーに向け、黒いもので遮光", 12, fill="#666")
+x0, y0 = H(12, 1)
+tag(H(17, 12)[0], H(17, 12)[1] - 6, "M 列から右と 12 行から下は使わない（切り取ってもよい）", 15, "middle", "#8d6e3f", w=430)
+for c in (1, 2):   # CdS の線で隠れる列の文字を上に描き直す
+    tag(H(c, 0)[0], OY - 26 - 12, COLS[c], 13, "middle", "#8d6e3f", w=16)
 battery_below(s, 9, 11, 10)
-y = table(s, 60, 900, [
+y = table(s, 60, 1290, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
     ["purple", f"XIAO D1（{hn(2,3)}）", f"10kΩ の下の足（{hn(1,3)}）", "読む瞬間だけ電気を流す"],
-    ["yellow", f"XIAO D0/A0（{hn(2,2)}）", f"10kΩ の上の足（{hn(1,2)}）→ CdS（{hn(0,2)}）", "測る点"],
-    ["black", f"CdS のもう片方（{hn(0,1)}）", f"{hn(0,0)} → {hn(11,0)} → {hn(11,10)}（−の列）", "上の端を回って −の列へ"],
+    ["yellow", f"XIAO D0/A0（{hn(2,2)}）", f"10kΩ の上の足（{hn(1,2)}）→ {hn(1,1)} → CdS（{hn(1,0)}）", "測る点"],
+    ["black", f"CdS のもう片方（{hn(2,0)}）", f"{hn(11,0)} → {hn(11,10)}（−の列）", "上の端を通って −の列へ"],
 ] + rail_rows(9, 11), [100, 300, 420, 340], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
     ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(2,2)}〜{hn(8,8)}"],
-    ["CdS セル（フォトレジスタ）5506 φ5mm", "1", f"線で延長して {hn(0,1)}・{hn(0,2)} に直接はんだ付け"],
+    ["CdS セル（フォトレジスタ）5506 φ5mm", "1", f"シールド線で延長して {hn(1,0)}（白）・{hn(2,0)}（黒）に直接はんだ付け"],
     ["抵抗 10kΩ", "1", f"{hn(1,2)}・{hn(1,3)}（立てて付ける）"],
     ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(9,8)}・{hn(11,8)}（電源側。測る点には付けない）"],
     ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(9,6)}・{hn(11,6)}"],
     ["CR123A 用電池ケース ／ CR123A 電池", "各1", f"赤線を {hn(9,10)}（＋）、黒線を {hn(11,10)}（−）にはんだ付け"],
-    ["ユニバーサル基板（穴 12×11 以上）・すずめっき線・被覆線", "", "大きい基板を切って使ってもよい"],
+    ["ユニバーサル基板 5×7cm（穴 24×18）・すずめっき線・被覆線", "1", "使うのは左上の A〜L・1〜11 だけ"],
 ], [560, 60, 540], "部品表")
 notes(s, 60, y + 20, COMMON_NOTES + [
     "・フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。",
