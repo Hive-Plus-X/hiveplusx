@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPX-W の作り方 | Hive Plus X</title>
+<meta name="description" content="HPX-W を作るのに必要な部品の一覧です。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ページの見出し */
+  .hero { padding:200px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:140px 20px 0; } }
+  .hero h1 { font-size:clamp(26px, 4.4vw, 38px); margin-top:6px; line-height:1.4; }
+  .hero p.lead { margin:14px auto 0; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+  .jump { display:flex; justify-content:center; gap:8px; margin-top:28px; flex-wrap:wrap; list-style:none; }
+  .jump a { display:block; padding:5px 16px; border-radius:999px; border:1px solid var(--line); background:var(--panel); text-decoration:none; font-size:14px; }
+  .jump a:hover { border-color:var(--honey); }
+
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  section { margin-top:200px; scroll-margin-top:80px; }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { section { margin-top:140px; } main { padding-bottom:200px; } }
+  .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .tag { color:var(--honey); } }
+  h2 { font-size:clamp(22px, 3vw, 28px); margin-top:6px; line-height:1.4; }
+  .note { color:var(--sub); margin-top:8px; }
+
+  /* 機器の一覧 (devices.html) */
+  .devs { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; margin-top:56px; }
+  @media (max-width:760px) { .devs { grid-template-columns:1fr; } }
+  .dev { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; text-decoration:none; display:block; scroll-margin-top:80px; }
+  a.dev:hover { border-color:var(--honey); }
+  .dev h3 { font-size:20px; margin-top:8px; }
+  .dev p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .dev .vars { font-size:13px; margin-top:10px; color:var(--text); }
+  .dev.soon { border-style:dashed; }
+
+  /* 部品表 */
+  .parts { width:100%; border-collapse:collapse; margin-top:24px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
+  .parts th, .parts td { padding:10px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .parts thead th { border-top:0; font-size:13px; color:var(--sub); font-weight:700; white-space:nowrap; }
+  .parts .cat th { background:rgba(47,93,69,.07); color:var(--forest); font-size:13px; padding:6px 14px; }
+  @media (prefers-color-scheme: dark) { .parts .cat th { background:rgba(0,0,0,.18); color:var(--honey); } }
+  .parts td.n { text-align:center; white-space:nowrap; font-weight:700; width:96px; }
+  .parts td.n.none { color:var(--sub); font-weight:400; }
+  .parts .part b { display:block; font-weight:600; }
+  .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
+  .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts .part .price { margin-top:2px; }
+  .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
+  .parts .part .alt a { font-weight:400; }
+  .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
+  .parts tfoot td.n { width:auto; }
+  .parts tr.diff td { background:var(--honey-soft); }
+  .legend { font-size:13px; color:var(--sub); margin-top:10px; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
+  /* スマホ: 1部品ずつのかたまりにする */
+  @media (max-width:760px) {
+    .parts, .parts tbody, .parts tr, .parts td, .parts th { display:block; width:auto; }
+    .parts thead { display:none; }
+    .parts tr { border-top:1px solid var(--line); padding:10px 14px; }
+    .parts .cat { padding:0; }
+    .parts td { border:0; padding:0; }
+    .parts tr.diff { background:var(--honey-soft); }
+    .parts tr.diff td { background:none; }
+    .parts td.shop { margin-top:2px; font-size:13px; }
+    .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
+    .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+    .parts tfoot tr { border-top:2px solid var(--line); }
+    .parts tfoot td { border:0; }
+  }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
+  .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <p class="eyebrow">Devices</p>
+    <h1>HPX-W</h1>
+    <p class="lead">巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。</p>
+    <p class="lead">電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。</p>
+  </div>
+
+  <section id="parts">
+    <div class="reveal wrap">
+      <span class="tag">重量</span>
+      <h2>部品表</h2>
+      <p class="note">必要な部品と数です。版ごとの数を並べています (CR123A 版 / 単三リチウム版)。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">CR123A 版</th><th class="n">単三リチウム版</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="4">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span><span class="price">1,780円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</a></b><span>コンデンサー100μF</span><span class="price">280円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105002/" target="_blank" rel="noopener">アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5</a>（秋月電子通商、20円）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g110271/" target="_blank" rel="noopener">電解コンデンサー 100μF16V 105℃ ルビコン PX</a>（秋月電子通商、50円）</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a></b><span>コンデンサー0.1μF</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Hailege%20HX711%203%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88" target="_blank" rel="noopener">HX711</a></b><span>Hailege HX711 ADコンバーター モジュール 3個セット</span><span class="price">660円 / 3個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g112370/" target="_blank" rel="noopener">HX711使用 ロードセル用ADコンバーター モジュール基板</a>（秋月電子通商、350円）</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112150/" target="_blank" rel="noopener">QIコネクタハウジング</a></b><span>コネクター用ハウジング 1P</span><span class="price">5円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">2</td><td class="n" data-v="単三リチウム版">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112160/" target="_blank" rel="noopener">ケーブル用コネクター</a></b><span>QIハウジング用</span><span class="price">50円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">2</td><td class="n" data-v="単三リチウム版">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=2.54mm%E3%83%94%E3%83%83%E3%83%81%20%E3%83%94%E3%83%B3%E3%82%BD%E3%82%B1%E3%83%83%E3%83%88%2040%E3%83%94%E3%83%B3%20%E5%8D%98%E5%88%97%2010%E5%80%8B" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>2.54mmピッチ ピンソケット 1×40P 10本入り (切って使う)</span><span class="price">650円 / 10本入り</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">4</td><td class="n" data-v="単三リチウム版">4</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">適宜</td><td class="n" data-v="単三リチウム版">適宜</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">ジャンパー線</a></b><span>ジャンパーワイヤー 840個セット (14サイズ)</span><span class="price">935円 / 840本入り</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">8</td><td class="n" data-v="単三リチウム版">8</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112035/" target="_blank" rel="noopener">シングルポイントロードセル</a></b><span>ロードセル シングルポイント(ビーム型) SC601 120kg</span><span class="price">1,850円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">電源</th></tr>
+        <tr class="diff"><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117271/" target="_blank" rel="noopener">電池ボックス 単3×2本</a></b><span>電池ボックス 単3×2本 リード線</span><span class="price">50円</span></td><td class="shop">秋月電子通商</td><td class="n none" data-v="CR123A 版">—</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="diff"><td class="part"><b><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">単三リチウム電池</a></b><span>エナジャイザー リチウム乾電池 単3形 4本入り</span><span class="price">1,283円 / 4本入り</span></td><td class="shop">amazon</td><td class="n none" data-v="CR123A 版">—</td><td class="n" data-v="単三リチウム版">2</td></tr>
+        <tr class="diff"><td class="part"><b><a href="https://www.amazon.co.jp/s?k=EEMB%20CR123A%201700mAh%204%E5%80%8B" target="_blank" rel="noopener">CR123A電池</a></b><span>EEMB CR123A 3V リチウム電池 1700mAh 4個入り</span><span class="price">999円 / 4個入り</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="diff"><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g110192/" target="_blank" rel="noopener">CR123A 電池ケース</a></b><span>CR123A用電池ケース</span><span class="price">50円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="cat"><th colspan="4">ケース</th></tr>
+        <tr class="diff"><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117042/" target="_blank" rel="noopener">小型 汎用プラスチックケース TWシリーズ</a></b><span>タカチ　TW5-3-9B</span><span class="price">220円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/p/8821/0595/" target="_blank" rel="noopener">プラスチックケース 小型・低価格型 SWシリーズ</a></b><span>タカチ　SW-130B</span><span class="price">359円</span></td><td class="shop">モノタロウ</td><td class="n none" data-v="CR123A 版">—</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">ケース用基板</th></tr>
+        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/g/00965857/" target="_blank" rel="noopener">TW5-3-9用基板</a></b><span>タカチ TNF39-70</span><span class="price">289円</span></td><td class="shop">—</td><td class="n" data-v="CR123A 版">1</td><td class="n none" data-v="単三リチウム版">—</td></tr>
+        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/g/00965857/" target="_blank" rel="noopener">SW-130用基板</a></b><span>タカチ TNF34-124</span><span class="price">349円</span></td><td class="shop">モノタロウ</td><td class="n none" data-v="CR123A 版">—</td><td class="n" data-v="単三リチウム版">1</td></tr>
+        <tr class="cat"><th colspan="4">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/g/06244669/" target="_blank" rel="noopener">アルミ不等辺アングル</a></b><span>泰豊トレーディング 25×50mm厚さ3mm 100cm</span><span class="price">2,998円 / 100cm</span><span class="alt">代わりに: アルミ不等辺アングル t3.0 25×50×300（山新、648円 / 30cm）</span></td><td class="shop">モノタロウ</td><td class="n" data-v="CR123A 版">33 cm</td><td class="n" data-v="単三リチウム版">33 cm</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=304%E3%82%B9%E3%83%86%E3%83%B3%E3%83%AC%E3%82%B9%20%E5%85%AD%E8%A7%92%E7%A9%B4%E4%BB%98%E3%81%8D%E7%9A%BF%E3%83%9C%E3%83%AB%E3%83%88%20M6%2A25%2027%E6%9C%AC%E5%85%A5%20DIN7991" target="_blank" rel="noopener">六角穴付き皿ボルト</a></b><span>304ステンレス 六角穴付き皿ボルト M6×25 (27本入り)</span><span class="price">990円 / 27本入り</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">4</td><td class="n" data-v="単三リチウム版">4</td></tr>
+        <tr><td class="part"><b>スペーサー</b><span>ダイドーハント ピッタリサポート F35N ニッケル 3×55×35mm</span><span class="price">268円</span></td><td class="shop">山新</td><td class="n" data-v="CR123A 版">2</td><td class="n" data-v="単三リチウム版">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R" target="_blank" rel="noopener">強力両面テープ</a></b><span>3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m)</span><span class="price">536円 / 150cm</span></td><td class="shop">amazon</td><td class="n" data-v="CR123A 版">20 cm</td><td class="n" data-v="単三リチウム版">20 cm</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span><span class="price">249円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="CR123A 版">4</td><td class="n" data-v="単三リチウム版">4</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="CR123A 版">約 6,764円</td><td class="n" data-v="単三リチウム版">約 7,355円</td></tr></tfoot>
+      </table>
+      <p class="legend"><i></i>色の付いた行は、版によって違う部品です。</p>
+      <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="reveal wrap">
+      <h2>作り方</h2>
+      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring">
+        <figcaption><b>CR123A 版の配線図</b>基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。</figcaption>
+        <a href="img/wiring/HPX-W_CR123A_TNF39-70.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-W_CR123A_TNF39-70.png" alt="HPX-W CR123A 版の配線図" loading="lazy"></a>
+      </figure>
+      <figure class="wiring">
+        <figcaption><b>単三リチウム版の配線図</b>基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。</figcaption>
+        <a href="img/wiring/HPX-W_AA_TNF34-124.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-W_AA_TNF34-124.png" alt="HPX-W 単三リチウム版の配線図" loading="lazy"></a>
+      </figure>
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
+      <a class="back" href="devices.html">機器の一覧へ戻る</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
