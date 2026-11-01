@@ -32,7 +32,7 @@ DEVICES = [
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
          variants=[('a', '数')], note='',
-         wiring=[('HPX-A_pcb.png', '配線図', '小さいユニバーサル基板 (穴 12×11) に載せる図です。')],
+         wiring=[('HPX-A_pcb.png', '配線図', '5×7cm のユニバーサル基板の左上に載せる図です。')],
          # 部品表の下の「その他」: (説明, [(商品の例, 販売店, URL)])
          extra=('※HPX-A本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。',
                 [('フェンスアラート (電圧降下警告灯)', 'amazon', 'https://www.amazon.co.jp/dp/B00N3MUG1A')])),
