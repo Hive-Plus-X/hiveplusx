@@ -2,7 +2,7 @@
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-A（電柵アラート）基板の配線図</text>
-<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板 5×7cm 版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板 5×7cm 版 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 単3リチウム×2</text>
 <rect x="268" y="298" width="984" height="744" rx="10" fill="#c8a165" stroke="#8d6e3f" stroke-width="2"/>
 <rect x="274" y="304" width="972" height="732" rx="6" fill="#e8d3a8" stroke="#b08d57" stroke-width="1.5"/>
 <text x="300" y="292" font-size="13" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A</text>
@@ -937,19 +937,20 @@
 <text x="60" y="138" font-size="12" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（向きなし・シールド線で延長）</text>
 <text x="60" y="222" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">白い線 → B1、黒い線 → C1</text>
 <text x="60" y="240" font-size="12" text-anchor="start" font-weight="normal" fill="#666" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">警報器の赤いカバーに向け、黒いもので遮光</text>
-<rect x="470" y="1100" width="260" height="70" rx="10" fill="#37474f" stroke="#222" stroke-width="3"/>
-<rect x="490" y="1114" width="220" height="42" rx="20" fill="#b0bec5" stroke="#607d8b" stroke-width="2"/>
-<rect x="484" y="1126" width="10" height="18" rx="2" fill="#90a4ae" stroke="#607d8b" stroke-width="1"/>
-<text x="600" y="1141" font-size="15" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A（3V）</text>
-<text x="480" y="1122" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
-<text x="720" y="1122" font-size="18" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
-<text x="600" y="1196" font-size="14" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ＋ CR123A 電池</text>
-<path d="M470,1135 L440,1135 L440,1070 L660,1070 L660,730" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M470,1135 L440,1135 L440,1070 L660,1070 L660,730" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M470,1135 L440,1135 L440,1070 L660,1070 L660,730" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M730,1135 L760,1135 L760,1050 L740,1050 L740,730" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M730,1135 L760,1135 L760,1050 L740,1050 L740,730" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M730,1135 L760,1135 L760,1050 L740,1050 L740,730" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="430" y="1110" width="300" height="80" rx="10" fill="#455a64" stroke="#263238" stroke-width="3"/>
+<rect x="448" y="1128" width="124" height="44" rx="20" fill="#c0ca33" stroke="#827717" stroke-width="2"/>
+<text x="510" y="1156" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">単3</text>
+<rect x="588" y="1128" width="124" height="44" rx="20" fill="#c0ca33" stroke="#827717" stroke-width="2"/>
+<text x="650" y="1156" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">単3</text>
+<text x="444" y="1134" font-size="16" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋</text>
+<text x="716" y="1134" font-size="18" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−</text>
+<text x="580" y="1216" font-size="14" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ケース WH145-25-M2 の電池ボックス ＋ 単3リチウム電池 ×2（直列 約3V）</text>
+<path d="M430,1150 L400,1150 L400,1080 L660,1080 L660,730" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M430,1150 L400,1150 L400,1080 L660,1080 L660,730" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M430,1150 L400,1150 L400,1080 L660,1080 L660,730" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M730,1150 L760,1150 L760,1060 L740,1060 L740,730" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M730,1150 L760,1150 L760,1060 L740,1060 L740,730" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M730,1150 L760,1150 L760,1060 L740,1060 L740,730" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="60" y="1278" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">つなぐ線（穴の位置は 列の文字＋行の数字）</text>
 <rect x="60" y="1290" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="1311" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線</text>
@@ -1012,9 +1013,9 @@
 <text x="630" y="1691" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
 <text x="690" y="1691" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">J7・L7</text>
 <rect x="60" y="1700" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース ／ CR123A 電池</text>
-<text x="630" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
-<text x="690" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤線を J11（＋）、黒線を L11（−）にはんだ付け</text>
+<text x="70" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ケース WH145-25-M2（単3×2 電池ボックス付き）／ 単3リチウム電池</text>
+<text x="630" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1／2</text>
+<text x="690" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ボックスの＋の線を J11、−の線を L11 にはんだ付け</text>
 <rect x="60" y="1730" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="1751" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ユニバーサル基板 5×7cm（穴 24×18）・すずめっき線・被覆線</text>
 <text x="630" y="1751" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
@@ -1099,9 +1100,9 @@
 <text x="340" y="292" font-size="13" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B</text>
 <rect x="372.0" y="277" width="16" height="22" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
 <text x="380" y="292" font-size="13" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">C</text>
-<circle cx="470" cy="1135" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="430" cy="1150" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 <circle cx="660" cy="730" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="730" cy="1135" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="730" cy="1150" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
 <circle cx="740" cy="730" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
 <circle cx="660" cy="730" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <circle cx="740" cy="730" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
