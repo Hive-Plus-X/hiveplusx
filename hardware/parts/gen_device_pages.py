@@ -32,7 +32,10 @@ DEVICES = [
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
          variants=[('a', '数')], note='',
-         wiring=[('HPX-A_pcb.png', '配線図', '小さいユニバーサル基板 (穴 12×11) に載せる図です。')]),
+         wiring=[('HPX-A_pcb.png', '配線図', '小さいユニバーサル基板 (穴 12×11) に載せる図です。')],
+         # 部品表の下の「その他」: (説明, [(商品の例, 販売店, URL)])
+         extra=('※HPX-A本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。',
+                [('フェンスアラート (電圧降下警告灯)', 'amazon', 'https://www.amazon.co.jp/dp/B00N3MUG1A')])),
 ]
 # 表に出す分類の順
 CATS = ['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', 'ケーブル', '部材']
@@ -129,6 +132,11 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
+  .extra h3 { font-size:16px; margin-bottom:6px; }
+  .extra .ex { margin-top:6px; color:var(--sub); }
+  .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
 '''
@@ -238,6 +246,11 @@ def parts_table(dev, rows):
     if len(vs) > 1:
         notes.insert(0, '<i></i>色の付いた行は、版によって違う部品です。')
     t += ''.join(f'\n      <p class="legend">{n}</p>' for n in notes)
+    if dev.get('extra'):
+        text, items = dev['extra']
+        ex = '、'.join(f'{link(n, u)}（{esc(sh)}）' if sh else link(n, u) for n, sh, u in items)
+        t += (f'\n      <div class="extra"><h3>その他</h3><p>{esc(text)}</p>'
+              f'<p class="ex">商品の例: {ex}</p></div>')
     return t
 
 
