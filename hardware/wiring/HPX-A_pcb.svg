@@ -1094,8 +1094,6 @@
 <text x="766" y="655" font-size="13" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">0.1µF</text>
 <circle cx="340" cy="330" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <circle cx="380" cy="330" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
-<rect x="765.0" y="787" width="430" height="24" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
-<text x="980" y="804" font-size="15" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">M 列から右と 12 行から下は使わない（切り取ってもよい）</text>
 <rect x="332.0" y="277" width="16" height="22" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
 <text x="340" y="292" font-size="13" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B</text>
 <rect x="372.0" y="277" width="16" height="22" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
