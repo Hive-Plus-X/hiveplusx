@@ -585,102 +585,96 @@ def wire_back(s, pts, color):
         s.top.append(f'<circle cx="{x}" cy="{y}" r="5" fill="#fff" stroke="{c}" stroke-width="2.5"/>')
 
 def make_TH_on(fname):
+    """HPX-TH CR123A 版 (TNF39-59)。電池ケースのピンを K4(−)・K19(＋) に差す。SHT40 は寝かせて付ける"""
     global CX, CY
     CX, CY = 0, 0
     s = S(1400, 2100)
-    title(s, "HPX-TH（温湿度センサ）CR123A 版の配線図", "基板 タカチ TNF39-59（電池ケースを基板の上に載せる）／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2")
+    title(s, "HPX-TH（温湿度センサ）CR123A 版の配線図", "基板 タカチ TNF39-59（電池ケースのピンを基板に差す）／ SHT40: SDA=D4, SCL=D5 ／ サーミスター: D3→10kΩ→A2")
     board_tnf(s, "TNF39-59", 59, 39, 21, 14)
-    p = xiao_pcb(s, 4, 0)
-    # 表の線
-    wireh(s, [p["D4"], (0, 4)], "green")
-    wireh(s, [p["D5"], (0, 5)], "blue")
-    wireh(s, [p["D2"], (3, 2)], "yellow")
-    wireh(s, [p["D3"], (3, 3)], "purple")
-    wireh(s, [(3, 2), (3, 0)], "yellow")
-    wireh(s, [(0, 2), (1, 2), (1, 0)], "black")
-    wireh(s, [(0, 3), (1, 3), (2, 3)], "red")
-    wireh(s, [p["GND"], (19, 1), (19, 10)], "black")
+    x0, y0, bw, bh, k = GEO
+    p = xiao_pcb(s, 7, 0)
+    # ---- 裏の線 (先に描く) ----
+    wire_back(s, [(3, 1), (3, 10)], "black")                       # B4 → K4 (電池−)
+    wire_back(s, [(3, 10), (3, 11), (19, 11), (19, 6)], "black")   # K4 → L4 → L20 → G20
+    wire_back(s, [(18, 10), (17, 10), (17, 6)], "red")             # K19 (電池＋) → K18 → G18
+    wire_back(s, [(17, 8), (4, 8), (4, 3), (5, 3)], "red")         # I18 → I5 → D5 → D6 (SHT40 VIN)
+    # ---- 表の線 ----
+    wireh(s, [p["D4"], (5, 4)], "green")
+    wireh(s, [p["D5"], (5, 5)], "blue")
+    wireh(s, [p["D2"], (6, 2), (6, 0)], "yellow")
+    wireh(s, [p["D3"], (6, 3)], "purple")
+    wireh(s, [(3, 0), (3, 1), (5, 1), (5, 2)], "black")
     wireh(s, [p["3V3"], (17, 2), (17, 6)], "red")
-    # 裏の線
-    wire_back(s, [(1, 2), (1, 9), (19, 9)], "black")
-    wire_back(s, [(2, 3), (2, 8), (17, 8), (17, 6)], "red")
-    res_stand(s, (3, 2), (3, 3), "10kΩ 1%", ["#8d5524", "#212121", "#212121"], H(3, 0)[0] + 60, H(3, 0)[1] - 34, "middle")
-    cap_flat(s, (1, 0), (3, 0), "0.1µF")
-    s.text(H(2, 0)[0], H(2, 0)[1] - 18, "0.1µF", 12, "middle", "bold", "#1a237e", layer=s.top)
+    wireh(s, [p["GND"], (19, 1), (19, 6)], "black")
+    res_stand(s, (6, 2), (6, 3), "10kΩ 1%", ["#8d5524", "#212121", "#212121"], H(4.5, 0)[0] + 6, y0 + 18, "middle")
+    cap_flat(s, (4, 1), (6, 1), "0.1µF")
+    s.text(H(4, 1)[0] - 4, H(4, 1)[1] - 14, "0.1µF", 12, "end", "bold", "#1a237e", layer=s.top)
     cap_flat(s, (17, 4), (19, 4), "100µF", True, (H(18, 4)[0], H(18, 4)[1] - 22), "middle")
-    # サーミスター (上の端から)
-    for i, h in enumerate([(1, 1), (3, 1)]):
+    # SHT40 を寝かせて付ける (ピンは F 列… ではなく 6 列。本体は左へ)
+    flat_module(s, [2, 3, 4, 5], ["GND", "VIN", "SDA", "SCL"], "#5e35b1", 4, "", "", col=5)
+    sx, sy = H(2.6, 3.5)
+    s.top.append(f'<rect x="{sx-16}" y="{sy-16}" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>')
+    s.text(H(2.6, 5)[0], H(2.6, 5)[1] - 2, "SHT40 モジュール", 12, "middle", "bold", "#fff", layer=s.top)
+    s.text(H(2.6, 5)[0], H(2.6, 5)[1] + 14, "（寝かせて付ける）", 10, "middle", "bold", "#fff", layer=s.top)
+    # サーミスター (上の端から A4・A7)
+    for i, h in enumerate([(3, 0), (6, 0)]):
         x, y = H(*h)
-        x0, y0, bw, bh, k = GEO
         s.add(f'<path d="M{x},{y} L{x},{y0-50-i*12} L180,{y0-50-i*12}" fill="none" stroke="#9e9e9e" stroke-width="4" stroke-linejoin="round"/>')
         solder_mark(s, *h)
-    x0, y0, bw, bh, k = GEO
     s.add(f'<ellipse cx="150" cy="{y0-56}" rx="18" ry="13" fill="#5d4037" stroke="#3e2723" stroke-width="2"/>')
-    s.text(40, y0 - 90, "サーミスター 10kΩ", 15, weight="bold")
-    s.text(40, y0 - 72, "（向きなし・巣箱の中へ）", 12, fill="#666")
-    # SHT40 を A 列に立てる (図では左に倒す)
-    xa, ytop = H(0, 2); _, ybot = H(0, 5)
-    w = 150
-    s.top.append(f'<rect x="{xa-w}" y="{ytop-22}" width="{w+16}" height="{ybot-ytop+44}" rx="6" fill="#5e35b1" fill-opacity="0.88" stroke="#333" stroke-width="2"/>')
-    s.top.append(f'<rect x="{xa-w+24}" y="{(ytop+ybot)/2-16}" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>')
-    for r, n in zip([2, 3, 4, 5], ["GND", "VIN", "SDA", "SCL"]):
-        x, y = H(0, r)
-        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
-        s.text(x - 14, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
-    s.text(xa - w / 2, ybot + 44, "SHT40 モジュール", 14, "middle", "bold", "#311b92", layer=s.top)
-    s.text(xa - w / 2, ybot + 60, "A 列に立てて付ける", 11, "middle", fill="#444", layer=s.top)
-    s.text(xa - w / 2, ybot + 75, "（図では倒して描いた）", 11, "middle", fill="#444", layer=s.top)
-    # 電池ケースを基板の上に (＋を左、−を右)
-    bx, by = mmxy(8, 21)
+    s.text(40, y0 - 92, "サーミスター 10kΩ", 15, weight="bold")
+    s.text(40, y0 - 76, "（向きなし・巣箱の中へ）", 12, fill="#666")
+    # 電池ケース: ピンを K4 (−) と K19 (＋) に差す
+    (px1, py), (px2, _) = H(3, 10), H(18, 10)
     bw2, bh2 = 43 * k, 18 * k
-    s.top.append(f'<rect x="{bx}" y="{by}" width="{bw2}" height="{bh2}" rx="8" fill="#37474f" fill-opacity="0.82" stroke="#222" stroke-width="3"/>')
-    s.top.append(f'<rect x="{bx+22}" y="{by+16}" width="{bw2-44}" height="{bh2-32}" rx="30" fill="#b0bec5" fill-opacity="0.85" stroke="#607d8b" stroke-width="2"/>')
-    s.text(bx + bw2 / 2, by + bh2 / 2 - 4, "CR123A 用電池ケース（秋月 110192、43×18×14mm）", 14, "middle", "bold", "#263238", layer=s.top)
-    s.text(bx + bw2 / 2, by + bh2 / 2 + 16, "両面テープで基板に貼る。下を裏の点線が通る", 12, "middle", "bold", "#263238", layer=s.top)
-    s.text(bx + 10, by + 24, "＋", 15, "start", "bold", "#fff", layer=s.top)
-    s.text(bx + bw2 - 10, by + 26, "−", 18, "end", "bold", "#fff", layer=s.top)
-    tp, tm = H(2, 6), H(19, 10)
-    s.top.append(f'<path d="M{bx+8},{by+bh2/2} L{bx-14},{by+bh2/2} L{bx-14},{tp[1]+16} L{tp[0]},{tp[1]+16} L{tp[0]},{tp[1]}" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round"/>')
-    s.top.append(f'<path d="M{bx+bw2-8},{by+bh2/2} L{tm[0]},{by+bh2/2} L{tm[0]},{tm[1]}" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round"/>')
-    solder_mark(s, 2, 6); solder_mark(s, 19, 10)
+    bx, by = (px1 + px2) / 2 - bw2 / 2, py - bh2 / 2
+    s.top.append(f'<rect x="{bx}" y="{by}" width="{bw2}" height="{bh2}" rx="8" fill="#37474f" fill-opacity="0.78" stroke="#222" stroke-width="3"/>')
+    s.top.append(f'<rect x="{bx+22}" y="{by+14}" width="{bw2-44}" height="{bh2-28}" rx="30" fill="#b0bec5" fill-opacity="0.6" stroke="#607d8b" stroke-width="2"/>')
+    s.text(bx + bw2 / 2, by + 34, "CR123A 用電池ケース（秋月 110192、43×18×14mm）", 14, "middle", "bold", "#fff", layer=s.top)
+    s.text(bx + bw2 / 2, by + bh2 - 16, "裏のピンを K4（−）と K19（＋）に差してはんだ付け。下を裏の点線が通る", 12, "middle", "bold", "#fff", layer=s.top)
+    s.text(px1 + 22, py + 6, "−", 22, "start", "bold", "#fff", layer=s.top)
+    s.text(px2 - 22, py + 6, "＋", 18, "end", "bold", "#fff", layer=s.top)
+    for h in ((3, 10), (18, 10)):
+        x, y = H(*h)
+        s.top.append(f'<rect x="{x-7}" y="{y-7}" width="14" height="14" fill="#cfd8dc" stroke="#222" stroke-width="2"/>')
+        solder_mark(s, *h)
     # 凡例
     ly = BOT + 40
     s.add(f'<path d="M80,{ly} L160,{ly}" stroke="#e53935" stroke-width="5"/>')
     s.text(170, ly + 5, "実線＝表（部品の面）の線", 14, weight="bold")
     s.add(f'<path d="M480,{ly} L560,{ly}" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6"/>')
-    s.text(570, ly + 5, "点線＝裏（はんだ面）の線。電池ケースの下を通す", 14, weight="bold")
+    s.text(570, ly + 5, "点線＝裏（はんだ面）の線。被覆線を使い、電池ケースの下を通す", 14, weight="bold")
     y = table(s, 60, BOT + 110, [
         ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-        ["green", f"XIAO D4（{hn(4,4)}）", f"SHT40 SDA（{hn(0,4)}）", "データ（I2C）"],
-        ["blue", f"XIAO D5（{hn(4,5)}）", f"SHT40 SCL（{hn(0,5)}）", "合図（I2C）"],
-        ["purple", f"XIAO D3（{hn(4,3)}）", f"10kΩ の下の足（{hn(3,3)}）", "測る瞬間だけ電気を流す"],
-        ["yellow", f"XIAO D2/A2（{hn(4,2)}）", f"10kΩ の上の足（{hn(3,2)}）→ {hn(3,0)}", f"測る点（{hn(3,0)}〜{hn(3,2)}）"],
-        ["black", f"SHT40 GND（{hn(0,2)}）", f"{hn(1,2)} → {hn(1,0)}", f"GND（{hn(1,0)}〜{hn(1,2)}）"],
-        ["black", f"{hn(1,2)}（裏）", f"{hn(1,9)} → {hn(19,9)}（裏）", "GND を右へ。電池ケースの下"],
-        ["black", f"XIAO GND（{hn(10,1)}）", f"{hn(19,1)} → {hn(19,10)}", "−の列"],
-        ["red", f"SHT40 VIN（{hn(0,3)}）", f"{hn(1,3)} → {hn(2,3)}", f"{hn(1,3)} は裏の黒線の上をまたぐ"],
-        ["red", f"{hn(2,3)}（裏）", f"{hn(2,8)} → {hn(17,8)} → {hn(17,6)}（裏）", "＋を右へ。電池ケースの下"],
-        ["red", f"XIAO 3V3（{hn(10,2)}）", f"{hn(17,2)} → {hn(17,6)}", "＋の列"],
-        ["red", "電池ケースの ＋", f"{hn(2,6)}", "線ではんだ付け"],
-        ["black", "電池ケースの −", f"{hn(19,10)}", "線ではんだ付け"],
-    ], [100, 270, 420, 470], "つなぐ線（穴の位置は 行の文字＋列の数字）")
+        ["green", f"XIAO D4（{hn(7,4)}）", f"SHT40 SDA（{hn(5,4)}）", "データ（I2C）"],
+        ["blue", f"XIAO D5（{hn(7,5)}）", f"SHT40 SCL（{hn(5,5)}）", "合図（I2C）"],
+        ["purple", f"XIAO D3（{hn(7,3)}）", f"10kΩ の下の足（{hn(6,3)}）", "測る瞬間だけ電気を流す"],
+        ["yellow", f"XIAO D2/A2（{hn(7,2)}）", f"10kΩ の上の足（{hn(6,2)}）→ {hn(6,1)} → {hn(6,0)}", "測る点"],
+        ["black", f"サーミスター（{hn(3,0)}）", f"{hn(3,1)} → {hn(5,1)} → SHT40 GND（{hn(5,2)}）", "左側の GND"],
+        ["black", f"{hn(3,1)}（裏）", f"電池ケースの −（{hn(3,10)}）（裏）", "電池 − を左側の GND へ"],
+        ["black", f"{hn(3,10)}（裏）", f"{hn(3,11)} → {hn(19,11)} → {hn(19,6)}（裏）", "電池 − を右側の −の列へ"],
+        ["black", f"XIAO GND（{hn(13,1)}）", f"{hn(19,1)} → {hn(19,6)}", "−の列"],
+        ["red", f"XIAO 3V3（{hn(13,2)}）", f"{hn(17,2)} → {hn(17,6)}", "＋の列"],
+        ["red", f"電池ケースの ＋（{hn(18,10)}）（裏）", f"{hn(17,10)} → {hn(17,6)}（裏）", "電池 ＋ を ＋の列へ"],
+        ["red", f"{hn(17,8)}（裏）", f"{hn(4,8)} → {hn(4,3)} → SHT40 VIN（{hn(5,3)}）（裏）", "SHT40 の電源"],
+    ], [100, 300, 470, 390], "つなぐ線（穴の位置は 行の文字＋列の数字）")
     y = table(s, 60, y + 50, [
         ["部品", "数", "置き場所・メモ"],
-        ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(4,0)}〜{hn(10,6)}"],
-        ["SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン", "1", f"{hn(0,2)}〜{hn(0,5)}（GND・VIN・SDA・SCL）に立てて付ける"],
-        ["サーミスター 10kΩ（平行線タイプ）", "1", f"線を {hn(1,1)}（GND）・{hn(3,1)}（測る点）に直接はんだ付け"],
-        ["抵抗 10kΩ 1%（金属皮膜）", "1", f"{hn(3,2)}・{hn(3,3)}（立てて付ける）"],
-        ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(1,0)}・{hn(3,0)}（測る点と GND の間）"],
+        ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(7,0)}〜{hn(13,6)}"],
+        ["SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン", "1", f"ピンを {hn(5,2)}〜{hn(5,5)}（GND・VIN・SDA・SCL）、本体を左へ寝かせる"],
+        ["サーミスター 10kΩ（平行線タイプ）", "1", f"線を {hn(3,0)}（GND）・{hn(6,0)}（測る点）に直接はんだ付け"],
+        ["抵抗 10kΩ 1%（金属皮膜）", "1", f"{hn(6,2)}・{hn(6,3)}（立てて付ける）"],
+        ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(4,1)}・{hn(6,1)}（測る点と GND の間）"],
         ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(17,4)}・{hn(19,4)}"],
-        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", f"基板の下側（{hn(2,7)}〜{hn(18,13)} のあたり）に貼る"],
+        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", f"ピンを {hn(3,10)}（−）・{hn(18,10)}（＋）に差してはんだ付け"],
         ["タカチ ユニバーサル基板 TNF39-59・すずめっき線・被覆線", "1", "ケース タカチ SW-65B"],
     ], [560, 60, 540], "部品表")
     L = NOTES + [
-        "・電池ケース（43×18mm）は、基板の下の辺にそろえ、左右の取付穴のあいだ（左はしから約 8mm〜51mm）に両面テープで貼る。",
-        "・電池ケースのピンの位置は確認できていない。ピンが基板の穴に入るなら差してもよいが、裏の点線（I 行・J 行）に当たらない穴にする。入らなければ、ピンに線をはんだ付けしてつなぐ。",
-        f"・裏の点線は、電池ケースを貼る前に配線する。{hn(1,3)} では、表の赤線が裏の黒線の上を通る（穴の中ではつながない）。",
-        "・SHT40 は A 列に立てて付ける。印字の GND が上（C 行）、SCL が下（F 行）になる向き。",
-        "・ファームは HPX_TH v1.00。SHT40 は 3.6V まで（5V にはつながない）。ケースの高さ（電池ケース 14mm、立てた SHT40）は実物で確認。",
+        f"・電池ケースは、裏のピンを {hn(3,10)} と {hn(18,10)} に差す（TARO さんの実測）。＋の印が右（{hn(18,10)}）、−が左（{hn(3,10)}）になる向きにする。",
+        "・電池ケースのピンが穴の列のちょうど真ん中にない場合、ケースが上下にずれる。G 行より上の部品に当たらないか、実物を置いて確かめる。",
+        "・裏の点線は、電池ケースを付ける前に配線する。被覆線を使う（裏の点線どうしは交わらない）。",
+        f"・SHT40 は寝かせて付ける。モジュールの大きさは製品によって違うので、本体が {hn(1,2)}〜{hn(4,5)} のあたりに収まるか実物で確かめる。",
+        "・ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。",
     ]
     notes(s, 60, y + 20, L)
     s.h = int(y + 20 + 34 + 26 * len(L) + 40)

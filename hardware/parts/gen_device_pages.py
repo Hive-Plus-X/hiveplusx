@@ -26,7 +26,7 @@ DEVICES = [
     dict(key='th', file='device-th.html', tag='温湿度', name='HPX-TH',
          lead='巣箱の中の温度と湿度を測り、Bluetooth で発信します。',
          variants=[('th_cr', 'CR123A 版'), ('th_aa', '単三リチウム版')],
-         wiring=[('HPX-TH_CR123A_TNF39-59.png', 'CR123A 版の配線図', 'ケース SW-65B 用の基板 TNF39-59 に、CR123A 電池ケースを載せます。'),
+         wiring=[('HPX-TH_CR123A_TNF39-59.png', 'CR123A 版の配線図', 'ケース SW-65B 用の基板 TNF39-59 に、CR123A 電池ケースのピンを差して載せます。'),
                  ('HPX-TH_AA_LC115H.png', '単三リチウム版の配線図', 'ケース LC115H-M2-D の推奨基板に部品を載せる図です。')],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
