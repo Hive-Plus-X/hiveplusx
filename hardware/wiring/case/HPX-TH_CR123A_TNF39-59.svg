@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1967" viewBox="0 0 1400 1967">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1997" viewBox="0 0 1400 1997">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1400" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">HPX-TH（温湿度センサ）CR123A 版の配線図</text>
@@ -626,25 +626,26 @@
 <path d="M333,743 L347,757 M333,757 L347,743" stroke="#9e9e9e" stroke-width="2.5"/>
 <path d="M1133,743 L1147,757 M1133,757 L1147,743" stroke="#9e9e9e" stroke-width="2.5"/>
 <text x="740.0" y="148.91338582677167" font-size="16" text-anchor="middle" font-weight="bold" fill="#5d4520" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">タカチ TNF39-59（59×39mm、穴 21×14、2.54mm ピッチ）</text>
-<path d="M460,270 L460,630" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M420,270 L420,630 L460,630" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M420,430 L460,430" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
 <path d="M460,630 L460,670 L1100,670 L1100,470" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
 <path d="M1060,630 L1020,630 L1020,470" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-<path d="M1020,550 L500,550 L500,350 L540,350" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-<path d="M620,390 L540,390" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M620,390 L540,390" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M620,390 L540,390" fill="none" stroke="#43a047" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M620,430 L540,430" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M620,430 L540,430" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M620,430 L540,430" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1020,550 L460,550 L460,470" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M620,390 L540,390 L540,350 L460,350" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M620,390 L540,390 L540,350 L460,350" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M620,390 L540,390 L540,350 L460,350" fill="none" stroke="#43a047" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M620,430 L500,430 L500,390 L460,390" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M620,430 L500,430 L500,390 L460,390" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M620,430 L500,430 L500,390 L460,390" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,310 L580,310 L580,230" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,310 L580,310 L580,230" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,310 L580,310 L580,230" fill="none" stroke="#fdd835" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,350 L580,350" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,350 L580,350" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620,350 L580,350" fill="none" stroke="#8e24aa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M500,230 L460,230 L460,270 L540,270 L540,310" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M500,230 L460,230 L460,270 L540,270 L540,310" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M500,230 L460,230 L460,270 L540,270 L540,310" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M500,230 L460,230 L460,270 L420,270" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M500,230 L460,230 L460,270 L420,270" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M500,230 L460,230 L460,270 L420,270" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M860,310 L1020,310 L1020,470" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M860,310 L1020,310 L1020,470" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M860,310 L1020,310 L1020,470" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -670,13 +671,13 @@
 <rect x="70" y="946.0866141732283" width="34" height="12" rx="3" fill="#43a047" stroke="#555" stroke-width="1"/>
 <text x="112" y="958.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">緑</text>
 <text x="170" y="958.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO D4（E8）</text>
-<text x="470" y="958.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 SDA（E6）</text>
+<text x="470" y="958.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">E6 → D6 → SHT40 SDA（D4）</text>
 <text x="940" y="958.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">データ（I2C）</text>
 <rect x="60" y="967.0866141732283" width="1260" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="976.0866141732283" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
 <text x="112" y="988.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">青</text>
 <text x="170" y="988.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO D5（F8）</text>
-<text x="470" y="988.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 SCL（F6）</text>
+<text x="470" y="988.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">F5 → E5 → SHT40 SCL（E4）</text>
 <text x="940" y="988.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">合図（I2C）</text>
 <rect x="60" y="997.0866141732283" width="1260" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1006.0866141732283" width="34" height="12" rx="3" fill="#8e24aa" stroke="#555" stroke-width="1"/>
@@ -694,94 +695,100 @@
 <rect x="70" y="1066.0866141732283" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1078.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
 <text x="170" y="1078.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">0.1µF の足（A5）</text>
-<text x="470" y="1078.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A4 → B4 → B6 → SHT40 GND（C6）</text>
+<text x="470" y="1078.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A4 → B4 → B3</text>
 <text x="940" y="1078.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">左側の GND（サーミスターも）</text>
 <rect x="60" y="1087.0866141732283" width="1260" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1096.0866141732283" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
-<text x="170" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B4（裏）</text>
-<text x="470" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケースの −（K4）（裏）</text>
-<text x="940" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 − を左側の GND へ</text>
+<text x="170" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B3（裏）</text>
+<text x="470" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">K3 → 電池ケースの −（K4）（裏）</text>
+<text x="940" y="1108.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 − を左側の GND へ（F3 を通る）</text>
 <rect x="60" y="1117.0866141732283" width="1260" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1126.0866141732283" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
-<text x="170" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">K4（裏）</text>
-<text x="470" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">L4 → L20 → G20（裏）</text>
-<text x="940" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 − を右側の −の列へ</text>
+<text x="170" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">F3（裏）</text>
+<text x="470" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 GND（F4）（裏）</text>
+<text x="940" y="1138.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">F3 で上の線とはんだ付け</text>
 <rect x="60" y="1147.0866141732283" width="1260" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1156.0866141732283" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
-<text x="170" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO GND（B14）</text>
-<text x="470" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B20 → G20</text>
-<text x="940" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−の列</text>
+<text x="170" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">K4（裏）</text>
+<text x="470" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">L4 → L20 → G20（裏）</text>
+<text x="940" y="1168.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 − を右側の −の列へ</text>
 <rect x="60" y="1177.0866141732283" width="1260" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1186.0866141732283" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
-<text x="112" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
-<text x="170" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO 3V3（C14）</text>
-<text x="470" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">C18 → G18</text>
-<text x="940" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋の列</text>
+<rect x="70" y="1186.0866141732283" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">黒</text>
+<text x="170" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO GND（B14）</text>
+<text x="470" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">B20 → G20</text>
+<text x="940" y="1198.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">−の列</text>
 <rect x="60" y="1207.0866141732283" width="1260" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1216.0866141732283" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
-<text x="170" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケースの ＋（K19）（裏）</text>
-<text x="470" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">K18 → G18（裏）</text>
-<text x="940" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 ＋ を ＋の列へ</text>
+<text x="170" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">XIAO 3V3（C14）</text>
+<text x="470" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">C18 → G18</text>
+<text x="940" y="1228.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">＋の列</text>
 <rect x="60" y="1237.0866141732283" width="1260" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1246.0866141732283" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
-<text x="170" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">I18（裏）</text>
-<text x="470" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">I5 → D5 → SHT40 VIN（D6）（裏）</text>
-<text x="940" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 の電源</text>
-<text x="60" y="1305.0866141732283" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品表</text>
-<rect x="60" y="1317.0866141732283" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1338.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品</text>
-<text x="630" y="1338.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">数</text>
-<text x="690" y="1338.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">置き場所・メモ</text>
-<rect x="60" y="1347.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</text>
-<text x="630" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A8〜G14</text>
-<rect x="60" y="1377.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1398.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン</text>
+<text x="170" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池ケースの ＋（K19）（裏）</text>
+<text x="470" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">K18 → G18（裏）</text>
+<text x="940" y="1258.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">電池 ＋ を ＋の列へ</text>
+<rect x="60" y="1267.0866141732283" width="1260" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1276.0866141732283" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1288.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">赤</text>
+<text x="170" y="1288.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">I18（裏）</text>
+<text x="470" y="1288.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">I4 → SHT40 VIN（G4）（裏）</text>
+<text x="940" y="1288.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 の電源</text>
+<text x="60" y="1335.0866141732283" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品表</text>
+<rect x="60" y="1347.0866141732283" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">部品</text>
+<text x="630" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">数</text>
+<text x="690" y="1368.0866141732283" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">置き場所・メモ</text>
+<rect x="60" y="1377.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1398.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</text>
 <text x="630" y="1398.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1398.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンを C6〜F6（GND・VIN・SDA・SCL）、本体を左へ寝かせる</text>
-<rect x="60" y="1407.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1428.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">サーミスター 10kΩ（平行線タイプ）</text>
+<text x="690" y="1398.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A8〜G14</text>
+<rect x="60" y="1407.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1428.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン</text>
 <text x="630" y="1428.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1428.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線を A4（GND）・B7（測る点）に直接はんだ付け</text>
-<rect x="60" y="1437.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1458.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">抵抗 10kΩ 1%（金属皮膜）</text>
+<text x="690" y="1428.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンを D4〜G4（SDA・SCL・GND・VIN）、本体を左へ寝かせる</text>
+<rect x="60" y="1437.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1458.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">サーミスター 10kΩ（平行線タイプ）</text>
 <text x="630" y="1458.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1458.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">C7・D7（立てて付ける）</text>
-<rect x="60" y="1467.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1488.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">積層セラミックコンデンサー 0.1µF 50V C0G 5mm</text>
+<text x="690" y="1458.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">線を A4（GND）・B7（測る点）に直接はんだ付け</text>
+<rect x="60" y="1467.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1488.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">抵抗 10kΩ 1%（金属皮膜）</text>
 <text x="630" y="1488.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1488.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A5・A7（測る点と GND の間）</text>
-<rect x="60" y="1497.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1518.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</text>
+<text x="690" y="1488.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">C7・D7（立てて付ける）</text>
+<rect x="60" y="1497.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1518.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">積層セラミックコンデンサー 0.1µF 50V C0G 5mm</text>
 <text x="630" y="1518.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1518.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">E18・E20</text>
-<rect x="60" y="1527.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース（秋月 110192）／ CR123A 電池</text>
-<text x="630" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
-<text x="690" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンを K4（−）・K19（＋）に差してはんだ付け</text>
-<rect x="60" y="1557.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">タカチ ユニバーサル基板 TNF39-59・すずめっき線・被覆線</text>
-<text x="630" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
-<text x="690" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ケース タカチ SW-65B</text>
-<rect x="60" y="1607.0866141732283" width="1280" height="320" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
-<text x="78" y="1633.0866141732283" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
-<text x="78" y="1661.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（すずめっき線や被覆線）でつなぐ。</text>
-<text x="78" y="1687.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・穴の位置は「行の文字＋列の数字」（例: C14 は C 行の 14 列目）。</text>
-<text x="78" y="1713.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</text>
-<text x="78" y="1739.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。</text>
-<text x="78" y="1765.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
-<text x="78" y="1791.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・四すみの点線の丸は取付穴（位置は目安。実物で確認）。すぐ内側の × の穴は、ネジやスペーサーに当たらないよう使わない。</text>
-<text x="78" y="1817.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・電池ケースは、裏のピンを K4 と K19 に差す（TARO さんの実測）。＋の印が右（K19）、−が左（K4）になる向きにする。</text>
-<text x="78" y="1843.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・電池ケースのピンが穴の列のちょうど真ん中にない場合、ケースが上下にずれる。G 行より上の部品に当たらないか、実物を置いて確かめる。</text>
-<text x="78" y="1869.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・裏の点線は、電池ケースを付ける前に配線する。被覆線を使う（裏の点線どうしは交わらない）。</text>
-<text x="78" y="1895.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT40 は寝かせて付ける。モジュールの大きさは製品によって違うので、本体が C2〜F5 のあたりに収まるか実物で確かめる。</text>
-<text x="78" y="1921.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。</text>
+<text x="690" y="1518.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">A5・A7（測る点と GND の間）</text>
+<rect x="60" y="1527.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</text>
+<text x="630" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="690" y="1548.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">E18・E20</text>
+<rect x="60" y="1557.0866141732283" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">CR123A 用電池ケース（秋月 110192）／ CR123A 電池</text>
+<text x="630" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">各1</text>
+<text x="690" y="1578.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ピンを K4（−）・K19（＋）に差してはんだ付け</text>
+<rect x="60" y="1587.0866141732283" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1608.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">タカチ ユニバーサル基板 TNF39-59・すずめっき線・被覆線</text>
+<text x="630" y="1608.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">1</text>
+<text x="690" y="1608.0866141732283" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">ケース タカチ SW-65B</text>
+<rect x="60" y="1637.0866141732283" width="1280" height="320" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="1663.0866141732283" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">注意</text>
+<text x="78" y="1691.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・図は部品を載せる面から見たところ。部品の足は穴に差して裏ではんだ付けし、線（すずめっき線や被覆線）でつなぐ。</text>
+<text x="78" y="1717.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・穴の位置は「行の文字＋列の数字」（例: C14 は C 行の 14 列目）。</text>
+<text x="78" y="1743.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</text>
+<text x="78" y="1769.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。</text>
+<text x="78" y="1795.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</text>
+<text x="78" y="1821.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・四すみの点線の丸は取付穴（位置は目安。実物で確認）。すぐ内側の × の穴は、ネジやスペーサーに当たらないよう使わない。</text>
+<text x="78" y="1847.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・電池ケースは、裏のピンを K4 と K19 に差す（TARO さんの実測）。＋の印が右（K19）、−が左（K4）になる向きにする。</text>
+<text x="78" y="1873.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・電池ケースのピンが穴の列のちょうど真ん中にない場合、ケースが上下にずれる。G 行より上の部品に当たらないか、実物を置いて確かめる。</text>
+<text x="78" y="1899.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・裏の点線は、電池ケースを付ける前に配線する。被覆線を使う（裏の点線どうしは交わらない）。F3 だけは 2本の黒線をはんだでつなぐ。</text>
+<text x="78" y="1925.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・SHT40 は寝かせて付ける。印字の SDA が上（D4）、VIN が下（G4）になる向き。本体が D1〜G3 のあたりに収まるか実物で確かめる。</text>
+<text x="78" y="1951.0866141732283" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">・ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。</text>
 <rect x="606" y="206" width="268" height="288" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>
 <rect x="716.0" y="198" width="48" height="18" rx="5" fill="#b0b0b0" stroke="#777"/>
 <rect x="696.0" y="294.0" width="88" height="76" rx="3" fill="#cfd8dc" stroke="#90a4ae"/>
@@ -816,24 +823,26 @@
 <text x="846" y="435" font-size="13" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">D8</text>
 <circle cx="860" cy="470" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <text x="846" y="475" font-size="13" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">D7</text>
-<circle cx="460" cy="270" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<circle cx="420" cy="270" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="460" cy="630" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<circle cx="420" cy="430" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<circle cx="460" cy="430" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="460" cy="630" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="1100" cy="470" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="1060" cy="630" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="1020" cy="470" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="1020" cy="550" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
-<circle cx="540" cy="350" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
+<circle cx="460" cy="470" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="620" cy="390" r="5" fill="#43a047" stroke="#333" stroke-width="1.5"/>
-<circle cx="540" cy="390" r="5" fill="#43a047" stroke="#333" stroke-width="1.5"/>
+<circle cx="460" cy="350" r="5" fill="#43a047" stroke="#333" stroke-width="1.5"/>
 <circle cx="620" cy="430" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
-<circle cx="540" cy="430" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="460" cy="390" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
 <circle cx="620" cy="310" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
 <circle cx="580" cy="230" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
 <circle cx="620" cy="350" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
 <circle cx="580" cy="350" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
 <circle cx="500" cy="230" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="540" cy="310" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="420" cy="270" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
 <circle cx="860" cy="310" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 <circle cx="1020" cy="470" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 <circle cx="860" cy="270" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
@@ -856,20 +865,24 @@
 <circle cx="1020" cy="390" r="4" fill="#666"/>
 <circle cx="1100" cy="390" r="4" fill="#666"/>
 <text x="1060" y="368" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">100µF</text>
-<rect x="380" y="288" width="178" height="164" rx="6" fill="#5e35b1" fill-opacity="0.82" stroke="#333" stroke-width="2"/>
-<circle cx="540" cy="310" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="526" y="315" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">GND</text>
-<circle cx="540" cy="350" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="526" y="355" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">VIN</text>
-<circle cx="540" cy="390" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="526" y="395" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SDA</text>
-<circle cx="540" cy="430" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="526" y="435" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SCL</text>
-<text x="460.0" y="474" font-size="13" text-anchor="middle" font-weight="bold" fill="#222" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
-<text x="460.0" y="490" font-size="11" text-anchor="middle" font-weight="normal" fill="#444" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
-<rect x="428.0" y="354.0" width="32" height="32" rx="2" fill="#cfd8dc" stroke="#78909c"/>
-<text x="444.0" y="428" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40 モジュール</text>
-<text x="444.0" y="444" font-size="10" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（寝かせて付ける）</text>
+<rect x="340" y="328" width="138" height="164" rx="6" fill="#5e35b1" fill-opacity="0.82" stroke="#333" stroke-width="2"/>
+<circle cx="460" cy="350" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="446" y="355" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SDA</text>
+<circle cx="460" cy="390" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="446" y="395" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SCL</text>
+<circle cx="460" cy="430" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="446" y="435" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">GND</text>
+<circle cx="460" cy="470" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="446" y="475" font-size="12" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">VIN</text>
+<text x="400.0" y="514" font-size="13" text-anchor="middle" font-weight="bold" fill="#222" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<text x="400.0" y="530" font-size="11" text-anchor="middle" font-weight="normal" fill="#444" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"></text>
+<path d="M420,270 L420,630" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" opacity="0.95"/>
+<path d="M420,430 L460,430" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" opacity="0.95"/>
+<path d="M460,550 L460,470" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" opacity="0.95"/>
+<circle cx="420" cy="430" r="6" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<rect x="366.0" y="376.0" width="28" height="28" rx="2" fill="#cfd8dc" stroke="#78909c"/>
+<text x="380.0" y="452" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">SHT40</text>
+<text x="380.0" y="466" font-size="10" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">（寝かせる）</text>
 <circle cx="460" cy="230" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <circle cx="580" cy="270" r="10" fill="none" stroke="#d32f2f" stroke-width="2.5"/>
 <rect x="421.4173228346457" y="488.26771653543307" width="677.1653543307086" height="283.46456692913387" rx="8" fill="#37474f" fill-opacity="0.78" stroke="#222" stroke-width="3"/>
