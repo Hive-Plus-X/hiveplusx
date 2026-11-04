@@ -624,7 +624,7 @@ if (!$byKind['th']) {
         $hS[] = [$nm, $color, $hp];
 
         // 温度の補正の入力(表の下にまとめて出す)
-        $isInk = $last && ($last[5] ?? null) === null && ($last[4] ?? null) === null;   // Inkbird の形の記録(一律の補正が入る)
+        $isInk = isset($s['model']) ? $s['model'] === 'inkbird' : ($last && ($last[5] ?? null) === null && ($last[4] ?? null) === null);   // 一律の補正が入る Inkbird か(機種が届いていなければ記録の形で)
         $offC = (float)(th_cal_load($dir)[$mac]['offset_c'] ?? 0);
         $thForms .= '<form method="post" class="thoff"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
             . '<input type="hidden" name="mac" value="' . h((string)$mac) . '"><input type="hidden" name="action" value="th_offset">';

@@ -6,6 +6,8 @@
 //
 // v1.18 の変更
 //   * 「BLEセンサの記録」と「周辺検索」で、HPX-TH の温度を「サーミスター 〇〇℃」「本体 〇〇℃」(本体=SHT40)と並べて出すようにした。
+//   * 温湿度計の記録に機種 "m" を付けてサーバーへ送るようにした("ink"=Inkbird、"sb"=SwitchBot)。サーバーは Inkbird だけ温度を補正する。
+//       SwitchBot の記録には BLE_F_SB の印を付ける(記録の大きさは変わらないので、v1.17 までの記録はそのまま。印の無い記録は Inkbird として送る)
 //
 // v1.17 の変更
 //   * 動作設定の「計測・送信の間隔」をなくした。保存間隔(15分/30分/1時間)ごとに、センサを受信して記録し、そのまま送信する。
@@ -333,6 +335,7 @@ constexpr uint8_t BLE_F_ALR = 0x08;   // 電柵アラートの記録(t100=ノー
                                       //   raw=状態 | 直近の点滅回数<<8 | 電圧低下の回数<<16)
 constexpr uint8_t BLE_F_THX = 0x10;   // 温湿度センサ HPX-TH の記録(t100=SHT40の温度(BLE_NO_TEMP=測れず), h100=湿度,
                                       //   bat=(電池mV-2000)/10, raw=サーミスターの温度×100(BLE_NO_TEMP=測れず))
+constexpr uint8_t BLE_F_SB = 0x20;    // SwitchBot の温湿度計の記録(そのほかは Inkbird と同じ)
 constexpr int16_t BLE_NO_TEMP = 0x7FFF;
 
 
@@ -1120,7 +1123,7 @@ static bool bleSbTempHum(uint8_t b0, uint8_t b1, uint8_t b2, BleSample& s)
   if (t < -4000) return false;
   s.t100 = (int16_t)t;
   s.h100 = (uint16_t)(hum * 100);
-  s.flags = BLE_F_HUM;
+  s.flags = BLE_F_HUM | BLE_F_SB;
   s.bat = 0;
   s.raw = 0;
   return true;
@@ -1798,6 +1801,7 @@ String bleSensorsJson()
     {
       if (r.flags & BLE_F_HUM) a += ",\"h\":" + String(r.h100 / 100.0f, 2);
       if (r.flags & BLE_F_BAT) a += ",\"bat\":" + String((int)r.bat);
+      a += (r.flags & BLE_F_SB) ? ",\"m\":\"sb\"" : ",\"m\":\"ink\"";   // 機種(サーバーは Inkbird だけ温度を補正する)
     }
     a += ",\"rssi\":" + String((int)r.rssi) + "}";
     cnt++;
