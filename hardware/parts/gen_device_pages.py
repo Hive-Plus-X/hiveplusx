@@ -34,7 +34,10 @@ DEVICES = [
                  '積層セラミックコンデンサー 0.1μF50V C0G 5mm': ('コンデンサー0.1μF', '積層セラミックコンデンサー 0.1μF50V C0G 5mm'),
                  '絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm': ('コンデンサー100μF', '絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm')},
          no_alts=True,
-         cats=['チップボード', 'ケース', 'ケース用基板', '電子部品', '電源', 'ケーブル', '部材'],
+         cats=['チップボード', 'ケース', 'ケース用基板', '電源', '電子部品', 'ケーブル', '部材'],
+         # 分類の中の並び (表示する名前で。ないものは後ろ)
+         order=['温湿度センサ', 'サーミスター', 'コンデンサー100μF', 'コンデンサー0.1μF', '抵抗 10kΩ',
+                'ピンソケット（メス）', 'ピンヘッダー（オス）', 'ジャンパー線'],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
@@ -200,13 +203,16 @@ def price_text(r):
     pk = r.get('pack') or '1'
     if pk == '1' and r.get('unit') in ('個', '本', '枚', ''):
         return yen(int(r['price']))
-    return f'{yen(int(r["price"]))} / {pk}{r.get("unit", "")}入り' if r.get('unit') not in ('cm', 'm') else f'{yen(int(r["price"]))} / {pk}{r["unit"]}'
+    return f'{yen(int(r["price"]))} / {pk}{r.get("unit", "")}入り' if r.get('unit') not in ('cm', 'm', 'PIN') else f'{yen(int(r["price"]))} / {pk}{r["unit"]}'
 
 
 def cost(r, n):
     """その数を使ったときの部品代 (数が「適宜」などなら None)"""
     if not r.get('price') or not n:
         return None
+    m = re.match(r'^(\d+)\s*PIN\s*×\s*(\d+)$', n)      # 「7PIN×2」= 7ピンを 2個
+    if m:
+        return int(m.group(1)) * int(m.group(2)) * int(r['price']) / float(r.get('pack') or 1)
     m = re.match(r'^([0-9.]+)\s*(cm|m)?$', n)
     if not m:
         return None
@@ -249,6 +255,9 @@ def parts_table(dev, rows):
     cats = dev.get('cats', CATS)
     for cat in cats + sorted({r['category'] for r in use} - set(cats)):
         rs = [r for r in use if r['category'] == cat]
+        if dev.get('order'):
+            od = dev['order']
+            rs.sort(key=lambda r: od.index(r['name']) if r['name'] in od else len(od))
         if not rs:
             continue
         out.append(f'        <tr class="cat"><th colspan="{ncol}">{esc(cat)}</th></tr>')
