@@ -115,6 +115,7 @@ function read_ble(string $csv, int $since): array
             $t2 = $num($g($r, 'temp2_c'));   // HPX-TH のサーミスター(巣箱の中の温度)
             $t = $t2 ?? $sht;
             if ($t === null) continue;
+            $t += th_temp_corr(dirname($csv), $mac, $t2 === null && $num($g($r, 'batt_v')) === null);   // Inkbird の一律補正と温湿度計ごとの補正
             $out['th'][$mac][] = [$ep, $t, $num($g($r, 'humidity_pct')), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $t2 !== null ? $sht : null];
         }
     }
@@ -439,6 +440,21 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
     } elseif ($act === 'unretire') {
         @unlink($hub['dir'] . '/.retired');
         $done = 'unretired';
+    } elseif ($act === 'th_offset') {
+        // 温湿度計ごとの温度の補正(℃)。th_cal.json に保存し、表示・グラフ・警報で読むときに足す
+        $mac = (string)($_POST['mac'] ?? '');
+        $off = trim((string)($_POST['offset_c'] ?? ''));
+        if (!isset($hub['st']['sensors'][$mac])) $err = '温湿度計が見つかりません。';
+        elseif ($off !== '' && (!is_numeric($off) || abs((float)$off) > 10)) $err = '補正は -10〜10 ℃ の数字で入れてください。';
+        else {
+            $all = th_cal_load($hub['dir']);
+            if ($off === '' || (float)$off == 0.0) unset($all[$mac]);
+            else $all[$mac] = ['offset_c' => round((float)$off, 2), 'updated' => date('Y-m-d H:i:s', $now)];
+            $tmp = $hub['dir'] . '/th_cal.json.tmp';
+            if (@file_put_contents($tmp, json_encode($all ?: new stdClass(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) === false || !@rename($tmp, $hub['dir'] . '/th_cal.json'))
+                $err = '保存できませんでした(データフォルダに書き込めません)。';
+        }
+        $done = 'th_saved'; $anchor = 'th';
     } else {
         $mac = strtoupper((string)($_POST['mac'] ?? ''));
         if (!preg_match('/^[0-9A-F]{2}(:[0-9A-F]{2}){5}$/', $mac)) $err = '重量センサが見つかりません。';
@@ -504,6 +520,7 @@ echo '<nav>' . brand_nav_logo() . '<a href="apiary.php">蜂場</a><a href="hive.
 echo '<p class="muted" style="text-align:right;margin:0">' . h(date('Y-m-d H:i', $now)) . ' 現在 (5分ごとに自動で更新)</p>';
 if ($msg !== '') echo '<p class="ng">' . h($msg) . '</p>';
 if (isset($_GET['saved'])) echo '<p class="ok">重量センサの設定を保存しました。</p>';
+if (isset($_GET['th_saved'])) echo '<p class="ok">温度の補正を保存しました。</p>';
 if (isset($_GET['tested'])) echo '<p class="ok">テストメールを送りました。結果は「メール送信履歴」に出ます(届くまで数分かかることがあります)。</p>';
 if (isset($_GET['cleared'])) echo '<p class="ok">データをクリアしました。</p>';
 if (isset($_GET['removed'])) echo '<p class="ok">' . h($hub['name'] ?? '') . ' をこのアカウントから外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。</p>';
@@ -580,6 +597,7 @@ if (!$byKind['th']) {
 } else {
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>温度</th><th>湿度</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
+    $thForms = '';
     $ft = $range($per['pt']);
     $fhm = $range($per['ph']);
     foreach ($byKind['th'] as $mac => $s) {
@@ -604,8 +622,19 @@ if (!$byKind['th']) {
         }
         $tS[] = [$nm, $color, $tp];
         $hS[] = [$nm, $color, $hp];
+
+        // 温度の補正の入力(表の下にまとめて出す)
+        $isInk = $last && ($last[5] ?? null) === null && ($last[4] ?? null) === null;   // Inkbird の形の記録(一律の補正が入る)
+        $offC = (float)(th_cal_load($dir)[$mac]['offset_c'] ?? 0);
+        $thForms .= '<form method="post" class="thoff"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
+            . '<input type="hidden" name="mac" value="' . h((string)$mac) . '"><input type="hidden" name="action" value="th_offset">';
+        foreach ($per as $k => $v) $thForms .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
+        $thForms .= '<span style="color:' . $color . '">■</span> ' . h($nm) . ' <input type="number" step="0.1" min="-10" max="10" name="offset_c" value="' . h($offC != 0.0 ? rtrim(rtrim(number_format($offC, 2, '.', ''), '0'), '.') : '') . '" placeholder="0" style="width:5em"> ℃ '
+            . '<button type="submit">保存</button>' . ($isInk ? ' <span class="muted">Inkbird の一律 ' . h(number_format(TH_INKBIRD_OFFSET_C, 1)) . '℃ に足します</span>' : '') . '</form>';
     }
     echo '</table></div>';
+    echo '<details' . (isset($_GET['th_saved']) ? ' open' : '') . '><summary>温度の補正 (℃)</summary><div class="card"><p class="muted">温湿度計ごとに、表示・グラフ・警報の温度に足す値です (高く出るならマイナス)。記録は測った値のまま残ります。'
+        . 'Inkbird は一律で ' . h(number_format(TH_INKBIRD_OFFSET_C, 1)) . '℃ 補正したうえで、ここの値を足します。</p>' . $thForms . '</div></details>';
 }
 
 // ---- 重量の表 ----

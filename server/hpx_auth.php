@@ -695,6 +695,30 @@ function demo_reset(): bool
 //   同じ MAC の一番新しい較正を写して保存する(inherited に写した日時)。差し引く重さ(offset_kg)も一緒に写す
 // ====================================================================
 
+// ---- 温湿度計の温度の補正 ----
+// Inkbird (IBS-TH2) は実際より高く出るので、一律で TH_INKBIRD_OFFSET_C を足す(2026-11 TARO の実測で平均 +0.9℃)。
+// さらに温湿度計ごとの補正(センサページで入れる)をハブのフォルダの th_cal.json { "<mac>": { offset_c } } から足す。
+// 記録(ble.csv)は測った値のまま残し、読むときに補正する。
+// Inkbird かどうかは記録で見分ける: kind=th でサーミスター(temp2_c)も電池電圧(batt_v)も無いもの。
+//   SwitchBot の温湿度計も同じ形なので、区別できず Inkbird と同じ扱いになる(温湿度計ごとの補正で打ち消せる)。
+const TH_INKBIRD_OFFSET_C = -0.9;
+
+function th_cal_load(string $dir): array
+{
+    static $cache = [];
+    if (!isset($cache[$dir])) {
+        $c = json_decode((string)@file_get_contents($dir . '/th_cal.json'), true);
+        $cache[$dir] = is_array($c) ? $c : [];
+    }
+    return $cache[$dir];
+}
+
+// その温湿度計の記録に足す温度(℃)。$inkbird: その記録が Inkbird の形か
+function th_temp_corr(string $dir, string $mac, bool $inkbird): float
+{
+    return ($inkbird ? TH_INKBIRD_OFFSET_C : 0.0) + (float)(th_cal_load($dir)[$mac]['offset_c'] ?? 0);
+}
+
 function wcal_with_inherit(string $dir): array
 {
     static $all = null;
