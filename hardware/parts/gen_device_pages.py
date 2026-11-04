@@ -28,6 +28,13 @@ DEVICES = [
          variants=[('th_cr', 'CR123A 版'), ('th_aa', '単三リチウム電池版')],
          wiring=[('HPX-TH_CR123A_TNF44-69.png', 'CR123A 版の配線図', 'ケース SW-75B 用の基板 TNF44-69 に、CR123A 電池ケースのピンを差して載せます。', 'th_cr'),
                  ('HPX-TH_AA_LC115H.png', '単三リチウム電池版の配線図', 'ケース LC115H-M2-D の推奨基板に部品を載せる図です。', 'th_aa')],
+         # このページだけの表示の変更 (TARO 2026-11-04): 部品名の書きかえ (名前→(表示する名前, 下の説明 または None))、
+         # 「代わりに」を出さない、分類の順 (ケースをチップボードの下へ)
+         rename={'SHT40': ('温湿度センサ', None),
+                 '積層セラミックコンデンサー 0.1μF50V C0G 5mm': ('コンデンサー0.1μF', '積層セラミックコンデンサー 0.1μF50V C0G 5mm'),
+                 '絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm': ('コンデンサー100μF', '絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm')},
+         no_alts=True,
+         cats=['チップボード', 'ケース', 'ケース用基板', '電子部品', '電源', 'ケーブル', '部材'],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
@@ -216,13 +223,31 @@ def link(name, url):
     return f'<a href="{esc(url)}" target="_blank" rel="noopener">{name}</a>' if url else name
 
 
+def page_rows(dev, rows):
+    """機器ごとの表示の変更 (rename・no_alts) をした部品の行"""
+    out = []
+    for r in rows:
+        r = dict(r)
+        if r['name'] in dev.get('rename', {}):
+            nm, dt = dev['rename'][r['name']]
+            r['name'] = nm
+            if dt is not None:
+                r['detail'] = dt
+        if dev.get('no_alts'):
+            r['alts'] = []
+        out.append(r)
+    return out
+
+
 def parts_table(dev, rows):
+    rows = page_rows(dev, rows)
     vs = dev['variants']
     use = [r for r in rows if any(r[k] for k, _ in vs)]
     head = ''.join(f'<th class="n">{esc(v)}</th>' for _, v in vs)
     out = [f'<table class="parts">\n        <thead><tr><th>部品</th><th>購入店</th>{head}</tr></thead>\n        <tbody>']
     ncol = 2 + len(vs)
-    for cat in CATS + sorted({r['category'] for r in use} - set(CATS)):
+    cats = dev.get('cats', CATS)
+    for cat in cats + sorted({r['category'] for r in use} - set(cats)):
         rs = [r for r in use if r['category'] == cat]
         if not rs:
             continue
