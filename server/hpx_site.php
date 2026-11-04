@@ -824,10 +824,11 @@ function ble_data(string $hubId, int $since): array
         $kind = $g($r, 'kind');
         if ($kind === 'w') {
             if (is_numeric($g($r, 'raw'))) $out['w'][$mac][] = [$ep, (int)$g($r, 'raw')];
-        } elseif ($kind !== 'fa' && is_numeric($g($r, 'temp_c'))) {
+        } elseif ($kind !== 'fa' && (is_numeric($g($r, 'temp2_c')) || is_numeric($g($r, 'temp_c')))) {
             $hm = $g($r, 'humidity_pct');
             $bt = $g($r, 'battery_pct');
-            $out['th'][$mac][] = [$ep, (float)$g($r, 'temp_c'), is_numeric($hm) ? (float)$hm : null, is_numeric($bt) ? (float)$bt : null];
+            $tc = is_numeric($g($r, 'temp2_c')) ? $g($r, 'temp2_c') : $g($r, 'temp_c');   // HPX-TH はサーミスターの温度 (無いときは SHT40)
+            $out['th'][$mac][] = [$ep, (float)$tc, is_numeric($hm) ? (float)$hm : null, is_numeric($bt) ? (float)$bt : null];
         }
     }
     fclose($fh);

@@ -46,6 +46,7 @@ function ha_scan(string $hubDir, array $at = []): array
         $kind = (string)$r[$col['kind']];
         if ($ep <= 0 || $kind === 'fa') continue;
         $v = $kind === 'w' ? ($r[$col['raw'] ?? -1] ?? '') : ($r[$col['temp_c'] ?? -1] ?? '');
+        if ($kind !== 'w' && is_numeric($r[$col['temp2_c'] ?? -1] ?? '')) $v = $r[$col['temp2_c']];   // HPX-TH はサーミスターの温度で見る
         if (!is_numeric($v)) continue;
         if (!isset($out['latest'][$mac]) || $ep >= $out['latest'][$mac][0]) $out['latest'][$mac] = [$ep, $kind === 'w' ? (int)$v : (float)$v];
         if ($kind !== 'w') continue;

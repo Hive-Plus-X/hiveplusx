@@ -78,7 +78,8 @@ function rssi_text(?int $rssi): string
 }
 
 // ble.csv から $since 以降の記録を、種類ごと・センサーごとに古い順で返す
-//   th: mac => [[epoch, 温度, 湿度, 電池%, 電池V, サーミスター温度], ...]  (電池V・サーミスター温度は HPX-TH だけ)
+//   th: mac => [[epoch, 温度, 湿度, 電池%, 電池V, HPX-TH本体温度], ...]
+//       温度は HPX-TH ならサーミスターの温度 (無いときは SHT40)。本体温度 (SHT40) はサーミスターがあるときだけ。電池V は HPX-TH だけ
 //   w : mac => [[epoch, 生の値, ばらつき, ノード内温度, 電池V], ...]
 //   fa: [[epoch, 名前, mac, 状態, 通算回数], ...]
 //   first: いちばん古い記録の時刻(全期間のグラフの左端に使う)
@@ -110,9 +111,11 @@ function read_ble(string $csv, int $since): array
             if ($g($r, 'fence_state') === '') continue;
             $out['fa'][] = [$ep, $g($r, 'sensor') !== '' ? $g($r, 'sensor') : $mac, $mac, (int)$g($r, 'fence_state'), (int)$g($r, 'fence_events')];
         } else {
-            $t = $num($g($r, 'temp_c'));
+            $sht = $num($g($r, 'temp_c'));
+            $t2 = $num($g($r, 'temp2_c'));   // HPX-TH のサーミスター(巣箱の中の温度)
+            $t = $t2 ?? $sht;
             if ($t === null) continue;
-            $out['th'][$mac][] = [$ep, $t, $num($g($r, 'humidity_pct')), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $num($g($r, 'temp2_c'))];
+            $out['th'][$mac][] = [$ep, $t, $num($g($r, 'humidity_pct')), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $t2 !== null ? $sht : null];
         }
     }
     fclose($fh);
@@ -588,20 +591,18 @@ if (!$byKind['th']) {
         echo '<tr><td style="white-space:nowrap"><span style="color:' . $color . '">■</span> ' . h($nm) . '</td>'
             . $whereTd((string)$mac)
             . '<td class="n">' . h($last ? number_format($last[1], 1) . ' ℃' : '-')
-            . ($last && ($last[5] ?? null) !== null ? '<br><small class="muted">サーミスター ' . h(number_format($last[5], 1)) . ' ℃</small>' : '') . '</td>'
+            . ($last && ($last[5] ?? null) !== null ? '<br><small class="muted">HPX-TH本体温度 ' . h(number_format($last[5], 1)) . ' ℃</small>' : '') . '</td>'
             . '<td class="n">' . h($last && $last[2] !== null ? number_format($last[2], 1) . ' %' : '-') . '</td>'
             . '<td class="n">' . ($last && $last[3] !== null ? h((int)$last[3] . ' %') . ($last[3] <= 20 ? ' <span class="warn">交換</span>' : '')
                 : ($last && ($last[4] ?? null) !== null ? h(number_format($last[4], 2) . ' V') . ($last[4] < D_TH_LOW_V ? ' <span class="warn">交換</span>' : '') : '-')) . '</td>'
             . '<td>' . h($le ? date('m-d H:i', $le) . ' (' . ago_text($le, $now) . ')' : '-')
             . ($le > 0 && $now - $le >= D_TH_MISSING_S ? '<br><span class="ng">受信できていません</span>' : '') . '</td></tr>';
-        $tp = []; $hp = []; $t2p = [];
+        $tp = []; $hp = [];
         foreach ($rows as $r) {
             if ($r[0] >= $ft) $tp[] = [$r[0], $r[1]];
-            if ($r[0] >= $ft && ($r[5] ?? null) !== null) $t2p[] = [$r[0], $r[5]];
             if ($r[0] >= $fhm && $r[2] !== null) $hp[] = [$r[0], $r[2]];
         }
         $tS[] = [$nm, $color, $tp];
-        if ($t2p) $tS[] = [$nm . ' サーミスター', $color, $t2p, '5 4'];   // HPX-TH のサーミスターは点線
         $hS[] = [$nm, $color, $hp];
     }
     echo '</table></div>';
