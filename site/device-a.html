@@ -127,6 +127,12 @@
   .extra .ex { margin-top:6px; color:var(--sub); }
   .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -219,6 +225,7 @@
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
+
 </main>
 
 <footer>

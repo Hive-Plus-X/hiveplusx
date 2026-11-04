@@ -19,15 +19,15 @@ DEVICES = [
          note='屋内や軒下に置く通常版と、屋外に置ける防水版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
-         variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム版')],
-         wiring=[('HPX-W_CR123A_TNF39-70.png', 'CR123A 版の配線図', '基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。'),
-                 ('HPX-W_AA_TNF34-124.png', '単三リチウム版の配線図', '基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。')],
+         variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
+         wiring=[('HPX-W_CR123A_TNF39-70.png', 'CR123A 版の配線図', '基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。', 'w_cr'),
+                 ('HPX-W_AA_TNF34-124.png', '単三リチウム電池版の配線図', '基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。', 'w_aa')],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='th', file='device-th.html', tag='温湿度', name='HPX-TH',
          lead='巣箱の中の温度と湿度を測り、Bluetooth で発信します。',
-         variants=[('th_cr', 'CR123A 版'), ('th_aa', '単三リチウム版')],
-         wiring=[('HPX-TH_CR123A_TNF44-69.png', 'CR123A 版の配線図', 'ケース SW-75B 用の基板 TNF44-69 に、CR123A 電池ケースのピンを差して載せます。'),
-                 ('HPX-TH_AA_LC115H.png', '単三リチウム版の配線図', 'ケース LC115H-M2-D の推奨基板に部品を載せる図です。')],
+         variants=[('th_cr', 'CR123A 版'), ('th_aa', '単三リチウム電池版')],
+         wiring=[('HPX-TH_CR123A_TNF44-69.png', 'CR123A 版の配線図', 'ケース SW-75B 用の基板 TNF44-69 に、CR123A 電池ケースのピンを差して載せます。', 'th_cr'),
+                 ('HPX-TH_AA_LC115H.png', '単三リチウム電池版の配線図', 'ケース LC115H-M2-D の推奨基板に部品を載せる図です。', 'th_aa')],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
@@ -137,6 +137,12 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .extra .ex { margin-top:6px; color:var(--sub); }
   .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
 '''
@@ -257,8 +263,10 @@ def parts_table(dev, rows):
 def wiring_html(dev):
     """配線図 (site/img/wiring/ の PNG)。押すと大きな画像が開く"""
     figs = []
-    for f, cap, note in dev.get('wiring', []):
-        figs.append(f'''      <figure class="wiring">
+    for w in dev.get('wiring', []):
+        f, cap, note = w[:3]
+        dv = f' data-variant="{w[3]}"' if len(w) > 3 else ''
+        figs.append(f'''      <figure class="wiring"{dv}>
         <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
         <a href="img/wiring/{f}" target="_blank" rel="noopener"><img src="img/wiring/{f}" alt="{esc(dev["name"])} {esc(cap)}" loading="lazy"></a>
       </figure>''')
@@ -268,21 +276,58 @@ def wiring_html(dev):
             '取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>\n' + '\n'.join(figs))
 
 
+def variant_tables(dev, rows):
+    """版が 2つ以上なら、版ごとの部品表を作り、ボタンで切り替える"""
+    if len(dev['variants']) == 1:
+        return '      <p class="note">必要な部品と数です。</p>\n      ' + parts_table(dev, rows)
+    out = []
+    for k, v in dev['variants']:
+        one = dict(dev, variants=[(k, '数')])
+        out.append(f'''      <div data-variant="{k}">
+      <p class="note">{esc(v)}に必要な部品と数です。</p>
+      {parts_table(one, rows)}
+      </div>''')
+    return '\n'.join(out)
+
+
+SWITCH_JS = '''<script>
+/* 版の切り替え: ボタンを押した版の部品表・配線図だけを見せる。?v=版 でも選べる */
+(function () {
+  var bs = document.querySelectorAll('.vsw button');
+  if (!bs.length) return;
+  function show(k) {
+    bs.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === k ? 'true' : 'false'); });
+    document.querySelectorAll('[data-variant]').forEach(function (e) { e.hidden = e.getAttribute('data-variant') !== k; });
+  }
+  bs.forEach(function (b) { b.addEventListener('click', function () {
+    var k = b.getAttribute('data-v'); show(k);
+    try { var u = new URL(location.href); u.searchParams.set('v', k); history.replaceState(null, '', u); } catch (e) {}
+  }); });
+  var k = null;
+  try { k = new URL(location.href).searchParams.get('v'); } catch (e) {}
+  if (!document.querySelector('.vsw button[data-v="' + k + '"]')) k = bs[0].getAttribute('data-v');
+  show(k);
+})();
+</script>'''
+
+
 def device_page(dev, rows, parts):
-    vs = ' / '.join(v for _, v in dev['variants']) if len(dev['variants']) > 1 else ''
+    multi = len(dev['variants']) > 1
+    sw = ('\n    <div class="vsw" role="group" aria-label="版を選ぶ">' +
+          ''.join(f'<button type="button" data-v="{k}" aria-pressed="{"true" if i == 0 else "false"}">{esc(v)}</button>'
+                  for i, (k, v) in enumerate(dev['variants'])) + '</div>') if multi else ''
     body = f'''  <div class="hero wrap">
     <p class="eyebrow">Devices</p>
     <h1>{esc(dev["name"])}</h1>
     <p class="lead">{esc(dev["lead"])}</p>
-    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}
+    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{sw}
   </div>
 
   <section id="parts">
     <div class="reveal wrap">
       <span class="tag">{esc(dev["tag"])}</span>
       <h2>部品表</h2>
-      <p class="note">必要な部品と数です。{('版ごとの数を並べています (' + esc(vs) + ')。') if vs else ''}</p>
-      {parts_table(dev, rows)}
+{variant_tables(dev, rows)}
     </div>
   </section>
 
@@ -293,7 +338,8 @@ def device_page(dev, rows, parts):
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
-  </section>'''
+  </section>
+''' + (SWITCH_JS if multi else '')
     return doc(dev['name'] + ' の作り方', dev['name'] + ' を作るのに必要な部品の一覧です。', body, parts)
 
 

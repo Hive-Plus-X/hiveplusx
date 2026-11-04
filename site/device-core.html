@@ -127,6 +127,12 @@
   .extra .ex { margin-top:6px; color:var(--sub); }
   .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -167,33 +173,49 @@
     <h1>HPX-Core</h1>
     <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。</p>
     <p class="lead">屋内や軒下に置く通常版と、屋外に置ける防水版があります。</p>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">通常版</button><button type="button" data-v="core_wp" aria-pressed="false">防水版</button></div>
   </div>
 
   <section id="parts">
     <div class="reveal wrap">
       <span class="tag">ハブ</span>
       <h2>部品表</h2>
-      <p class="note">必要な部品と数です。版ごとの数を並べています (通常版 / 防水版)。</p>
+      <div data-variant="core">
+      <p class="note">通常版に必要な部品と数です。</p>
       <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">通常版</th><th class="n">防水版</th></tr></thead>
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
-        <tr class="cat"><th colspan="4">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0C9TGJRPH" target="_blank" rel="noopener">ESP32</a></b><span>Freenove ESP32 開発ボード ESP32 キット</span><span class="price">2,780円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="通常版">1</td><td class="n" data-v="防水版">1</td></tr>
-        <tr class="cat"><th colspan="4">ケース</th></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Easy%20Access%20Clearly%20Case%20Enclosure%20ESP32%2030Pin" target="_blank" rel="noopener">ESP32 用透明ボックス</a></b><span>Easy Access Clearly Case Enclosure for ESP32 30Pin</span><span class="price">912円</span></td><td class="shop">amazon</td><td class="n" data-v="通常版">1</td><td class="n none" data-v="防水版">—</td></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/g/05220440/" target="_blank" rel="noopener">IP67 ポータブル防水ケース WCシリーズ</a></b><span>タカチ　WC90-21-N-BM</span><span class="price">739円</span></td><td class="shop">モノタロウ</td><td class="n none" data-v="通常版">—</td><td class="n" data-v="防水版">1</td></tr>
-        <tr class="cat"><th colspan="4">ケース用基板</th></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/p/5513/0364/" target="_blank" rel="noopener">WC90-21-N用基板</a></b><span>タカチ　WCPB-90</span><span class="price">129円</span></td><td class="shop">—</td><td class="n none" data-v="通常版">—</td><td class="n" data-v="防水版">1</td></tr>
-        <tr class="cat"><th colspan="4">ケーブル</th></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.amazon.co.jp/s?k=USB%20C%20%E5%BB%B6%E9%95%B7%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%2013CM%20%E3%82%AA%E3%82%B9%E3%83%A1%E3%82%B9" target="_blank" rel="noopener">USB Type-C 延長ケーブル</a></b><span>USB Type-C オス・メス 延長ケーブル 13cm</span><span class="price">697円</span></td><td class="shop">amazon</td><td class="n none" data-v="通常版">—</td><td class="n" data-v="防水版">1</td></tr>
-        <tr class="cat"><th colspan="4">部材</th></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span><span class="price">249円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="通常版">4</td><td class="n none" data-v="防水版">—</td></tr>
-        <tr class="diff"><td class="part"><b><a href="https://www.monotaro.com/p/8835/6125/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-1.6</span><span class="price">309円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n none" data-v="通常版">—</td><td class="n" data-v="防水版">4</td></tr>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0C9TGJRPH" target="_blank" rel="noopener">ESP32</a></b><span>Freenove ESP32 開発ボード ESP32 キット</span><span class="price">2,780円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Easy%20Access%20Clearly%20Case%20Enclosure%20ESP32%2030Pin" target="_blank" rel="noopener">ESP32 用透明ボックス</a></b><span>Easy Access Clearly Case Enclosure for ESP32 30Pin</span><span class="price">912円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span><span class="price">249円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="通常版">約 2,322円</td><td class="n" data-v="防水版">約 2,980円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 2,322円</td></tr></tfoot>
       </table>
-      <p class="legend"><i></i>色の付いた行は、版によって違う部品です。</p>
       <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
+      </div>
+      <div data-variant="core_wp">
+      <p class="note">防水版に必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0C9TGJRPH" target="_blank" rel="noopener">ESP32</a></b><span>Freenove ESP32 開発ボード ESP32 キット</span><span class="price">2,780円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/g/05220440/" target="_blank" rel="noopener">IP67 ポータブル防水ケース WCシリーズ</a></b><span>タカチ　WC90-21-N-BM</span><span class="price">739円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5513/0364/" target="_blank" rel="noopener">WC90-21-N用基板</a></b><span>タカチ　WCPB-90</span><span class="price">129円</span></td><td class="shop">—</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケーブル</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=USB%20C%20%E5%BB%B6%E9%95%B7%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%2013CM%20%E3%82%AA%E3%82%B9%E3%83%A1%E3%82%B9" target="_blank" rel="noopener">USB Type-C 延長ケーブル</a></b><span>USB Type-C オス・メス 延長ケーブル 13cm</span><span class="price">697円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/8835/6125/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-1.6</span><span class="price">309円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 2,980円</td></tr></tfoot>
+      </table>
+      <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
+      </div>
     </div>
   </section>
 
@@ -209,6 +231,25 @@
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
+<script>
+/* 版の切り替え: ボタンを押した版の部品表・配線図だけを見せる。?v=版 でも選べる */
+(function () {
+  var bs = document.querySelectorAll('.vsw button');
+  if (!bs.length) return;
+  function show(k) {
+    bs.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === k ? 'true' : 'false'); });
+    document.querySelectorAll('[data-variant]').forEach(function (e) { e.hidden = e.getAttribute('data-variant') !== k; });
+  }
+  bs.forEach(function (b) { b.addEventListener('click', function () {
+    var k = b.getAttribute('data-v'); show(k);
+    try { var u = new URL(location.href); u.searchParams.set('v', k); history.replaceState(null, '', u); } catch (e) {}
+  }); });
+  var k = null;
+  try { k = new URL(location.href).searchParams.get('v'); } catch (e) {}
+  if (!document.querySelector('.vsw button[data-v="' + k + '"]')) k = bs[0].getAttribute('data-v');
+  show(k);
+})();
+</script>
 </main>
 
 <footer>
