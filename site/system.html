@@ -181,6 +181,22 @@
   .spec dt { font-weight:700; }
   .spec dd { color:var(--sub); margin:0; }
   @media (max-width:760px) { .spec div { grid-template-columns:1fr; gap:2px; } }
+  /* 知らせるメールの一覧 */
+  .alerts { width:100%; border-collapse:collapse; margin-top:40px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
+  .alerts th, .alerts td { padding:12px 16px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .alerts thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .alerts td.k { white-space:nowrap; font-weight:700; color:var(--forest); }
+  @media (prefers-color-scheme: dark) { .alerts td.k { color:var(--honey); } }
+  .alerts td:last-child { color:var(--sub); }
+  #alerts .note { font-size:14px; color:var(--sub); margin-top:14px; }
+  @media (max-width:760px) {
+    .alerts, .alerts tbody, .alerts tr, .alerts td { display:block; }
+    .alerts thead { display:none; }
+    .alerts tr { border-top:1px solid var(--line); padding:12px 16px; }
+    .alerts tr:first-child { border-top:0; }
+    .alerts td { border:0; padding:0; }
+    .alerts td.k { font-size:12px; }
+  }
   /* データの流れ */
   .steps { list-style:none; margin-top:48px; display:grid; gap:14px; counter-reset:st; }
   .steps li { counter-increment:st; display:grid; grid-template-columns:56px 1fr; gap:18px; align-items:start; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 22px; }
@@ -245,7 +261,7 @@
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
-        <dl class="spec"><div><dt>受け取れる数</dt><dd>センサ 8台まで</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>USB (5V)</dd></div><div><dt>設定</dt><dd>スマートフォンから HPX-Core の設定画面を開いて行います</dd></div></dl>
+        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (8台まで)</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fi を出すので、スマートフォンでつないで、使うルーターの名前とパスワードを入れます</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>ふだんは USB (5V) で常に動かします。ソーラーパネルと電池で動かすときは「ディープスリープ」にすると、記録と送信の間は眠って電気を節約します</dd></div></dl>
       </div>
     </div>
   </section>
@@ -269,11 +285,11 @@
       <div class="text">
         <p class="eyebrow">Server</p>
         <h2>サーバー</h2>
-        <p class="lead">HPX-Core から届いた記録を受け取り、保存します。重さの換算や、電柵の電圧低下などの知らせもサーバーが行います。</p><p class="note">記録は文字だけのファイルで保存するので、データベースを用意しなくても動きます。PHP が使えるレンタルサーバーに置けます。</p>
+        <p class="lead">HPX-Core から届いた記録を受け取り、保存します。重さの換算や温湿度の補正、電柵の電圧低下などの知らせもサーバーが行います。</p><p class="note">記録は文字だけのファイルで保存するので、データベースを用意しなくても動きます。PHP が使えるレンタルサーバーに置けます。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></div>
-        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>換算</dt><dd>重量センサの値を kg に直します</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や機器の異常を、メールで送ります</dd></div></dl>
+        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>換算</dt><dd>重量センサの値を kg に直します (センサごとに較正)</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます。表示・グラフ・警報のすべてに使われます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メールで送ります (下の一覧)</dd></div></dl>
       </div>
     </div>
   </section>
@@ -287,7 +303,7 @@
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
-        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
+        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
       </div>
     </div>
   </section>
@@ -305,6 +321,32 @@
         <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、重さを kg に直します。電柵の電圧低下などがあればメールで知らせます。</span><span class="when">届いたとき</span></div></li>
         <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
       </ol>
+    </div>
+  </section>
+
+  <section id="alerts">
+    <div class="reveal wrap">
+      <p class="eyebrow">Alerts</p>
+      <h2>知らせるメールの一覧</h2>
+      <p class="lead">サーバーは、次のようなときにメールで知らせます。件名の頭には【HPX】が付きます。</p>
+      <table class="alerts">
+        <thead><tr><th>分類</th><th>件名</th><th>送るとき</th></tr></thead>
+        <tbody>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が下がっています</b></td><td>フェンスアラートの点滅を HPX-A が続けて見つけたとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が一時的に下がりました</b></td><td>記録と記録の間に電圧低下があって、もう戻っているとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>点滅が止まり、元に戻ったとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる)</td></tr>
+          <tr><td class="k">HPX-A</td><td><b>HPX-A の電池を交換してください</b></td><td>HPX-A の電池の電圧が下がったとき</td></tr>
+          <tr><td class="k">HPX-A</td><td><b>HPX-A から受信できていません</b></td><td>HPX-Core には届いているのに、HPX-A の記録が1時間来ないとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を外れたとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>温度が戻りました</b></td><td>上限・下限の内側に戻ったとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>重量が基準日から増えました / 減りました</b></td><td>採蜜した日などの基準日から、決めた重さ以上に増えた・減ったとき</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブから届いていません</b></td><td>HPX-Core からの記録が1時間届かないとき (電源・Wi-Fi・ルーターを確かめる)</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブからの受信が戻りました</b></td><td>HPX-Core からまた届くようになったとき</td></tr>
+          <tr><td class="k">タスク</td><td><b>タスクのお知らせ</b></td><td>通知をオンにしたタスクの期限の前日・当日と、期限を過ぎて終わっていないとき (1日1回、人ごとに1通にまとめる)</td></tr>
+        </tbody>
+      </table>
+      <p class="note">巣箱の温度と重量の知らせは、巣箱のページで値を決めたものだけ送ります。電柵の知らせは、HPX-Core が記録する間隔 (15分〜1時間) ごとに届きます。</p>
     </div>
   </section>
 </main>
