@@ -695,6 +695,60 @@ function demo_reset(): bool
 //   同じ MAC の一番新しい較正を写して保存する(inherited に写した日時)。差し引く重さ(offset_kg)も一緒に写す
 // ====================================================================
 
+// ---- 温湿度計の温度の補正 ----
+// Inkbird (IBS-TH2) は実際より高く出るので、一律で TH_INKBIRD_OFFSET_C を足す(2026-11 TARO の実測で平均 +0.9℃)。
+// さらに温湿度計ごとの補正(センサページで入れる)をハブのフォルダの th_cal.json { "<mac>": { offset_c } } から足す。
+// 記録(ble.csv)は測った値のまま残し、読むときに補正する。
+// Inkbird かどうかは、HPX-Core v1.18 以降が送る機種(state.json の sensors[mac].model)で見分ける。
+//   機種がまだ届いていない温湿度計は記録の形で見る: kind=th でサーミスター(temp2_c)も電池電圧(batt_v)も無いもの
+//   (この形だと SwitchBot も Inkbird と同じ扱いになる)。
+const TH_INKBIRD_OFFSET_C = -0.9;
+// 湿度(%)の機種ごとの補正(2026-11 TARO 指定)。温湿度計ごとの補正(th_cal.json の offset_h)をさらに足す
+const TH_MODEL_OFFSET_H = ['switchbot' => -2.5, 'switchbot_outdoor' => 3.0];
+const TH_MODEL_NAMES = ['inkbird' => 'Inkbird', 'switchbot' => 'SwitchBot 温湿度計', 'switchbot_outdoor' => 'SwitchBot 防水温湿度計'];
+
+function th_cal_load(string $dir): array
+{
+    static $cache = [];
+    if (!isset($cache[$dir])) {
+        $c = json_decode((string)@file_get_contents($dir . '/th_cal.json'), true);
+        $cache[$dir] = is_array($c) ? $c : [];
+    }
+    return $cache[$dir];
+}
+
+// 温湿度計の機種(state.json の sensors[mac].model)。まだ届いていなければ ''
+function th_model(string $dir, string $mac): string
+{
+    static $models = [];
+    if (!isset($models[$dir])) {
+        $st = json_decode((string)@file_get_contents($dir . '/state.json'), true);
+        $models[$dir] = [];
+        foreach ((array)($st['sensors'] ?? []) as $m => $e) if (is_array($e) && isset($e['model'])) $models[$dir][(string)$m] = (string)$e['model'];
+    }
+    return $models[$dir][$mac] ?? '';
+}
+
+// その温湿度計の記録に足す湿度(%)。機種ごとの補正 + 温湿度計ごとの補正
+function th_hum_corr(string $dir, string $mac): float
+{
+    return (float)(TH_MODEL_OFFSET_H[th_model($dir, $mac)] ?? 0) + (float)(th_cal_load($dir)[$mac]['offset_h'] ?? 0);
+}
+
+// 湿度に補正を足して 0〜100 に収める(記録が無ければ null)
+function th_hum_fix(?float $h, string $dir, string $mac): ?float
+{
+    return $h === null ? null : max(0.0, min(100.0, $h + th_hum_corr($dir, $mac)));
+}
+
+// その温湿度計の記録に足す温度(℃)。$inkbirdShape: その記録が Inkbird の形か(機種が分からないときに使う)
+function th_temp_corr(string $dir, string $mac, bool $inkbirdShape): float
+{
+    $model = th_model($dir, $mac);
+    $ink = $model !== '' ? $model === 'inkbird' : $inkbirdShape;
+    return ($ink ? TH_INKBIRD_OFFSET_C : 0.0) + (float)(th_cal_load($dir)[$mac]['offset_c'] ?? 0);
+}
+
 function wcal_with_inherit(string $dir): array
 {
     static $all = null;
