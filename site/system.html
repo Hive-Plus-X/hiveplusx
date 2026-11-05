@@ -243,7 +243,7 @@
       <div class="text">
         <p class="eyebrow">Sensors</p>
         <h2>センサ　HPXシリーズ</h2>
-        <p class="lead">巣箱や電柵のそばに置く、電池で動く小さな機器です。測った値を Bluetooth で1秒ごとに発信し続けます。ハブとの接続やペアリングはいりません。</p><p class="note">どのセンサも、電池の電圧をいっしょに発信します。電池が少なくなると、アプリに交換の目安が出ます。</p><a class="more" href="devices.html">機器の作り方を見る</a>
+        <p class="lead">巣箱や電柵のそばに置く、電池で動く小さな機器です。測った値を Bluetooth で1秒ごとに発信し続けます。ハブとの接続やペアリングはいりません。</p><p class="note">どのセンサも、電池の電圧をいっしょに発信します。電池が少なくなると、アプリに交換の目安が出ます。</p><a class="more" href="devices.html">機器の作り方を見る</a><p class="note">市販の Bluetooth センサも使えます。現在は、SwitchBot の温湿度センサと、Inkbird の温湿度センサに対応済みです。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg></div>
@@ -257,11 +257,11 @@
       <div class="text">
         <p class="eyebrow">Hub</p>
         <h2>ハブ　HPX-Core</h2>
-        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの電波を聞いて記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">通信が切れている間の記録は本体に残り (3日分まで)、つながったときにまとめて送ります。プログラムの更新も、サーバーから自動で受け取れます。</p>
+        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで保存し、つながったときにまとめて送ります。HPX-Core のファームウェアプログラムのアップデートも、サーバーから自動で行えます。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
-        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (8台まで)</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fi を出すので、スマートフォンでつないで、使うルーターの名前とパスワードを入れます</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>ふだんは USB (5V) で常に動かします。ソーラーパネルと電池で動かすときは「ディープスリープ」にすると、記録と送信の間は眠って電気を節約します</dd></div></dl>
+        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (8台まで)</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fiアドレス を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。ソーラーパネルとバッテリーで使用するときは、ディープスリープを活用した省電力モードを選べます</dd></div></dl>
       </div>
     </div>
   </section>
@@ -271,7 +271,7 @@
       <div class="text">
         <p class="eyebrow">Router</p>
         <h2>ルーター</h2>
-        <p class="lead">HPX-Core をインターネットにつなぐための Wi-Fi です。家の近くなら家の Wi-Fi、離れた蜂場なら市販の LTE ルーターなどを使います。</p><p class="note">ルーターは HPX の機器ではなく、市販品をそのまま使います。</p>
+        <p class="lead">HPX-Core をインターネットにつなぐための機器です。家の近くなら家の Wi-Fi ルーター、離れた蜂場なら市販の LTE ルーターなどを使います。</p><p class="note">ルーターは市販品をご準備ください。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></div>
