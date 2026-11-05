@@ -1,5 +1,5 @@
 <?php
-// 「作りました報告」(機器を作った人が、写真とひとことで報告するしくみ) の共通部分。関数の定義だけ。
+// 「作った・使ったレポート」(機器を作ったり、サーバーや養蜂記録アプリを使った人が、写真とひとことで報告するしくみ) の共通部分。関数の定義だけ。
 //   使うページ:
 //     サイトの report.php     … 投稿フォームと、公開した報告の一覧 (誰でも見られる)。トップページの新着もここから読む
 //     hpx/report_img.php      … 報告の写真を出す (公開した報告の写真だけ。まだのものはサイト管理者だけ見られる)
@@ -12,14 +12,16 @@
 //   写真は必ずサーバーで作り直して保存する。撮影場所 (GPS) などの写真の中の情報は、このときすべて消える。
 declare(strict_types=1);
 
-const R_DEVICES = ['HPX-Core', 'HPX-TH', 'HPX-W', 'その他'];
+// 作った機器・使ったもの。保存する名前 => 役割 (画面ではかっこ付きで出す)
+const R_DEVICES = ['HPX-Core' => 'ハブ', 'HPX-TH' => '温湿度センサ', 'HPX-W' => '重量センサ', 'HPX-A' => 'アラーム',
+    'HPX-note' => '養蜂記録アプリ', 'HPX-Server' => 'サーバー', 'その他' => ''];
+function r_device_label(string $d): string { $r = R_DEVICES[$d] ?? ''; return $r !== '' ? $d . '（' . $r . '）' : $d; }
 const R_MAX_PHOTOS = 3;                 // 1つの報告の写真の枚数
 const R_MAX_BYTES = 15 * 1024 * 1024;   // 写真1枚の大きさの上限 (送られてきたまま)
 const R_MAX_PIXELS = 50000000;          // 写真1枚の画素数の上限 (大きすぎると作り直せないため)
 const R_LONG = 1200;                    // 保存する写真の長辺
 const R_SMALL = 600;                    // 一覧用の写真の長辺
 const R_NICK_MAX = 30;
-const R_AREA_MAX = 20;
 const R_COMMENT_MAX = 300;
 const R_REPLY_MAX = 300;
 const R_MIN_S = 5;                      // ページを開いてからこの秒数より早い送信はロボットとみなす
@@ -163,8 +165,8 @@ function r_rate_ok(): bool
 function r_public_view(array $r): array
 {
     return [
-        'id' => (string)$r['id'], 'date' => date('Y-m-d', (int)$r['time']), 'nick' => (string)$r['nick'], 'area' => (string)($r['area'] ?? ''),
-        'devices' => array_values((array)($r['devices'] ?? [])), 'comment' => (string)$r['comment'], 'photos' => (int)($r['photos'] ?? 0),
+        'id' => (string)$r['id'], 'date' => date('Y-m-d', (int)$r['time']), 'nick' => (string)$r['nick'],
+        'devices' => array_map('r_device_label', array_values((array)($r['devices'] ?? []))), 'comment' => (string)$r['comment'], 'photos' => (int)($r['photos'] ?? 0),
         'reply' => (string)($r['reply'] ?? ''),
     ];
 }

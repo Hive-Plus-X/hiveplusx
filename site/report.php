@@ -1,5 +1,5 @@
 <?php
-// hiveplusx.com の「作りました報告」。機器を作った人が、写真とひとことで報告するページ。
+// hiveplusx.com の「作った・使ったレポート」。機器を作ったり、サーバーや養蜂記録アプリを使った人が、写真とひとことで報告するページ。
 //   サイトに置いて (www/hiveplusx/report.php)、アプリ (hpx/) の config.php・hpx_report.php を使う。
 //   ・投稿は「確認待ち」で保存し、管理者にメールで知らせる。管理者が hpx/report_admin.php で「公開する」を押したものだけ出す
 //   ・写真はサーバーで作り直して保存する (撮影場所などの写真の中の情報は消える。長辺 1200px に小さくする)
@@ -36,7 +36,7 @@ if (isset($_GET['feed'])) {
     exit;
 }
 
-$v = ['nick' => '', 'area' => '', 'comment' => '', 'email' => '', 'devices' => []];
+$v = ['nick' => '', 'comment' => '', 'email' => '', 'devices' => []];
 $err = [];
 $done = false;
 $fail = false;
@@ -46,8 +46,8 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     // 送られてきた量がサーバーの上限を超えると、中身が空で届く
     $err[] = '写真が大きすぎて受け取れませんでした。写真の枚数を減らすか、小さくしてから送ってください。';
 } elseif ($isPost) {
-    foreach (['nick', 'area', 'comment', 'email'] as $k) $v[$k] = trim((string)($_POST[$k] ?? ''));
-    $v['devices'] = array_values(array_intersect(R_DEVICES, (array)($_POST['devices'] ?? [])));
+    foreach (['nick', 'comment', 'email'] as $k) $v[$k] = trim((string)($_POST[$k] ?? ''));
+    $v['devices'] = array_values(array_intersect(array_keys(R_DEVICES), (array)($_POST['devices'] ?? [])));
     $age = r_token_age((string)($_POST['t'] ?? ''));
     $bot = (string)($_POST['website'] ?? '') !== '';
 
@@ -71,12 +71,11 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     } else {
         if ($v['nick'] === '') $err[] = 'ニックネームを書いてください。';
         if (mb_strlen($v['nick']) > R_NICK_MAX) $err[] = 'ニックネームは' . R_NICK_MAX . '文字までにしてください。';
-        if (mb_strlen($v['area']) > R_AREA_MAX) $err[] = '地域は' . R_AREA_MAX . '文字までにしてください。';
-        if (!$v['devices']) $err[] = '作った機器を選んでください。';
+        if (!$v['devices']) $err[] = '作った機器・使ったものを選んでください。';
         $len = mb_strlen($v['comment']);
         if ($len < 5) $err[] = 'ひとことを書いてください (5文字以上)。';
         if ($len > R_COMMENT_MAX) $err[] = 'ひとことは' . R_COMMENT_MAX . '文字までにしてください。';
-        if (preg_match('#https?://|www\.#i', $v['comment'] . $v['nick'] . $v['area'])) $err[] = 'リンク (URL) は書けません。';
+        if (preg_match('#https?://|www\.#i', $v['comment'] . $v['nick'])) $err[] = 'リンク (URL) は書けません。';
         if ($v['email'] !== '' && (!filter_var($v['email'], FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $v['email']))) $err[] = 'メールアドレスを確かめてください。';
         if (!$files && !$err) $err[] = '写真を1枚以上選んでください。';
         if (count($files) > R_MAX_PHOTOS) $err[] = '写真は' . R_MAX_PHOTOS . '枚までにしてください。';
@@ -94,7 +93,7 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
             if ($err) {
                 foreach (glob(r_dir() . '/photos/' . $id . '_*.jpg') ?: [] as $f) @unlink($f);
             } else {
-                $rec = ['id' => $id, 'time' => time(), 'status' => 'pending', 'nick' => $v['nick'], 'area' => $v['area'],
+                $rec = ['id' => $id, 'time' => time(), 'status' => 'pending', 'nick' => $v['nick'],
                         'devices' => $v['devices'], 'comment' => $v['comment'], 'email' => $v['email'], 'photos' => $n, 'reply' => ''];
                 if (!r_update(function (array $l) use ($id, $rec) { $l[$id] = $rec; return $l; })) {
                     $fail = true;
@@ -103,13 +102,13 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
                     // 管理者に知らせる (送れなくても報告は受け付けてある。管理ページで見られる)
                     $to = array_values(array_filter(array_map('trim', explode(',', (string)(($HPX_REPORT_TO ?? '') !== '' ? $HPX_REPORT_TO
                         : (($HPX_CONTACT_TO ?? '') !== '' ? $HPX_CONTACT_TO : R_TO))))));
-                    $body = "hiveplusx.com に「作りました報告」が届きました。まだ公開していません。\n"
+                    $body = "hiveplusx.com に「作った・使ったレポート」が届きました。まだ公開していません。\n"
                         . "次のページで写真を確かめて、「公開する」を押してください (サイト管理者のログインが要ります)。\n"
                         . r_admin_url() . '#' . $id . "\n\n"
-                        . "ニックネーム: {$v['nick']}\n地域: " . ($v['area'] !== '' ? $v['area'] : '(未記入)') . "\n"
-                        . '作った機器: ' . implode('・', $v['devices']) . "\n写真: {$n}枚\n\n----\n{$v['comment']}\n";
+                        . "ニックネーム: {$v['nick']}\n"
+                        . '作った機器・サーバー・養蜂記録アプリ: ' . implode('・', array_map('r_device_label', $v['devices'])) . "\n写真: {$n}枚\n\n----\n{$v['comment']}\n";
                     [$ok, $res] = ($to && (string)($HPX_SMTP_HOST ?? '') !== '')
-                        ? hpx_smtp_send($to, (string)$HPX_MAIL_FROM, '【hiveplusx.com】作りました報告が届きました', $body)
+                        ? hpx_smtp_send($to, (string)$HPX_MAIL_FROM, '【hiveplusx.com】作った・使ったレポートが届きました', $body)
                         : [false, '送り先かSMTPが設定されていません'];
                     @file_put_contents(r_dir() . '/mail.log', date('c') . ' ' . ($ok ? 'OK' : 'NG') . ' ' . $id . ' ' . preg_replace('/\s+/', ' ', (string)$res) . "\n", FILE_APPEND | LOCK_EX);
                 }
@@ -130,8 +129,8 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>作りました報告 - Hive Plus X</title>
-<meta name="description" content="Hive Plus X の機器を作った方からの報告です。写真とひとことで、作った機器や使ってみた様子を紹介しています。">
+<title>作った・使ったレポート - Hive Plus X</title>
+<meta name="description" content="Hive Plus X の機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。">
 <?php if ($isPost): ?><meta name="robots" content="noindex"><?php endif; ?>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
@@ -152,8 +151,8 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   header img { height:26px; display:block; }
   header nav a { font-size:14px; text-decoration:none; opacity:.9; margin-left:18px; }
   main { padding:120px 0 200px; }
-  section + section { padding-top:200px; }
-  @media (max-width:760px) { main { padding:64px 0 140px; } section + section { padding-top:140px; } }
+  #post { padding-top:200px; }
+  @media (max-width:760px) { main { padding:64px 0 140px; } #post { padding-top:140px; } }
   .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
   h1, h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
   .lead { color:var(--sub); margin-top:8px; max-width:720px; }
@@ -229,9 +228,9 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
 <main>
   <section class="wrap" id="list">
     <p class="eyebrow">Reports</p>
-    <h1>作りました報告</h1>
-    <p class="lead">Hive Plus X の機器を作った方からの報告です。作った機器の写真や、巣箱に付けた様子、使ってみた感想を紹介しています。あなたも作ったら、ぜひ報告してください。</p>
-    <a class="btn" href="#post">作りました報告をする</a>
+    <h1>作った・使ったレポート</h1>
+    <p class="lead">機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。</p>
+    <a class="btn" href="#post">報告をする</a>
 <?php if (!$shown): ?>
     <div class="empty">まだ報告はありません。最初の報告をお待ちしています。</div>
 <?php else: ?>
@@ -246,7 +245,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
         </div>
 <?php endif; ?>
         <div class="body">
-          <div class="who"><?= h($p['nick']) ?> さん<?php if ($p['area'] !== ''): ?><small><?= h($p['area']) ?></small><?php endif; ?></div>
+          <div class="who"><?= h($p['nick']) ?> さん</div>
           <div class="tags"><?php foreach ($p['devices'] as $d) echo '<span class="tag">' . h($d) . '</span>'; ?></div>
           <p class="c"><?= h($p['comment']) ?></p>
 <?php if ($p['reply'] !== ''): ?>
@@ -265,7 +264,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
 
   <section class="wrap narrow" id="post">
     <p class="eyebrow">Post</p>
-    <h2>作りました報告をする</h2>
+    <h2>報告をする</h2>
 <?php if ($done): ?>
     <div class="box">送信しました。報告ありがとうございます！<br>内容を確認してから、このページに載せます。載るまで数日かかることがあります。</div>
 <?php else: ?>
@@ -287,11 +286,9 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
       </div>
       <div><label for="nick">ニックネーム<small>サイトに載ります</small></label>
         <input type="text" id="nick" name="nick" required maxlength="<?= R_NICK_MAX ?>" value="<?= h($v['nick']) ?>" placeholder="例: はちみつ太郎"></div>
-      <div><label for="area">地域<small>任意。都道府県くらいまで</small></label>
-        <input type="text" id="area" name="area" maxlength="<?= R_AREA_MAX ?>" value="<?= h($v['area']) ?>" placeholder="例: 長野県"></div>
       <div>
-        <span class="lbl">作った機器<small>いくつでも</small></span>
-        <div class="checks"><?php foreach (R_DEVICES as $d) echo '<label><input type="checkbox" name="devices[]" value="' . h($d) . '"' . (in_array($d, $v['devices'], true) ? ' checked' : '') . '><span>' . h($d) . '</span></label>'; ?></div>
+        <span class="lbl">作った機器・サーバー・養蜂記録アプリ<small>いくつでも</small></span>
+        <div class="checks"><?php foreach (array_keys(R_DEVICES) as $d) echo '<label><input type="checkbox" name="devices[]" value="' . h($d) . '"' . (in_array($d, $v['devices'], true) ? ' checked' : '') . '><span>' . h(r_device_label($d)) . '</span></label>'; ?></div>
       </div>
       <div><label for="comment">ひとこと<small><?= R_COMMENT_MAX ?>文字まで</small></label>
         <textarea id="comment" name="comment" required maxlength="<?= R_COMMENT_MAX ?>" placeholder="例: HPX-W を2台作りました。はんだ付けは初めてでしたが、配線図のとおりにやったら動きました！"><?= h($v['comment']) ?></textarea></div>
@@ -303,7 +300,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
         <li>写真の中に入っている撮影場所 (位置情報) などは、こちらで自動的に消してから保存します。</li>
         <li>載せた報告を消したいときは、<a href="contact.php">お問い合わせ</a>からお知らせください。</li>
       </ul>
-      <label class="agree"><input type="checkbox" name="agree" value="1" required>写真とひとこと、ニックネーム、地域を、Hive Plus X のサイトに載せることに同意します。</label>
+      <label class="agree"><input type="checkbox" name="agree" value="1" required>写真とひとこと、ニックネームを、Hive Plus X のサイトに載せることに同意します。</label>
       <button class="btn" type="submit" id="send">送信する</button>
     </form>
 <?php endif; ?>

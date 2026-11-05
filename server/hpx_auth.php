@@ -808,7 +808,7 @@ function auth_nav_right(string $active): string
     foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
     $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
     if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' && basename((string)($_SERVER['SCRIPT_NAME'] ?? '')) === 'admin.php' ? ' class="on"' : '') . '>アカウント管理</a>'
-        . '<a href="report_admin.php"' . (basename((string)($_SERVER['SCRIPT_NAME'] ?? '')) === 'report_admin.php' ? ' class="on"' : '') . '>作りました報告</a>';
+        . '<a href="report_admin.php"' . (basename((string)($_SERVER['SCRIPT_NAME'] ?? '')) === 'report_admin.php' ? ' class="on"' : '') . '>作った・使ったレポート</a>';
     // 外を押したら閉じる
     return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';
 }

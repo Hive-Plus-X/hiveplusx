@@ -120,7 +120,7 @@
   .lic-notes dd { color:var(--sub); }
   @media (max-width:760px) { .lic-notes div { flex-direction:column; gap:0; padding:6px 0; } .lic-notes dt { width:auto; } }
 
-  /* 作りました報告 (コミュニティ欄の下。report.php?feed=1 から新着を読む) */
+  /* 作った・使ったレポート (コミュニティ欄の下。report.php?feed=1 から新着を読む) */
   [hidden] { display:none !important; }
   .reports { margin-top:140px; }
   .reports .head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; }
@@ -319,12 +319,12 @@
       <div class="head">
         <div>
           <p class="eyebrow">Reports</p>
-          <h3>作りました報告</h3>
-          <p class="lead">機器を作った方からの報告です。写真とひとことで、作った様子を紹介しています。</p>
+          <h3>作った・使ったレポート</h3>
+          <p class="lead">機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。</p>
         </div>
         <div class="acts">
           <a class="btn ghost" href="report.php">報告をすべて見る</a>
-          <a class="btn primary" href="report.php#post"><span class="hex"></span>作りました報告をする</a>
+          <a class="btn primary" href="report.php#post"><span class="hex"></span>報告をする</a>
         </div>
       </div>
       <div class="rgrid" id="rgrid" hidden></div>
@@ -375,7 +375,7 @@
 })();
 </script>
 <script>
-// 作りました報告の新着 (公開したものだけ。読めなければ「まだありません」のまま)
+// 作った・使ったレポートの新着 (公開したものだけ。読めなければ「まだありません」のまま)
 (function () {
   var grid = document.getElementById('rgrid'), empty = document.getElementById('rempty');
   if (!grid || !window.fetch) return;
