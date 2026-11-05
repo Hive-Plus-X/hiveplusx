@@ -244,11 +244,11 @@
       <h2>データの流れ</h2>
       <p class="lead">センサで測った値が、HPX-note に表示されるまでの順番です。</p>
       <ol class="steps">
-        <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと</span></div></li>
+        <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと / HPX-A 0.02秒ごと (光を読む)</span></div></li>
         <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
-        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサの電波を聞き、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
-        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi からルーターを通ってインターネットへ、サーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
-        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、重さを kg に直します。電柵の電圧低下などがあればメールで知らせます。</span><span class="when">届いたとき</span></div></li>
+        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサからの情報をとらえ、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
+        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi でルーターからインターネットを通じてサーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
+        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、お知らせメールを出したり、データを補正したりします。</span><span class="when">届いたとき</span></div></li>
         <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
       </ol>
     </div>
