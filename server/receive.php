@@ -155,6 +155,11 @@ if (is_array($ble) && count($ble) > 0) {
                 $s['w_fail'] = (int)$r['raw'];
                 $s['w_fail_epoch'] = max((int)($s['w_fail_epoch'] ?? 0), $known ? $ts : $now);
                 if ($nm !== '') $s['name'] = $nm;
+                if ((int)$r['raw'] === 1)   // 電池電圧の低下で測定を止めた → 電池交換を知らせる(まだなら)
+                    hpx_sensor_batt_record($s, isset($r['bv']) && is_numeric($r['bv']) ? (float)$r['bv'] : null, true,
+                        $known ? $ts : $now, $name, $nm !== '' ? $nm : $key);
+                $s['last_epoch'] = max((int)($s['last_epoch'] ?? 0), $known ? $ts : $now);   // 届いてはいる
+                unset($s['missing_notified']);
                 $sens[$key] = $s;
                 continue;
             }
@@ -189,6 +194,9 @@ if (is_array($ble) && count($ble) > 0) {
                 && !($r['m'] === 'sb' && ($s['model'] ?? '') === 'switchbot_outdoor'))
                 $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor'][$r['m']];
             if ($isA) hpx_alert_record($s, $r, $epoch, $name, $nm !== '' ? $nm : $key);
+            elseif (isset($r['bv']) && is_numeric($r['bv']))   // HPX-W・HPX-TH の電池電圧
+                hpx_sensor_batt_record($s, (float)$r['bv'], false, $epoch, $name, $nm !== '' ? $nm : $key);
+            if (!$isA) unset($s['missing_notified']);   // また届いた(HPX-A は hpx_alert_record で消す)
             $s['last_epoch'] = max((int)($s['last_epoch'] ?? 0), $epoch);
             $sens[$key] = $s;
             $saved++;
@@ -201,8 +209,8 @@ foreach ($sidMap as $e) {
     if (isset($sens[$e['mac']]) && $e['name'] !== '') $sens[$e['mac']]['name'] = $e['name'];
 }
 
-// HPX-A の記録が途切れていないか
-hpx_alert_check_missing($sens, $now, $name);
+// センサの記録が途切れていないか (HPX-A は1時間、HPX-W・HPX-TH・温湿度計は24時間)。ハブに登録中のセンサだけ見る
+hpx_alert_check_missing($sens, $now, $name, array_values(array_map(fn($e) => $e['mac'], $sidMap)));
 
 // --- 重量センサの較正(HPX-Core v1.14 以降の管理画面で較正したもの) ---
 //   "wcal": [{mac, zero, per_kg, cal_raw?, cal_g?, common(0/1), ts}] を weight_cal.json に書く。
