@@ -152,10 +152,26 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   a { color:inherit; }
   .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
   .narrow { max-width:720px; }
-  header { background:var(--forest); color:var(--on-forest); }
-  header .wrap { display:flex; align-items:center; justify-content:space-between; height:60px; }
-  header img { height:26px; display:block; }
-  header nav a { font-size:14px; text-decoration:none; opacity:.9; margin-left:18px; }
+  /* ヘッダー (ほかのページと同じメニュー) */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+  .rep { scroll-margin-top:80px; }
+  .backs { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+  .backs a { margin-top:0; }
+  .btn.ghost { background:none; border:1.5px solid var(--forest); color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
   main { padding:120px 0 200px; }
   #post { padding-top:200px; }
   @media (max-width:760px) { main { padding:64px 0 140px; } #post { padding-top:140px; } }
@@ -225,12 +241,30 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   .box ul { padding-left:1.2em; }
   form .btn { justify-self:start; margin-top:0; }
   form .btn[disabled] { opacity:.6; cursor:wait; }
-  footer { background:var(--forest); color:var(--on-forest); padding:28px 0; font-size:13px; }
-  footer .wrap { opacity:.7; display:block; }
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
 </style>
 </head>
 <body>
-<header><div class="wrap"><a href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a><nav><a href="#post">報告する</a></nav></div></header>
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 <main>
   <section class="wrap" id="list">
     <p class="eyebrow">Reports</p>
@@ -273,6 +307,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
     <h2>報告をする</h2>
 <?php if ($done): ?>
     <div class="box">送信しました。報告ありがとうございます！<br>内容を確認してから、このページに載せます。載るまで数日かかることがあります。</div>
+    <div class="backs"><a class="btn" href="./">トップページへ戻る</a><a class="btn ghost" href="report.php">レポートの一覧を見る</a></div>
 <?php else: ?>
     <p class="lead">写真1〜<?= R_MAX_PHOTOS ?>枚と、ひとことを送ってください。届いた報告は、確認してからこのページとトップページに載せます。</p>
 <?php if ($fail): ?>
@@ -313,7 +348,20 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   </section>
 </main>
 <div class="lb" id="lb"><button type="button" aria-label="閉じる">&times;</button><img alt=""></div>
-<footer><div class="wrap">&copy; 2026 Taro Maeda and Hive Plus X contributors</div></footer>
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
 <script>
 (function () {
   // 写真を大きく見る
