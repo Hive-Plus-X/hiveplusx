@@ -238,6 +238,22 @@
     </div>
   </section>
 
+  <section id="flow">
+    <div class="reveal wrap">
+      <p class="eyebrow">Data flow</p>
+      <h2>データの流れ</h2>
+      <p class="lead">センサで測った値が、HPX-note に表示されるまでの順番です。</p>
+      <ol class="steps">
+        <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと</span></div></li>
+        <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
+        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサの電波を聞き、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
+        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi からルーターを通ってインターネットへ、サーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
+        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、重さを kg に直します。電柵の電圧低下などがあればメールで知らせます。</span><span class="when">届いたとき</span></div></li>
+        <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
+      </ol>
+    </div>
+  </section>
+
   <section id="sensor">
     <div class="reveal wrap topic role">
       <div class="text">
@@ -294,36 +310,6 @@
     </div>
   </section>
 
-  <section id="note">
-    <div class="reveal wrap topic role">
-      <div class="text">
-        <p class="eyebrow">App</p>
-        <h2>養蜂管理アプリ　HPX-note</h2>
-        <p class="lead">サーバーの記録を、スマートフォンやパソコンのブラウザで見るウェブアプリです。重さや温湿度のグラフに加えて、内検のメモや作業の記録も残せます。</p><div class="entry"><a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a><a class="btn ghost" href="app.html">詳しく見る</a></div>
-      </div>
-      <div class="visual">
-        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
-        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
-      </div>
-    </div>
-  </section>
-
-  <section id="flow">
-    <div class="reveal wrap">
-      <p class="eyebrow">Data flow</p>
-      <h2>データの流れ</h2>
-      <p class="lead">センサで測った値が、HPX-note に表示されるまでの順番です。</p>
-      <ol class="steps">
-        <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと</span></div></li>
-        <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
-        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサの電波を聞き、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
-        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi からルーターを通ってインターネットへ、サーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
-        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、重さを kg に直します。電柵の電圧低下などがあればメールで知らせます。</span><span class="when">届いたとき</span></div></li>
-        <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
-      </ol>
-    </div>
-  </section>
-
   <section id="alerts">
     <div class="reveal wrap">
       <p class="eyebrow">Alerts</p>
@@ -350,6 +336,20 @@
         </tbody>
       </table>
       <p class="note">巣箱の温度と重量の知らせは、巣箱のページで値を決めたものだけ送ります。電柵の知らせは、HPX-Core が記録する間隔 (15分〜1時間) ごとに届きます。</p>
+    </div>
+  </section>
+
+  <section id="note">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">App</p>
+        <h2>養蜂管理アプリ　HPX-note</h2>
+        <p class="lead">サーバーの記録を、スマートフォンやパソコンのブラウザで見るウェブアプリです。重さや温湿度のグラフに加えて、内検のメモや作業の記録も残せます。</p><div class="entry"><a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a><a class="btn ghost" href="app.html">詳しく見る</a></div>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
+        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
+      </div>
     </div>
   </section>
 </main>
