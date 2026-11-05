@@ -13,6 +13,8 @@
 
 部品表は [部品表.md](部品表.md) にあります。
 
+ウェブサイトの機器ページには、図だけの画像 (プログラムが出す `<名前>_fig.svg` を PNG にしたもの) を `site/img/wiring/<名前>.png` として載せ、つなぐ線の表・部品の置き場所・注意は `<名前>.json` から `hardware/parts/gen_device_pages.py` が HTML で作ります。
+
 図は `gen_pcb.py` (基板の図) と `gen_wiring.py` (HPX-Core の図) で作っています。`python3 gen_pcb.py <出力フォルダ>` で SVG を作り直せます。
 
 ## まだ確かめていないこと
