@@ -92,7 +92,7 @@ $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以
 //   kind: th=温湿度計 / w=重量センサ(temp_c はノード内部の温度、raw は重量の生の値、spread は読み取りのばらつき、batt_v は電池電圧)
 //         fa=電柵アラート(temp_c はノード内部の温度、fence_state は 0=正常 1=電圧低下 2=常時点灯、
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
-//   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot。HPX-Core v1.18 以降)。
+//   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot / switchbot_outdoor。HPX-Core v1.18 以降)。
 //   HPX-TH は kind=th のまま。temp_c・humidity_pct は SHT40、temp2_c はサーミスターの温度、batt_v は電池電圧(battery_pct は空)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
               'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c'];
@@ -183,8 +183,11 @@ if (is_array($ble) && count($ble) > 0) {
             else $s['last_seq'] = max((int)$s['last_seq'], $seq);
             if ($nm !== '') $s['name'] = $nm;
             $s['kind'] = $isW ? 'w' : ($isA ? 'fa' : 'th');
-            // 温湿度計の機種(HPX-Core v1.18 以降が送る。"ink"=Inkbird "sb"=SwitchBot)。Inkbird だけ温度を補正する(th_temp_corr)
-            if (!$isW && !$isA && in_array($r['m'] ?? '', ['ink', 'sb'], true)) $s['model'] = $r['m'] === 'sb' ? 'switchbot' : 'inkbird';
+            // 温湿度計の機種(HPX-Core v1.18 以降が送る。"ink"=Inkbird "sb"=SwitchBot 温湿度計 "sbw"=SwitchBot 防水温湿度計)。機種ごとに温度・湿度を補正する(th_temp_corr・th_hum_corr)
+            //   防水かどうかはスキャン応答を取りこぼすと分からず "sb" で届くので、一度 "sbw" が届いたら防水のままにする
+            if (!$isW && !$isA && in_array($r['m'] ?? '', ['ink', 'sb', 'sbw'], true)
+                && !($r['m'] === 'sb' && ($s['model'] ?? '') === 'switchbot_outdoor'))
+                $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor'][$r['m']];
             if ($isA) hpx_alert_record($s, $r, $epoch, $name, $nm !== '' ? $nm : $key);
             $s['last_epoch'] = max((int)($s['last_epoch'] ?? 0), $epoch);
             $sens[$key] = $s;
