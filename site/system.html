@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>しくみ | Hive Plus X</title>
+<meta name="description" content="Hive Plus X のしくみ。巣箱のセンサ、ハブ HPX-Core、ルーター、サーバー、養蜂管理アプリ HPX-note の働きと、データの流れを説明します。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:36px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 450px、スマホ 300px) */
+  section { padding:0; margin-top:450px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:300px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  .more { display:inline-block; margin-top:20px; font-weight:600; text-decoration:none; border-bottom:2px solid var(--honey); }
+
+  /* トピック: 左右2列。テキストは上から 左→右→左… (.rev がテキスト右) */
+  .topic { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+  .topic.rev .text { order:2; }
+  .topic.rev .visual { order:1; }
+  .topic .lead { max-width:none; }
+  .topic ul { margin-top:16px; padding-left:1.2em; color:var(--sub); }
+  .topic .entry { justify-content:flex-start; }
+  @media (max-width:760px) {
+    .topic { grid-template-columns:1fr; gap:36px; }
+    .topic.rev .text, .topic.rev .visual { order:0; }
+  }
+
+  /* しくみ図 (縦の流れ) */
+  .flow { display:flex; flex-direction:column; gap:22px; max-width:360px; margin:0 auto; }
+  .flow .node { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; text-align:center; position:relative; }
+  .flow .node b { display:block; font-size:15px; }
+  .flow .node span { display:block; font-size:12px; color:var(--sub); margin-top:2px; line-height:1.5; }
+  .flow .node:not(:last-child)::after { content:"↓"; position:absolute; left:50%; bottom:-22px; transform:translateX(-50%); color:var(--honey); font-weight:700; line-height:22px; }
+  /* 市販品を使うルーターだけ、少し灰色にして控えめに */
+  .flow .node.shop { background:#F0EFEB; }
+  @media (prefers-color-scheme: dark) { .flow .node.shop { background:rgba(0,0,0,.18); } }
+
+  /* カード */
+  .cards { display:grid; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; display:block; }
+  a.card:hover { border-color:var(--honey); }
+  .card .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .card .tag { color:var(--honey); } }
+  .card h3 { font-size:17px; margin-top:8px; }
+  .card p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .card .soon { color:var(--sub); font-size:12px; }
+
+  /* 画面写真の場所 */
+  .shot { aspect-ratio:4/3; width:100%; border-radius:14px; border:1px dashed var(--line); background:var(--panel);
+          display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:13px; }
+
+  /* ダウンロードの図 (公開しているものの一覧) */
+  .files { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .files .row { display:flex; align-items:center; gap:14px; padding:18px 24px; }
+  .files .row + .row { border-top:1px solid var(--line); }
+  .files .name { flex:1; min-width:0; }
+  .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
+  .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
+
+  /* ライセンスの注釈 (各1行) */
+  .lic-notes { margin-top:20px; font-size:14px; }
+  .lic-notes div { display:flex; gap:12px; padding:4px 0; }
+  .lic-notes dt { flex:none; width:112px; font-weight:700; }
+  .lic-notes dd { color:var(--sub); }
+  @media (max-width:760px) { .lic-notes div { flex-direction:column; gap:0; padding:6px 0; } .lic-notes dt { width:auto; } }
+
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* 画面写真のスライドショー (フェードで切り替え) */
+  .slides { position:relative; aspect-ratio:4/3; }
+  .slide { position:absolute; inset:0; opacity:0; transition:opacity 1.2s ease; }
+  .slide.shown { opacity:1; }
+  .slide img, .slide .shot { width:100%; height:100%; object-fit:cover; border-radius:14px; display:flex; }
+  .slide img { border:1px solid var(--line); background:var(--panel); object-position:top; }
+  .dots { position:absolute; left:0; right:0; bottom:-28px; display:flex; justify-content:center; gap:8px; }
+  .dots button { width:8px; height:8px; border-radius:50%; border:0; padding:0; background:var(--line); cursor:pointer; }
+  .dots button.on { background:var(--honey); }
+  @media (prefers-reduced-motion: reduce) { .slide { transition:none; } }
+  /* しくみページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  .hero.sub h1 { font-size:clamp(28px, 5vw, 40px); margin-top:0; }
+  .ico { width:48px; height:48px; color:var(--forest); display:block; }
+  .ico .fill { fill:currentColor; stroke:none; }
+  .ico .accent { stroke:var(--honey); }
+  @media (prefers-color-scheme: dark) { .ico { color:var(--honey); } .ico .accent { stroke:#fff; } }
+  /* 全体図: 5つの分類を横に並べ、間の矢印に通信のしかたを書く */
+  .map { display:grid; grid-template-columns:1.4fr auto 1fr auto 1fr auto 1fr auto 1fr; align-items:center; gap:0; margin-top:72px; }
+  .map .box { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px 10px 16px; text-align:center; text-decoration:none; display:block; height:100%; }
+  a.box:hover { border-color:var(--honey); }
+  .map .box .icons { display:flex; justify-content:center; gap:6px; }
+  .map .box b { display:block; font-size:15px; margin-top:10px; line-height:1.4; }
+  .map .box small { display:block; font-size:12px; color:var(--sub); line-height:1.5; margin-top:2px; }
+  .map .box.shop { background:#F0EFEB; }
+  @media (prefers-color-scheme: dark) { .map .box.shop { background:rgba(0,0,0,.18); } }
+  .map .arrow { width:104px; text-align:center; font-size:11px; color:var(--sub); line-height:1.4; padding:0 6px; }
+  .map .arrow em { font-style:normal; font-weight:700; color:var(--text); display:block; white-space:nowrap; }
+  .map .arrow i { display:block; position:relative; height:2px; background:var(--honey); margin:6px 6px 6px 0; }
+  .map .arrow i::after { content:""; position:absolute; right:-6px; top:-5px; border-left:8px solid var(--honey); border-top:6px solid transparent; border-bottom:6px solid transparent; }
+  #map { margin-top:120px; }
+  /* しくみ図とデータの流れ、サーバーとお知らせメール一覧の間は半分 (TARO 2026-11-05) */
+  #flow, #alerts { margin-top:225px; }
+  @media (max-width:760px) { #flow, #alerts { margin-top:150px; } }
+  @media (max-width:900px) {
+    .map { grid-template-columns:1fr; max-width:360px; margin-left:auto; margin-right:auto; }
+    .map .arrow { width:auto; padding:10px 0; display:flex; flex-direction:column; align-items:center; }
+    .map .arrow i { width:2px; height:24px; margin:4px 0 10px; order:0; }
+    .map .arrow i::after { right:-5px; top:auto; bottom:-6px; border-left:6px solid transparent; border-right:6px solid transparent; border-top:8px solid var(--honey); border-bottom:0; }
+    .map .arrow em { order:1; } .map .arrow span { order:2; }
+  }
+  /* 分類ごとの説明 */
+  .role .visual { display:flex; flex-direction:column; gap:18px; }
+  .role .pict { display:flex; gap:14px; }
+  .role .pict .ico { width:72px; height:72px; }
+  .topic .note { font-size:14px; color:var(--sub); margin-top:14px; }
+  .topic .framed { font-size:14px; margin-top:14px; padding:14px 18px; background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--honey); border-radius:10px; }
+  .topic .more + .framed { margin-top:28px; }
+  .spec { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .spec div { display:grid; grid-template-columns:8.5em 1fr; gap:12px; padding:12px 20px; font-size:14px; }
+  .spec div + div { border-top:1px solid var(--line); }
+  .spec dt { font-weight:700; }
+  .spec dd { color:var(--sub); margin:0; }
+  @media (max-width:760px) { .spec div { grid-template-columns:1fr; gap:2px; } }
+  /* 知らせるメールの一覧 */
+  .alerts { width:100%; border-collapse:collapse; margin-top:40px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:12.5px; }
+  .alerts th, .alerts td { padding:9px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .alerts thead th { border-top:0; font-size:12px; color:var(--sub); white-space:nowrap; }
+  .alerts td.k { white-space:nowrap; font-weight:700; color:var(--forest); }
+  @media (prefers-color-scheme: dark) { .alerts td.k { color:var(--honey); } }
+  .alerts td:last-child { color:var(--sub); }
+  #alerts .note { font-size:14px; color:var(--sub); margin-top:14px; }
+  @media (max-width:760px) {
+    .alerts, .alerts tbody, .alerts tr, .alerts td { display:block; }
+    .alerts thead { display:none; }
+    .alerts tr { border-top:1px solid var(--line); padding:12px 16px; }
+    .alerts tr:first-child { border-top:0; }
+    .alerts td { border:0; padding:0; }
+    .alerts td.k { font-size:11.5px; }
+  }
+  /* データの流れ */
+  .steps { list-style:none; margin-top:48px; display:grid; gap:14px; counter-reset:st; }
+  .steps li { counter-increment:st; display:grid; grid-template-columns:56px 1fr; gap:18px; align-items:start; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 22px; }
+  .steps li::before { content:counter(st); width:40px; height:40px; border-radius:50%; background:var(--honey); color:#1F2328; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .steps b { display:block; font-size:16px; }
+  .steps span { display:block; color:var(--sub); font-size:14px; margin-top:4px; }
+  .steps .when { display:inline-block; margin-top:8px; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .steps .when { color:var(--honey); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap sub">
+    <p class="eyebrow">System</p>
+    <h1>しくみ</h1>
+    <p>巣箱のセンサで測った値が、アプリに届くまでのしくみです。</p>
+  </div>
+
+  <section id="map">
+    <div class="reveal wrap">
+      <div class="map"><a class="box" href="#sensor"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg></span><b>センサ</b><small>HPX-W・HPX-TH・HPX-A</small></a><div class="arrow"><em>Bluetooth</em><i></i><span>1秒ごとに発信</span></div><a class="box" href="#hub"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></span><b>ハブ</b><small>HPX-Core</small></a><div class="arrow"><em>Wi-Fi</em><i></i><span>15〜60分ごと</span></div><a class="box shop" href="#router"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></span><b>ルーター</b><small>市販品</small></a><div class="arrow"><em>ネット</em><i></i><span>暗号化して送信</span></div><a class="box" href="#server"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></span><b>サーバー</b><small>記録を保存</small></a><div class="arrow"><em>ブラウザ</em><i></i><span>いつでも</span></div><a class="box" href="#note"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></span><b>アプリ</b><small>HPX-note</small></a></div>
+    </div>
+  </section>
+
+  <section id="flow">
+    <div class="reveal wrap">
+      <p class="eyebrow">Data flow</p>
+      <h2>データの流れ</h2>
+      <p class="lead">センサで測った値が、HPX-note に表示されるまでの順番です。</p>
+      <ol class="steps">
+        <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと / HPX-A 0.02秒ごと (光を読む)</span></div></li>
+        <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
+        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサからの情報をとらえ、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
+        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi でルーターからインターネットを通じてサーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
+        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、お知らせメールを出したり、データを補正したりします。</span><span class="when">届いたとき</span></div></li>
+        <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="sensor">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">Sensors</p>
+        <h2>センサ　HPXシリーズ</h2>
+        <p class="lead">巣箱や電柵のそばに置く、電池で動く小さな機器です。測った値を Bluetooth で1秒ごとに発信し続けます。ハブとの接続やペアリングはいりません。</p><p class="note">どのセンサも、電池の電圧をいっしょに発信します。電池が少なくなると、アプリに交換の目安が出ます。</p><a class="more" href="devices.html">機器の作り方を見る</a>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg></div>
+        <dl class="spec"><div><dt>HPX-W (重さ)</dt><dd>巣箱の重さを30分ごとに測ります</dd></div><div><dt>HPX-TH (温湿度)</dt><dd>巣箱の温度と湿度を10分ごとに測ります</dd></div><div><dt>HPX-A (電柵)</dt><dd>電柵のフェンスアラートの点滅を光で読み取り、電圧の低下を知らせます</dd></div><div><dt>市販温湿度計</dt><dd>市販の Bluetooth センサも使えます。現在は、SwitchBot の温湿度センサと、Inkbird の温湿度センサに対応済みです</dd></div><div><dt>拡張性</dt><dd>Bluetooth で発信するセンサであれば HPX-Core で受信できるので、様々な拡張機器の開発・利用が可能です</dd></div><div><dt>電源</dt><dd>単三リチウム電池2本、または CR123A 1本</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="hub">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">Hub</p>
+        <h2>ハブ　HPX-Core</h2>
+        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで保存し、つながったときにまとめて送ります。HPX-Core のファームウェアプログラムのアップデートも、サーバーから自動で行えます。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
+        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (8台まで)</dd></div><div><dt>重量センサの初期校正</dt><dd>おもりを乗せない0kgと、重量のわかるものを乗せた時の値の2点校正を行います。</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fiアドレス を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。ソーラーパネルとバッテリーで使用するときは、ディープスリープを活用した省電力モードを選べます</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="router">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">Router</p>
+        <h2>ルーター</h2>
+        <p class="lead">HPX-Core をインターネットにつなぐための機器です。家の近くなら家の Wi-Fi ルーター、離れた蜂場なら市販の LTE ルーターなどを使います。</p><p class="note">ルーターは市販品をご準備ください。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></div>
+        <dl class="spec"><div><dt>家の近く</dt><dd>自宅の Wi-Fi ルーター</dd></div><div><dt>離れた蜂場</dt><dd>SIM を入れて使う LTE ルーター、モバイル Wi-Fi など</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="server">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">Server</p>
+        <h2>サーバー</h2>
+        <p class="lead">HPX-Core から届いた記録を受け取り、保存します。重さの換算や温湿度の補正、電柵の電圧低下などの知らせもサーバーが行います。</p><p class="note">記録は文字だけのファイルで保存するので、データベースを用意しなくても動きます。PHP が使えるレンタルサーバーに置けます。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></div>
+        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メールで送ります (下のお知らせメール一覧)</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="alerts">
+    <div class="reveal wrap">
+      <p class="eyebrow">Alerts</p>
+      <h2>お知らせメール一覧</h2>
+      <p class="lead">サーバーは、次のようなときにメールで知らせます。件名の頭には【HPX】が付きます。</p>
+      <table class="alerts">
+        <thead><tr><th>分類</th><th>件名</th><th>送るとき</th></tr></thead>
+        <tbody>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が下がっています</b></td><td>フェンスアラートの点滅を HPX-A が続けて見つけたとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が一時的に下がりました</b></td><td>記録と記録の間に電圧低下があって、もう戻っているとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>点滅が止まり、元に戻ったとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる)</td></tr>
+          <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-A の電池を交換してください</b></td><td>電池の電圧が下がったとき (HPX-W 2.8V・HPX-TH 2.7V・HPX-A 2.6V 未満)。センサページに交換が出るときと同じです</td></tr>
+          <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-A / 温湿度計 から受信できていません</b></td><td>センサの記録が来ないとき (HPX-A は1時間、ほかは24時間)</td></tr>
+          <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を外れたとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>温度が戻りました</b></td><td>上限・下限の内側に戻ったとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>重量が基準日から増えました / 減りました</b></td><td>採蜜した日などの基準日から、決めた重さ以上に増えた・減ったとき</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブから届いていません</b></td><td>HPX-Core からの記録が1時間届かないとき (電源・Wi-Fi・ルーターを確かめる)</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブからの受信が戻りました</b></td><td>HPX-Core からまた届くようになったとき</td></tr>
+          <tr><td class="k">タスク</td><td><b>タスクのお知らせ</b></td><td>通知をオンにしたタスクの期限の前日・当日と、期限を過ぎて終わっていないとき (1日1回、人ごとに1通にまとめる)</td></tr>
+        </tbody>
+      </table>
+      <p class="note">巣箱の温度と重量の知らせは、巣箱のページで値を決めたものだけ送ります。電柵の知らせは、HPX-Core が記録する間隔 (15分〜1時間) ごとに届きます。</p>
+    </div>
+  </section>
+
+  <section id="note">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">App</p>
+        <h2>養蜂管理アプリ　HPX-note</h2>
+        <p class="lead">サーバーの記録を、スマートフォンやパソコンのブラウザで見るウェブアプリです。重さや温湿度のグラフに加えて、内検のメモや作業の記録も残せます。</p><div class="entry"><a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a><a class="btn ghost" href="app.html">詳しく見る</a></div>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
+        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+<script>
+(function () {
+  var box = document.querySelector('.slides'); if (!box) return;
+  var slides = box.querySelectorAll('.slide'), dots = box.querySelector('.dots'), i = 0, timer;
+  slides.forEach(function (_, n) {
+    var b = document.createElement('button'); b.setAttribute('aria-label', (n + 1) + '枚目');
+    b.onclick = function () { go(n); restart(); }; dots.appendChild(b);
+  });
+  function go(n) {
+    slides[i].classList.remove('shown'); dots.children[i].classList.remove('on');
+    i = n; slides[i].classList.add('shown'); dots.children[i].classList.add('on');
+  }
+  function restart() { clearInterval(timer); timer = setInterval(function () { go((i + 1) % slides.length); }, 4500); }
+  go(0); restart();
+})();
+</script>
+</body>
+</html>
