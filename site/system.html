@@ -187,9 +187,9 @@
   .spec dd { color:var(--sub); margin:0; }
   @media (max-width:760px) { .spec div { grid-template-columns:1fr; gap:2px; } }
   /* 知らせるメールの一覧 */
-  .alerts { width:100%; border-collapse:collapse; margin-top:40px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
-  .alerts th, .alerts td { padding:12px 16px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
-  .alerts thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .alerts { width:100%; border-collapse:collapse; margin-top:40px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:12.5px; }
+  .alerts th, .alerts td { padding:9px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .alerts thead th { border-top:0; font-size:12px; color:var(--sub); white-space:nowrap; }
   .alerts td.k { white-space:nowrap; font-weight:700; color:var(--forest); }
   @media (prefers-color-scheme: dark) { .alerts td.k { color:var(--honey); } }
   .alerts td:last-child { color:var(--sub); }
@@ -200,7 +200,7 @@
     .alerts tr { border-top:1px solid var(--line); padding:12px 16px; }
     .alerts tr:first-child { border-top:0; }
     .alerts td { border:0; padding:0; }
-    .alerts td.k { font-size:12px; }
+    .alerts td.k { font-size:11.5px; }
   }
   /* データの流れ */
   .steps { list-style:none; margin-top:48px; display:grid; gap:14px; counter-reset:st; }
@@ -327,11 +327,8 @@
           <tr><td class="k">電柵</td><td><b>電柵の電圧が一時的に下がりました</b></td><td>記録と記録の間に電圧低下があって、もう戻っているとき</td></tr>
           <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>点滅が止まり、元に戻ったとき</td></tr>
           <tr><td class="k">電柵</td><td><b>光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる)</td></tr>
-          <tr><td class="k">HPX-A</td><td><b>HPX-A の電池を交換してください</b></td><td>HPX-A の電池の電圧が下がったとき</td></tr>
-          <tr><td class="k">HPX-A</td><td><b>HPX-A から受信できていません</b></td><td>HPX-A の記録が1時間来ないとき</td></tr>
-          <tr><td class="k">HPX-W</td><td><b>HPX-W の電池を交換してください</b></td><td>電池の電圧が 2.8V を下回ったとき (センサページに「そろそろ交換」が出るとき)</td></tr>
-          <tr><td class="k">HPX-TH</td><td><b>HPX-TH の電池を交換してください</b></td><td>電池の電圧が 2.7V を下回ったとき (センサページに「交換」が出るとき)</td></tr>
-          <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / 温湿度計 から受信できていません</b></td><td>そのセンサの記録が24時間来ないとき</td></tr>
+          <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-A の電池を交換してください</b></td><td>電池の電圧が下がったとき (HPX-W 2.8V・HPX-TH 2.7V・HPX-A 2.6V 未満)。センサページに交換が出るときと同じです</td></tr>
+          <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-A / 温湿度計 から受信できていません</b></td><td>センサの記録が来ないとき (HPX-A は1時間、ほかは24時間)</td></tr>
           <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を外れたとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>温度が戻りました</b></td><td>上限・下限の内側に戻ったとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>重量が基準日から増えました / 減りました</b></td><td>採蜜した日などの基準日から、決めた重さ以上に増えた・減ったとき</td></tr>
