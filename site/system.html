@@ -289,7 +289,7 @@
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></div>
-        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>換算</dt><dd>重量センサの値を kg に直します (センサごとに較正)</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます。表示・グラフ・警報のすべてに使われます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メールで送ります (下の一覧)</dd></div></dl>
+        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>換算</dt><dd>重量センサの値を kg に直します (センサごとに較正)</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます。表示・グラフ・警報のすべてに使われます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メールで送ります (下のお知らせメール一覧)</dd></div></dl>
       </div>
     </div>
   </section>
@@ -327,7 +327,7 @@
   <section id="alerts">
     <div class="reveal wrap">
       <p class="eyebrow">Alerts</p>
-      <h2>知らせるメールの一覧</h2>
+      <h2>お知らせメール一覧</h2>
       <p class="lead">サーバーは、次のようなときにメールで知らせます。件名の頭には【HPX】が付きます。</p>
       <table class="alerts">
         <thead><tr><th>分類</th><th>件名</th><th>送るとき</th></tr></thead>
@@ -337,7 +337,7 @@
           <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>点滅が止まり、元に戻ったとき</td></tr>
           <tr><td class="k">電柵</td><td><b>光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる)</td></tr>
           <tr><td class="k">HPX-A</td><td><b>HPX-A の電池を交換してください</b></td><td>HPX-A の電池の電圧が下がったとき</td></tr>
-          <tr><td class="k">HPX-A</td><td><b>HPX-A から受信できていません</b></td><td>HPX-Core には届いているのに、HPX-A の記録が1時間来ないとき</td></tr>
+          <tr><td class="k">HPX-A</td><td><b>HPX-A から受信できていません</b></td><td>HPX-A の記録が1時間来ないとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を外れたとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>温度が戻りました</b></td><td>上限・下限の内側に戻ったとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>重量が基準日から増えました / 減りました</b></td><td>採蜜した日などの基準日から、決めた重さ以上に増えた・減ったとき</td></tr>
