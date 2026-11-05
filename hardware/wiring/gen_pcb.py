@@ -44,6 +44,16 @@ class S:
         svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}">\n'
                f'<rect width="100%" height="100%" fill="#fffdf6"/>\n{body}\n</svg>\n')
         open(os.path.join(OUT, name), "w", encoding="utf-8").write(svg)
+        # ウェブサイト用: 図だけの SVG (表と注意の上で切る) と、表・注意の文字 (JSON)
+        stem = os.path.splitext(name)[0]
+        cut = int(INFO["cut"] or s.h)
+        fig = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.w}" height="{cut}" viewBox="0 0 {s.w} {cut}">\n'
+               f'<rect width="100%" height="100%" fill="#fffdf6"/>\n{body}\n</svg>\n')
+        open(os.path.join(OUT, stem + "_fig.svg"), "w", encoding="utf-8").write(fig)
+        import json
+        json.dump({"tables": INFO["tables"], "notes": INFO["notes"]},
+                  open(os.path.join(OUT, stem + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        INFO.update(cut=None, tables=[], notes=[])
 
 XL = ["D0", "D1", "D2", "D3", "D4", "D5", "D6"]
 XR = ["5V", "GND", "3V3", "D10", "D9", "D8", "D7"]
@@ -82,13 +92,19 @@ def title(s, t, sub):
     s.text(30, 45, t, 26, weight="bold", fill="#ffffff")
     s.text(s.w - 30, 45, sub, 15, "end", fill="#f5c542")
 
+INFO = {"cut": None, "tables": [], "notes": []}   # 表と注意の中身 (ウェブサイト用に JSON でも出す)
+
 def notes(s, x, y, lines, head="注意"):
+    INFO["notes"] += [l.lstrip("・") for l in lines]
+    INFO["cut"] = INFO["cut"] or y - 20
     s.rect(x, y, s.w - 2 * x, 34 + 26 * len(lines), "#fff3cd", "#e0b84a", 10, 2)
     s.text(x + 18, y + 26, head, 17, weight="bold", fill="#7a5a00")
     for i, l in enumerate(lines):
         s.text(x + 18, y + 54 + i * 26, l, 15, fill="#4a3a00")
 
 def table(s, x, y, rows, widths, head):
+    INFO["tables"].append({"head": head, "rows": rows})
+    INFO["cut"] = INFO["cut"] or y - 40
     s.text(x, y - 12, head, 17, weight="bold")
     yy = y
     for r, row in enumerate(rows):

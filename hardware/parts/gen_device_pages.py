@@ -4,7 +4,7 @@
 #   parts.csv の列: id (代わりの品から指すときだけ), url (部品名のリンク), pack・unit・price (入数・単位・価格),
 #   alt_of (その id の部品の「代わりに使えるもの」), 残りは機器の版ごとの数 (空ならその版では使わない)。
 #   ヘッダー・フッター・色は site/app.html から取るので、サイトの見た目を変えたらこれも動かし直す。
-import csv, html, re
+import csv, html, json, re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -142,6 +142,20 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
   .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
   .extra h3 { font-size:16px; margin-bottom:6px; }
   .extra .ex { margin-top:6px; color:var(--sub); }
@@ -294,6 +308,46 @@ def parts_table(dev, rows):
     return t
 
 
+WIRE_COL = {"red": ("#e53935", "赤"), "black": ("#212121", "黒"), "yellow": ("#fdd835", "黄"), "blue": ("#1e88e5", "青"),
+            "white": ("#fafafa", "白"), "green": ("#43a047", "緑"), "orange": ("#fb8c00", "橙"), "purple": ("#8e24aa", "紫")}
+
+
+def wiring_info(png):
+    """配線図を作るプログラムが出した表と注意 (hardware/wiring/ の <名前>.json)。なければ None"""
+    stem = png.rsplit('.', 1)[0]
+    for d in (ROOT / 'hardware' / 'wiring', ROOT / 'hardware' / 'wiring' / 'case'):
+        f = d / (stem + '.json')
+        if f.exists():
+            return json.loads(f.read_text(encoding='utf-8'))
+    return None
+
+
+def wiring_tables(info):
+    out = []
+    for tb in info['tables']:
+        head, *body = tb['rows']
+        th = ''.join(f'<th>{esc(h)}</th>' for h in head)
+        trs = []
+        for r in body:
+            cells = []
+            for i, c in enumerate(r):
+                if i == 0 and c in WIRE_COL:
+                    col, name = WIRE_COL[c]
+                    cells.append(f'<td class="wc"><span class="sw" style="background:{col}"></span>{name}</td>')
+                else:
+                    cells.append(f'<td>{esc(c)}</td>')
+            trs.append('<tr>' + ''.join(cells) + '</tr>')
+        hd = '部品の置き場所' if tb['head'] == '部品表' else tb['head']   # ページ上の部品表と区別する
+        out.append('      <div class="wtab"><h3>' + esc(hd) + '</h3><div class="scroll"><table>\n'
+                   '        <thead><tr>' + th + '</tr></thead>\n'
+                   '        <tbody>' + ''.join(trs) + '</tbody>\n'
+                   '      </table></div></div>')
+    if info['notes']:
+        lis = ''.join(f'<li>{esc(n)}</li>' for n in info['notes'])
+        out.append(f'      <div class="wnote"><h3>注意</h3><ul>{lis}</ul></div>')
+    return '\n'.join(out)
+
+
 def wiring_html(dev):
     """配線図 (site/img/wiring/ の PNG)。押すと大きな画像が開く"""
     figs = []
@@ -304,6 +358,10 @@ def wiring_html(dev):
         <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
         <a href="img/wiring/{f}" target="_blank" rel="noopener"><img src="img/wiring/{f}" alt="{esc(dev["name"])} {esc(cap)}" loading="lazy"></a>
       </figure>''')
+        info = wiring_info(f)
+        if info:
+            tabs = wiring_tables(info)
+            figs.append(f'      <div{dv}>\n{tabs}\n      </div>' if dv else tabs)
     if not figs:
         return ''
     return ('      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。'

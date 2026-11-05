@@ -44,6 +44,16 @@ class S:
         svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}">\n'
                f'<rect width="100%" height="100%" fill="#fffdf6"/>\n{body}\n</svg>\n')
         open(os.path.join(OUT, name), "w", encoding="utf-8").write(svg)
+        # ウェブサイト用: 図だけの SVG (表と注意の上で切る) と、表・注意の文字 (JSON)
+        stem = os.path.splitext(name)[0]
+        cut = int(INFO["cut"] or s.h)
+        fig = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.w}" height="{cut}" viewBox="0 0 {s.w} {cut}">\n'
+               f'<rect width="100%" height="100%" fill="#fffdf6"/>\n{body}\n</svg>\n')
+        open(os.path.join(OUT, stem + "_fig.svg"), "w", encoding="utf-8").write(fig)
+        import json
+        json.dump({"tables": INFO["tables"], "notes": INFO["notes"]},
+                  open(os.path.join(OUT, stem + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        INFO.update(cut=None, tables=[], notes=[])
 
 XL = ["D0", "D1", "D2", "D3", "D4", "D5", "D6"]
 XR = ["5V", "GND", "3V3", "D10", "D9", "D8", "D7"]
@@ -82,13 +92,19 @@ def title(s, t, sub):
     s.text(30, 45, t, 26, weight="bold", fill="#ffffff")
     s.text(s.w - 30, 45, sub, 15, "end", fill="#f5c542")
 
+INFO = {"cut": None, "tables": [], "notes": []}   # 表と注意の中身 (ウェブサイト用に JSON でも出す)
+
 def notes(s, x, y, lines, head="注意"):
+    INFO["notes"] += [l.lstrip("・") for l in lines]
+    INFO["cut"] = INFO["cut"] or y - 20
     s.rect(x, y, s.w - 2 * x, 34 + 26 * len(lines), "#fff3cd", "#e0b84a", 10, 2)
     s.text(x + 18, y + 26, head, 17, weight="bold", fill="#7a5a00")
     for i, l in enumerate(lines):
         s.text(x + 18, y + 54 + i * 26, l, 15, fill="#4a3a00")
 
 def table(s, x, y, rows, widths, head):
+    INFO["tables"].append({"head": head, "rows": rows})
+    INFO["cut"] = INFO["cut"] or y - 40
     s.text(x, y - 12, head, 17, weight="bold")
     yy = y
     for r, row in enumerate(rows):
@@ -745,10 +761,10 @@ def make_TH_on(fname):
     x0, y0, bw, bh, k = GEO
     p = xiao_pcb(s, 7, 0)
     # ---- 裏の線 (先に描く) ----
-    wire_back(s, [(2, 1), (2, 11), (3, 11)], "black")              # B3 → K3 → K4 (電池−)
+    wire_back(s, [(2, 1), (2, 12), (3, 12)], "black")              # B3 → K3 → K4 (電池−)
     wire_back(s, [(2, 6), (3, 6)], "black")                        # F3 → F4 (SHT40 GND)
-    wire_back(s, [(2, 11), (2, 12), (19, 12), (19, 6)], "black")   # K4 → L4 → L20 → G20
-    wire_back(s, [(18, 11), (17, 11), (17, 6)], "red")             # K19 (電池＋) → K18 → G18
+    wire_back(s, [(2, 12), (2, 13), (19, 13), (19, 6)], "black")   # K4 → L4 → L20 → G20
+    wire_back(s, [(18, 12), (17, 12), (17, 6)], "red")             # K19 (電池＋) → K18 → G18
     wire_back(s, [(17, 8), (3, 8), (3, 7)], "red")                 # I18 → I4 → G4 (SHT40 VIN)
     # ---- 表の線 ----
     wireh(s, [p["D4"], (3, 4)], "green")
@@ -765,7 +781,7 @@ def make_TH_on(fname):
     # SHT40 を寝かせて付ける (ピンは 4 列、本体は左へ)
     flat_module(s, [4, 5, 6, 7], ["SDA", "SCL", "GND", "VIN"], "#5e35b1", 3, "", "", col=3)
     # SHT40 の下を通る裏の線を、本体の上に重ねて見せる
-    for pts, c in (([(2, 1), (2, 11)], "black"), ([(2, 6), (3, 6)], "black"), ([(3, 8), (3, 7)], "red")):
+    for pts, c in (([(2, 1), (2, 12)], "black"), ([(2, 6), (3, 6)], "black"), ([(3, 8), (3, 7)], "red")):
         d = "M" + " L".join(f"{H(*q)[0]},{H(*q)[1]}" for q in pts)
         s.top.append(f'<path d="{d}" fill="none" stroke="{COL[c] if c == "red" else "#fff"}" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" opacity="0.95"/>')
     x5, y5 = H(2, 6)
@@ -784,17 +800,17 @@ def make_TH_on(fname):
     s.text(40, y0 - 92, "サーミスター 10kΩ", 15, weight="bold")
     s.text(40, y0 - 76, "（向きなし・巣箱の中へ）", 12, fill="#666")
     # 電池ケース: ピンを K4 (−) と K19 (＋) に差す
-    (px1, py), (px2, _) = H(3, 11), H(18, 11)
+    (px1, py), (px2, _) = H(3, 12), H(18, 12)
     bw2, bh2 = 43 * k, 18 * k
     bx, by = (px1 + px2) / 2 - bw2 / 2, py - bh2 / 2
     s.top.append(f'<rect x="{bx}" y="{by}" width="{bw2}" height="{bh2}" rx="8" fill="#37474f" fill-opacity="0.78" stroke="#222" stroke-width="3"/>')
     rec_part(bx, by, bw2, bh2, "CR123A 電池ケース（表側）")
     s.top.append(f'<rect x="{bx+22}" y="{by+14}" width="{bw2-44}" height="{bh2-28}" rx="30" fill="#b0bec5" fill-opacity="0.6" stroke="#607d8b" stroke-width="2"/>')
     s.text(bx + bw2 / 2, by + 34, "CR123A 用電池ケース（秋月 110192、43×18×14mm）", 14, "middle", "bold", "#fff", layer=s.top)
-    s.text(bx + bw2 / 2, by + bh2 - 16, f"裏のピンを {hn(3, 11)}（−）と {hn(18, 11)}（＋）に差してはんだ付け", 12, "middle", "bold", "#fff", layer=s.top)
+    s.text(bx + bw2 / 2, by + bh2 - 16, f"裏のピンを {hn(3, 12)}（−）と {hn(18, 12)}（＋）に差してはんだ付け", 12, "middle", "bold", "#fff", layer=s.top)
     s.text(px1 + 22, py + 6, "−", 22, "start", "bold", "#fff", layer=s.top)
     s.text(px2 - 22, py + 6, "＋", 18, "end", "bold", "#fff", layer=s.top)
-    for h in ((3, 11), (18, 11)):
+    for h in ((3, 12), (18, 12)):
         x, y = H(*h)
         s.top.append(f'<rect x="{x-7}" y="{y-7}" width="14" height="14" fill="#cfd8dc" stroke="#222" stroke-width="2"/>')
         solder_mark(s, *h)
@@ -806,12 +822,12 @@ def make_TH_on(fname):
         ["purple", f"XIAO D3（{hn(7,3)}）", f"10kΩ の下の足（{hn(6,3)}）", "測る瞬間だけ電気を流す"],
         ["yellow", f"XIAO D2/A2（{hn(7,2)}）", f"10kΩ の上の足（{hn(6,2)}）→ {hn(6,1)} → {hn(6,0)}", "測る点（サーミスターと 0.1µF）"],
         ["black", f"0.1µF の足（{hn(4,0)}）", f"{hn(2,0)}（サーミスター）→ {hn(2,1)}", "左側の GND（サーミスターも）"],
-        ["black", f"{hn(2,1)}", f"{hn(2, 11)} → 電池ケースの −（{hn(3, 11)}）", f"電池 − を左側の GND へ（{hn(2,6)} を通る）"],
+        ["black", f"{hn(2,1)}", f"{hn(2, 12)} → 電池ケースの −（{hn(3, 12)}）", f"電池 − を左側の GND へ（{hn(2,6)} を通る）"],
         ["black", f"{hn(2,6)}", f"SHT40 GND（{hn(3,6)}）", f"{hn(2,6)} で上の線とはんだ付け"],
-        ["black", f"{hn(2, 11)}", f"{hn(2, 12)} → {hn(3, 12)} → {hn(19, 12)} → {hn(19,6)}", "電池 − を右側の −の列へ"],
+        ["black", f"{hn(2, 12)}", f"{hn(2, 13)} → {hn(3, 13)} → {hn(19, 13)} → {hn(19,6)}", "電池 − を右側の −の列へ"],
         ["black", f"XIAO GND（{hn(13,1)}）", f"{hn(19,1)} → {hn(19,6)}", "−の列"],
         ["red", f"XIAO 3V3（{hn(13,2)}）", f"{hn(17,2)} → {hn(17,6)}", "＋の列"],
-        ["red", f"電池ケースの ＋（{hn(18, 11)}）", f"{hn(17, 11)} → {hn(17,6)}", "電池 ＋ を ＋の列へ"],
+        ["red", f"電池ケースの ＋（{hn(18, 12)}）", f"{hn(17, 12)} → {hn(17,6)}", "電池 ＋ を ＋の列へ"],
         ["red", f"{hn(17,8)}", f"{hn(3,8)} → SHT40 VIN（{hn(3,7)}）", "SHT40 の電源"],
     ], [100, 300, 470, 390], "つなぐ線（穴の位置は 行の文字＋列の数字）")
     y = table(s, 60, y + 50, [
@@ -822,13 +838,13 @@ def make_TH_on(fname):
         ["抵抗 10kΩ 1%（金属皮膜）", "1", f"{hn(6,2)}・{hn(6,3)}（立てて付ける）"],
         ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(4,0)}・{hn(6,0)}（測る点と GND の間）"],
         ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(17,4)}・{hn(19,4)}"],
-        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", f"ピンを {hn(3, 11)}（−）・{hn(18, 11)}（＋）に差してはんだ付け"],
+        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", f"ピンを {hn(3, 12)}（−）・{hn(18, 12)}（＋）に差してはんだ付け"],
         ["タカチ ユニバーサル基板 TNF44-69（44×69mm、穴 16×25）・すずめっき線", "1", "ケース タカチ SW-75B"],
     ], [560, 60, 540], "部品表")
     L = NOTES + [
-        f"・電池ケースは、裏のピンを {hn(3, 11)} と {hn(18, 11)} に差す（ピンの間隔が 15 穴分なのは TARO さんの実測）。＋の印が右（{hn(18, 11)}）、−が左（{hn(3, 11)}）になる向きにする。",
+        f"・電池ケースは、裏のピンを {hn(3, 12)} と {hn(18, 12)} に差す（ピンの間隔が 15 穴分なのは TARO さんの実測）。＋の印が右（{hn(18, 12)}）、−が左（{hn(3, 12)}）になる向きにする。",
         f"・電池ケースのピンが穴の列のちょうど真ん中にない場合、ケースが上下にずれる。{hn(0,6)[0]} 行より上の部品に当たらないか、実物を置いて確かめる。",
-        f"・電池ケースの下になる線（{hn(2, 11)}・{hn(2, 12)}・{hn(3, 12)} のあたり）も裏なので、ケースを付けたあとでもはんだ付けできる。{hn(2,6)} は 2本の黒線をはんだでつなぐ。",
+        f"・電池ケースの下になる線（{hn(2, 12)}・{hn(2, 13)}・{hn(3, 13)} のあたり）も裏なので、ケースを付けたあとでもはんだ付けできる。{hn(2,6)} は 2本の黒線をはんだでつなぐ。",
         f"・SHT40 は寝かせて付ける。印字の SDA が上（{hn(3,4)}）、VIN が下（{hn(3,7)}）になる向き。本体が {hn(0,4)}〜{hn(2,7)} のあたりに収まるか、すぐ下の電池ケースに当たらないか実物で確かめる。",
         "・ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。",
     ]
@@ -904,4 +920,9 @@ for _a, _b in [
 ]:
     assert _a in _s, _a
     _s = _s.replace(_a, _b)
+    for _q in ("HPX-TH_AA_LC115H_fig.svg", "HPX-TH_AA_LC115H.json"):   # ウェブ用の図・表も同じに
+        _q = os.path.join(OUT, _q)
+        _t = open(_q, encoding="utf-8").read()
+        _t = _t.replace(_a, _b).replace(_a.lstrip("・"), _b.lstrip("・"))
+        open(_q, "w", encoding="utf-8").write(_t)
 open(_p, "w", encoding="utf-8").write(_s)

@@ -122,6 +122,20 @@
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
   .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
   .extra h3 { font-size:16px; margin-bottom:6px; }
   .extra .ex { margin-top:6px; color:var(--sub); }

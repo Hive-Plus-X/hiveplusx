@@ -122,6 +122,20 @@
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
   .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
   .extra h3 { font-size:16px; margin-bottom:6px; }
   .extra .ex { margin-top:6px; color:var(--sub); }
@@ -247,10 +261,32 @@ SHT31・SHT41 なども使えます</span><span class="price">2,100円 / 5個入
         <figcaption><b>CR123A 版の配線図</b>ケース SW-75B 用の基板 TNF44-69 に、CR123A 電池ケースのピンを差して載せます。</figcaption>
         <a href="img/wiring/HPX-TH_CR123A_TNF44-69.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-TH_CR123A_TNF44-69.png" alt="HPX-TH CR123A 版の配線図" loading="lazy"></a>
       </figure>
+      <div data-variant="th_cr">
+      <div class="wtab"><h3>つなぐ線（穴の位置は 行の文字＋列の数字）</h3><div class="scroll"><table>
+        <thead><tr><th>線</th><th>どこから（穴）</th><th>どこへ（穴）</th><th>役目</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>XIAO D4（F10）</td><td>SHT40 SDA（F6）</td><td>データ（I2C）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>XIAO D5（G10）</td><td>SHT40 SCL（G6）</td><td>合図（I2C）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>XIAO D3（E10）</td><td>10kΩ の下の足（E9）</td><td>測る瞬間だけ電気を流す</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>XIAO D2/A2（D10）</td><td>10kΩ の上の足（D9）→ C9 → B9</td><td>測る点（サーミスターと 0.1µF）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>0.1µF の足（B7）</td><td>B5（サーミスター）→ C5</td><td>左側の GND（サーミスターも）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>C5</td><td>N5 → 電池ケースの −（N6）</td><td>電池 − を左側の GND へ（H5 を通る）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>H5</td><td>SHT40 GND（H6）</td><td>H5 で上の線とはんだ付け</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>N5</td><td>O5 → O6 → O22 → H22</td><td>電池 − を右側の −の列へ</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>XIAO GND（C16）</td><td>C22 → H22</td><td>−の列</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>XIAO 3V3（D16）</td><td>D20 → H20</td><td>＋の列</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>電池ケースの ＋（N21）</td><td>N20 → H20</td><td>電池 ＋ を ＋の列へ</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>J20</td><td>J6 → SHT40 VIN（I6）</td><td>SHT40 の電源</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</td><td>1</td><td>B10〜H16</td></tr><tr><td>SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン</td><td>1</td><td>ピンを F6〜I6（SDA・SCL・GND・VIN）、本体を左へ寝かせる</td></tr><tr><td>サーミスター 10kΩ（平行線タイプ）</td><td>1</td><td>線を B5（GND）・C9（測る点）に直接はんだ付け</td></tr><tr><td>抵抗 10kΩ 1%（金属皮膜）</td><td>1</td><td>D9・E9（立てて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V C0G 5mm</td><td>1</td><td>B7・B9（測る点と GND の間）</td></tr><tr><td>絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</td><td>1</td><td>F20・F22</td></tr><tr><td>CR123A 用電池ケース（秋月 110192）／ CR123A 電池</td><td>各1</td><td>ピンを N6（−）・N21（＋）に差してはんだ付け</td></tr><tr><td>タカチ ユニバーサル基板 TNF44-69（44×69mm、穴 16×25）・すずめっき線</td><td>1</td><td>ケース タカチ SW-75B</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらず、ほかの線の穴の上も通らないように引いてある。すずめっき線は被覆がないので、となりの線と触れないよう基板に沿わせてはんだ付けする。</li><li>穴の位置は「行の文字＋列の数字」（例: C14 は C 行の 14 列目）。</li><li>XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</li><li>赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。</li><li>USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</li><li>四すみの点線の丸は取付穴（位置は目安。実物で確認）。すぐ内側の × の穴は、ネジやスペーサーに当たらないよう使わない。</li><li>電池ケースは、裏のピンを N6 と N21 に差す（ピンの間隔が 15 穴分なのは TARO さんの実測）。＋の印が右（N21）、−が左（N6）になる向きにする。</li><li>電池ケースのピンが穴の列のちょうど真ん中にない場合、ケースが上下にずれる。H 行より上の部品に当たらないか、実物を置いて確かめる。</li><li>電池ケースの下になる線（N5・O5・O6 のあたり）も裏なので、ケースを付けたあとでもはんだ付けできる。H5 は 2本の黒線をはんだでつなぐ。</li><li>SHT40 は寝かせて付ける。印字の SDA が上（F6）、VIN が下（I6）になる向き。本体が F3〜I5 のあたりに収まるか、すぐ下の電池ケースに当たらないか実物で確かめる。</li><li>ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。</li></ul></div>
+      </div>
       <figure class="wiring" data-variant="th_aa">
         <figcaption><b>単三リチウム電池版の配線図</b>ケース LC115H-M2-D の推奨基板に部品を載せる図です。</figcaption>
         <a href="img/wiring/HPX-TH_AA_LC115H.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-TH_AA_LC115H.png" alt="HPX-TH 単三リチウム電池版の配線図" loading="lazy"></a>
       </figure>
+      <div data-variant="th_aa">
+      <div class="wtab"><h3>つなぐ線（穴の位置は 行の文字＋列の数字）</h3><div class="scroll"><table>
+        <thead><tr><th>線</th><th>どこから（穴）</th><th>どこへ（穴）</th><th>役目</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>XIAO D3（K11）</td><td>10kΩ の下の足（K10）</td><td>測る瞬間だけ電気を流す</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>XIAO D2/A2（J11）</td><td>10kΩ の上の足（J10）→ H10</td><td>測る点（サーミスター I10・0.1µF H10）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>XIAO D4（L11）</td><td>SHT40 SDA（L8）</td><td>データ（I2C）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>XIAO D5（M11）</td><td>SHT40 SCL（M8）</td><td>合図（I2C）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>SHT40 GND（N8）</td><td>N7 → F7 → F20 → P20（−の列）</td><td>SHT40 の下を通って −の列へ</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>F8</td><td>I8</td><td>0.1µF（H8）とサーミスター（I8）の GND</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>SHT40 VIN（O8）</td><td>O18（＋の列）</td><td>SHT40 の電源</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>XIAO 3V3（J17）</td><td>J18 → P18（＋の列）</td><td>電池＋・コンデンサーもこの列</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>XIAO GND（I17）</td><td>I20（−の列 F20〜P20）</td><td>電池−・コンデンサーもこの列</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</td><td>1</td><td>H11〜N17</td></tr><tr><td>SHT40 モジュール（温湿度、I2C）＋ ピンヘッダ 4ピン</td><td>1</td><td>L8〜O8（SDA・SCL・GND・VIN）。本体は左へ寝かせる</td></tr><tr><td>サーミスター 10kΩ（平行線タイプ）</td><td>1</td><td>線を I8（GND）・I10（測る点）に直接はんだ付け</td></tr><tr><td>抵抗 10kΩ 1%（金属皮膜）</td><td>1</td><td>J10・K10（立てて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V C0G 5mm</td><td>1</td><td>H8・H10（測る点と GND の間）</td></tr><tr><td>絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</td><td>1</td><td>L18・L20</td></tr><tr><td>ケースの電池室の端子 ／ 単3リチウム電池 2本</td><td>各1</td><td>赤線を P18（＋）、黒線を P20（−）にはんだ付け</td></tr><tr><td>ユニバーサル基板（推奨基板の形 60×63mm に切る）・すずめっき線</td><td>1</td><td></td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらず、ほかの線の穴の上も通らないように引いてある。すずめっき線は被覆がないので、となりの線と触れないよう基板に沿わせてはんだ付けする。</li><li>穴の位置は「行の文字＋列の数字」（例: C14 は C 行の 14 列目）。</li><li>XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</li><li>赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。</li><li>USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</li><li>白い丸は取付穴 φ2.5（4つ、左右 53mm・上下 40mm 間隔）。ケースのボスにネジで留める。穴のまわりの穴は使わない。</li><li>0.1µF は H9 の上に寝かせて H8・H10 に付ける。サーミスターの線は I8・I10 に表から差してはんだ付け。</li><li>SHT40 は寝かせて付ける。印字の SDA が上（L8）、VIN が下（O8）になる向き。黒線（F7〜N7）は SHT40 の下の裏を通る。</li><li>ファームは HPX_TH v1.01。SHT40 は 3.6V まで（5V にはつながない）。SHT40 の上は、ケースの中でも空気が通るようにする。</li></ul></div>
+      </div>
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
