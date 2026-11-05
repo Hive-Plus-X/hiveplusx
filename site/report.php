@@ -260,7 +260,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
         <li><a href="devices.html">機器をつくる</a></li>
         <li><a href="install.html">設置ガイド</a></li>
         <li><a href="download.html">ダウンロード</a></li>
-        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
       </ul>
     </nav>
   </div>
