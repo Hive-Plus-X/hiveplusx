@@ -122,11 +122,31 @@
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
   .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
   .extra h3 { font-size:16px; margin-bottom:6px; }
   .extra .ex { margin-top:6px; color:var(--sub); }
   .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -184,7 +204,8 @@
         <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a></b><span>コンデンサー0.1μF</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506" target="_blank" rel="noopener">CDSセル</a></b><span>Moechando φ5mm CdS セル 5506 (10個入り)</span><span class="price">395円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105886/" target="_blank" rel="noopener">CdSセル (1MΩ) GL5528</a>（秋月電子通商、100円 / 4個入り）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
         <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=2.54mm%E3%83%94%E3%83%83%E3%83%81%20%E3%83%94%E3%83%B3%E3%82%BD%E3%82%B1%E3%83%83%E3%83%88%2040%E3%83%94%E3%83%B3%20%E5%8D%98%E5%88%97%2010%E5%80%8B" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>2.54mmピッチ ピンソケット 1×40P 10本入り (切って使う)</span><span class="price">650円 / 10本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">4</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ピンヘッダー（オス）</a></b><span>ロープロファイルピンヘッダー(低オス) 7.7mm</span><span class="price">40円 / 40PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">ジャンパー線</a></b><span>ジャンパーワイヤー 840個セット (14サイズ)</span><span class="price">935円 / 840本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">8</td></tr>
         <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112977/" target="_blank" rel="noopener">ユニバーサル基板 5×7</a></b><span>両面スルーホールユニバーサル基板 5*7</span><span class="price">60円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
@@ -200,7 +221,7 @@
         <tr><td class="part"><b><a href="https://www.ohm-direct.com/shopdetail/018027000007/" target="_blank" rel="noopener">熱収縮チューブ φ1.5mm</a></b><span>オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K</span><span class="price">275円 / 2m</span></td><td class="shop">オーム電機</td><td class="n" data-v="数">5 cm</td></tr>
         <tr><td class="part"><b><a href="https://www.ohm-direct.com/shopdetail/018027000001/" target="_blank" rel="noopener">熱収縮チューブ φ4mm</a></b><span>オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K</span><span class="price">319円 / 2m</span></td><td class="shop">オーム電機</td><td class="n" data-v="数">5 cm</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,374円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,184円</td></tr></tfoot>
       </table>
       <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
       <div class="extra"><h3>その他</h3><p>※HPX-A本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。</p><p class="ex">商品の例: <a href="https://www.amazon.co.jp/dp/B00N3MUG1A" target="_blank" rel="noopener">フェンスアラート (電圧降下警告灯)</a>（amazon）</p></div>
@@ -215,10 +236,20 @@
         <figcaption><b>配線図</b>5×7cm のユニバーサル基板の左上に載せる図です。</figcaption>
         <a href="img/wiring/HPX-A_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-A_pcb.png" alt="HPX-A 配線図" loading="lazy"></a>
       </figure>
+      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
+        <thead><tr><th>線</th><th>どこから（穴）</th><th>どこへ（穴）</th><th>役目</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>XIAO D1（C4）</td><td>10kΩ の下の足（B4）</td><td>読む瞬間だけ電気を流す</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>XIAO D0/A0（C3）</td><td>10kΩ の上の足（B3）→ B2 → CdS（B1）</td><td>測る点</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>CdS のもう片方（C1）</td><td>L1 → L11（−の列）</td><td>上の端を通って −の列へ</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>XIAO 3V3（I5）</td><td>J5 → J11（＋の列）</td><td>電池＋・コンデンサーもこの列</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>XIAO GND（I4）</td><td>L4（−の列 L1〜L11）</td><td>電池−・コンデンサーもこの列</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</td><td>1</td><td>C3〜I9</td></tr><tr><td>CdS セル（フォトレジスタ）5506 φ5mm</td><td>1</td><td>シールド線で延長して B1（白）・C1（黒）に直接はんだ付け</td></tr><tr><td>抵抗 10kΩ</td><td>1</td><td>B3・B4（立てて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V C0G 5mm</td><td>1</td><td>J9・L9（電源側。測る点には付けない）</td></tr><tr><td>絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</td><td>1</td><td>J7・L7</td></tr><tr><td>ケース WH145-25-M2（単3×2 電池ボックス付き）／ 単3リチウム電池</td><td>1／2</td><td>電池ボックスの＋の線を J11、−の線を L11 にはんだ付け</td></tr><tr><td>ユニバーサル基板 5×7cm（穴 24×18）・すずめっき線</td><td>1</td><td>使うのは左上の A〜L・1〜11 だけ</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらず、ほかの線の穴の上も通らないように引いてある。すずめっき線は被覆がないので、となりの線と触れないよう基板に沿わせてはんだ付けする。</li><li>XIAO にピンヘッダ（オス）をはんだ付けし、基板にはピンソケット（メス、7ピン×2）をはんだ付けして差し込む。XIAO を抜いて交換できる。</li><li>赤丸の穴は、基板の外からの線（電池ケース・センサーのケーブル）を直接はんだ付けするところ。</li><li>USB で書き込むときは、必ず電池を外す（3V3 に電池を直結しているため）。</li><li>フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。</li></ul></div>
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
+
 </main>
 
 <footer>

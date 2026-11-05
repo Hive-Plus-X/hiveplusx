@@ -122,11 +122,31 @@
   .wiring img { display:block; width:100%; height:auto; }
   .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
   .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
   .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
   .extra h3 { font-size:16px; margin-bottom:6px; }
   .extra .ex { margin-top:6px; color:var(--sub); }
   .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
   @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   /* フッター */
@@ -174,9 +194,9 @@
       <a class="dev" id="core" href="device-core.html"><span class="tag">ハブ</span><h3>HPX-Core</h3>
         <p>センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。</p><p class="vars">通常版・防水版</p></a>
       <a class="dev" id="w" href="device-w.html"><span class="tag">重量</span><h3>HPX-W</h3>
-        <p>巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。</p><p class="vars">CR123A 版・単三リチウム版</p></a>
+        <p>巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。</p><p class="vars">CR123A 版・単三リチウム電池版</p></a>
       <a class="dev" id="th" href="device-th.html"><span class="tag">温湿度</span><h3>HPX-TH</h3>
-        <p>巣箱の中の温度と湿度を測り、Bluetooth で発信します。</p><p class="vars">CR123A 版・単三リチウム版</p></a>
+        <p>巣箱の中の温度と湿度を測り、Bluetooth で発信します。</p><p class="vars">CR123A 版・単三リチウム電池版</p></a>
       <a class="dev" id="a" href="device-a.html"><span class="tag">電柵アラート</span><h3>HPX-A</h3>
         <p>電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。</p></a>
       <div class="dev soon" id="other"><span class="tag">その他センサー</span><h3>HPXシリーズ</h3>
