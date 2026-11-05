@@ -115,8 +115,9 @@ function read_ble(string $csv, int $since): array
             $t2 = $num($g($r, 'temp2_c'));   // HPX-TH のサーミスター(巣箱の中の温度)
             $t = $t2 ?? $sht;
             if ($t === null) continue;
-            $t += th_temp_corr(dirname($csv), $mac, $t2 === null && $num($g($r, 'batt_v')) === null);   // Inkbird の一律補正と温湿度計ごとの補正
-            $out['th'][$mac][] = [$ep, $t, th_hum_fix($num($g($r, 'humidity_pct')), dirname($csv), $mac), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $t2 !== null ? $sht : null];
+            $ink = $t2 === null && $num($g($r, 'batt_v')) === null;   // Inkbird の形(HPX-TH でない)
+            $t += th_temp_corr(dirname($csv), $mac, $ink);   // 機種ごとの補正(Inkbird・HPX-TH)と温湿度計ごとの補正
+            $out['th'][$mac][] = [$ep, $t, th_hum_fix($num($g($r, 'humidity_pct')), dirname($csv), $mac, $ink), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $t2 !== null ? $sht : null];
         }
     }
     fclose($fh);
@@ -628,6 +629,7 @@ if (!$byKind['th']) {
 
         // 温度・湿度の補正の入力(表の下にまとめて出す)
         $model = (string)($s['model'] ?? '');
+        if ($model === '' && $last && (($last[4] ?? null) !== null || ($last[5] ?? null) !== null)) $model = 'hpx_th';
         $offC = (float)(th_cal_load($dir)[$mac]['offset_c'] ?? 0);
         $offH = (float)(th_cal_load($dir)[$mac]['offset_h'] ?? 0);
         $fmt = fn(float $v) => $v != 0.0 ? rtrim(rtrim(number_format($v, 2, '.', ''), '0'), '.') : '';
@@ -640,7 +642,7 @@ if (!$byKind['th']) {
             . '<button type="submit">保存</button></form>';
     }
     echo '</table></div>';
-    echo '<details' . (isset($_GET['th_saved']) ? ' open' : '') . '><summary>温度・湿度の補正</summary><div class="card"><p class="muted">温湿度計ごとに、温度と湿度の補正ができます。機種ごとの初期補正はしてあります（温度：Inkbird ' . h(number_format(TH_INKBIRD_OFFSET_C, 1)) . '℃、湿度：SwitchBot 温湿度計 ' . h(sprintf('%+.1f', TH_MODEL_OFFSET_H['switchbot'])) . '%、SwitchBot 防水温湿度計 ' . h(sprintf('%+.1f', TH_MODEL_OFFSET_H['switchbot_outdoor'])) . '%）。さらに補正が必要な場合に使ってください。<br>上方補正は数値のみ、下方補正はマイナスをつけて入力してください。</p>' . $thForms . '</div></details>';
+    echo '<details' . (isset($_GET['th_saved']) ? ' open' : '') . '><summary>温度・湿度の補正</summary><div class="card"><p class="muted">温湿度計ごとに、温度と湿度の補正ができます。機種ごとの初期補正はしてあります（温度：Inkbird ' . h(number_format(TH_INKBIRD_OFFSET_C, 1)) . '℃、湿度：SwitchBot 温湿度計 ' . h(sprintf('%+.1f', TH_MODEL_OFFSET_H['switchbot'])) . '%、SwitchBot 防水温湿度計 ' . h(sprintf('%+.1f', TH_MODEL_OFFSET_H['switchbot_outdoor'])) . '%、HPX-TH 温度 ' . h(sprintf('%+.1f', TH_HPXTH_OFFSET_C)) . '℃・湿度 ' . h(sprintf('%+.1f', TH_MODEL_OFFSET_H['hpx_th'])) . '%）。さらに補正が必要な場合に使ってください。<br>上方補正は数値のみ、下方補正はマイナスをつけて入力してください。</p>' . $thForms . '</div></details>';
 }
 
 // ---- 重量の表 ----

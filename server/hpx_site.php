@@ -828,8 +828,9 @@ function ble_data(string $hubId, int $since): array
             $hm = $g($r, 'humidity_pct');
             $bt = $g($r, 'battery_pct');
             $tc = is_numeric($g($r, 'temp2_c')) ? $g($r, 'temp2_c') : $g($r, 'temp_c');   // HPX-TH はサーミスターの温度 (無いときは SHT40)
-            $tc = (float)$tc + th_temp_corr($hub['dir'], $mac, !is_numeric($g($r, 'temp2_c')) && !is_numeric($g($r, 'batt_v')));   // Inkbird の一律補正と温湿度計ごとの補正
-            $out['th'][$mac][] = [$ep, $tc, th_hum_fix(is_numeric($hm) ? (float)$hm : null, $hub['dir'], $mac), is_numeric($bt) ? (float)$bt : null];
+            $ink = !is_numeric($g($r, 'temp2_c')) && !is_numeric($g($r, 'batt_v'));   // Inkbird の形(HPX-TH でない)
+            $tc = (float)$tc + th_temp_corr($hub['dir'], $mac, $ink);   // 機種ごとの補正(Inkbird・HPX-TH)と温湿度計ごとの補正
+            $out['th'][$mac][] = [$ep, $tc, th_hum_fix(is_numeric($hm) ? (float)$hm : null, $hub['dir'], $mac, $ink), is_numeric($bt) ? (float)$bt : null];
         }
     }
     fclose($fh);
