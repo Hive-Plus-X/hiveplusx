@@ -137,6 +137,26 @@ function r_token_age(string $tok): ?int
     return time() - (int)$m[1];
 }
 
+// フォームを1回だけ使えるようにする。まだ使っていなければ「使った」と記録して true、使ったことがあれば false
+function r_token_use(string $tok): bool
+{
+    $fp = @fopen(r_dir() . '/used.json', 'c+');
+    if (!$fp) return true;
+    flock($fp, LOCK_EX);
+    $d = json_decode((string)stream_get_contents($fp), true) ?: [];
+    $now = time();
+    $d = array_filter($d, fn($t) => $now - (int)$t < R_MAX_S + 600);   // 期限を過ぎたフォームは、もともと受け付けないので忘れる
+    $k = hash('sha256', $tok);
+    $ok = !isset($d[$k]);
+    if ($ok) {
+        $d[$k] = $now;
+        ftruncate($fp, 0); rewind($fp);
+        fwrite($fp, json_encode($d));
+    }
+    flock($fp, LOCK_UN); fclose($fp);
+    return $ok;
+}
+
 // 送信回数の制限。超えていなければ数を1つ足して true
 function r_rate_ok(): bool
 {

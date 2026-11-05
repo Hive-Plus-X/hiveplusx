@@ -41,6 +41,7 @@ $err = [];
 $done = false;
 $fail = false;
 $isPost = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';
+if (!$isPost && isset($_GET['sent'])) $done = true;
 
 if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     // 送られてきた量がサーバーの上限を超えると、中身が空で届く
@@ -80,9 +81,11 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
         if (!$files && !$err) $err[] = '写真を1枚以上選んでください。';
         if (count($files) > R_MAX_PHOTOS) $err[] = '写真は' . R_MAX_PHOTOS . '枚までにしてください。';
         if (empty($_POST['agree'])) $err[] = '「サイトに載せることに同意します」にチェックを入れてください。';
-        if (!$err && !r_rate_ok()) $err[] = '送信が集中しているため、しばらくたってからお試しください。';
+        // 同じフォームからの2回目 (送ったあとの再読み込み・戻る) は、もう受け付けたものとして保存しない
+        if (!$err && !r_token_use((string)$_POST['t'])) $done = true;
+        elseif (!$err && !r_rate_ok()) $err[] = '送信が集中しているため、しばらくたってからお試しください。';
 
-        if (!$err) {
+        if (!$err && !$done) {
             $id = 'r_' . bin2hex(random_bytes(5));
             $n = 0;
             foreach ($files as $tmp) {
@@ -111,6 +114,9 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
                         ? hpx_smtp_send($to, (string)$HPX_MAIL_FROM, '【hiveplusx.com】作った・使ったレポートが届きました', $body)
                         : [false, '送り先かSMTPが設定されていません'];
                     @file_put_contents(r_dir() . '/mail.log', date('c') . ' ' . ($ok ? 'OK' : 'NG') . ' ' . $id . ' ' . preg_replace('/\s+/', ' ', (string)$res) . "\n", FILE_APPEND | LOCK_EX);
+                    // 送信したあとは「送信しました」のページへ移す (再読み込みしても、もう一度送らないように)
+                    header('Location: report.php?sent=1#post', true, 303);
+                    exit;
                 }
             }
         }
