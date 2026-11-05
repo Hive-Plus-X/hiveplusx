@@ -765,7 +765,7 @@ def make_TH_on(fname):
     wire_back(s, [(2, 6), (3, 6)], "black")                        # F3 → F4 (SHT40 GND)
     wire_back(s, [(2, 12), (2, 13), (19, 13), (19, 6)], "black")   # K4 → L4 → L20 → G20
     wire_back(s, [(18, 12), (17, 12), (17, 6)], "red")             # K19 (電池＋) → K18 → G18
-    wire_back(s, [(17, 8), (3, 8), (3, 7)], "red")                 # I18 → I4 → G4 (SHT40 VIN)
+    wire_back(s, [(3, 7), (17, 7)], "red")                         # I6 (SHT40 VIN) → I20
     # ---- 表の線 ----
     wireh(s, [p["D4"], (3, 4)], "green")
     wireh(s, [p["D5"], (3, 5)], "blue")
@@ -781,7 +781,7 @@ def make_TH_on(fname):
     # SHT40 を寝かせて付ける (ピンは 4 列、本体は左へ)
     flat_module(s, [4, 5, 6, 7], ["SDA", "SCL", "GND", "VIN"], "#5e35b1", 3, "", "", col=3)
     # SHT40 の下を通る裏の線を、本体の上に重ねて見せる
-    for pts, c in (([(2, 1), (2, 12)], "black"), ([(2, 6), (3, 6)], "black"), ([(3, 8), (3, 7)], "red")):
+    for pts, c in (([(2, 1), (2, 12)], "black"), ([(2, 6), (3, 6)], "black")):
         d = "M" + " L".join(f"{H(*q)[0]},{H(*q)[1]}" for q in pts)
         s.top.append(f'<path d="{d}" fill="none" stroke="{COL[c] if c == "red" else "#fff"}" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" opacity="0.95"/>')
     x5, y5 = H(2, 6)
@@ -828,7 +828,7 @@ def make_TH_on(fname):
         ["black", f"XIAO GND（{hn(13,1)}）", f"{hn(19,1)} → {hn(19,6)}", "−の列"],
         ["red", f"XIAO 3V3（{hn(13,2)}）", f"{hn(17,2)} → {hn(17,6)}", "＋の列"],
         ["red", f"電池ケースの ＋（{hn(18, 12)}）", f"{hn(17, 12)} → {hn(17,6)}", "電池 ＋ を ＋の列へ"],
-        ["red", f"{hn(17,8)}", f"{hn(3,8)} → SHT40 VIN（{hn(3,7)}）", "SHT40 の電源"],
+        ["red", f"SHT40 VIN（{hn(3,7)}）", f"{hn(17,7)}（＋の線）", "SHT40 の電源"],
     ], [100, 300, 470, 390], "つなぐ線（穴の位置は 行の文字＋列の数字）")
     y = table(s, 60, y + 50, [
         ["部品", "数", "置き場所・メモ"],
