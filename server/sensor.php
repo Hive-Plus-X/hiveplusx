@@ -589,7 +589,7 @@ echo '<div class="card"><dl class="info">'
     . '<dt>最終受信日時</dt><dd>' . h($lastRx ? date('Y-m-d H:i', $lastRx) . ' (' . ago_text($lastRx, $now) . ')' : '-') . ' '
         . ($rxOk ? '<span class="ok">受信中</span>' : '<span class="ng">届いていません</span>') . '</dd>'
     . '<dt>ファームウェア</dt><dd>' . h($fw !== '' ? $fw : '-') . '</dd>'
-    . '<dt>電池電圧</dt><dd>' . ($vbat !== '' ? h($vbat) : '<span class="muted">未対応 (後で実装予定)</span>') . '</dd>'
+    . ($vbat !== '' ? '<dt>電池電圧</dt><dd>' . h($vbat) . '</dd>' : '')   // HPX-Core が電池電圧を送るときだけ出す
     . '<dt>Wi-Fiの電波</dt><dd>' . rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>'
     . '</dl></div>';
 
