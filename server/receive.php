@@ -285,4 +285,4 @@ flush();
 if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 
 // 送り先: アカウントの通知先と、このハブ・電柵を紐づけた蜂場を見られるチームの人
-hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id)) : $notifyTo);
+hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id), 'device') : $notifyTo);

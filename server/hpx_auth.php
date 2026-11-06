@@ -175,9 +175,23 @@ function account_hubs_dir(string $uid): string { return account_dir($uid) . '/hu
 function account_load(string $uid): array { return json_load(account_dir($uid) . '/account.json'); }
 function account_update(string $uid, callable $fn): bool { return json_update(account_dir($uid) . '/account.json', $fn); }
 
-// 通知の送り先(カンマ区切りの文字列)。設定が無ければアカウントのメールアドレス
-function account_notify(string $uid): string
+// お知らせメールの種類。マイアカウントで種類ごとにオン/オフできる(account.json の mail_off に、止めた種類を入れる)
+//   招待・パスワード再設定・メールアドレスの確認・チームに追加された、などの手続きのメールは止められない
+const A_MAIL_KINDS = [
+    'device' => ['機器の警報', '電柵の電圧低下、HPX-Core やセンサから届かない、電池の交換'],
+    'hive' => ['巣箱の警報', '重量・温度が設定した範囲を超えた'],
+    'task' => ['タスクのお知らせ', '期限の前日・当日・期限切れのタスク (毎朝1通)'],
+];
+function mail_on(string $uid, string $kind): bool
 {
+    return !in_array($kind, (array)(account_load($uid)['mail_off'] ?? []), true);
+}
+
+// 通知の送り先(カンマ区切りの文字列)。設定が無ければアカウントのメールアドレス
+//   $kind(A_MAIL_KINDS)を渡すと、その種類のメールを止めていれば '' を返す
+function account_notify(string $uid, string $kind = ''): string
+{
+    if ($kind !== '' && !mail_on($uid, $kind)) return '';
     $n = trim((string)(account_load($uid)['notify'] ?? ''));
     return $n !== '' ? $n : (string)(user_get($uid)['email'] ?? '');
 }

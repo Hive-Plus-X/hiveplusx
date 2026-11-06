@@ -194,7 +194,7 @@ function check_hive_alerts(int $now): void
             }
             $newState[$hid] = ['sig' => $sig, 'on' => $on];
             // 送り先は巣箱ごと: 持ち主と、その蜂場を見られるチームの人
-            hpx_alert_flush($siteDir, apiary_alert_to($uid, [(string)($hv['apiary'] ?? '')]));
+            hpx_alert_flush($siteDir, apiary_alert_to($uid, [(string)($hv['apiary'] ?? '')], 'hive'));
         }
         json_save($statePath, $newState);
     }

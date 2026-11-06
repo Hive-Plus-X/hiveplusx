@@ -28,6 +28,7 @@ StaFIX フェンスアラートの LED の点滅を HPX-A が数え、BLE で HP
 | `server/hpx_hive_alert.php` | 巣箱の警報の判定 (hpx_cron.php と hive.php から使う)。設定は巣箱ページの「警報」で、巣箱ごとに site.json に保存 |
 | `server/ical.php` | タスクのカレンダー配信 (iCal形式、一方向)。タスクページで発行したURLをGoogleカレンダーの「URLで追加」に登録する。ログイン不要でURLの合言葉で読む |
 | `server/export.php` | データ一括ダウンロード (設定ページのボタン)。蜂場・巣箱・メモ・タスク・作業記録・センサの記録を CSV (Excel用) にして ZIP で返す。写真も選べる。作業用に data/tmp/ を使う |
+| `server/backup.php` | バックアップと復元 (マイアカウントのボタン)。自分の site/ (蜂場・巣箱・メモ・タスク・作業記録・タグなどのカスタマイズ)、選べば写真と HPX-Core の記録、お知らせメールの設定を hpx_backup_日付.zip にまとめる。そのZIPをアップロードして元に戻せる (パスワードが必要)。復元の直前の状態は accounts/<id>/backup_before/ に1つ残り、「復元する前の状態に戻す」で入れ替えられる。アップロードの上限は PHP の upload_max_filesize |
 
 > どのファームも、作成環境にコンパイラを入れられなかったため、コンパイルと実機での確認はまだです。PHP は手元の PHP 8.3 で、受信・重複除け・メールの判定を試験しました。
 

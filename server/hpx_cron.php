@@ -57,7 +57,7 @@ foreach ($places as [$hubsDir, , $notifyTo, $owner]) {
             @unlink($flag);
         }
         // 送り先: アカウントの通知先と、このハブを紐づけた蜂場を見られるチームの人
-        hpx_alert_flush($dir, $owner !== '' ? apiary_alert_to($owner, hub_apiaries($owner, basename($dir))) : $notifyTo);
+        hpx_alert_flush($dir, $owner !== '' ? apiary_alert_to($owner, hub_apiaries($owner, basename($dir)), 'device') : $notifyTo);
     }
 
 }
@@ -100,7 +100,7 @@ if ((int)date('G', $now) >= $hour && trim((string)@file_get_contents($sentFlag))
         hpx_alert_queue('【HPX】タスクのお知らせ (' . count($lines) . '件)',
             "期限が近い・過ぎている作業があります。\n\n" . implode("\n", $lines) . "\n\n済んだものはタスクページで「完了」にしてください。\n" . site_url('task.php') . "\n");
         if ($to === '') hpx_alert_flush(data_dir(), null);
-        else hpx_alert_flush(account_site_dir((string)$to), account_notify((string)$to));
+        else hpx_alert_flush(account_site_dir((string)$to), account_notify((string)$to, 'task'));   // タスクのお知らせを止めている人は '' (送らない)
     }
     @file_put_contents($sentFlag, $today);
 }
