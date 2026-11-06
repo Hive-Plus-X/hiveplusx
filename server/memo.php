@@ -50,7 +50,12 @@ if (!isset($site['apiaries'][$fa])) { $fa = ''; $fh = ''; }   // 絞り込みの
 if ($fh !== '' && (($site['hives'][$fh]['apiary'] ?? '') !== $fa)) $fh = '';
 if (!in_array($ft, S_MEMO_TYPES, true)) $ft = '';
 if (!is_uid($fb)) $fb = '';
-$filter = array_filter(['a' => $fa, 'h' => $fh, 't' => $ft, 'b' => $fb, 'q' => $fq], fn($v) => $v !== '');
+// ヘギイタダニのグラフ: 期間 (mp、日数。0 = 全期間) と、出す値 (mv: n = ダニ数、r = 寄生率)。初期は 1年 と ダニ数
+const M_MITE_PERIODS = [90 => '3か月', 365 => '1年', 0 => '全期間'];
+$mp = (string)($_GET['mp'] ?? '');
+if (!isset(M_MITE_PERIODS[(int)$mp]) || $mp === '365') $mp = '';
+$mv = (string)($_GET['mv'] ?? '') === 'r' ? 'r' : '';
+$filter = array_filter(['a' => $fa, 'h' => $fh, 't' => $ft, 'b' => $fb, 'q' => $fq, 'mp' => $mp, 'mv' => $mv], fn($v) => $v !== '');
 $selfUrl = fn(array $ch = [], string $anchor = '') => 'memo.php' . (($q = http_build_query(array_filter(array_merge($filter, $ch), fn($v) => $v !== '' && $v !== null))) !== '' ? '?' . $q : '') . ($anchor !== '' ? '#' . $anchor : '');
 
 if (is_post()) {
@@ -263,6 +268,58 @@ function memo_photo_field(array $m): string
         . '<div class="mperr ng"></div></div>';
 }
 
+// ヘギイタダニのグラフ。巣箱ごと(蜂場全体あてのメモは蜂場ごと)に色を分けた折れ線で、記録した日に丸を付ける。
+//   $rate なら 寄生率 (%) = ダニ数 ÷ 検査ミツバチ数 × 100(検査ミツバチ数が入っている記録だけ)、そうでなければ ダニ数(匹)
+function memo_mite_chart(array $site, array $memos, string $fa, string $fh, int $days, bool $rate, callable $selfUrl): string
+{
+    $now = time();
+    $since = $days > 0 ? $now - $days * 86400 : 0;
+    $groups = [];
+    foreach ($memos as $m) {
+        $mt = (array)($m['mite'] ?? []);
+        if (!isset($mt['mites']) || ($m['apiary'] ?? '') === '') continue;
+        if ($fa !== '' && $m['apiary'] !== $fa) continue;
+        if ($fh !== '' && ($m['hive'] ?? '') !== $fh) continue;
+        if ($rate && (int)($mt['bees'] ?? 0) <= 0) continue;
+        $e = strtotime((string)$m['date'] . ' 12:00:00');
+        if ($e === false || $e < $since) continue;
+        $key = (string)$m['apiary'] . '|' . (string)($m['hive'] ?? '');
+        $groups[$key][] = [$e, $rate ? $mt['mites'] / $mt['bees'] * 100 : (float)$mt['mites']];
+    }
+    $sel = function (array $ch) use ($selfUrl) { return h($selfUrl(array_merge(['pg' => null], $ch), 'mite-chart')); };
+    $o = '<details id="mite-chart" open><summary><b>ヘギイタダニのグラフ</b></summary><div class="card" style="margin-top:4px">'
+        . '<div class="per" style="margin:0 0 4px">';
+    foreach (['' => 'ダニ数', 'r' => '寄生率'] as $k => $lb) $o .= '<a href="' . $sel(['mv' => $k]) . '"' . (($rate ? 'r' : '') === $k ? ' class="on"' : '') . '>' . $lb . '</a>';
+    $o .= '　';
+    foreach (M_MITE_PERIODS as $d => $lb) $o .= '<a href="' . $sel(['mp' => $d === 365 ? '' : (string)$d]) . '"' . ($d === $days ? ' class="on"' : '') . '>' . $lb . '</a>';
+    $o .= '</div>';
+    if (!$groups) {
+        return $o . '<p class="muted">' . ($rate ? '検査ミツバチ数とダニ数を入れた' : 'ダニ数を入れた') . 'ダニ調査の記録が、この期間にはありません。'
+            . '内容「内検」のメモの「ダニ調査」に入れるとグラフになります。</p></div></details>';
+    }
+    // 名前: 巣箱で絞り込んだときは巣箱名だけ、蜂場で絞り込んだときは巣箱名、すべてのときは「蜂場 / 巣箱」
+    $series = []; $leg = ''; $i = 0; $first = $now;
+    ksort($groups);
+    foreach ($groups as $key => $pts) {
+        [$a, $hv] = explode('|', $key, 2);
+        $name = $fa === '' ? target_label($site, $a, $hv) : ($hv === '' ? '蜂場全体' : (string)($site['hives'][$hv]['name'] ?? '?'));
+        usort($pts, fn($x, $y) => $x[0] <=> $y[0]);
+        $first = min($first, $pts[0][0]);
+        $c = S_COLORS[$i++ % count(S_COLORS)];
+        $series[] = [$name, $c, $pts, '', true];
+        $leg .= '<span><i style="background:' . $c . '"></i>' . h($name) . '</span>';
+    }
+    // 全期間のときは最初の記録の少し前から。記録が今日だけでも横幅が出るよう、最低でも30日分にする
+    $from = $days > 0 ? $since : min($first - 86400 * 3, $now - 30 * 86400);
+    $tip = ['l' => [$rate ? '寄生率' : 'ダニ数', $rate ? '%' : '匹', $rate ? 1 : 0], 'day' => true];
+    $span = $rate ? 2.0 : 5.0;
+    return $o . '<p class="muted" style="margin:0;font-size:.85em">' . ($rate ? '寄生率 (%) = ダニ数 ÷ 検査ミツバチ数 × 100' : 'ダニ数 (匹)') . '</p>'
+        . '<div class="gw">' . chart_dual($series, [], $from, $now, $span, 0, 600, 200, 9, '#666', '#666', $tip) . '</div>'
+        . '<div class="gn">' . chart_dual($series, [], $from, $now, $span, 0, 340, 150, 10, '#666', '#666', $tip) . '</div>'
+        . (count($series) > 1 ? '<div class="wleg">' . $leg . '</div>' : '')
+        . '</div></details>';
+}
+
 page_head('メモ - ' . S_TITLE, 'memo.php');
 echo '<p class="muted" style="font-size:.85em;margin:0 0 .5em">内検の記録、蜂の異常、外敵、開花植物などについて記載</p>' . flash_html();
 
@@ -286,7 +343,12 @@ foreach ($memos as $m) if (($m['by'] ?? '') !== '') $writers[(string)$m['by']] =
 asort($writers);
 echo '</select><select name="b" onchange="this.form.submit()"><option value="">記入者: すべて</option>';
 foreach ($writers as $u => $nm) echo '<option value="' . h($u) . '"' . ($fb === $u ? ' selected' : '') . '>' . h($nm) . '</option>';
-echo '</select><input type="search" name="q" placeholder="キーワード" value="' . h($fq) . '"><button type="submit">絞り込む</button></form>';
+echo '</select><input type="search" name="q" placeholder="キーワード" value="' . h($fq) . '"><button type="submit">絞り込む</button>';
+foreach (['mp' => $mp, 'mv' => $mv] as $k => $v) if ($v !== '') echo '<input type="hidden" name="' . $k . '" value="' . h($v) . '">';
+echo '</form>';
+
+// ---- ヘギイタダニのグラフ(内検のダニ調査の記録から。絞り込みの蜂場・巣箱に合わせる) ----
+echo memo_mite_chart($site, $memos, $fa, $fh, $mp === '' ? 365 : (int)$mp, $mv === 'r', $selfUrl);
 
 // ---- 一覧 ----
 $list = array_values(array_filter($memos, function ($m) use ($fa, $fh, $ft, $fb, $fq) {
@@ -334,7 +396,7 @@ if ($pages > 1) {
     echo '</div>';
 }
 // 対象の巣箱は選んだ蜂場のものだけ。タグの「カスタマイズ」は、その場で一覧を直して、ページ内のすべてのフォームのタグを並べ直す
-echo tag_js('memo.php', memo_tags());
+echo tag_js('memo.php', memo_tags()) . chart_tip_js();
 echo <<<'JS'
 <script>
 function memoHives(sa){   // iPhone では option の hidden が効かないので、選べる巣箱だけを入れ直す

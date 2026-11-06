@@ -888,17 +888,18 @@ function chart_tip_js(): string
       var r = svg.getBoundingClientRect(), k = d.W / r.width, vx = (ev.clientX - r.left) * k;
       if (vx < d.x0 || vx > d.x1){ hide(); return; }
       var e = d.f + (vx - d.x0) / (d.x1 - d.x0) * (d.t - d.f), best = null, rows = '';
+      var ps = d.s.map(function(s){ var p = near(s.p, e); if (Math.abs(p[0] - e) <= gap && (!best || Math.abs(p[0] - e) < Math.abs(best[0] - e))) best = p; return p; });
       d.s.forEach(function(s, i){
-        var p = near(s.p, e);
-        if (Math.abs(p[0] - e) > gap){ dots[i].style.display = 'none'; return; }
-        if (!best || Math.abs(p[0] - e) < Math.abs(best[0] - e)) best = p;
+        var p = ps[i];
+        // 日付だけのグラフ(d.day)は、一番近い記録と同じ日の記録だけを出す
+        if (Math.abs(p[0] - e) > gap || (d.day && Math.abs(p[0] - best[0]) >= 43200)){ dots[i].style.display = 'none'; return; }
         dots[i].style.display = ''; dots[i].setAttribute('cx', d.x0 + (p[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0)); dots[i].setAttribute('cy', p[2]);
         rows += '<div><span style="color:' + s.c + '">●</span> ' + esc(s.n) + ' <b>' + p[1].toFixed(s.d) + '</b> ' + esc(s.u) + '</div>';
       });
       if (!best){ hide(); return; }
       var bx = d.x0 + (best[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0), t = new Date(best[0] * 1000);
       ln.setAttribute('x1', bx); ln.setAttribute('x2', bx); g.style.display = '';
-      box.innerHTML = '<div class="tt">' + (t.getMonth() + 1) + '/' + t.getDate() + ' ' + two(t.getHours()) + ':' + two(t.getMinutes()) + '</div>' + rows;
+      box.innerHTML = '<div class="tt">' + (t.getMonth() + 1) + '/' + t.getDate() + (d.day ? '' : ' ' + two(t.getHours()) + ':' + two(t.getMinutes())) + '</div>' + rows;
       box.style.display = 'block';
       var px = bx / k, bw = box.offsetWidth;   // 線の右に出す。右端に近いときは左に出す
       box.style.left = (px + 10 + bw > r.width ? Math.max(0, px - 10 - bw) : px + 10) + 'px';
