@@ -17,6 +17,7 @@ DEVICES = [
          variants=[('core', '通常版'), ('core_wp', '防水版')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
+         no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
          wiring=[('HPX-Core_wiring.png', '配線図 (通常版・防水版とも同じ)', 'USB 電源をつなぐだけで、外付けの配線はありません。')],
          note='屋内や軒下に置く通常版と、屋外に置ける防水版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
@@ -298,7 +299,7 @@ def parts_table(dev, rows):
     out.append(f'        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td>{"".join(tot)}</tr></tfoot>')
     out.append('      </table>')
     t = '\n'.join(out)
-    notes = ['部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。']
+    notes = [] if dev.get('no_cost_note') else ['部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。']
     if len(vs) > 1:
         notes.insert(0, '<i></i>色の付いた行は、版によって違う部品です。')
     t += ''.join(f'\n      <p class="legend">{n}</p>' for n in notes)
