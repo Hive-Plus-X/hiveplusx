@@ -21,7 +21,7 @@ const D_W_LOW_BV = 2.8;              // 重量センサの電池電圧(V)がこ�
 const D_FENCE_DAYS = 7;              // 電柵の検出の履歴を出す日数
 const D_FENCE_MAX = 100;             // 電柵の検出の履歴の最大行数
 const D_MAIL_MAX = 50;               // メール送信履歴の最大行数
-const D_COLORS = ['#1565c0', '#c62828', '#2e7d32', '#6a1b9a', '#ef6c00', '#00838f', '#5d4037', '#ad1457'];
+const D_COLORS = ['#1565c0', '#c62828', '#2e7d32', '#6a1b9a', '#ef6c00', '#00838f', '#5d4037', '#ad1457', '#827717', '#455a64'];   // 10台まで別の色 (HPX-Core v1.19 は最大10台)
 
 function page_head(string $title, bool $refresh = false): void
 {

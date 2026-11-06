@@ -251,7 +251,7 @@
       <ol class="steps">
         <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと / HPX-A 0.02秒ごと (光を読む)</span></div></li>
         <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
-        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサからの情報をとらえ、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ)</span></div></li>
+        <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサからの情報をとらえ、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ。初期は30分)</span></div></li>
         <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi でルーターからインターネットを通じてサーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
         <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、お知らせメールを出したり、データを補正したりします。</span><span class="when">届いたとき</span></div></li>
         <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
@@ -278,11 +278,11 @@
       <div class="text">
         <p class="eyebrow">Hub</p>
         <h2>ハブ　HPX-Core</h2>
-        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで保存し、つながったときにまとめて送ります。HPX-Core のファームウェアプログラムのアップデートも、サーバーから自動で行えます。</p>
+        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで (センサ10台・15分ごとの記録では約2日分) 保存し、つながったときにまとめて送ります。HPX-Core のファームウェアプログラムのアップデートも、サーバーから自動で行えます。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
-        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (8台まで)</dd></div><div><dt>重量センサの初期校正</dt><dd>おもりを乗せない0kgと、重量のわかるものを乗せた時の値の2点校正を行います。</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fiアドレス を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。ソーラーパネルとバッテリーで使用するときは、ディープスリープを活用した省電力モードを選べます</dd></div></dl>
+        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (10台まで)</dd></div><div><dt>重量センサの初期校正</dt><dd>おもりを乗せない0kgと、重量のわかるものを乗せた時の値の2点校正を行います。</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fiアドレス を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (初期は30分。毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。ソーラーパネルとバッテリーで使用するときは、ディープスリープを活用した省電力モードを選べます</dd></div></dl>
       </div>
     </div>
   </section>
