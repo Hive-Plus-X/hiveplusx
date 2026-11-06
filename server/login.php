@@ -3,8 +3,10 @@
 //   ・ログイン(メールアドレスとパスワード)
 //   ・パスワードを忘れたとき(再設定のメールを送る)
 //   ・メールのリンク(?k=...): 招待されたアカウントのパスワードを決める / パスワードの再設定 / メールアドレスの変更の確認
+//   ・アカウントの登録(?signup=1): サーバー管理ページで登録方法を「申請→承認」か「自由登録」にしたときだけ
+//     どちらも、データ利用への同意のチェックが要る(招待のリンクからパスワードを決めるときも同じ)
 //   ・初期設定: アカウントがまだ1つも無いとき。今の共通パスワード($HPX_VIEW_PASSWORD)で本人を確かめて、
-//     サイト管理者のアカウントを作り、前の版のデータ(data/site/ と data/<HPX-CoreのID>/)をそのアカウントへ移す
+//     サーバー管理者のアカウントを作り、前の版のデータ(data/site/ と data/<HPX-CoreのID>/)をそのアカウントへ移す
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 
@@ -74,6 +76,7 @@ if (!users_exist()) {
         if ($err === '') {
             $lock = migrate_lock(LOCK_EX);
             $uid = users_exist() ? '' : user_create($email, $name, true, password_hash($pw, PASSWORD_DEFAULT));
+            if ($uid !== '') user_set($uid, ['consent' => time()]);   // サーバー管理者本人
             $moved = $uid !== '' ? migrate_legacy($uid) : [];
             if ($lock) { flock($lock, LOCK_UN); fclose($lock); }
             if ($uid === '') lp_msg('初期設定', '<p class="ng">もう初期設定が済んでいます。</p><p><a href="login.php">ログイン</a></p>');
@@ -83,7 +86,7 @@ if (!users_exist()) {
         }
     }
     lp_head('初期設定');
-    echo '<div class="card"><p><b>初期設定</b></p><p class="muted">アカウントでログインする仕組みに変わりました。最初に、サイト管理者 (あなた) のアカウントを作ります。'
+    echo '<div class="card"><p><b>初期設定</b></p><p class="muted">アカウントでログインする仕組みに変わりました。最初に、サーバー管理者 (あなた) のアカウントを作ります。'
         . 'これまでの蜂場・巣箱・メモ・作業記録・センサの記録は、すべてこのアカウントに移ります。</p>'
         . ($err !== '' ? '<p class="ng">' . h($err) . '</p>' : '')
         . '<form method="post">' . $csrfField
@@ -142,7 +145,7 @@ if (isset($_GET['k'])) {
     $code = (string)$_GET['k'];
     $ln = link_get($code);
     if (!$ln) lp_msg('リンク', '<p class="ng">このリンクは使えません (期限切れか、もう使われています)。</p>'
-        . '<p class="muted">招待のリンクはサイト管理者に送り直してもらってください。パスワードの再設定は <a href="login.php?forgot=1">もう一度送れます</a>。</p>');
+        . '<p class="muted">招待のリンクはサーバー管理者に送り直してもらってください。パスワードの再設定は <a href="login.php?forgot=1">もう一度送れます</a>。</p>');
     $u = user_get((string)$ln['uid']);
     if (($u['status'] ?? '') === 'stopped') lp_msg('リンク', '<p class="ng">このアカウントは停止中です。</p>');
 
@@ -160,14 +163,17 @@ if (isset($_GET['k'])) {
 
     // 招待・再設定: パスワードを決める
     $invite = $ln['kind'] === 'invite';
+    $needConsent = $invite && !consent_given($u);   // 招待で登録するときは、データ利用への同意が要る
     $err = '';
     $name = trim(mb_substr((string)($_POST['name'] ?? $u['name']), 0, 40));
     if ($post) {
         $pw = (string)($_POST['pw'] ?? '');
         $err = $invite && $name === '' ? '表示名を入れてください。' : pw_check_new($pw, (string)($_POST['pw2'] ?? ''));
+        if ($err === '' && $needConsent && empty($_POST['consent'])) $err = 'データの利用への同意にチェックを入れてください。';
         if ($err === '' && link_get($code, true)) {
             $set = ['pw' => password_hash($pw, PASSWORD_DEFAULT), 'pwv' => (int)($u['pwv'] ?? 1) + 1, 'status' => 'active'];
             if ($invite) $set['name'] = $name;
+            if ($needConsent) $set['consent'] = time();
             user_set((string)$u['id'], $set);
             login_fail((string)$u['email'], false);
             auth_login(user_get((string)$u['id']));
@@ -183,6 +189,7 @@ if (isset($_GET['k'])) {
         . ($invite ? '<label>表示名</label><input type="text" name="name" maxlength="40" value="' . h($name) . '" required>' : '')
         . '<label>パスワード (' . A_PW_MIN . '文字以上)</label><input type="password" name="pw" autocomplete="new-password" required autofocus>'
         . '<label>パスワード (確認)</label><input type="password" name="pw2" autocomplete="new-password" required>'
+        . ($needConsent ? '<p style="margin-top:1em"><b>データの利用について</b></p>' . consent_field() : '')
         . '<button type="submit">決める</button></form></div>';
     lp_end();
 }
@@ -203,13 +210,78 @@ if (isset($_GET['forgot'])) {
                 . link_url(link_issue('reset', (string)$u['id'])) . "\n\n心当たりが無いときは、このメールは捨ててください。パスワードは変わりません。\n");
         }
         lp_msg('パスワードの再設定', '<p>そのメールアドレスのアカウントがあれば、再設定のメールを送りました。届いたメールのリンクを開いてください。</p>'
-            . '<p class="muted">届かないときは、迷惑メールのフォルダも見てください。サイト管理者に再設定のリンクを出してもらうこともできます。</p><p><a href="login.php">ログインへ戻る</a></p>');
+            . '<p class="muted">届かないときは、迷惑メールのフォルダも見てください。サーバー管理者に再設定のリンクを出してもらうこともできます。</p><p><a href="login.php">ログインへ戻る</a></p>');
     }
     lp_head('パスワードの再設定');
     echo '<div class="card"><p><b>パスワードを忘れたとき</b></p><p class="muted">登録したメールアドレスに、再設定のリンクを送ります。</p>'
         . '<form method="post" action="login.php?forgot=1">' . $csrfField
         . '<label>メールアドレス</label><input type="email" name="email" required autofocus>'
         . '<button type="submit">再設定のメールを送る</button></form><p><a href="login.php">ログインへ戻る</a></p></div>';
+    lp_end();
+}
+
+// ====================================================================
+// アカウントの登録 (login.php?signup=1)。登録方法が「申請→承認」(apply) か「自由登録」(open) のときだけ
+//   apply: 申請中 (pending) のアカウントを作り、サーバー管理者に知らせる。承認されると招待メールが届く
+//   open : 招待中 (invited) のアカウントを作り、すぐ招待メールを送る (メールのリンクでパスワードを決めると使える)
+//   アカウントがあるかどうかは画面に出さない (どのアドレスでも同じ答え)
+// ====================================================================
+
+if (isset($_GET['signup'])) {
+    $mode = signup_mode();
+    if ($mode === 'invite') lp_msg('アカウントの登録', '<p>このサーバーでは、アカウントはサーバー管理者が発行します。サーバー管理者に問い合わせてください。</p><p><a href="login.php">ログインへ戻る</a></p>');
+    $apply = $mode === 'apply';
+    $title = $apply ? 'アカウント登録の申請' : 'アカウントの登録';
+    $err = '';
+    $email = email_norm((string)($_POST['email'] ?? ''));
+    $name = trim(mb_substr((string)($_POST['name'] ?? ''), 0, 40));
+    $note = trim(mb_substr((string)($_POST['note'] ?? ''), 0, 300));
+    if ($post) {
+        if ((string)($_POST['website'] ?? '') !== '') lp_msg($title, '<p>受け付けました。</p>');   // 機械の書き込み (見えない欄に入っている) は何もしない
+        if (!email_ok($email)) $err = 'メールアドレスを正しく入れてください。';
+        elseif ($name === '') $err = '表示名を入れてください。';
+        elseif (empty($_POST['consent'])) $err = 'データの利用への同意にチェックを入れてください。';
+        elseif (!signup_rate_ok()) $err = '続けて送られたため、受け付けを止めています。しばらく待ってから試してください。';
+        if ($err === '') {
+            $u = user_by_email($email);
+            if (!$u) {
+                $uid = user_create($email, $name, false);
+                if ($uid !== '') {
+                    user_set($uid, ['consent' => time(), 'signup' => $mode] + ($apply ? ['status' => 'pending', 'apply_note' => $note] : ['invite_sent' => time()]));
+                    if ($apply) {
+                        foreach (server_admin_emails() as $to) account_mail($to, '【HPX】アカウント登録の申請が届きました',
+                            "アカウント登録の申請が届きました。\n\n表示名: " . $name . "\nメールアドレス: " . $email . ($note !== '' ? "\nひとこと: " . $note : '')
+                            . "\n\nサーバー管理ページで、承認するか断るかを選んでください。\n" . site_url('admin.php') . "\n");
+                    } else {
+                        account_mail($email, '【HPX】アカウントの登録', $name . " さん\n\nHPX 蜂場管理のアカウントの登録を受け付けました。\n次のリンクを開いて、パスワードを決めてください (" . A_LINK_HOURS . "時間有効)。\n"
+                            . "ログインには、このメールアドレス (" . $email . ") を使います。\n\n" . link_url(link_issue('invite', $uid)) . "\n\n心当たりが無いときは、このメールは捨ててください。\n");
+                    }
+                }
+            } elseif (!$apply && ($u['status'] ?? '') === 'invited' && time() - (int)($u['invite_sent'] ?? 0) >= 300) {
+                // 自由登録で、まだパスワードを決めていない人がもう一度登録したら、リンクを送り直す (5分に1通まで)
+                user_set((string)$u['id'], ['invite_sent' => time()]);
+                account_mail($email, '【HPX】アカウントの登録', (string)$u['name'] . " さん\n\n次のリンクを開いて、パスワードを決めてください (" . A_LINK_HOURS . "時間有効)。\n\n"
+                    . link_url(link_issue('invite', (string)$u['id'])) . "\n\n心当たりが無いときは、このメールは捨ててください。\n");
+            }
+            lp_msg($title, $apply
+                ? '<p class="ok">申請を受け付けました。</p><p>サーバー管理者が承認すると、' . h($email) . ' に案内のメールが届きます。メールのリンクからパスワードを決めると使えるようになります。</p>'
+                  . '<p class="muted">すでにアカウントがあるときは、そのままログインできます。</p><p><a href="login.php">ログインへ戻る</a></p>'
+                : '<p class="ok">' . h($email) . ' にメールを送りました。</p><p>届いたメールのリンクを開いて、パスワードを決めてください (' . A_LINK_HOURS . '時間有効)。</p>'
+                  . '<p class="muted">届かないときは、迷惑メールのフォルダも見てください。すでにアカウントがあるときは、そのままログインできます (<a href="login.php?forgot=1">パスワードを忘れたとき</a>)。</p><p><a href="login.php">ログインへ戻る</a></p>');
+        }
+    }
+    lp_head($title);
+    echo '<div class="card"><p><b>' . h($title) . '</b></p><p class="muted">' . ($apply
+            ? '申請すると、サーバー管理者が確かめてから承認します。承認されると、案内のメールが届きます。'
+            : 'メールアドレスを入れると、パスワードを決めるリンクがメールで届きます。') . '</p>'
+        . ($err !== '' ? '<p class="ng">' . h($err) . '</p>' : '')
+        . '<form method="post" action="login.php?signup=1">' . $csrfField
+        . '<label>メールアドレス (ログインに使います)</label><input type="email" name="email" value="' . h($email) . '" autocomplete="email" required autofocus>'
+        . '<label>表示名 (メモや作業記録の記入者として出ます)</label><input type="text" name="name" maxlength="40" value="' . h($name) . '" required>'
+        . ($apply ? '<label>ひとこと (任意。どなたか分かるように、所属や地域など)</label><input type="text" name="note" maxlength="300" value="' . h($note) . '">' : '')
+        . '<div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>'
+        . '<p style="margin-top:1em"><b>データの利用について</b></p>' . consent_field()
+        . '<button type="submit">' . ($apply ? '申請する' : '登録する') . '</button></form><p><a href="login.php">ログインへ戻る</a></p></div>';
     lp_end();
 }
 
@@ -252,9 +324,10 @@ if ($post) {
     } else {
         sleep(2);   // 総当たり対策
         if ($email !== '') login_fail($email, true);
-        $err = ($u['status'] ?? '') === 'stopped' ? 'このアカウントは停止中です。サイト管理者に問い合わせてください。'
+        $err = ($u['status'] ?? '') === 'stopped' ? 'このアカウントは停止中です。サーバー管理者に問い合わせてください。'
+            : (($u['status'] ?? '') === 'pending' ? '登録の申請を確かめているところです。承認されると案内のメールが届きます。'
             : (($u['status'] ?? '') === 'invited' ? 'まだ登録が済んでいません。招待メールのリンクからパスワードを決めてください。'
-            : 'メールアドレスかパスワードが違います。');
+            : 'メールアドレスかパスワードが違います。'));
     }
 }
 lp_head('HPX-note ログイン - ' . L_TITLE);
@@ -264,6 +337,7 @@ echo '<div class="card"><form method="post" action="login.php">' . $csrfField . 
     . '<label>パスワード</label><input type="password" name="pw" autocomplete="current-password" required>'
     . '<button type="submit">ログイン</button></form>'
     . '<p class="muted"><a href="login.php?forgot=1">パスワードを忘れたとき</a></p>'
-    . '<p class="muted">アカウントはサイト管理者が発行します。</p></div>';
+    . (signup_mode() === 'invite' ? '<p class="muted">アカウントはサーバー管理者が発行します。</p>'
+        : '<p>アカウントが無いときは <a href="login.php?signup=1">' . (signup_mode() === 'apply' ? 'アカウント登録を申請する' : 'アカウントを登録する') . '</a></p>') . '</div>';
 if (demo_uid() !== '') echo '<div class="card"><p><b>お試し</b>: ログインせずに、見本の蜂場で使い方を試せます。</p><p><a href="login.php?demo=1">デモを開く</a></p></div>';
 lp_end();

@@ -3,7 +3,9 @@
 //   読み込むだけでは何もしない(関数の定義だけ)。ページは auth_require() でログインを確かめる。receive.php・hpx_cron.php も使う。
 //   保存先(データフォルダ。data/.htaccess で外から開けない):
 //     users.json     アカウント一覧 {"users": {"u_3f9a1c7e": {email, name, pw, pwv, admin, status, created, last_login}}}
-//                      status: active=使える / invited=招待中(まだパスワードを決めていない) / stopped=停止中
+//                      status: active=使える / invited=招待中(まだパスワードを決めていない) / stopped=停止中 / pending=登録の申請中(承認待ち)
+//                      consent: データ利用に同意した日時 (epoch。登録のときにチェックする)
+//     server.json    サーバーの設定 {"signup": "invite" | "apply" | "open"} (アカウントの登録方法。サーバー管理ページで切り替える)
 //     tokens.json    機器用トークンの sha256 → アカウントID
 //     ical_keys.json タスクのカレンダー配信の合言葉の sha256 → アカウントID
 //     links.json     招待・パスワード再設定・メールアドレス変更のリンク(コードの sha256 → 内容。期限付き、1回だけ使える)
@@ -226,7 +228,7 @@ function token_uid(string $token): ?string
     $uid = (string)(json_load(data_dir() . '/tokens.json')[hash('sha256', $token)] ?? '');
     if (!is_uid($uid)) return null;
     $u = user_get($uid);
-    return $u && ($u['status'] ?? '') !== 'stopped' ? $uid : null;
+    return $u && !in_array($u['status'] ?? '', ['stopped', 'pending'], true) ? $uid : null;
 }
 
 function token_forget(string $uid): void
@@ -330,6 +332,70 @@ function account_mail(string $to, string $subject, string $body): array
 }
 
 // ====================================================================
+// アカウントの登録方法 (サーバー管理ページで切り替える。data/server.json の signup)
+//   invite: サーバー管理者が招待する (前からのやり方。初期値)
+//   apply : 本人が登録を申請し、サーバー管理者が承認すると招待メールが届く
+//   open  : 本人がメールアドレスを入れると招待メールが届き、すぐ使える (自由登録)
+// ====================================================================
+
+const A_SIGNUP_MODES = ['invite' => 'サーバー管理者が招待する', 'apply' => '登録の申請 → サーバー管理者が承認', 'open' => '自由登録 (だれでも登録できる)'];
+const A_SIGNUP_PER_HOUR = 5;   // 同じ接続元 (IPアドレス) から1時間に受け付ける登録・申請の数
+
+function server_conf(): array { return json_load(data_dir() . '/server.json'); }
+function server_conf_set(array $fields): bool { return json_update(data_dir() . '/server.json', fn(array $c) => array_merge($c, $fields)); }
+function signup_mode(): string
+{
+    $m = (string)(server_conf()['signup'] ?? 'invite');
+    return isset(A_SIGNUP_MODES[$m]) ? $m : 'invite';
+}
+
+// ====================================================================
+// データ利用の同意 (登録のときにチェックする。サーバー管理者が全アカウントのデータをダウンロードする前提)
+//   文は config.php の $HPX_CONSENT_TEXT で変えられる。$HPX_TERMS_URL があれば「利用規約」のリンクを付ける
+// ====================================================================
+
+const A_CONSENT_DEFAULT = 'このサーバーの管理者が、私のデータ (蜂場・巣箱・メモ・作業記録・センサの記録など) をダウンロードし、研究や養蜂の改善などに利用することに同意します。';
+function consent_text(): string
+{
+    global $HPX_CONSENT_TEXT;
+    $t = trim((string)($HPX_CONSENT_TEXT ?? ''));
+    return $t !== '' ? $t : A_CONSENT_DEFAULT;
+}
+// 同意のチェック欄 (name="consent")。$required ならチェックしないと送れない
+function consent_field(bool $required = true): string
+{
+    global $HPX_TERMS_URL;
+    $url = trim((string)($HPX_TERMS_URL ?? ''));
+    return '<label style="display:flex;gap:6px;align-items:flex-start;color:#222;cursor:pointer"><input type="checkbox" name="consent" value="1"' . ($required ? ' required' : '')
+        . ' style="width:auto;margin:.25em 0 0"><span>' . h(consent_text())
+        . ($url !== '' && preg_match('#^https?://#', $url) ? ' (<a href="' . h($url) . '" target="_blank" rel="noopener">利用規約</a>)' : '') . '</span></label>';
+}
+function consent_given(array $u): bool { return (int)($u['consent'] ?? 0) > 0; }
+
+// 登録・申請を受け付けすぎないように、接続元ごとに数える。受け付けてよければ true (数える)
+function signup_rate_ok(): bool
+{
+    $ip = hash('sha256', (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+    $now = time();
+    $ok = false;
+    json_update(data_dir() . '/signup_rate.json', function (array $r) use ($ip, $now, &$ok) {
+        $r = array_filter(array_map(fn($ts) => array_values(array_filter((array)$ts, fn($t) => (int)$t > $now - 3600)), $r));
+        $ok = count($r[$ip] ?? []) < A_SIGNUP_PER_HOUR;
+        if ($ok) $r[$ip][] = $now;
+        return $r;
+    });
+    return $ok;
+}
+
+// サーバー管理者 (停止中でない) のメールアドレス。登録の申請を知らせるのに使う
+function server_admin_emails(): array
+{
+    $o = [];
+    foreach (users_all() as $u) if (!empty($u['admin']) && ($u['status'] ?? '') === 'active' && !is_demo($u)) $o[] = (string)$u['email'];
+    return $o;
+}
+
+// ====================================================================
 // 蜂場を見てよいか・蜂場での役割
 //   持ち主なら 'owner'。チームに共有された蜂場なら 'admin' / 'member'(hpx_team.php)。見られなければ null
 //   $ownerUid: その蜂場を持っているアカウント(蜂場は持ち主のアカウントの site/site.json にある)
@@ -396,21 +462,21 @@ function auth_require(string $selfPage, bool $adminOnly = false): array
         exit;
     }
     if (is_demo($u)) {
-        $u['admin'] = false;   // デモ用アカウントはサイト管理者にしない
+        $u['admin'] = false;   // デモ用アカウントはサーバー管理者にしない
         demo_guard(basename($selfPage));
         demo_sensor_fill();
     }
-    // サイト管理者には、ページが途中で止まったときのエラーの内容を画面の下に出す (原因を調べるため)
+    // サーバー管理者には、ページが途中で止まったときのエラーの内容を画面の下に出す (原因を調べるため)
     if (!empty($u['admin'])) register_shutdown_function(function () {
         $e = error_get_last();
         if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_RECOVERABLE_ERROR], true)) {
             echo '<div style="margin:1em;padding:.8em;border:2px solid #c62828;background:#fff;color:#c62828;white-space:pre-wrap;font-size:13px">'
-                . 'エラーで止まりました (サイト管理者だけに表示しています):' . "\n" . htmlspecialchars($e['message'] . "\n" . basename((string)$e['file']) . ' ' . $e['line'], ENT_QUOTES) . '</div>';
+                . 'エラーで止まりました (サーバー管理者だけに表示しています):' . "\n" . htmlspecialchars($e['message'] . "\n" . basename((string)$e['file']) . ' ' . $e['line'], ENT_QUOTES) . '</div>';
         }
     });
     if ($adminOnly && empty($u['admin'])) {
         http_response_code(403);
-        exit('このページはサイト管理者だけが開けます。');
+        exit('このページはサーバー管理者だけが開けます。');
     }
     if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16));
     $csrf = (string)$_SESSION['csrf'];
@@ -797,7 +863,7 @@ function auth_next(string $next): string
     return preg_match('/^(apiary|hive|memo|task|work|sensor|team|account|admin)\.php(\?[^\s<>"]*)?$/', $next) ? $next : 'apiary.php';
 }
 
-// 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・管理(サイト管理者だけ)が出る。蜂場ページとセンサページで共通
+// 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・サーバー管理(サーバー管理者だけ)が出る。蜂場ページとセンサページで共通
 function auth_nav_right(string $active): string
 {
     global $ME;
@@ -807,7 +873,7 @@ function auth_nav_right(string $active): string
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
     foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
     $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
-    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>アカウント管理</a>';
+    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>サーバー管理</a>';
     // 外を押したら閉じる
     return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';
 }
