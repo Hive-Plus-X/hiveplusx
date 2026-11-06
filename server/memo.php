@@ -69,7 +69,8 @@ if (is_post()) {
         $text = str_in('text', 10000);
         $tags = tags_in();
         $type = (string)($_POST['type'] ?? '');
-        if (!in_array($type, array_merge(S_MEMO_TYPES, S_MEMO_TYPES_OLD), true)) $type = 'その他';
+        if ($type === '－') $type = '';   // 「－」= 内容を選ばない (空で保存)
+        elseif (!in_array($type, array_merge(S_MEMO_TYPES, S_MEMO_TYPES_OLD), true)) $type = 'その他';
         $insp = [];
         if ($type === '内検') {
             foreach (M_INSPECT as $k => [, $opts, $multi]) {
@@ -188,10 +189,10 @@ usort($memos, fn($x, $y) => [$y['date'] ?? '', $y['created'] ?? 0] <=> [$x['date
 function memo_form(array $m, array $site, string $back): string
 {
     [$a, $hv] = [(string)($m['apiary'] ?? ''), (string)($m['hive'] ?? '')];
-    $type = (string)($m['type'] ?? '内検');
+    $type = (string)($m['type'] ?? '');   // 空 = 「－」(内容を選んでいない)
     $fid = 'f' . substr(md5((string)($m['id'] ?? 'new')), 0, 6);
     // 対象は 蜂場(すべて・各蜂場) と 巣箱(空 = 蜂場全体)。巣箱は選んだ蜂場のものだけ出す(memoHives)
-    $all = isset($m['id']) && $a === '';
+    $all = $a === '';   // 新しいメモも、蜂場を指定しないで開いたら「すべて」
     $sa = '<select name="t_a" required onchange="memoHives(this)"><option value="*"' . ($all ? ' selected' : '') . '>すべて</option>';
     $sh = '<select name="t_h" onchange="memoWork(this.form)"' . ($all ? ' disabled' : '') . '><option value=""></option>';
     foreach ($site['apiaries'] as $aid => $ap) {
@@ -200,7 +201,8 @@ function memo_form(array $m, array $site, string $back): string
             $sh .= '<option value="' . h($hid) . '" data-a="' . h($aid) . '"' . ($hv === $hid ? ' selected' : '') . ($aid !== $a ? ' hidden' : '') . '>' . h((string)$x['name']) . '</option>';
         }
     }
-    $types = S_MEMO_TYPES;
+    $types = array_merge(['－'], S_MEMO_TYPES);
+    if ($type === '') $type = '－';
     if (!in_array($type, $types, true)) $types[] = $type;   // 前の版の内容のメモ
     $o = '<form method="post" class="form" id="' . $fid . '" enctype="multipart/form-data">' . csrf_field() . '<input type="hidden" name="act" value="memo_save">'
         . '<input type="hidden" name="id" value="' . h((string)($m['id'] ?? '')) . '"><input type="hidden" name="back" value="' . h($back) . '">'
@@ -322,9 +324,9 @@ echo '<p class="muted" style="font-size:.85em;margin:0 0 .5em">内検の記録�
 
 // ---- 新しいメモ ----
 $nt = (string)($_GET['new'] ?? '');
-$pre = parse_target($site, $nt) ?? [$fa !== '' ? $fa : (string)(array_key_first($site['apiaries']) ?? ''), $fh];
+$pre = parse_target($site, $nt) ?? ['', ''];   // 対象の初期は「すべて」(蜂場・巣箱のページから来たときはその対象)
 echo '<details id="memo-form"' . ($nt !== '' ? ' open' : '') . '><summary>＋ メモを書く</summary><div class="card">'
-    . memo_form(['apiary' => $pre[0], 'hive' => $pre[1], 'type' => '内検'], $site, $selfUrl()) . '</div></details>';
+    . memo_form(['apiary' => $pre[0], 'hive' => $pre[1], 'type' => ''], $site, $selfUrl()) . '</div></details>';
 
 // ---- メモ検索(蜂場・巣箱はプルダウン。選んだらすぐ絞り込む) ----
 echo '<p style="margin:.8em 0 .2em"><b>メモ検索</b></p><form method="get" class="msearch">'

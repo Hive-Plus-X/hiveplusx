@@ -16,6 +16,10 @@ $works = works_load();
 $taskPage = defined('W_TASK_PAGE');
 $fp = (string)($_GET['p'] ?? '');   // 記録ページのグラフの担当者
 if (!is_uid($fp)) $fp = '';
+// 採蜜量のグラフの蜂場(hp。all = すべて。指定がなければ上で選んだ蜂場)
+$hp = (string)($_GET['hp'] ?? '');
+if ($hp !== 'all' && !isset($site['apiaries'][$hp])) $hp = '';
+$fh = $hp === 'all' ? '' : ($hp !== '' ? $hp : $fa);
 $page = $taskPage ? 'task.php' : 'work.php';
 
 // タスクのタグの初期の一覧。カスタマイズしたら site/work_tags.json に保存する
@@ -31,6 +35,11 @@ function work_types(): array
     $l = isset($v['types']) && is_array($v['types']) ? array_values(array_unique(array_filter(array_map(fn($t) => tag_clean((string)$t), $v['types']), fn($t) => $t !== ''))) : [];
     return $l ?: S_WORK_TYPES;
 }
+
+// 採蜜の作業か(種類はカスタマイズできるので、名前に「採蜜」を含めば採蜜とみなす。例: 採蜜・採蜜(春))
+function is_harvest(string $type): bool { return mb_strpos($type, '採蜜') !== false; }
+// 採蜜量 (kg) の表示。小数は必要なぶんだけ
+function kg(float $v): string { return rtrim(rtrim(number_format($v, 1, '.', ''), '0'), '.'); }
 
 // 種類の一覧の変更(画面からその場で送られ、新しい一覧を JSON で返す)。act が違えば何もしない
 function type_post(string $act): void
@@ -78,7 +87,7 @@ function assignee_options(array $site, string $aid): array
     return $out;
 }
 
-$selfUrl = fn(array $ch = [], string $anchor = '') => $page . '?' . http_build_query(array_filter(array_merge(['a' => $fa, 'm' => $month, 'p' => $fp], $ch), fn($v) => $v !== '')) . ($anchor !== '' ? '#' . $anchor : '');
+$selfUrl = fn(array $ch = [], string $anchor = '') => $page . '?' . http_build_query(array_filter(array_merge(['a' => $fa, 'm' => $month, 'p' => $fp, 'hp' => $hp], $ch), fn($v) => $v !== '')) . ($anchor !== '' ? '#' . $anchor : '');
 
 if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
@@ -184,12 +193,16 @@ if (is_post()) {
         // 担当者(作業した人。複数)。人数は担当者の数より少なくしない
         $opts = assignee_options($site, $tg[0]);
         $workers = array_values(array_unique(array_filter(array_map('strval', (array)($_POST['workers'] ?? [])), fn($u) => isset($opts[$u]))));
-        site_update('works', function (array $w) use ($newId, $tg, $type, $start, $end, $min, $date, $workers) {
+        // 採蜜量 (kg): 採蜜の作業のときだけ。空なら持たない
+        $hk = trim((string)($_POST['honey_kg'] ?? ''));
+        $honey = is_harvest($type) && is_numeric($hk) && (float)$hk > 0 && (float)$hk <= 100000 ? round((float)$hk, 1) : null;
+        site_update('works', function (array $w) use ($newId, $tg, $type, $start, $end, $min, $date, $workers, $honey) {
             $w['logs'] = is_array($w['logs'] ?? null) ? $w['logs'] : [];
             $row = ['id' => $newId, 'apiary' => $tg[0], 'hive' => $tg[1], 'date' => $date, 'type' => $type, 'workers' => $workers,
                 'start' => $start, 'end' => $end, 'minutes' => $min, 'people' => max(1, count($workers), min(99, (int)($_POST['people'] ?? 1))),
-                'note' => str_in('note'), 'updated' => time(), 'updated_by' => $GLOBALS['UID']];
-            foreach ($w['logs'] as &$x) if (($x['id'] ?? '') === $newId) { $x = array_merge($x, $row); return $w; }
+                'note' => str_in('note'), 'honey_kg' => $honey, 'updated' => time(), 'updated_by' => $GLOBALS['UID']];
+            if ($honey === null) unset($row['honey_kg']);
+            foreach ($w['logs'] as &$x) if (($x['id'] ?? '') === $newId) { $x = array_merge($x, $row); if ($honey === null) unset($x['honey_kg']); return $w; }
             unset($x);
             $w['logs'][] = $row + ['created' => time(), 'by' => $GLOBALS['UID']];
             return $w;
@@ -283,50 +296,108 @@ function work_chart(array $logs, string $endM, string $person, callable $selfUrl
         foreach ($people as $u => $nm) $o .= '<a href="' . h($selfUrl(['p' => $u], 'wchart')) . '"' . ($person === $u ? ' class="on"' : '') . '>' . h($nm) . '</a>';
         $o .= '</div>';
     }
-    // 縦軸: 目盛り4本。1目盛りを 0.25・0.5・1・2・5・10… 時間の切りのよい数にする
-    $maxH = 0;
-    foreach ($months as $m) $maxH = max($maxH, array_sum($val[$m] ?? []) / 60);
-    $step = 0.25;
-    foreach ([0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000] as $c) { $step = $c; if ($c * 4 >= $maxH) break; }
-    $top = $step * 4;
-    // パソコン用の横長と、スマホ用の文字を大きくした版(gw / gn)
-    $svgs = '';
-    foreach ([['gw', 720, 240, 11], ['gn', 380, 230, 12]] as [$cls, $W, $H, $fs]) {
-        $L = $fs * 3 + 6; $R = 6; $T = 14; $B = $fs * 2 + 8;
-        $pw = $W - $L - $R; $ph = $H - $T - $B; $bw = $pw / 12;
-        $svg = '<svg class="' . $cls . '" viewBox="0 0 ' . $W . ' ' . $H . '" style="width:100%;height:auto;background:#fff;border:0;margin-top:6px" role="img" aria-label="月ごとの作業時間">';
-        for ($g = 0; $g <= 4; $g++) {
-            $y = $T + $ph - $ph * $g / 4;
-            $v = $step * $g;
-            $svg .= '<line x1="' . $L . '" x2="' . ($W - $R) . '" y1="' . round($y, 1) . '" y2="' . round($y, 1) . '" stroke="' . ($g ? '#e3e7e4' : '#9aa3ad') . '"/>'
-                . '<text x="' . ($L - 4) . '" y="' . round($y + $fs / 3, 1) . '" font-size="' . $fs . '" text-anchor="end" fill="#555">' . rtrim(rtrim(number_format($v, 2, '.', ''), '0'), '.') . '</text>';
-        }
-        $svg .= '<text x="2" y="' . ($T - 4) . '" font-size="' . ($fs - 1) . '" fill="#555">時間</text>';
-        foreach ($months as $i => $m) {
-            $x = $L + $bw * $i + $bw * 0.16;
-            $y = $T + $ph;
-            foreach ($colors as $t => $col) {
-                $min = $val[$m][$t] ?? 0;
-                if ($min <= 0) continue;
-                $hgt = $ph * ($min / 60) / $top;
-                $y -= $hgt;
-                $svg .= '<rect x="' . round($x, 1) . '" y="' . round($y, 1) . '" width="' . round($bw * 0.68, 1) . '" height="' . round($hgt, 1) . '" fill="' . $col . '"><title>'
-                    . h(date('Y年n月', strtotime($m . '-01')) . ' ' . $t . ' ' . hm($min)) . '</title></rect>';
-            }
-            $sum = array_sum($val[$m] ?? []);
-            $cx = round($L + $bw * ($i + 0.5), 1);
-            if ($sum > 0) $svg .= '<text x="' . $cx . '" y="' . round($y - 3, 1) . '" font-size="' . ($fs - 1) . '" text-anchor="middle" fill="#333">' . round($sum / 60, 1) . '</text>';
-            $svg .= '<text x="' . $cx . '" y="' . ($H - $fs - 4) . '" font-size="' . $fs . '" text-anchor="middle" fill="#333">' . (int)substr($m, 5) . ($cls === 'gw' ? '月' : '') . '</text>';
-            if ($i === 0 || substr($m, 5) === '01') $svg .= '<text x="' . $cx . '" y="' . ($H - 2) . '" font-size="' . ($fs - 2) . '" text-anchor="middle" fill="#777">' . substr($m, 0, 4) . '</text>';
-        }
-        $svgs .= $svg . '</svg>';
-    }
+    $hv = [];
+    foreach ($months as $m) foreach ($val[$m] ?? [] as $t => $min) $hv[$m][$t] = $min / 60;
+    $svgs = bar_svgs($months, $hv, $colors, '時間', [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000], '月ごとの作業時間',
+        fn($m, $t, $v) => date('Y年n月', strtotime($m . '-01')) . ' ' . $t . ' ' . hm((int)round($v * 60)), fn($v) => (string)round($v, 1));
     $leg = '<div class="wleg">';
     $used = [];
     foreach ($val as $byT) $used += $byT;
     // 凡例: 今の一覧の種類と、一覧から外したがグラフに出ている種類
     foreach ($colors as $t => $col) if (in_array($t, work_types(), true) || isset($used[$t])) $leg .= '<span><i style="background:' . $col . '"></i>' . h((string)$t) . '</span>';
     return $o . $svgs . $leg . '</div></div>';
+}
+
+// 月ごとの積み上げ棒グラフの SVG (パソコン用の横長 gw と、スマホ用の文字を大きくした gn)。
+// $val: 月 => 色分けの名前 => 値。$colors: 名前 => 色 (この順に下から積む)。$steps: 1目盛りの候補 (目盛り4本)
+function bar_svgs(array $months, array $val, array $colors, string $unit, array $steps, string $aria, callable $tip, callable $fmt): string
+{
+    $max = 0;
+    foreach ($months as $m) $max = max($max, array_sum($val[$m] ?? []));
+    $step = $steps[0];
+    foreach ($steps as $c) { $step = $c; if ($c * 4 >= $max) break; }
+    $top = $step * 4;
+    $n = count($months);
+    $svgs = '';
+    foreach ([['gw', 720, 240, 11], ['gn', 380, 230, 12]] as [$cls, $W, $H, $fs]) {
+        $L = $fs * 3 + 6; $R = 6; $T = 14; $B = $fs * 2 + 8;
+        $pw = $W - $L - $R; $ph = $H - $T - $B; $bw = $pw / $n;
+        $svg = '<svg class="' . $cls . '" viewBox="0 0 ' . $W . ' ' . $H . '" style="width:100%;height:auto;background:#fff;border:0;margin-top:6px" role="img" aria-label="' . h($aria) . '">';
+        for ($g = 0; $g <= 4; $g++) {
+            $y = $T + $ph - $ph * $g / 4;
+            $v = $step * $g;
+            $svg .= '<line x1="' . $L . '" x2="' . ($W - $R) . '" y1="' . round($y, 1) . '" y2="' . round($y, 1) . '" stroke="' . ($g ? '#e3e7e4' : '#9aa3ad') . '"/>'
+                . '<text x="' . ($L - 4) . '" y="' . round($y + $fs / 3, 1) . '" font-size="' . $fs . '" text-anchor="end" fill="#555">' . rtrim(rtrim(number_format($v, 2, '.', ''), '0'), '.') . '</text>';
+        }
+        $svg .= '<text x="2" y="' . ($T - 4) . '" font-size="' . ($fs - 1) . '" fill="#555">' . h($unit) . '</text>';
+        foreach ($months as $i => $m) {
+            $x = $L + $bw * $i + $bw * 0.16;
+            $y = $T + $ph;
+            foreach ($colors as $t => $col) {
+                $v = $val[$m][$t] ?? 0;
+                if ($v <= 0) continue;
+                $hgt = $ph * $v / $top;
+                $y -= $hgt;
+                $svg .= '<rect x="' . round($x, 1) . '" y="' . round($y, 1) . '" width="' . round($bw * 0.68, 1) . '" height="' . round($hgt, 1) . '" fill="' . $col . '"><title>'
+                    . h($tip($m, (string)$t, $v)) . '</title></rect>';
+            }
+            $sum = array_sum($val[$m] ?? []);
+            $cx = round($L + $bw * ($i + 0.5), 1);
+            if ($sum > 0) $svg .= '<text x="' . $cx . '" y="' . round($y - 3, 1) . '" font-size="' . ($fs - 1) . '" text-anchor="middle" fill="#333">' . h($fmt($sum)) . '</text>';
+            $svg .= '<text x="' . $cx . '" y="' . ($H - $fs - 4) . '" font-size="' . $fs . '" text-anchor="middle" fill="#333">' . (int)substr($m, 5) . ($cls === 'gw' ? '月' : '') . '</text>';
+            if ($i === 0 || substr($m, 5) === '01') $svg .= '<text x="' . $cx . '" y="' . ($H - 2) . '" font-size="' . ($fs - 2) . '" text-anchor="middle" fill="#777">' . substr($m, 0, 4) . '</text>';
+        }
+        $svgs .= $svg . '</svg>';
+    }
+    return $svgs;
+}
+
+// 蜂場の色(グラフの色分け。蜂場の並び順に Okabe-Ito → Paul Tol の色を使う。蜂場を決めていない記録は灰色)
+function apiary_colors(array $site): array
+{
+    $pal = array_merge(['#E69F00', '#56B4E9', '#009E73', '#0072B2', '#D55E00', '#CC79A7', '#F0E442'], W_TYPE_COLORS_ADD);
+    $out = []; $i = 0;
+    foreach ($site['apiaries'] as $aid => $a) $out[(string)$aid] = $pal[$i++ % count($pal)];
+    return $out;
+}
+
+// 月ごとの採蜜量の積み上げ棒グラフ(12か月。$endM の月まで)。蜂場ごとに色分け。上のボタンで蜂場を切り替える(hp = 蜂場id、空 = すべて)
+function honey_chart(array $logs, array $site, string $endM, string $ha, callable $selfUrl): string
+{
+    $months = [];
+    for ($i = 11; $i >= 0; $i--) $months[] = date('Y-m', strtotime($endM . "-01 -$i month"));
+    $ac = apiary_colors($site);
+    $names = [];
+    foreach ($site['apiaries'] as $aid => $a) $names[(string)$aid] = (string)$a['name'];
+    $val = []; $has = [];   // 月 => 蜂場 => kg。$has: 採蜜量の記録がある蜂場(期間に関係なく。ボタンを出す)
+    foreach ($logs as $l) {
+        $kg = (float)($l['honey_kg'] ?? 0);
+        if ($kg <= 0) continue;
+        $a = (string)($l['apiary'] ?? '');
+        $key = isset($names[$a]) ? $a : '';
+        $has[$key] = true;
+        if ($ha !== '' && $key !== $ha) continue;
+        $m = substr((string)($l['date'] ?? ''), 0, 7);
+        if (in_array($m, $months, true)) $val[$m][$key] = ($val[$m][$key] ?? 0) + $kg;
+    }
+    $colors = [];
+    foreach ($ac as $aid => $col) $colors[$aid] = $col;
+    $colors[''] = '#999999';
+    $label = fn($k) => $k === '' ? '蜂場の指定なし' : $names[$k];
+    $o = '<div class="card" id="hchart"><b>月ごとの採蜜量</b> <span class="muted" style="font-size:.85em">(作業の種類が「採蜜」の記録の採蜜量)</span>';
+    $o .= '<div class="per" style="margin-top:6px"><a href="' . h($selfUrl(['hp' => 'all'], 'hchart')) . '"' . ($ha === '' ? ' class="on"' : '') . '>すべての蜂場</a>';
+    foreach ($names as $aid => $nm) $o .= '<a href="' . h($selfUrl(['hp' => $aid], 'hchart')) . '"' . ($ha === $aid ? ' class="on"' : '')
+        . '><i style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;background:' . $ac[$aid] . '"></i>' . h($nm) . '</a>';
+    $o .= '</div>';
+    $o .= bar_svgs($months, $val, $colors, 'kg', [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000], '月ごとの採蜜量',
+        fn($m, $k, $v) => date('Y年n月', strtotime($m . '-01')) . ' ' . $label($k) . ' ' . kg($v) . 'kg', fn($v) => kg($v));
+    $sum = 0; foreach ($val as $byA) $sum += array_sum($byA);
+    $leg = '<div class="wleg">';
+    foreach ($colors as $k => $col) if (($ha === '' ? isset($has[$k]) : $k === $ha) && ($k !== '' || isset($has['']))) $leg .= '<span><i style="background:' . $col . '"></i>' . h($label($k)) . '</span>';
+    $leg .= '</div>';
+    if (!$has) $leg .= '<p class="muted" style="font-size:.85em;margin:.3em 0 0">採蜜量の記録はまだありません。作業の種類で「採蜜」を選ぶと、採蜜量 (kg) を入れられます。</p>';
+    elseif ($sum > 0) $leg .= '<p class="muted" style="font-size:.85em;margin:.3em 0 0">この12か月の合計 ' . kg($sum) . ' kg</p>';
+    return $o . $leg . '</div>';
 }
 
 function log_form(array $l, array $site, string $back): string
@@ -340,7 +411,10 @@ function log_form(array $l, array $site, string $back): string
     // 一覧から外した種類の記録を変更するときは、その種類も選べるように残す
     $cur = (string)($l['type'] ?? '');
     foreach (array_values(array_unique(array_merge(work_types(), $cur !== '' ? [$cur] : []))) as $t) $o .= '<option' . ($cur === $t ? ' selected' : '') . '>' . h($t) . '</option>';
+    $hv = isset($l['honey_kg']) ? kg((float)$l['honey_kg']) : '';
     return $o . '</select> <button type="button" class="tagcz" onclick="typePanel(this)">カスタマイズ</button></p>'
+        . '<p class="whoney"' . (is_harvest($cur !== '' ? $cur : (string)(work_types()[0] ?? '')) ? '' : ' style="display:none"') . '><label>採蜜量</label>'
+        . '<input type="number" name="honey_kg" min="0" max="100000" step="0.1" style="width:7em" value="' . h($hv) . '"> kg</p>'
         . '<p><label>かかった時間 (開始と終了を入れるか、分を入れる)</label>'
         . '<input type="time" name="start" value="' . h((string)($l['start'] ?? '')) . '"> 〜 <input type="time" name="end" value="' . h((string)($l['end'] ?? '')) . '">'
         . '　または <input type="number" name="minutes" min="1" max="1440" value="' . h(($l['start'] ?? '') === '' && isset($l['minutes']) ? (string)$l['minutes'] : '') . '"> 分</p>'
@@ -510,12 +584,14 @@ usort($logs, fn($x, $y) => [$y['date'] ?? '', $y['start'] ?? '', $y['created'] ?
 $members = [];   // グラフの担当者ボタン: 選んだ蜂場(すべてなら全部の蜂場)を見られる人
 foreach ($fa === '' ? array_keys($site['apiaries']) : [$fa] as $aid) $members += assignee_options($site, (string)$aid);
 $chart = work_chart(array_values(array_filter($works['logs'], fn($l) => $fa === '' || in_array($l['apiary'] ?? '', [$fa, ''], true))),
-    $month === 'all' ? date('Y-m', $now) : $month, $fp, $selfUrl, $members);
+    $month === 'all' ? date('Y-m', $now) : $month, $fp, $selfUrl, $members)
+    . honey_chart($works['logs'], $site, $month === 'all' ? date('Y-m', $now) : $month, $fh, $selfUrl);
 if (!$logs) echo '<p class="muted">' . ($month === 'all' ? '' : 'この月の') . '作業記録はありません。</p>' . $chart;
 else {
     // 月の合計(種類ごと)。のべ時間 = 時間 × 人数
-    $byType = []; $total = 0; $totalP = 0;
+    $byType = []; $total = 0; $totalP = 0; $honey = 0;
     foreach ($logs as $l) {
+        $honey += (float)($l['honey_kg'] ?? 0);
         $m = (int)$l['minutes']; $p = (int)($l['people'] ?? 1);
         $byType[$l['type']] = ($byType[$l['type']] ?? 0) + $m;
         $total += $m; $totalP += $m * $p;
@@ -523,12 +599,12 @@ else {
     $parts = [];
     foreach (array_keys(type_colors($logs)) as $t) if (isset($byType[$t])) $parts[] = $t . ' ' . hm($byType[$t]);
     echo '<div class="card"><b>' . ($month === 'all' ? 'すべての期間の合計 ' : 'この月の合計 ') . h(hm($total)) . '</b>' . ($totalP !== $total ? ' <span class="muted">(のべ ' . h(hm($totalP)) . ')</span>' : '')
-        . '<br><span class="muted">' . h(implode('　', $parts)) . '</span></div>' . $chart;
+        . '<br><span class="muted">' . h(implode('　', $parts)) . '</span>' . ($honey > 0 ? '<br><span class="muted">採蜜量 ' . h(kg($honey)) . ' kg</span>' : '') . '</div>' . $chart;
     echo '<div class="wrap"><table><tr><th>日付</th><th>対象</th><th>作業</th>' . (team_on() ? '<th>担当</th>' : '') . '<th>時間</th><th>メモ</th></tr>';
     foreach ($logs as $l) {
         echo '<tr><td style="white-space:nowrap">' . h(date($month === 'all' ? 'Y/n/j' : 'n/j', strtotime((string)$l['date']))) . '</td>'
             . '<td>' . h(target_label($site, (string)$l['apiary'], (string)($l['hive'] ?? ''))) . '</td>'
-            . '<td>' . h((string)$l['type']) . '</td>'
+            . '<td>' . h((string)$l['type']) . (isset($l['honey_kg']) ? '<br><span class="muted">' . h(kg((float)$l['honey_kg'])) . 'kg</span>' : '') . '</td>'
             . (team_on() ? '<td>' . h(implode('・', array_map('user_name', log_workers($l)))) . '</td>' : '')
             . '<td style="white-space:nowrap">' . h(hm((int)$l['minutes'])) . ((int)($l['people'] ?? 1) > 1 ? ' ×' . (int)$l['people'] . '人' : '')
             . (($l['start'] ?? '') !== '' ? '<br><span class="muted">' . h($l['start'] . '〜' . $l['end']) . '</span>' : '') . '</td>'
@@ -556,6 +632,13 @@ document.querySelectorAll('.asg').forEach(function(s){ var f = s.closest('form')
 JS;
 echo target_pair_js() . tag_js('work.php', work_tags());
 // 作業の種類の「カスタマイズ」: 一覧に足す・外す・上へ動かす・初期に戻す。変えたらページのすべての種類の選択欄を作り直す
+if (!$taskPage) echo <<<'JS'
+<script>
+function honeyShow(s){ var p = s.form.querySelector('.whoney'); if (p) p.style.display = s.value.indexOf('採蜜') >= 0 ? '' : 'none'; }
+document.addEventListener('change', function(e){ if (e.target.matches('.wtype select')) honeyShow(e.target); });
+document.querySelectorAll('.wtype select').forEach(honeyShow);
+</script>
+JS;
 if (!$taskPage) echo '<script>var WTYPES=' . json_encode(work_types(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . ';</script>' . <<<'JS'
 <script>
 function typeRedraw(){
@@ -563,6 +646,7 @@ function typeRedraw(){
     var v = s.value, cur = s.getAttribute('data-cur') || '';
     var list = WTYPES.slice(); [cur, v].forEach(function(x){ if (x !== '' && list.indexOf(x) < 0) list.push(x); });
     s.innerHTML = list.map(function(t){ return '<option' + (t === v ? ' selected' : '') + '>' + tagEsc(t) + '</option>'; }).join('');
+    honeyShow(s);
   });
   document.querySelectorAll('.typep .tagx').forEach(function(x){
     x.innerHTML = WTYPES.map(function(t, i){ return '<span>' + tagEsc(t) + (i > 0 ? '<button type="button" title="前へ" data-up="' + tagEsc(t) + '" style="color:#345">↑</button>' : '')

@@ -327,6 +327,8 @@ function demo_work_logs(array $site): array
                 'type' => $type, 'workers' => $who, 'start' => sprintf('%02d:%02d', intdiv($st, 60), $st % 60),
                 'end' => sprintf('%02d:%02d', intdiv($st + $min, 60) % 24, ($st + $min) % 60), 'minutes' => $min, 'people' => count($who),
                 'note' => $note, 'created' => strtotime($date), 'by' => $who[0]];
+            // 採蜜には見本の採蜜量 (8〜30kg)。乱数の順を変えないよう、id から決める
+            if ($type === '採蜜') $out[count($out) - 1]['honey_kg'] = 8 + (crc32('hpx-demo-honey-' . $ym . $n) % 221) / 10;
         }
     }
     mt_srand();

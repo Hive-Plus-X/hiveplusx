@@ -97,9 +97,9 @@ $ls = $works['logs'];
 usort($ls, fn($x, $y) => [$x['date'] ?? '', $x['start'] ?? ''] <=> [$y['date'] ?? '', $y['start'] ?? '']);
 foreach ($ls as $l) {
     $rows[] = [$l['date'] ?? '', $aname((string)($l['apiary'] ?? '')), $hname((string)($l['hive'] ?? '')), $l['type'] ?? '', $l['start'] ?? '', $l['end'] ?? '',
-        (int)($l['minutes'] ?? 0), (int)($l['people'] ?? 1), (int)($l['minutes'] ?? 0) * (int)($l['people'] ?? 1), implode('・', array_map('user_name', log_workers($l))), $l['note'] ?? '', $who($l['by'] ?? ''), (string)($l['id'] ?? '')];
+        (int)($l['minutes'] ?? 0), (int)($l['people'] ?? 1), (int)($l['minutes'] ?? 0) * (int)($l['people'] ?? 1), implode('・', array_map('user_name', log_workers($l))), isset($l['honey_kg']) ? (string)$l['honey_kg'] : '', $l['note'] ?? '', $who($l['by'] ?? ''), (string)($l['id'] ?? '')];
 }
-csv_add($zip, '作業記録.csv', ['日付', '蜂場', '巣箱', '作業', '開始', '終了', '時間 (分)', '人数', 'のべ時間 (分)', '担当者', 'メモ', '記入者', '作業記録ID'], $rows);
+csv_add($zip, '作業記録.csv', ['日付', '蜂場', '巣箱', '作業', '開始', '終了', '時間 (分)', '人数', 'のべ時間 (分)', '担当者', '採蜜量 (kg)', 'メモ', '記入者', '作業記録ID'], $rows);
 
 // ---- センサの記録(自分の HPX-Core ごとに、ble.csv の全期間。見出しを日本語にし、重量は kg も付ける) ----
 $label = ['time' => '日時', 'epoch' => 'epoch', 'seq' => 'seq', 'temp_c' => '温度 (℃)', 'humidity_pct' => '湿度 (%)', 'battery_pct' => '電池 (%)', 'rssi_dbm' => '電波 (dBm)',
