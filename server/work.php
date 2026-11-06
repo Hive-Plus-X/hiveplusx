@@ -419,7 +419,7 @@ function log_form(array $l, array $site, string $back): string
         . '<input type="time" name="start" value="' . h((string)($l['start'] ?? '')) . '"> 〜 <input type="time" name="end" value="' . h((string)($l['end'] ?? '')) . '">'
         . '　または <input type="number" name="minutes" min="1" max="1440" value="' . h(($l['start'] ?? '') === '' && isset($l['minutes']) ? (string)$l['minutes'] : '') . '"> 分</p>'
         . '<p><label>人数</label><input type="number" name="people" min="1" max="99" value="' . (int)($l['people'] ?? 1) . '"> 人</p>'
-        . '<p><label>メモ</label><textarea name="note" rows="2">' . h((string)($l['note'] ?? '')) . '</textarea></p>'
+        . '<p><label>メモ</label><textarea name="note" rows="2" data-voice>' . h((string)($l['note'] ?? '')) . '</textarea></p>'
         . '<p><button type="submit">保存</button></p></form>';
 }
 
@@ -630,7 +630,7 @@ function todoPeople(f){
 document.querySelectorAll('.asg').forEach(function(s){ var f = s.closest('form'); todoPeople(f); f.elements['t_a'].addEventListener('change', function(){ todoPeople(f); }); });
 </script>
 JS;
-echo target_pair_js() . tag_js('work.php', work_tags());
+echo target_pair_js() . tag_js('work.php', work_tags()) . voice_js();
 // 作業の種類の「カスタマイズ」: 一覧に足す・外す・上へ動かす・初期に戻す。変えたらページのすべての種類の選択欄を作り直す
 if (!$taskPage) echo <<<'JS'
 <script>

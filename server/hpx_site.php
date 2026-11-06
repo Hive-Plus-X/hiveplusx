@@ -547,6 +547,69 @@ function tagPanel(btn){
 JS;
 }
 
+// 音声入力ボタン(🎤)。data-voice の付いたメモ欄の上に出す。文字起こしはブラウザの音声認識(Web Speech API、日本語)が
+// するので、サーバーには文字だけが届き、音声は送らず保存もしない。使えないブラウザではボタンを出さない
+function voice_js(): string
+{
+    return <<<'JS'
+<style>.vrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:2px 0 4px}.vbtn{padding:3px 12px;font-size:.9em;border:1px solid #b9c0c8;border-radius:16px;background:#fff;color:#234;cursor:pointer}.vbtn.on{background:#c62828;border-color:#c62828;color:#fff}.vmsg{font-size:.85em;color:#777}</style>
+<script>
+(function(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;   // 使えないブラウザ(Firefox など)ではボタンを出さない。スマホのキーボードのマイクは使える
+  var cur = null;    // 今 聞いている欄 {rec, btn, msg, ta}
+  function stop(){ if (cur) cur.rec.stop(); }
+  function put(ta, txt){   // カーソルの位置(なければ最後)に文字を入れる
+    var s = ta.selectionStart, e = ta.selectionEnd, v = ta.value;
+    if (typeof s !== 'number' || document.activeElement !== ta) { s = e = v.length; }
+    ta.value = v.slice(0, s) + txt + v.slice(e);
+    ta.selectionStart = ta.selectionEnd = s + txt.length;
+    ta.dispatchEvent(new Event('input', {bubbles: true}));
+  }
+  function start(ta, btn, msg){
+    if (cur) { var same = cur.ta === ta; stop(); if (same) return; }
+    var rec = new SR();
+    rec.lang = 'ja-JP'; rec.continuous = true; rec.interimResults = true;
+    var me = {rec: rec, btn: btn, msg: msg, ta: ta};
+    rec.onresult = function(ev){
+      var mid = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var r = ev.results[i];
+        if (r.isFinal) put(ta, r[0].transcript); else mid += r[0].transcript;
+      }
+      msg.textContent = mid ? '… ' + mid : '聞いています。話してください';
+    };
+    rec.onerror = function(ev){
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') alert('マイクが使えません。ブラウザの設定で、このサイトのマイクを「許可」にしてください。');
+      else if (ev.error === 'no-speech') msg.textContent = '声が聞き取れませんでした';
+      else if (ev.error === 'network') alert('音声入力にはインターネットの接続が必要です。');
+    };
+    rec.onend = function(){
+      btn.classList.remove('on'); btn.textContent = '🎤 音声入力';
+      if (msg.textContent.indexOf('聞いて') === 0 || msg.textContent.indexOf('…') === 0) msg.textContent = '';
+      if (cur === me) cur = null;
+    };
+    try { rec.start(); } catch (e) { return; }
+    cur = me;
+    btn.classList.add('on'); btn.textContent = '■ 止める';
+    msg.textContent = '聞いています。話してください';
+  }
+  document.querySelectorAll('textarea[data-voice]').forEach(function(ta){
+    var row = document.createElement('div'); row.className = 'vrow';
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'vbtn'; btn.textContent = '🎤 音声入力';
+    btn.title = '話した言葉を文字にしてメモに入れます (音声は保存しません)';
+    var msg = document.createElement('span'); msg.className = 'vmsg';
+    btn.onclick = function(){ start(ta, btn, msg); };
+    row.appendChild(btn); row.appendChild(msg);
+    ta.parentNode.insertBefore(row, ta);
+  });
+  // 保存するときは止める
+  document.addEventListener('submit', stop, true);
+})();
+</script>
+JS;
+}
+
 function str_in(string $key, int $max = 2000): string
 {
     $v = trim(str_replace("\r\n", "\n", (string)($_POST[$key] ?? '')));
