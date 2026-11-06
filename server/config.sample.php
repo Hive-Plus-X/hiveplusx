@@ -18,8 +18,11 @@ $HPX_MAIL_TO = 'you@example.com';
 $HPX_MAIL_FROM = 'you@gmail.com';
 // サイトのお問い合わせフォーム (hiveplusx.com/contact.php) の送り先。空なら support@hiveplusx.com に送る。
 $HPX_CONTACT_TO = '';
-// サイトの「作りました報告」(hiveplusx.com/report.php) が届いたときの知らせ先。空なら $HPX_CONTACT_TO (それも空なら support@hiveplusx.com)。
+// サイトの「作った・使ったレポート」(hiveplusx.com/report.php) が届いたときの知らせ先。空なら $HPX_CONTACT_TO (それも空なら support@hiveplusx.com)。
 $HPX_REPORT_TO = '';
+// 「作った・使ったレポート」の管理ページ (hiveplusx.com/report_admin.php、サイトの一番下の歯車) に入るパスワード。8文字以上。空なら入れない。
+//   HPX-note のアカウントとは別。変えると、ログインしていた人もログインし直しになる。
+$HPX_REPORT_ADMIN_PW = '';
 // メールは Gmail のアカウントにログインして送る(SMTP認証)。
 //   Googleアカウントで2段階認証をオンにし、https://myaccount.google.com/apppasswords で作った16文字のアプリパスワードを入れる。
 //   $HPX_MAIL_FROM も同じ Gmail のアドレスにする。

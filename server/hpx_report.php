@@ -2,8 +2,9 @@
 // 「作った・使ったレポート」(機器を作ったり、サーバーや養蜂記録アプリを使った人が、写真とひとことで報告するしくみ) の共通部分。関数の定義だけ。
 //   使うページ:
 //     サイトの report.php     … 投稿フォームと、公開した報告の一覧 (誰でも見られる)。トップページの新着もここから読む
-//     hpx/report_img.php      … 報告の写真を出す (公開した報告の写真だけ。まだのものはサイト管理者だけ見られる)
-//     hpx/report_admin.php    … サイト管理者が、届いた報告を確かめて「公開する」「非公開にする」「削除」する
+//     サイトの report_img.php … 報告の写真を出す (公開した報告の写真だけ。まだのものは管理ページにログインした人だけ見られる)
+//     サイトの report_admin.php … 管理者が、届いた報告を確かめて「公開する」「非公開にする」「削除」する
+//                                 (HPX-note のアカウントとは別。config.php の $HPX_REPORT_ADMIN_PW のパスワードで入る)
 //   流れ: 投稿 → 「確認待ち」で保存して管理者にメール → 管理者が公開したものだけサイトに出る
 //   保存先 (データフォルダの reports/。data/.htaccess で外から開けない):
 //     reports.json         報告の一覧 {"reports": {"r_0123456789": {...}}}
@@ -191,14 +192,77 @@ function r_public_view(array $r): array
     ];
 }
 
-// 管理ページの住所 (メールに書く)。config.php の $HPX_SITE_URL (アプリの住所) があればそれを使う
+// 管理ページの住所 (メールに書く)。サイト (hiveplusx.com) の report_admin.php
 function r_admin_url(): string
 {
-    global $HPX_SITE_URL;
-    $base = rtrim((string)($HPX_SITE_URL ?? ''), '/');
-    if ($base === '') {
-        $https = ($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off';
-        $base = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/hpx';
+    $https = ($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off';
+    $dir = rtrim(str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/'))), '/');
+    return ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $dir . '/report_admin.php';
+}
+
+// ====================================================================
+// 管理ページのログイン (HPX-note のアカウントとは別。config.php の $HPX_REPORT_ADMIN_PW のパスワードで入る)
+// ====================================================================
+const R_ADMIN_HOURS = 12;        // ログインを保つ時間
+const R_FAIL_MAX = 5;            // 同じ接続元からこの回数続けて間違えたら
+const R_FAIL_LOCK_S = 900;       // この秒数ログインを止める
+
+// 8文字より短いパスワードは、使えないものとして扱う (簡単に当てられないように)
+function r_admin_pw(): string { global $HPX_REPORT_ADMIN_PW; $p = (string)($HPX_REPORT_ADMIN_PW ?? ''); return strlen($p) >= 8 ? $p : ''; }
+
+function r_admin_session(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) return;
+    session_name('hpxreport');
+    session_set_cookie_params(['lifetime' => 0, 'path' => '/', 'httponly' => true, 'samesite' => 'Strict',
+        'secure' => (($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off')]);
+    session_start();
+    if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16));
+}
+
+// ログインしているか (パスワードを変えると、前のログインは切れる)
+function r_admin_ok(): bool
+{
+    r_admin_session();
+    $pw = r_admin_pw();
+    return $pw !== '' && hash_equals(hash('sha256', 'report|' . $pw), (string)($_SESSION['pwv'] ?? ''))
+        && time() - (int)($_SESSION['at'] ?? 0) < R_ADMIN_HOURS * 3600;
+}
+
+// 続けて間違えて止めている間なら、残り秒数を返す
+function r_admin_locked(): int
+{
+    $d = json_decode((string)@file_get_contents(r_dir() . '/login_fail.json'), true) ?: [];
+    $f = $d[hash('sha256', (string)($_SERVER['REMOTE_ADDR'] ?? ''))] ?? null;
+    if (!is_array($f) || (int)($f['n'] ?? 0) < R_FAIL_MAX) return 0;
+    return max(0, (int)$f['t'] + R_FAIL_LOCK_S - time());
+}
+
+// パスワードを確かめてログインする。できたら true
+function r_admin_login(string $pw): bool
+{
+    r_admin_session();
+    $f = r_dir() . '/login_fail.json';
+    $d = json_decode((string)@file_get_contents($f), true) ?: [];
+    $ip = hash('sha256', (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+    $real = r_admin_pw();
+    if ($real !== '' && hash_equals($real, $pw)) {
+        unset($d[$ip]);
+        @file_put_contents($f, json_encode($d), LOCK_EX);
+        session_regenerate_id(true);
+        $_SESSION['pwv'] = hash('sha256', 'report|' . $real);
+        $_SESSION['at'] = time();
+        return true;
     }
-    return $base . '/report_admin.php';
+    $n = (time() - (int)($d[$ip]['t'] ?? 0) > R_FAIL_LOCK_S) ? 0 : (int)($d[$ip]['n'] ?? 0);
+    $d[$ip] = ['n' => $n + 1, 't' => time()];
+    @file_put_contents($f, json_encode($d), LOCK_EX);
+    return false;
+}
+
+function r_admin_logout(): void
+{
+    r_admin_session();
+    $_SESSION = [];
+    session_destroy();
 }
