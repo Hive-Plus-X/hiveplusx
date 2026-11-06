@@ -4,7 +4,7 @@
 //   管理者: メンバーの追加・役割の変更・削除、チーム名の変更、チームの削除、蜂場ごとの「見られる人」の設定、
 //           自分の蜂場をチームに共有する(共有した蜂場の情報・巣箱は、チームの管理者なら変えられる)
 //   メンバー: 共有された蜂場のうち、見られる蜂場のメモ・作業記録・タスクを書ける。自分の蜂場はチームに共有できない
-//   メンバーに入れられるのは、アカウントがある人だけ(アカウントはサイト管理者が発行する)。デモ用アカウントは入れられない
+//   メンバーに入れられるのは、アカウントがある人だけ(アカウントはサーバー管理者が発行する)。デモ用アカウントは入れられない
 //   (誰でも使えるので、入れるとチームの蜂場が誰にでも見えてしまう)。デモ用アカウントではこのページの操作もできない(demo_guard)。
 //   保存先は hpx_team.php を参照。
 declare(strict_types=1);
@@ -70,7 +70,7 @@ if (is_post()) {
         $t = team_admin_or_back($tid);
         $u = user_by_email((string)($_POST['email'] ?? ''));
         $role = (string)($_POST['role'] ?? '') === 'admin' ? 'admin' : 'member';
-        if (!$u || ($u['status'] ?? '') === 'stopped') redirect($back, 'そのメールアドレスのアカウントはありません。アカウントはサイト管理者が発行します。');
+        if (!$u || ($u['status'] ?? '') === 'stopped') redirect($back, 'そのメールアドレスのアカウントはありません。アカウントはサーバー管理者が発行します。');
         if (is_demo($u)) redirect($back, 'デモ用アカウントはチームに入れられません (誰でも使えるため、チームの蜂場が誰にでも見えてしまいます)。');
         if (isset($t['members'][$u['id']])) redirect($back, (string)$u['name'] . ' さんはもうこのチームにいます。');
         teams_update(function (array $ts) use ($tid, $u, $role) { if (isset($ts[$tid])) $ts[$tid]['members'][$u['id']] = $role; return $ts; });
@@ -203,7 +203,7 @@ foreach ($mine as $tid => $myRole) {
         echo '<details><summary>＋ メンバーを追加</summary><form method="post" class="form card">' . $hidden($tid) . '<input type="hidden" name="act" value="member_add">'
             . '<div class="grid2"><p><label>メールアドレス (その人のログインID)</label><input type="email" name="email" required style="width:100%"></p>'
             . '<p><label>役割</label><select name="role"><option value="member">メンバー</option><option value="admin">チーム管理者</option></select></p></div>'
-            . '<p class="muted">アカウントがある人だけ追加できます。追加するとその人にメールで知らせます。アカウントが無い人は、サイト管理者に発行してもらってください。</p>'
+            . '<p class="muted">アカウントがある人だけ追加できます。追加するとその人にメールで知らせます。アカウントが無い人は、サーバー管理者に発行してもらってください。</p>'
             . '<p><button type="submit">追加</button></p></form></details>';
     }
 

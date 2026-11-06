@@ -34,7 +34,7 @@ if (is_post()) {
             . "次のリンクを開くと切り替わります (" . A_LINK_HOURS . "時間有効)。それまでは前のアドレスでログインできます。\n\n"
             . link_url(link_issue('email', $UID, ['email' => $new])) . "\n\n心当たりが無いときは、このメールは捨ててください。\n");
         redirect('account.php#email', $ok ? $new . ' に確認メールを送りました。メールのリンクを開くと切り替わります。'
-            : '確認メールを送れませんでした。アドレスを見直すか、サイト管理者に問い合わせてください。');
+            : '確認メールを送れませんでした。アドレスを見直すか、サーバー管理者に問い合わせてください。');
     }
     if ($act === 'notify_save') {
         $n = notify_clean((string)($_POST['notify'] ?? ''));
@@ -47,6 +47,11 @@ if (is_post()) {
         account_update($UID, function (array $a) use ($off) { $a['mail_off'] = $off; return $a; });
         redirect('account.php#mail', $off === [] ? 'お知らせメールを、すべて受け取るようにしました。'
             : (count($off) === count(A_MAIL_KINDS) ? 'お知らせメールを、すべて止めました。' : '「' . implode('」「', array_map(fn($k) => A_MAIL_KINDS[$k][0], $off)) . '」のメールを止めました。'));
+    }
+    if ($act === 'consent_save') {
+        if (empty($_POST['consent'])) redirect('account.php#consent', '同意のチェックを入れてください。');
+        if (!consent_given($ME)) user_set($UID, ['consent' => time()]);
+        redirect('account.php#consent', 'データの利用に同意しました。');
     }
     if ($act === 'token_new') {
         token_issue($UID);
@@ -61,7 +66,7 @@ page_head('マイアカウント', 'account.php');
 echo flash_html();
 
 echo '<h2>アカウント</h2><div class="card form"><dl class="info"><dt>メールアドレス</dt><dd>' . h((string)$ME['email']) . ' <span class="muted">(ログインに使います)</span></dd>'
-    . '<dt>権限</dt><dd>' . (!empty($ME['admin']) ? 'サイト管理者' : '一般') . '</dd></dl>'
+    . '<dt>権限</dt><dd>' . (!empty($ME['admin']) ? 'サーバー管理者' : '一般') . '</dd></dl>'
     . '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="name_save">'
     . '<p><label>表示名 (メモや作業記録の記入者として出ます)</label><input type="text" name="name" maxlength="40" value="' . h((string)$ME['name']) . '" required></p>'
     . '<button type="submit">表示名を保存</button></form></div>';
@@ -107,6 +112,13 @@ echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="
     . '入れ直すまでの記録は HPX-Core に貯まり、入れ直した後に送られます。</p>'
     . '<form method="post" onsubmit="return window.confirm(\'機器用トークンを作り直します。よろしいですか?\')">' . csrf_field()
     . '<input type="hidden" name="act" value="token_new"><button type="submit">作り直す</button></form></div></details></div>';
+// データの利用への同意 (登録のときにチェックする。前からのアカウントはここで同意する)
+echo '<h2 id="consent">データの利用について</h2><div class="card form">'
+    . (consent_given($ME)
+        ? '<p><span class="ok">同意済み</span> <span class="muted">(' . h(date('Y-m-d H:i', (int)$ME['consent'])) . ')</span></p><p class="muted">' . h(consent_text()) . '</p>'
+        : '<p class="warn">まだ同意していません。</p><form method="post">' . csrf_field() . '<input type="hidden" name="act" value="consent_save">'
+          . '<p>' . consent_field() . '</p><button type="submit">同意する</button></form>')
+    . '</div>';
 echo '<h2 id="export">データ一括ダウンロード</h2><div class="card form">'
     . '<p class="muted">蜂場・巣箱・メモ・タスク・作業記録・センサの記録を、Excel で開ける CSV にまとめて ZIP で保存します。手元への保管や、ほかのソフトへの移行に使えます。</p>'
     . '<form method="post" action="export.php">' . csrf_field()
