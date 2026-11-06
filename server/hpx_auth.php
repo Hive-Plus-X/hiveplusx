@@ -515,7 +515,8 @@ function demo_value(array $pt, string $kind, string $mac, int $t, int $start)
 }
 // 温湿度計・重量センサの無い巣箱に、見本の HPX-Core (DE000000DE02) のセンサを作って紐づける。
 // デモの site.json と初期状態 (demo_seed) の両方に書く。戻り値: "ハブid/mac" => パターンの番号
-function demo_link_hives(string $hubsDir): array
+//   $wDiv: 重量センサの "ハブid/mac" => 巣箱の重さを何で割るとそのセンサの値になるか (1台なら2、2台なら2、3台以上はその台数)
+function demo_link_hives(string $hubsDir, array &$wDiv = []): array
 {
     $vHub = 'DE000000DE02';
     $vDir = $hubsDir . '/' . $vHub;
@@ -548,7 +549,11 @@ function demo_link_hives(string $hubsDir): array
                 $changed = $vChanged = true;
             }
             $x['sensors'] = $sens;
-            if ($n === 0) foreach ($sens as $k) $pattern[$k] = $i % count(DEMO_PATTERNS);
+            if ($n === 0) {
+                $ws = array_values(array_filter($sens, fn($k) => ($kinds[$k] ?? '') === 'w'));
+                foreach ($sens as $k) $pattern[$k] = $i % count(DEMO_PATTERNS);
+                foreach ($ws as $k) $wDiv[$k] = max(2, count($ws));
+            }
             $i++;
         }
         unset($x);
@@ -582,7 +587,8 @@ function demo_sensor_fill(bool $force = false): void
             'DE:00:00:00:00:03' => ['name' => '重量センサ1', 'kind' => 'w'],
         ]], JSON_UNESCAPED_UNICODE));
     }
-    $pattern = demo_link_hives($hubsDir);
+    $wDiv = [];
+    $pattern = demo_link_hives($hubsDir, $wDiv);
     $end = intdiv($now, DEMO_STEP_S) * DEMO_STEP_S;
     $start = $end - DEMO_DAYS * 86400;
     foreach (glob($hubsDir . '/*/state.json') ?: [] as $statePath) {
@@ -623,7 +629,9 @@ function demo_sensor_fill(bool $force = false): void
                 $seq++;
                 if ($kind === 'w') {
                     $c = $cal[$mac];
-                    $raw = (int)round((demo_value($pt, 'w', $mac, $t, $start) + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
+                    // 見本の値は巣箱の重さ。センサ1台なら片側なので半分、2台なら2台で分ける (巣箱ページで2倍・合計にして戻る)
+                    $kgS = demo_value($pt, 'w', $mac, $t, $start) / ($wDiv[$hubId . '/' . $mac] ?? 2);
+                    $raw = (int)round(($kgS + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '', '']);
                 } elseif ($kind === 'fa') {
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '', '']);
