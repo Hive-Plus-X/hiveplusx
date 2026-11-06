@@ -217,11 +217,15 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     }
     $other = fn(string $k) => isset($owner[$k]) && $owner[$k] !== $id
         ? ' <span class="muted">(今は「' . h((string)$site['apiaries'][$owner[$k]]['name']) . '」。選ぶとこちらに移ります)</span>' : '';
+    // 地図で選ぶときの最初の中心: この蜂場の位置がなければ、ほかの蜂場のどれかの位置 (なければ日本全体)
+    $pickC = '';
+    foreach ($site['apiaries'] as $x) if ($ll = apiary_latlng($x)) { $pickC = $ll[0] . ',' . $ll[1]; break; }
     $o = '<form method="post" class="form" enctype="multipart/form-data">' . csrf_field() . '<input type="hidden" name="act" value="apiary_save"><input type="hidden" name="id" value="' . h($id) . '">'
         . '<p><label>蜂場の名前 (必須)</label><input type="text" name="name" maxlength="40" required value="' . h((string)($a['name'] ?? '')) . '"></p>'
         . '<p><label>所在地住所</label><input type="text" name="address" value="' . h((string)($a['address'] ?? '')) . '"></p>'
-        . '<p><label>緯度・経度 (Googleマップ上で右クリックしてコピーされる「35.6812, 139.7671」などの値を貼り付け)</label>'
-        . '<input type="text" name="map_q" placeholder="35.6812, 139.7671" value="' . h((string)($a['map_q'] ?? '')) . '"></p>'
+        . '<p><label>緯度・経度 (「地図で選ぶ」を押して地図上の蜂場の場所を押すと入ります。Googleマップでコピーした「35.6812, 139.7671」などを貼り付けてもかまいません)</label>'
+        . '<input type="text" name="map_q" placeholder="35.6812, 139.7671" value="' . h((string)($a['map_q'] ?? '')) . '" oninput="mapPickSync(this)">'
+        . ' <button type="button" onclick="mapPick(this)" data-c="' . h($pickC) . '">🗺 地図で選ぶ</button></p>'
         . '<p><label>蜂場の写真</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp" onchange="shrinkPhoto(this)">'
         . (($a['photo'] ?? '') !== '' ? ' <label style="display:inline"><input type="checkbox" name="photo_del" value="1"> 写真を外す</label>' : '') . '</p>'
         . '<p><label>巣箱数 (空なら巣箱ページで登録した巣箱の数を出す)</label><input type="number" name="hive_count" min="0" max="9999" value="'
@@ -633,4 +637,96 @@ echo '<script>function shrinkPhoto(inp){var f=inp.files&&inp.files[0];if(!f||!wi
     . 'if(r===1&&f.size<1500000)return;var c=document.createElement("canvas");c.width=Math.round(b.width*r);c.height=Math.round(b.height*r);'
     . 'c.getContext("2d").drawImage(b,0,0,c.width,c.height);c.toBlob(function(bl){if(!bl)return;var d=new DataTransfer();'
     . 'd.items.add(new File([bl],"photo.jpg",{type:"image/jpeg"}));inp.files=d.files;},"image/jpeg",0.85);}).catch(function(){});}</script>';
+// 蜂場の入力欄の「地図で選ぶ」: 地図を押した場所の緯度・経度を入れる (2026-11-06 TARO)
+//   地図は一覧の地図と同じ Leaflet + 地理院タイル。押したときだけ読み込む。住所さがしは国土地理院の住所検索 (キー不要)
+echo '<style>.mpick{margin:-.4em 0 1em}.mpick .mpm{position:relative;z-index:0;height:340px;border:1px solid #ccd;border-radius:6px;background:#e8ecef}'
+    . '.mpick .mpt{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:.3em 0}.mpick .mpt input{flex:1 1 12em;min-width:0}.mpick .mpt button{padding:4px 10px}'
+    . '.mpick .mph{font-size:.85em;color:#555;margin:.2em 0}.mpick .mph.err{color:#c62828}</style>';
+echo <<<'JS'
+<script>
+(function(){
+var LCSS="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",LJS="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+var A='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>';
+var wait=null;
+function loadL(cb){
+  if(window.L){cb();return;}
+  if(wait){wait.push(cb);return;}
+  wait=[cb];
+  var n=2,bad=false;   // 見た目 (css) と本体 (js) の両方がそろってから地図を作る
+  function done(e){if(e)bad=true;if(--n)return;var w=wait;wait=null;w.forEach(function(f){f(bad||!window.L);});}
+  var l=document.createElement("link");l.rel="stylesheet";l.href=LCSS;l.integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";l.crossOrigin="";
+  l.onload=function(){done();};l.onerror=function(){done(true);};document.head.appendChild(l);
+  var s=document.createElement("script");s.src=LJS;s.integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";s.crossOrigin="";
+  s.onload=function(){done();};s.onerror=function(){done(true);};
+  document.head.appendChild(s);
+}
+function parse(v){
+  var m=/^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/.exec(v||"");
+  if(!m)return null;var a=+m[1],b=+m[2];
+  return Math.abs(a)<=90&&Math.abs(b)<=180?[a,b]:null;
+}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e;}
+window.mapPick=function(btn){
+  var inp=btn.form.querySelector('input[name="map_q"]'),box=inp._mpBox;
+  if(box){box.hidden=!box.hidden;btn.textContent=box.hidden?"🗺 地図で選ぶ":"🗺 地図を閉じる";if(!box.hidden&&inp._mp)inp._mp.m.invalidateSize();return;}
+  box=inp._mpBox=el("div","mpick");
+  var hint=el("p","mph","地図を読み込んでいます…");
+  var map=el("div","mpm");
+  var tool=el("div","mpt");
+  var q=el("input");q.type="text";q.placeholder="住所・地名で探す (例: 長野県伊那市)";
+  var adr=btn.form.querySelector('input[name="address"]');if(adr)q.value=adr.value;
+  var bs=el("button",null,"🔍 探す");bs.type="button";
+  var bg=el("button",null,"📍 今いる場所");bg.type="button";
+  var bc=el("button",null,"印を消す");bc.type="button";
+  tool.appendChild(q);tool.appendChild(bs);tool.appendChild(bg);tool.appendChild(bc);
+  box.appendChild(tool);box.appendChild(map);box.appendChild(hint);
+  btn.parentNode.parentNode.insertBefore(box,btn.parentNode.nextSibling);
+  btn.textContent="🗺 地図を閉じる";
+  function say(t,err){hint.textContent=t;hint.className="mph"+(err?" err":"");}
+  var HINT="蜂場の場所を地図で押すと、印が付いて緯度・経度が入ります。印は指やマウスでずらせます。右上で航空写真に切り替えられます。保存を押すと記録されます。";
+  loadL(function(fail){
+    if(fail){say("地図を読み込めませんでした。通信の状態を確かめてから、もう一度開いてください。緯度・経度は手で入れることもできます。",true);return;}
+    L.Icon.Default.imagePath="https://unpkg.com/leaflet@1.9.4/dist/images/";
+    var m=L.map(map);
+    var std=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",{maxZoom:18,attribution:A}).addTo(m);
+    var pho=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",{maxZoom:18,attribution:A});
+    L.control.layers({"地図":std,"航空写真":pho}).addTo(m);
+    var mk=null,st={m:m};inp._mp=st;
+    function put(ll,write){
+      if(!mk){mk=L.marker(ll,{draggable:true}).addTo(m);mk.on("dragend",function(){put(mk.getLatLng(),true);});}
+      else mk.setLatLng(ll);
+      st.mk=mk;
+      if(write){var p=L.latLng(ll);inp.value=p.lat.toFixed(6)+", "+p.lng.toFixed(6);say("緯度・経度を入れました: "+inp.value+" (保存を押すと記録されます)");}
+    }
+    st.put=put;
+    st.clear=function(){if(mk){m.removeLayer(mk);mk=null;st.mk=null;}};
+    m.on("click",function(e){put(e.latlng,true);});
+    var cur=parse(inp.value),c=parse(btn.getAttribute("data-c"));
+    if(cur){put(cur,false);m.setView(cur,16);}else if(c)m.setView(c,13);else m.setView([36.5,138],5);
+    say(HINT);
+    bc.onclick=function(){st.clear();inp.value="";say("緯度・経度を空にしました。保存を押すと記録されます。");};
+    bg.onclick=function(){
+      if(!navigator.geolocation){say("この端末では今いる場所を調べられません。",true);return;}
+      say("今いる場所を調べています…");
+      navigator.geolocation.getCurrentPosition(function(p){var ll=[p.coords.latitude,p.coords.longitude];put(ll,true);m.setView(ll,17);},
+        function(){say("今いる場所を調べられませんでした (位置情報の使用が許可されていないかもしれません)。",true);},{enableHighAccuracy:true,timeout:15000});
+    };
+    function search(){
+      var t=q.value.trim();if(!t){q.focus();return;}
+      say("探しています…");
+      fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(t)).then(function(r){return r.json();}).then(function(a){
+        if(!a||!a.length){say("「"+t+"」は見つかりませんでした。地名を短くしてみてください。",true);return;}
+        var g=a[0].geometry.coordinates;m.setView([g[1],g[0]],16);
+        say("「"+a[0].properties.title+"」の近くに移動しました。蜂場の場所を地図で押してください。");
+      }).catch(function(){say("住所で探せませんでした。地図を動かして探してください。",true);});
+    }
+    bs.onclick=search;
+    q.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();search();}});
+  });
+};
+// 手で緯度・経度を書き直したら、地図の印も動かす
+window.mapPickSync=function(inp){var st=inp._mp;if(!st||!st.put)return;var ll=parse(inp.value);if(ll){st.put(ll,false);st.m.panTo(ll);}};
+})();
+</script>
+JS;
 echo '</body></html>';
