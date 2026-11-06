@@ -177,9 +177,23 @@ function account_hubs_dir(string $uid): string { return account_dir($uid) . '/hu
 function account_load(string $uid): array { return json_load(account_dir($uid) . '/account.json'); }
 function account_update(string $uid, callable $fn): bool { return json_update(account_dir($uid) . '/account.json', $fn); }
 
-// 通知の送り先(カンマ区切りの文字列)。設定が無ければアカウントのメールアドレス
-function account_notify(string $uid): string
+// お知らせメールの種類。マイアカウントで種類ごとにオン/オフできる(account.json の mail_off に、止めた種類を入れる)
+//   招待・パスワード再設定・メールアドレスの確認・チームに追加された、などの手続きのメールは止められない
+const A_MAIL_KINDS = [
+    'device' => ['機器の警報', '電柵の電圧低下、HPX-Core やセンサから届かない、電池の交換'],
+    'hive' => ['巣箱の警報', '重量・温度が設定した範囲を超えた'],
+    'task' => ['タスクのお知らせ', '期限の前日・当日・期限切れのタスク (毎朝1通)'],
+];
+function mail_on(string $uid, string $kind): bool
 {
+    return !in_array($kind, (array)(account_load($uid)['mail_off'] ?? []), true);
+}
+
+// 通知の送り先(カンマ区切りの文字列)。設定が無ければアカウントのメールアドレス
+//   $kind(A_MAIL_KINDS)を渡すと、その種類のメールを止めていれば '' を返す
+function account_notify(string $uid, string $kind = ''): string
+{
+    if ($kind !== '' && !mail_on($uid, $kind)) return '';
     $n = trim((string)(account_load($uid)['notify'] ?? ''));
     return $n !== '' ? $n : (string)(user_get($uid)['email'] ?? '');
 }
@@ -581,7 +595,8 @@ function demo_value(array $pt, string $kind, string $mac, int $t, int $start)
 }
 // 温湿度計・重量センサの無い巣箱に、見本の HPX-Core (DE000000DE02) のセンサを作って紐づける。
 // デモの site.json と初期状態 (demo_seed) の両方に書く。戻り値: "ハブid/mac" => パターンの番号
-function demo_link_hives(string $hubsDir): array
+//   $wDiv: 重量センサの "ハブid/mac" => 巣箱の重さを何で割るとそのセンサの値になるか (1台なら2、2台なら2、3台以上はその台数)
+function demo_link_hives(string $hubsDir, array &$wDiv = []): array
 {
     $vHub = 'DE000000DE02';
     $vDir = $hubsDir . '/' . $vHub;
@@ -614,7 +629,11 @@ function demo_link_hives(string $hubsDir): array
                 $changed = $vChanged = true;
             }
             $x['sensors'] = $sens;
-            if ($n === 0) foreach ($sens as $k) $pattern[$k] = $i % count(DEMO_PATTERNS);
+            if ($n === 0) {
+                $ws = array_values(array_filter($sens, fn($k) => ($kinds[$k] ?? '') === 'w'));
+                foreach ($sens as $k) $pattern[$k] = $i % count(DEMO_PATTERNS);
+                foreach ($ws as $k) $wDiv[$k] = max(2, count($ws));
+            }
             $i++;
         }
         unset($x);
@@ -648,7 +667,8 @@ function demo_sensor_fill(bool $force = false): void
             'DE:00:00:00:00:03' => ['name' => '重量センサ1', 'kind' => 'w'],
         ]], JSON_UNESCAPED_UNICODE));
     }
-    $pattern = demo_link_hives($hubsDir);
+    $wDiv = [];
+    $pattern = demo_link_hives($hubsDir, $wDiv);
     $end = intdiv($now, DEMO_STEP_S) * DEMO_STEP_S;
     $start = $end - DEMO_DAYS * 86400;
     foreach (glob($hubsDir . '/*/state.json') ?: [] as $statePath) {
@@ -689,7 +709,9 @@ function demo_sensor_fill(bool $force = false): void
                 $seq++;
                 if ($kind === 'w') {
                     $c = $cal[$mac];
-                    $raw = (int)round((demo_value($pt, 'w', $mac, $t, $start) + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
+                    // 見本の値は巣箱の重さ。センサ1台なら片側なので半分、2台なら2台で分ける (巣箱ページで2倍・合計にして戻る)
+                    $kgS = demo_value($pt, 'w', $mac, $t, $start) / ($wDiv[$hubId . '/' . $mac] ?? 2);
+                    $raw = (int)round(($kgS + (float)($c['offset_kg'] ?? 0)) * (float)$c['per_kg'] + (float)$c['zero']);
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'w', $raw, 40, 3.3, '', '', '', '']);
                 } elseif ($kind === 'fa') {
                     fputcsv($fp, [date('Y-m-d H:i:s', $t), $t, $seq, round($amb, 2), '', '', $rssi, 1, $nm, $mac, 'fa', '', '', 3.3, 0, 0, '', '']);
@@ -954,17 +976,18 @@ function chart_tip_js(): string
       var r = svg.getBoundingClientRect(), k = d.W / r.width, vx = (ev.clientX - r.left) * k;
       if (vx < d.x0 || vx > d.x1){ hide(); return; }
       var e = d.f + (vx - d.x0) / (d.x1 - d.x0) * (d.t - d.f), best = null, rows = '';
+      var ps = d.s.map(function(s){ var p = near(s.p, e); if (Math.abs(p[0] - e) <= gap && (!best || Math.abs(p[0] - e) < Math.abs(best[0] - e))) best = p; return p; });
       d.s.forEach(function(s, i){
-        var p = near(s.p, e);
-        if (Math.abs(p[0] - e) > gap){ dots[i].style.display = 'none'; return; }
-        if (!best || Math.abs(p[0] - e) < Math.abs(best[0] - e)) best = p;
+        var p = ps[i];
+        // 日付だけのグラフ(d.day)は、一番近い記録と同じ日の記録だけを出す
+        if (Math.abs(p[0] - e) > gap || (d.day && Math.abs(p[0] - best[0]) >= 43200)){ dots[i].style.display = 'none'; return; }
         dots[i].style.display = ''; dots[i].setAttribute('cx', d.x0 + (p[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0)); dots[i].setAttribute('cy', p[2]);
         rows += '<div><span style="color:' + s.c + '">●</span> ' + esc(s.n) + ' <b>' + p[1].toFixed(s.d) + '</b> ' + esc(s.u) + '</div>';
       });
       if (!best){ hide(); return; }
       var bx = d.x0 + (best[0] - d.f) / (d.t - d.f) * (d.x1 - d.x0), t = new Date(best[0] * 1000);
       ln.setAttribute('x1', bx); ln.setAttribute('x2', bx); g.style.display = '';
-      box.innerHTML = '<div class="tt">' + (t.getMonth() + 1) + '/' + t.getDate() + ' ' + two(t.getHours()) + ':' + two(t.getMinutes()) + '</div>' + rows;
+      box.innerHTML = '<div class="tt">' + (t.getMonth() + 1) + '/' + t.getDate() + (d.day ? '' : ' ' + two(t.getHours()) + ':' + two(t.getMinutes())) + '</div>' + rows;
       box.style.display = 'block';
       var px = bx / k, bw = box.offsetWidth;   // 線の右に出す。右端に近いときは左に出す
       box.style.left = (px + 10 + bw > r.width ? Math.max(0, px - 10 - bw) : px + 10) + 'px';

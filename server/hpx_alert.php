@@ -219,6 +219,11 @@ function hpx_alert_flush(string $logDir, ?string $to = null): void
 {
     global $HPX_ALERT_QUEUE, $HPX_MAIL_TO, $HPX_MAIL_FROM;
     if (!$HPX_ALERT_QUEUE) return;
+    if ($to === '') {   // 送り先が無い(全員がこの種類のお知らせメールを止めている)。送らずに記録だけ残す
+        foreach ($HPX_ALERT_QUEUE as [$subject]) @file_put_contents(rtrim($logDir, '/') . '/mail.log', date('Y-m-d H:i:s') . ' SKIP ' . $subject . ' | お知らせメールを止めているので送りません' . "\n", FILE_APPEND);
+        $HPX_ALERT_QUEUE = [];
+        return;
+    }
     $to ??= (string)($HPX_MAIL_TO ?? '');
     $from = (string)($HPX_MAIL_FROM ?? '');
     global $HPX_SMTP_HOST;

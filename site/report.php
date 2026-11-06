@@ -230,7 +230,12 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   .file { background:var(--panel); border:1px dashed var(--line); border-radius:12px; padding:16px; }
   .file input { font:inherit; font-size:14px; max-width:100%; }
   .previews { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-  .previews img { width:96px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--line); }
+  .previews .pv { position:relative; }
+  .previews img { width:96px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--line); display:block; }
+  .previews .x { position:absolute; top:-8px; right:-8px; width:26px; height:26px; border-radius:50%; border:2px solid var(--panel);
+                 background:#1F2328; color:#fff; font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .previews .x:hover { background:var(--err); }
+  .file .count { font-size:13px; color:var(--sub); margin-top:8px; }
   .agree { display:flex; gap:10px; align-items:flex-start; font-weight:400; font-size:15px; }
   .agree input { margin-top:6px; width:18px; height:18px; flex:none; }
   .hp { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
@@ -323,6 +328,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
         <div class="file">
           <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png,image/webp,image/*" multiple required>
           <div class="previews" id="previews"></div>
+          <p class="count" id="pcount">1枚ずつ選ぶと、下に足されていきます。✕で外せます。</p>
         </div>
       </div>
       <div><label for="nick">ニックネーム<small>サイトに載ります</small></label>
@@ -378,13 +384,32 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   var input = document.getElementById('photos'), prev = document.getElementById('previews'), send = document.getElementById('send');
   var MAX = <?= R_MAX_PHOTOS ?>, LONG = 1600;
 
-  // 選んだ写真の見本を出す
-  input.addEventListener('change', function () {
+  // 選んだ写真をためておき、選ぶたびに足していく。✕で外せる
+  //   ファイル選択の欄の中身は、ためた写真に合わせて入れ直す (送信のときはこれが送られる)
+  var pcount = document.getElementById('pcount'), picked = [];
+  var canKeep = typeof DataTransfer !== 'undefined';
+  function sync() {
+    if (canKeep) { try { var dt = new DataTransfer(); picked.forEach(function (f) { dt.items.add(f); }); input.files = dt.files; } catch (x) { canKeep = false; } }
     prev.innerHTML = '';
-    if (input.files.length > MAX) { alert('写真は' + MAX + '枚までです。選び直してください。'); input.value = ''; return; }
-    Array.prototype.forEach.call(input.files, function (f) {
-      var img = document.createElement('img'); img.src = URL.createObjectURL(f); prev.appendChild(img);
+    picked.forEach(function (f, i) {
+      var box = document.createElement('div'); box.className = 'pv';
+      var img = document.createElement('img'); img.src = URL.createObjectURL(f); img.alt = '選んだ写真' + (i + 1);
+      var x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '✕'; x.setAttribute('aria-label', '写真' + (i + 1) + 'を外す');
+      x.addEventListener('click', function () { picked.splice(i, 1); sync(); });
+      box.appendChild(img); box.appendChild(x); prev.appendChild(box);
     });
+    pcount.textContent = picked.length
+      ? picked.length + ' / ' + MAX + '枚' + (picked.length < MAX ? '。続けて選ぶと足されます。' : '。いっぱいです (✕で外すと、ほかの写真を選べます)。')
+      : '1枚ずつ選ぶと、下に足されていきます。✕で外せます。';
+    input.disabled = canKeep && picked.length >= MAX;
+  }
+  input.addEventListener('change', function () {
+    var add = Array.prototype.slice.call(input.files);
+    if (!canKeep) { picked = add.slice(0, MAX); if (add.length > MAX) alert('写真は' + MAX + '枚までです。'); sync(); return; }
+    var room = MAX - picked.length;
+    if (add.length > room) alert('写真は' + MAX + '枚までです。' + (room > 0 ? '最初の' + room + '枚だけ足しました。' : ''));
+    picked = picked.concat(add.slice(0, Math.max(0, room)));
+    sync();
   });
 
   // 送る前に、ブラウザで写真を小さくする (できないときは、そのまま送る。サーバーでも小さくする)
@@ -403,6 +428,8 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   }
   var ready = false;
   form.addEventListener('submit', function (e) {
+    input.disabled = false;   // いっぱいで止めていた欄も、送るときは戻す (止めたままだと写真が送られない)
+    if (canKeep && !picked.length) { e.preventDefault(); alert('写真を1枚以上選んでください。'); return; }
     if (ready || !input.files.length || typeof DataTransfer === 'undefined') { send.disabled = true; send.textContent = '送信しています…'; return; }
     e.preventDefault();
     send.disabled = true; send.textContent = '写真を準備しています…';

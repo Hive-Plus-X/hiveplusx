@@ -198,6 +198,14 @@ function site_load(): array
             $out['hives'][$hid] = ['_o' => $o] + $x;
         }
     }
+    // 蜂場ページの「並び替え」で決めた順(自分の site.json の apiary_order。共有された蜂場も入る)。
+    //   入っていない蜂場(あとから足した・共有された)は、その後ろに今までの順で並べる
+    $ord = site_read_of($UID, 'site')['apiary_order'] ?? null;
+    if (is_array($ord) && $ord) {
+        $sorted = [];
+        foreach ($ord as $aid) if (isset($out['apiaries'][(string)$aid])) $sorted[(string)$aid] = $out['apiaries'][(string)$aid];
+        $out['apiaries'] = $sorted + $out['apiaries'];
+    }
     return $cache = $out;
 }
 
@@ -205,6 +213,9 @@ function hives_of(array $site, string $apiaryId): array
 {
     return array_filter($site['hives'], fn($hv) => ($hv['apiary'] ?? '') === $apiaryId);
 }
+
+// 1つの蜂場だけを出す蜂場ページの URL (一覧・地図から飛ぶ先。保存したあとの戻り先にも使う)
+function apiary_url(string $aid): string { return 'apiary.php?' . http_build_query(['a' => $aid]) . '#a-' . $aid; }
 
 // 蜂場の持ち主。登録されていなければ ''
 function apiary_owner(array $site, string $aid): string { return (string)($site['apiaries'][$aid]['_o'] ?? ''); }
@@ -957,6 +968,7 @@ function chart_svg(array $series, int $from, int $to, string $unit, float $minSp
 // 巣箱ページのグラフ: 左の縦軸に $left、右の縦軸に $right(空なら右軸なし)。系列は [名前, 色, [[epoch, 値], ...], 破線(省略可)]
 //   目盛りの数字は $tfs の大きさ。縦軸の単位は出さない(グラフの上の見出しに書く)。左右の目盛りは $lColor / $rColor で色分けする
 //   $tip に ['l' => [項目名, 単位, 小数桁], 'r' => [...]] を渡すと、マウスやタッチで日時と値を出すためのデータを埋め込む(chart_tip_js と組で使う)
+//   系列の5つめに true を入れると、記録した点に丸を付ける。$tip['day'] = true なら、日時の代わりに日付だけを出す
 function chart_dual(array $left, array $right, int $from, int $to, float $lSpan, float $rSpan, int $W, int $H, int $tfs,
     string $lColor = '#666', string $rColor = '#666', array $tip = []): string
 {
@@ -1030,12 +1042,17 @@ function chart_dual(array $left, array $right, int $from, int $to, float $lSpan,
             } elseif ($pts) {
                 $o .= '<polyline fill="none" stroke="' . $s[1] . '" stroke-width="2" stroke-linejoin="round"'
                     . (($s[3] ?? '') !== '' ? ' stroke-dasharray="' . h((string)$s[3]) . '"' : '') . ' points="' . implode(' ', $pts) . '"/>';
+                if (!empty($s[4])) foreach ($pts as $pt) {   // 記録がまばらなグラフ(ダニ数など)は、記録した点に丸を付ける
+                    [$px, $py] = explode(',', $pt);
+                    $o .= '<circle cx="' . $px . '" cy="' . $py . '" r="3" fill="' . $s[1] . '"/>';
+                }
             }
         }
     }
     $o .= '</svg>';
     if (!$tip) return $o;
     $data = ['W' => $W, 'x0' => $L, 'x1' => $W - $R, 'y0' => $T, 'y1' => $H - $B, 'f' => $from, 't' => $to, 's' => $tipS];
+    if (!empty($tip['day'])) $data['day'] = 1;
     return '<div class="tipw" data-tip="' . h(json_encode($data, JSON_UNESCAPED_UNICODE)) . '">' . $o . '</div>';
 }
 

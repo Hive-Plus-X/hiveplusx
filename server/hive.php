@@ -184,6 +184,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // センサの今の値とグラフ
     $tS = []; $hS = []; $wS = []; $rows = [];
     $first = 0; $nt = 0; $nw = 0;
+    $wSer = [];   // 重量センサごとの記録(kg)。あとで巣箱の重さ(1台なら2倍、2台以上なら合計)にまとめる
     foreach ((array)($hv['sensors'] ?? []) as $k) {
         if (!isset($sensors[$k])) continue;
         $sn = $sensors[$k];
@@ -222,14 +223,22 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
                     : ($last ? '<span class="muted">未較正</span>' : '-')) . '</td>'
                 . '<td class="n">' . (isset($sn['s']['w_fail']) && (int)($sn['s']['w_fail_epoch'] ?? 0) >= $le ? '<span class="ng">' . ((int)$sn['s']['w_fail'] === 1 ? '電池切れ' : '測定エラー') . '</span>' : '-') . '</td>'
                 . '<td>' . $lastTxt . ($le > 0 && $now - $le >= S_W_MISSING_S ? ' <span class="ng">受信できていません</span>' : '') . '</td></tr>';
-            if ($c) {
+            if ($c && isset($c['per_kg'])) {
                 $pts = [];
                 foreach ($r as $p) { $v = to_kg($p[1], $c); if ($v !== null) $pts[] = [$p[0], $v]; }
-                $wS[] = [$sn['name'], H_C_W, $pts, $dash];
+                $wSer[] = $pts;
             }
         }
     }
     $infoHtml = (string)ob_get_clean();
+    // 巣箱の重さ: 重量センサ1台なら2倍、2台以上なら合計。較正していないセンサがあるときは出さない
+    $wHow = '';
+    if ($nw > 0 && count($wSer) === $nw) {
+        $wS[] = ['巣箱重量', H_C_W, hive_kg_series($wSer), ''];
+        $wHow = ' <span class="muted" style="font-size:.7em">' . h(hive_weight_how($nw)) . '</span>';
+    } elseif ($nw > 0) {
+        $wHow = ' <span class="muted" style="font-size:.7em">較正していない重量センサがあるため、巣箱の重さを出せません</span>';
+    }
     // グラフは上から 重量、温度と湿度(1つのグラフ。温度は左の目盛り、湿度は右の目盛り)。記録が無くても枠は出す
     $from = $per === 0 ? ($first > 0 ? min($first, $now - 3600) : $now - 86400) : $since;
     // パソコン用とスマホ用(幅を狭くして、目盛りの数字が小さくなりすぎないようにしたもの)を作り、画面の幅で出し分ける
@@ -237,14 +246,14 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     $dual = fn(array $l, array $r, float $ls, float $rs, string $lc, string $rc, array $tip) =>
         '<div class="gw">' . chart_dual($l, $r, $from, $now, $ls, $rs, 600, 160, 8, $lc, $rc, $tip) . '</div>'
         . '<div class="gn">' . chart_dual($l, $r, $from, $now, $ls, $rs, 340, 120, 10, $lc, $rc, $tip) . '</div>';
-    // 重量の見出しの右に、基準日と基準日の同時刻からの増減(重量センサが2台以上ならセンサごと)。温度の見出しの右に、警報の上限・下限
+    // 重量の見出しの右に、基準日と基準日の同時刻からの増減(巣箱の重さで)。温度の見出しの右に、警報の上限・下限
     $conf = hive_alert_conf($hv);
     $wb = '';
     if ($conf['base'] !== '') {
         $parts = [];
         $wbList = hive_weight_base((string)$hv['_o'], $hv);
-        foreach ($wbList as [, $nm, , , $diff]) {
-            $parts[] = (count($wbList) > 1 ? h($nm) . ' ' : '') . ($diff === null ? '<span class="muted">基準日の記録なし</span>'
+        foreach ($wbList as [, , , , $diff]) {
+            $parts[] = ($diff === null ? '<span class="muted">基準日の記録なし</span>'
                 : '<b>' . h(($diff >= 0 ? '+' : '') . number_format($diff, 2)) . ' kg</b>');
         }
         $wb = '<span class="gx">基準日: ' . h(date('n月j日', strtotime($conf['base']))) . '　基準日からの増減: ' . ($parts ? implode('　', $parts) : '<span class="muted">-</span>') . '</span>';
@@ -252,7 +261,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     $tl = [];
     if ($conf['t_hi'] !== null) $tl[] = '上限 ' . h((string)$conf['t_hi']) . '℃';
     if ($conf['t_lo'] !== null) $tl[] = '下限 ' . h((string)$conf['t_lo']) . '℃';
-    echo '<p class="gt"><span style="color:' . H_C_W . '">重量 (kg)</span>' . $wb . '</p>' . $dual($wS, [], 0.5, 0, H_C_W, '#666', ['l' => ['重量', 'kg', 2]])
+    echo '<p class="gt"><span style="color:' . H_C_W . '">重量 (kg)</span>' . $wHow . $wb . '</p>' . $dual($wS, [], 0.5, 0, H_C_W, '#666', ['l' => ['重量', 'kg', 2]])
         . '<p class="gt"><span style="color:' . H_C_T . '">温度 (℃)</span>・<span style="color:' . H_C_H . '">湿度 (%)</span>'
         . ' <span class="muted" style="font-size:.7em">温度は左、湿度は右の目盛り</span>' . '</p>'
         . $dual($tS, $hS, 2, 5, H_C_T, H_C_H, ['l' => ['温度', '℃', 1], 'r' => ['湿度', '%', 1]]);

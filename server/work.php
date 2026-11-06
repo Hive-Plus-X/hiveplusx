@@ -22,6 +22,39 @@ $page = $taskPage ? 'task.php' : 'work.php';
 const W_TAGS_DEFAULT = ['内検', '採蜜', '給餌', 'ダニ検査', '薬剤処理（入出）'];
 function work_tags(): array { return tag_list('work_tags', W_TAGS_DEFAULT); }
 
+// 作業記録の「作業の種類」の一覧。初期は S_WORK_TYPES。カスタマイズしたら site/work_types.json に {"types": [...]} で保存する
+// (アカウントごと。一覧から外しても、前に書いた作業記録の種類はそのまま残る)
+const W_TYPES_MAX = 20;
+function work_types(): array
+{
+    $v = site_read_of($GLOBALS['UID'], 'work_types');
+    $l = isset($v['types']) && is_array($v['types']) ? array_values(array_unique(array_filter(array_map(fn($t) => tag_clean((string)$t), $v['types']), fn($t) => $t !== ''))) : [];
+    return $l ?: S_WORK_TYPES;
+}
+
+// 種類の一覧の変更(画面からその場で送られ、新しい一覧を JSON で返す)。act が違えば何もしない
+function type_post(string $act): void
+{
+    if (!in_array($act, ['type_add', 'type_del', 'type_up', 'type_reset'], true)) return;
+    $t = tag_clean((string)($_POST['type'] ?? ''));
+    $err = '';
+    site_update_of($GLOBALS['UID'], 'work_types', function (array $v) use ($act, $t, &$err) {
+        $l = work_types();
+        $i = array_search($t, $l, true);
+        if ($act === 'type_reset') $l = S_WORK_TYPES;
+        elseif ($act === 'type_del') { if (count($l) <= 1) $err = '種類は1つ以上残してください。'; else $l = array_values(array_filter($l, fn($x) => $x !== $t)); }
+        elseif ($act === 'type_up') { if ($i !== false && $i > 0) [$l[$i - 1], $l[$i]] = [$l[$i], $l[$i - 1]]; }
+        elseif ($t === '') $err = '種類の名前を入れてください。';
+        elseif ($i !== false) $err = '「' . $t . '」はもうあります。';
+        elseif (count($l) >= W_TYPES_MAX) $err = '種類は ' . W_TYPES_MAX . ' 個までです。';
+        else $l[] = $t;
+        return ['types' => array_values($l)];
+    });
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(['types' => work_types(), 'error' => $err], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 // 書き先を決める。新しく書くときは対象の蜂場の持ち主、前からあるものはそれを持っている人。
 // 前からあるものの対象を、ほかの人の蜂場へは移せない
 function work_owner(array $site, ?array $tg, ?array $ex, string $back): void
@@ -52,6 +85,7 @@ if (is_post()) {
     $back = safe_back((string)($_POST['back'] ?? ''), $page);
     $id = (string)($_POST['id'] ?? '');
     tag_post($act, 'work_tags', W_TAGS_DEFAULT);   // タグの一覧の変更(JSON を返して終わる)
+    type_post($act);   // 作業の種類の一覧の変更(JSON を返して終わる)
     if ($act === 'ical_new') {
         ical_issue($UID);
         redirect('task.php#ical', 'カレンダーのURLを作りました。' . (!empty($_POST['re']) ? '前のURLは使えなくなったので、Googleカレンダーに登録し直してください。' : ''));
@@ -130,8 +164,11 @@ if (is_post()) {
     }
     if ($act === 'log_save') {
         $tg = parse_target_pair($site);
-        $type = (string)($_POST['type'] ?? '');
-        if (!in_array($type, S_WORK_TYPES, true)) $type = 'その他';
+        $type = tag_clean((string)($_POST['type'] ?? ''));
+        $types = work_types();
+        $ex = record_find($works['logs'], $id);
+        // 一覧にある種類か、変更する前の記録の種類(一覧から外した種類のままでもよい)。どちらでもなければ「その他」か一覧の先頭
+        if (!in_array($type, $types, true) && !($ex && (string)($ex['type'] ?? '') === $type)) $type = in_array('その他', $types, true) ? 'その他' : $types[0];
         $start = time_in('start');
         $end = time_in('end');
         $min = (int)($_POST['minutes'] ?? 0);
@@ -140,7 +177,6 @@ if (is_post()) {
             if ($min <= 0) $min += 1440;   // 日をまたいだとき
         }
         if (!$tg || $min <= 0 || $min > 1440) redirect($back, '対象と、かかった時間 (開始と終了、または分) を入れてください。');
-        $ex = record_find($works['logs'], $id);
         if ($id !== '' && (!$ex || !empty($ex['demo']))) redirect($back, $ex ? '見本の作業記録は変更できません。' : '');
         work_owner($site, $tg, $ex, $back);
         $date = date_in('date', date('Y-m-d'));
@@ -207,6 +243,18 @@ function assignee_select(array $cur, array $site, string $name = 'assignees', st
 
 // 作業の種類の色(色覚の違いでも見分けやすい Okabe-Ito の8色)
 const W_TYPE_COLORS = ['準備' => '#E69F00', '内検' => '#56B4E9', '給餌' => '#009E73', '採蜜' => '#F0E442', '分蜂対応' => '#0072B2', '片付け' => '#D55E00', '移動' => '#CC79A7', 'その他' => '#999999'];
+// 自分で足した種類の色(Paul Tol の見分けやすい色から。足した順に使う)
+const W_TYPE_COLORS_ADD = ['#882255', '#44AA99', '#332288', '#117733', '#AA4499', '#999933', '#CC6677', '#88CCEE', '#661100', '#6699CC', '#DDCC77', '#AA4466'];
+
+// グラフと合計に出す種類と色: 今の一覧の順。そのあとに、一覧から外したが作業記録に残っている種類
+function type_colors(array $logs): array
+{
+    $types = work_types();
+    foreach ($logs as $l) { $t = (string)($l['type'] ?? ''); if ($t !== '' && !in_array($t, $types, true)) $types[] = $t; }
+    $out = []; $i = 0;
+    foreach ($types as $t) $out[$t] = W_TYPE_COLORS[$t] ?? W_TYPE_COLORS_ADD[$i++ % count(W_TYPE_COLORS_ADD)];
+    return $out;
+}
 
 // 月ごとの作業時間の積み上げ棒グラフ(12か月。$endM の月まで)。$person が空なら全員ののべ時間(時間 × 人数)、
 // 人を選んだらその人が担当した作業の時間。上に担当者を選ぶボタン(チームを使っているとき)
@@ -216,13 +264,15 @@ function work_chart(array $logs, string $endM, string $person, callable $selfUrl
     for ($i = 11; $i >= 0; $i--) $months[] = date('Y-m', strtotime($endM . "-01 -$i month"));
     $val = [];   // 月 => 種類 => 分
     $people = $members;   // 作業記録のないメンバーにもボタンを出す
+    $colors = type_colors($logs);
     foreach ($logs as $l) {
         $ws = log_workers($l);
         foreach ($ws as $u) $people[$u] = user_name($u);
         $m = substr((string)($l['date'] ?? ''), 0, 7);
         if (!in_array($m, $months, true)) continue;
         if ($person !== '' && !in_array($person, $ws, true)) continue;
-        $t = isset(W_TYPE_COLORS[$l['type'] ?? '']) ? (string)$l['type'] : 'その他';
+        $t = (string)($l['type'] ?? '');
+        if (!isset($colors[$t])) continue;
         $min = (int)($l['minutes'] ?? 0) * ($person === '' ? max(1, (int)($l['people'] ?? 1)) : 1);
         $val[$m][$t] = ($val[$m][$t] ?? 0) + $min;
     }
@@ -255,7 +305,7 @@ function work_chart(array $logs, string $endM, string $person, callable $selfUrl
         foreach ($months as $i => $m) {
             $x = $L + $bw * $i + $bw * 0.16;
             $y = $T + $ph;
-            foreach (W_TYPE_COLORS as $t => $col) {
+            foreach ($colors as $t => $col) {
                 $min = $val[$m][$t] ?? 0;
                 if ($min <= 0) continue;
                 $hgt = $ph * ($min / 60) / $top;
@@ -272,7 +322,10 @@ function work_chart(array $logs, string $endM, string $person, callable $selfUrl
         $svgs .= $svg . '</svg>';
     }
     $leg = '<div class="wleg">';
-    foreach (W_TYPE_COLORS as $t => $col) $leg .= '<span><i style="background:' . $col . '"></i>' . h($t) . '</span>';
+    $used = [];
+    foreach ($val as $byT) $used += $byT;
+    // 凡例: 今の一覧の種類と、一覧から外したがグラフに出ている種類
+    foreach ($colors as $t => $col) if (in_array($t, work_types(), true) || isset($used[$t])) $leg .= '<span><i style="background:' . $col . '"></i>' . h((string)$t) . '</span>';
     return $o . $svgs . $leg . '</div></div>';
 }
 
@@ -283,9 +336,11 @@ function log_form(array $l, array $site, string $back): string
         . '<div class="grid2"><p><label>対象 (蜂場・巣箱)</label>' . target_pair($site, (string)($l['apiary'] ?? ''), (string)($l['hive'] ?? ''), isset($l['id']) && ($l['apiary'] ?? '') === '') . '</p>'
         . '<p><label>日付</label><input type="date" name="date" value="' . h((string)($l['date'] ?? date('Y-m-d'))) . '"></p></div>'
         . assignee_select(isset($l['id']) ? (array)($l['workers'] ?? []) : [$GLOBALS['UID']], $site, 'workers', '作業した人。複数選べます。選ばなければ記入者')
-        . '<p><label>作業の種類</label><select name="type">';
-    foreach (S_WORK_TYPES as $t) $o .= '<option' . (($l['type'] ?? '') === $t ? ' selected' : '') . '>' . h($t) . '</option>';
-    return $o . '</select></p>'
+        . '<p class="wtype"><label>作業の種類</label><select name="type" data-cur="' . h((string)($l['type'] ?? '')) . '">';
+    // 一覧から外した種類の記録を変更するときは、その種類も選べるように残す
+    $cur = (string)($l['type'] ?? '');
+    foreach (array_values(array_unique(array_merge(work_types(), $cur !== '' ? [$cur] : []))) as $t) $o .= '<option' . ($cur === $t ? ' selected' : '') . '>' . h($t) . '</option>';
+    return $o . '</select> <button type="button" class="tagcz" onclick="typePanel(this)">カスタマイズ</button></p>'
         . '<p><label>かかった時間 (開始と終了を入れるか、分を入れる)</label>'
         . '<input type="time" name="start" value="' . h((string)($l['start'] ?? '')) . '"> 〜 <input type="time" name="end" value="' . h((string)($l['end'] ?? '')) . '">'
         . '　または <input type="number" name="minutes" min="1" max="1440" value="' . h(($l['start'] ?? '') === '' && isset($l['minutes']) ? (string)$l['minutes'] : '') . '"> 分</p>'
@@ -466,7 +521,7 @@ else {
         $total += $m; $totalP += $m * $p;
     }
     $parts = [];
-    foreach (S_WORK_TYPES as $t) if (isset($byType[$t])) $parts[] = $t . ' ' . hm($byType[$t]);
+    foreach (array_keys(type_colors($logs)) as $t) if (isset($byType[$t])) $parts[] = $t . ' ' . hm($byType[$t]);
     echo '<div class="card"><b>' . ($month === 'all' ? 'すべての期間の合計 ' : 'この月の合計 ') . h(hm($total)) . '</b>' . ($totalP !== $total ? ' <span class="muted">(のべ ' . h(hm($totalP)) . ')</span>' : '')
         . '<br><span class="muted">' . h(implode('　', $parts)) . '</span></div>' . $chart;
     echo '<div class="wrap"><table><tr><th>日付</th><th>対象</th><th>作業</th>' . (team_on() ? '<th>担当</th>' : '') . '<th>時間</th><th>メモ</th></tr>';
@@ -500,4 +555,46 @@ document.querySelectorAll('.asg').forEach(function(s){ var f = s.closest('form')
 </script>
 JS;
 echo target_pair_js() . tag_js('work.php', work_tags());
+// 作業の種類の「カスタマイズ」: 一覧に足す・外す・上へ動かす・初期に戻す。変えたらページのすべての種類の選択欄を作り直す
+if (!$taskPage) echo '<script>var WTYPES=' . json_encode(work_types(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . ';</script>' . <<<'JS'
+<script>
+function typeRedraw(){
+  document.querySelectorAll('.wtype select').forEach(function(s){
+    var v = s.value, cur = s.getAttribute('data-cur') || '';
+    var list = WTYPES.slice(); [cur, v].forEach(function(x){ if (x !== '' && list.indexOf(x) < 0) list.push(x); });
+    s.innerHTML = list.map(function(t){ return '<option' + (t === v ? ' selected' : '') + '>' + tagEsc(t) + '</option>'; }).join('');
+  });
+  document.querySelectorAll('.typep .tagx').forEach(function(x){
+    x.innerHTML = WTYPES.map(function(t, i){ return '<span>' + tagEsc(t) + (i > 0 ? '<button type="button" title="前へ" data-up="' + tagEsc(t) + '" style="color:#345">↑</button>' : '')
+      + '<button type="button" title="一覧から外す" data-t="' + tagEsc(t) + '">×</button></span>'; }).join('');
+  });
+}
+function typeSend(act, t, p){
+  var fd = new FormData(); fd.append('act', act); fd.append('type', t || ''); fd.append('csrf', CSRF);
+  fetch('work.php', {method: 'POST', body: fd, credentials: 'same-origin'}).then(function(r){ return r.json(); }).then(function(d){
+    WTYPES = d.types; typeRedraw(); p.querySelector('.tagerr').textContent = d.error || '';
+  }).catch(function(){ p.querySelector('.tagerr').textContent = '保存できませんでした。画面を開き直してください。'; });
+}
+function typePanel(btn){
+  var p = btn.parentNode.querySelector('.typep');
+  if (p){ p.remove(); return; }
+  p = document.createElement('div'); p.className = 'tagp typep';
+  p.innerHTML = '<div class="tagx"></div><input type="text" maxlength="20" placeholder="新しい種類"> <button type="button" class="add">追加</button>'
+    + ' <button type="button" class="rst">初期の種類に戻す</button><div class="tagerr ng"></div>'
+    + '<div class="muted" style="font-size:.85em">ここでの変更は、作業の種類の一覧とグラフの色分けに反映されます。一覧から外しても、前に書いた作業記録の種類は消えません。↑ で並び順を変えられます。</div>';
+  btn.parentNode.appendChild(p); typeRedraw();
+  var inp = p.querySelector('input');
+  var add = function(){ if (inp.value.trim() !== ''){ typeSend('type_add', inp.value, p); inp.value = ''; } };
+  p.querySelector('.add').onclick = add;
+  inp.onkeydown = function(e){ if (e.key === 'Enter'){ e.preventDefault(); add(); } };
+  p.querySelector('.rst').onclick = function(){ if (confirm('作業の種類の一覧を初期の状態に戻しますか?')) typeSend('type_reset', '', p); };
+  p.querySelector('.tagx').onclick = function(e){
+    var u = e.target.getAttribute('data-up'), t = e.target.getAttribute('data-t');
+    if (u !== null) typeSend('type_up', u, p);
+    else if (t !== null && confirm('「' + t + '」を一覧から外しますか? (前に書いた作業記録はそのままです)')) typeSend('type_del', t, p);
+  };
+  inp.focus();
+}
+</script>
+JS;
 echo '</body></html>';

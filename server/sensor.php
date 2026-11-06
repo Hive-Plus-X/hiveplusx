@@ -570,7 +570,7 @@ foreach ((is_array($siteJson['apiaries'] ?? null) ? $siteJson['apiaries'] : []) 
 // センサの紐づけ先(蜂場・巣箱ページで選んだもの)。キーは "ハブid/mac"。温湿度・重量は巣箱、電柵アラートは蜂場
 $where = [];
 $siteAp = is_array($siteJson['apiaries'] ?? null) ? $siteJson['apiaries'] : [];
-foreach ($siteAp as $aid => $ap) foreach ((array)($ap['fences'] ?? []) as $k) $where[(string)$k] = [(string)($ap['name'] ?? ''), 'apiary.php#a-' . $aid];
+foreach ($siteAp as $aid => $ap) foreach ((array)($ap['fences'] ?? []) as $k) $where[(string)$k] = [(string)($ap['name'] ?? ''), apiary_url((string)$aid)];
 foreach ((is_array($siteJson['hives'] ?? null) ? $siteJson['hives'] : []) as $hid => $hv) {
     $aid = (string)($hv['apiary'] ?? '');
     foreach ((array)($hv['sensors'] ?? []) as $k) $where[(string)$k] = [(string)($siteAp[$aid]['name'] ?? '') . ' / ' . (string)($hv['name'] ?? ''), 'hive.php?' . http_build_query(['a' => $aid, 'h' => $hid])];
@@ -652,6 +652,7 @@ $cal = cal_load($dir);
 if (!$byKind['w']) {
     echo '<p class="muted">重量センサの記録はまだありません。</p>';
 } else {
+    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台ならその2倍 (巣箱の片側に置く使い方)、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。</p>';
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>重さ</th><th>24時間</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
     $calForms = '';
