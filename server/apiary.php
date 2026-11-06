@@ -404,9 +404,9 @@ if ($one !== '') {
 $addbox = fn(string $extra = '') => '<details class="addbox" id="new"' . (!$site['apiaries'] ? ' open' : '') . $extra . '><summary><span class="plus">＋</span>蜂場を追加</summary>'
     . '<div class="card">' . apiary_form([], '', $hubs, $sensors, $site) . '</div></details>';
 // 地図の点の色。地図・航空写真は青・緑・黄・茶が多いので、赤・ピンク・オレンジ系にして白いふちを付ける (2026-11-06 TARO)
-$stColor = ['ok' => '#FF7A00', 'ng' => '#F06292', 'alert' => '#B00020', 'none' => '#FFFFFF'];
-$stRing = ['ok' => '#FFFFFF', 'ng' => '#FFFFFF', 'alert' => '#FFFFFF', 'none' => '#FF7A00'];   // 機器なしは白ぬき (オレンジのふち)
-$stText = ['ok' => '機器は正常', 'ng' => '届いていない機器あり', 'alert' => '電柵の異常', 'none' => '機器の登録なし'];
+//   色分け (2026-11-07 TARO): 正常=オレンジ / タスクあり=ピンク / センサ異常=赤。両方あてはまるときは赤を先に
+$stColor = ['ok' => '#FF7A00', 'task' => '#F06292', 'bad' => '#B00020'];
+$stText = ['ok' => '正常', 'task' => 'タスクあり (今日まで・期限切れ)', 'bad' => 'センサ異常 (届いていない機器・電柵の異常)'];
 
 if ($one === '' && $view === 'list' && $site['apiaries']) {
     // 一覧: 1つの蜂場を1行に。蜂場がたくさんあっても少ないスクロールで見られるように、写真・地図・グラフは出さない
@@ -487,21 +487,28 @@ JS;
     // 地図: 緯度,経度が入っている蜂場に点を打ち、全部が入る縮尺で出す。点か名前を押すとその蜂場のページへ
     //   地図は国土地理院の地図(地理院タイル)。キー不要。表示には Leaflet (オープンソースの地図の部品) を使う
     $pts = []; $nopos = [];
+    // ピンク(タスクあり): 期限が今日まで(期限切れも)の未完了タスクがある蜂場。「すべての蜂場」向けのタスクは数えない(全部ピンクになるため)
+    $dueAp = [];
+    foreach (works_load()['todos'] as $t) {
+        if (empty($t['done']) && ($t['apiary'] ?? '') !== '' && ($t['due'] ?? '') !== '' && $t['due'] <= $today) $dueAp[(string)$t['apiary']] = true;
+    }
     foreach ($site['apiaries'] as $aid => $a) {
         $ll = apiary_latlng($a);
         if (!$ll) { $nopos[$aid] = $a; continue; }
-        $pts[] = ['n' => (string)$a['name'], 'u' => apiary_url((string)$aid), 'la' => $ll[0], 'lo' => $ll[1], 's' => apiary_state($a, $hubs, $sensors, $now)];
+        $st = apiary_state($a, $hubs, $sensors, $now);
+        $pts[] = ['n' => (string)$a['name'], 'u' => apiary_url((string)$aid), 'la' => $ll[0], 'lo' => $ll[1],
+            's' => in_array($st, ['ng', 'alert'], true) ? 'bad' : (isset($dueAp[$aid]) ? 'task' : 'ok')];
     }
     echo '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">'
         . '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>';
     // 異常の点がいちばん上に重なるように、異常を最後に描く
-    usort($pts, fn($x, $y) => (['none' => 0, 'ok' => 1, 'ng' => 2, 'alert' => 3][$x['s']]) <=> (['none' => 0, 'ok' => 1, 'ng' => 2, 'alert' => 3][$y['s']]));
+    usort($pts, fn($x, $y) => (['ok' => 0, 'task' => 1, 'bad' => 2][$x['s']]) <=> (['ok' => 0, 'task' => 1, 'bad' => 2][$y['s']]));
     foreach ($pts as &$pt) {
-        $pt += ['c' => $stColor[$pt['s']], 'r' => $stRing[$pt['s']], 'z' => $pt['s'] === 'alert' ? 12 : 10, 'w' => $pt['s'] === 'alert' ? 4 : ($pt['s'] === 'none' ? 3 : 2.5)];
+        $pt += ['c' => $stColor[$pt['s']], 'r' => '#FFFFFF', 'z' => $pt['s'] === 'bad' ? 12 : 10, 'w' => $pt['s'] === 'bad' ? 4 : 2.5];
     }
     unset($pt);
     echo '<div id="amap"></div><div class="aleg">';
-    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . ';border-color:' . $stRing[$k] . '"></i>' . h($t) . '</span>';
+    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . '"></i>' . h($t) . '</span>';
     echo '</div>';
     if ($nopos) {
         echo '<p class="muted" style="margin-top:.8em">地図に出ていない蜂場 (蜂場の情報の「緯度・経度」が空です。入れると地図に出ます): ';
