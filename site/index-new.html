@@ -61,7 +61,7 @@
 
   /* セクション */
   /* トピックの間は余白だけで区切る (パソコン 450px、スマホ 300px) */
-  section { padding:0; margin-top:450px; }
+  section { padding:0; margin-top:450px; scroll-margin-top:100px; }
   main { padding-bottom:450px; }
   @media (max-width:760px) { section { margin-top:300px; } main { padding-bottom:300px; } }
   .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
@@ -120,6 +120,25 @@
   .lic-notes dd { color:var(--sub); }
   @media (max-width:760px) { .lic-notes div { flex-direction:column; gap:0; padding:6px 0; } .lic-notes dt { width:auto; } }
 
+  /* 作った・使ったレポート (コミュニティ欄の下。report.php?feed=1 から新着を読む) */
+  [hidden] { display:none !important; }
+  .reports { margin-top:140px; }
+  .reports .head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; }
+  .reports h3 { font-size:clamp(20px, 2.6vw, 24px); }
+  .reports .head .lead { margin-top:4px; }
+  .reports .acts { display:flex; gap:10px; flex-wrap:wrap; }
+  .rgrid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-top:28px; }
+  @media (max-width:900px) { .rgrid { grid-template-columns:repeat(2, 1fr); } }
+  .rcard { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; text-decoration:none; display:flex; flex-direction:column; }
+  a.rcard:hover { border-color:var(--honey); }
+  .rcard img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:var(--honey-soft); }
+  .rcard .b { padding:12px 14px 14px; font-size:14px; }
+  .rcard .b b { display:block; font-size:14px; }
+  .rcard .b p { color:var(--sub); margin-top:4px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .rcard .tag { display:inline-block; margin-top:6px; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:1px 9px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .rcard .tag { color:var(--honey); } }
+  .rempty { margin-top:28px; padding:32px 20px; text-align:center; color:var(--sub); border:1px dashed var(--line); border-radius:14px; }
+
   /* フッター */
   footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
   footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
@@ -156,7 +175,7 @@
         <li><a href="devices.html">機器をつくる</a></li>
         <li><a href="install.html">設置ガイド</a></li>
         <li><a href="download.html">ダウンロード</a></li>
-        <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+        <li><a href="#community">コミュニティ</a></li>
       </ul>
     </nav>
   </div>
@@ -296,6 +315,21 @@
         <a class="card" href="https://github.com/Hive-Plus-X/hiveplusx"><span class="tag">開発</span><h3>不具合の報告・改良の提案</h3><p>GitHub の Issue やプルリクエストで、コードや回路の改良を受け付けています。</p></a>
       </div>
     </div>
+    <div class="reveal wrap reports" id="reports">
+      <div class="head">
+        <div>
+          <p class="eyebrow">Reports</p>
+          <h3>作った・使ったレポート</h3>
+          <p class="lead">機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。</p>
+        </div>
+        <div class="acts">
+          <a class="btn ghost" href="report.php">報告をすべて見る</a>
+          <a class="btn primary" href="report.php#post"><span class="hex"></span>報告をする</a>
+        </div>
+      </div>
+      <div class="rgrid" id="rgrid" hidden></div>
+      <div class="rempty" id="rempty">まだ報告はありません。作ったら、ぜひ写真を送ってください。</div>
+    </div>
   </section>
 </main>
 
@@ -338,6 +372,24 @@
   }
   function restart() { clearInterval(timer); timer = setInterval(function () { go((i + 1) % slides.length); }, 4500); }
   go(0); restart();
+})();
+</script>
+<script>
+// 作った・使ったレポートの新着 (公開したものだけ。読めなければ「まだありません」のまま)
+(function () {
+  var grid = document.getElementById('rgrid'), empty = document.getElementById('rempty');
+  if (!grid || !window.fetch) return;
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  fetch('report.php?feed=1&n=4').then(function (r) { return r.json(); }).then(function (d) {
+    var list = (d && d.reports) || [];
+    if (!list.length) return;
+    grid.innerHTML = list.map(function (r) {
+      return '<a class="rcard" href="' + esc(r.url) + '">' + (r.img ? '<img src="' + esc(r.img) + '" alt="' + esc(r.nick) + ' さんの写真" loading="lazy">' : '')
+        + '<div class="b"><b>' + esc(r.nick) + ' さん</b>' + (r.devices || []).map(function (x) { return '<span class="tag">' + esc(x) + '</span> '; }).join('')
+        + '<p>' + esc(r.comment) + '</p></div></a>';
+    }).join('');
+    grid.hidden = false; empty.hidden = true;
+  }).catch(function () {});
 })();
 </script>
 </body>
