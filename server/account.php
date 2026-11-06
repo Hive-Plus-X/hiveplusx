@@ -1,6 +1,7 @@
 <?php
 // 設定ページ: ログインしている本人のアカウントの設定。
-//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、HPX-Core に入れる機器用トークン。
+//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、お知らせメールのオン/オフ、HPX-Core に入れる機器用トークン、
+//   データ一括ダウンロード(export.php)、バックアップと復元(backup.php)。
 //   メールアドレスは、新しいアドレスに確認メールを送り、そのリンクを開いた時点で切り替える(打ち間違いでログインできなくなるのを防ぐ)。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
@@ -41,6 +42,12 @@ if (is_post()) {
         account_update($UID, function (array $a) use ($n) { $a['notify'] = $n; return $a; });
         redirect('account.php#notify', '通知メールの送り先を保存しました。');
     }
+    if ($act === 'mail_save') {
+        $off = array_values(array_filter(array_keys(A_MAIL_KINDS), fn($k) => empty($_POST['mail'][$k])));
+        account_update($UID, function (array $a) use ($off) { $a['mail_off'] = $off; return $a; });
+        redirect('account.php#mail', $off === [] ? 'お知らせメールを、すべて受け取るようにしました。'
+            : (count($off) === count(A_MAIL_KINDS) ? 'お知らせメールを、すべて止めました。' : '「' . implode('」「', array_map(fn($k) => A_MAIL_KINDS[$k][0], $off)) . '」のメールを止めました。'));
+    }
     if ($act === 'token_new') {
         token_issue($UID);
         redirect('account.php#token', '機器用トークンを作り直しました。HPX-Core の「送信先のトークン」を新しいものに変えてください。');
@@ -77,6 +84,17 @@ echo '<h2 id="notify">通知メールの送り先</h2><div class="card form"><p 
     . '<p><input type="text" name="notify" value="' . h((string)($acct['notify'] ?? '')) . '" placeholder="' . h((string)$ME['email']) . '"></p>'
     . '<button type="submit">送り先を保存</button></form></div>';
 
+$off = (array)($acct['mail_off'] ?? []);
+echo '<h2 id="mail">お知らせメールのオン/オフ</h2><div class="card form"><p class="muted">チェックを外した種類のメールは届かなくなります。チームの人には、それぞれの設定のとおりに届きます。'
+    . '招待・パスワードの再設定・メールアドレスの確認などの手続きのメールは、いつも届きます。</p>'
+    . '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="mail_save">';
+foreach (A_MAIL_KINDS as $k => [$label, $desc]) {
+    echo '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="mail[' . h($k) . ']" value="1"' . (in_array($k, $off, true) ? '' : ' checked') . '> '
+        . h($label) . '</label> <span class="muted">' . h($desc) . '</span></p>';
+}
+echo ($off !== [] && count($off) === count(A_MAIL_KINDS) ? '<p class="ng">いまは、お知らせメールがすべて止まっています。電柵の電圧低下にも気づけないので、ご注意ください。</p>' : '')
+    . '<button type="submit">保存</button></form></div>';
+
 $token = (string)($acct['token'] ?? '');
 echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="card form">'
     . '<p>HPX-Core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
@@ -94,6 +112,30 @@ echo '<h2 id="export">データ一括ダウンロード</h2><div class="card for
     . '<form method="post" action="export.php">' . csrf_field()
     . '<p><label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox" name="photos" value="1"> 写真も入れる (蜂場とメモの写真。ファイルが大きくなります)</label></p>'
     . '<p><button type="submit">データ一括ダウンロード</button></p></form></div>';
+
+// バックアップと復元(backup.php)
+$bf = account_dir($UID) . '/backup_before/site';
+echo '<h2 id="backup">バックアップと復元</h2><div class="card form">'
+    . '<p class="muted">自分の蜂場・巣箱・メモ・タスク・作業記録と、タグなどのカスタマイズ、お知らせメールの設定を1つのファイル (hpx_backup_….zip) にまとめます。'
+    . 'あとでこのファイルを選んで「復元する」を押すと、その時の状態に戻せます。上の CSV とちがい、HPX-Server に戻すためのファイルです (Excel では見られません)。</p>'
+    . '<form method="post" action="backup.php">' . csrf_field() . '<input type="hidden" name="act" value="download">'
+    . '<p><label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox" name="photos" value="1" checked> 写真も入れる</label><br>'
+    . '<label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox" name="hubs" value="1"> センサの記録も入れる (自分の HPX-Core の全期間。ファイルが大きくなります)</label></p>'
+    . '<p><button type="submit">バックアップをダウンロード</button></p></form>'
+    . '<details><summary>バックアップから復元する</summary><div class="card danger">'
+    . '<p>今の蜂場・巣箱・メモ・タスク・作業記録が、バックアップの時の内容に置きかわります。バックアップの後に書いたものは消えます (直前の状態は1つだけ残るので、下のボタンで戻せます)。'
+    . 'センサの記録は、バックアップに入っている HPX-Core の分だけ置きかわります。チームの設定とパスワードは変わりません。</p>'
+    . '<p class="muted">送れるファイルの大きさの上限: ' . h((string)ini_get('upload_max_filesize')) . ' (サーバーの設定)。大きすぎるときは、写真を入れないバックアップを使ってください。</p>'
+    . '<form method="post" action="backup.php" enctype="multipart/form-data" onsubmit="return window.confirm(\'今のデータをバックアップの内容に置きかえます。よろしいですか?\')">' . csrf_field()
+    . '<input type="hidden" name="act" value="restore">'
+    . '<p><label>バックアップのファイル</label><input type="file" name="file" accept=".zip,application/zip" required></p>'
+    . '<p><label>今のパスワード</label><input type="password" name="cur" autocomplete="current-password" required></p>'
+    . '<button type="submit">復元する</button></form>'
+    . (is_dir($bf) ? '<form method="post" action="backup.php" style="margin-top:1em" onsubmit="return window.confirm(\'復元する前の状態と入れかえます。よろしいですか?\')">' . csrf_field()
+        . '<input type="hidden" name="act" value="undo"><p class="muted">直前の状態: ' . h(date('Y-m-d H:i', (int)filemtime(dirname($bf)))) . ' に残したもの</p>'
+        . '<p><label>今のパスワード</label><input type="password" name="cur" autocomplete="current-password" required></p>'
+        . '<button type="submit">復元する前の状態に戻す</button></form>' : '')
+    . '</div></details></div>';
 // パスワードの欄があるフォームに「パスワードを表示」を付ける(login.php と同じ。そのフォームのパスワード欄をまとめて切り替える)
 echo '<script>document.querySelectorAll("form").forEach(function(f){'
     . 'var ps=f.querySelectorAll("input[type=password]");if(!ps.length)return;'
