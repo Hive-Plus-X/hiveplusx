@@ -1,7 +1,7 @@
 <?php
 // hiveplusx.com の「作った・使ったレポート」。機器を作ったり、サーバーや養蜂記録アプリを使った人が、写真とひとことで報告するページ。
 //   サイトに置いて (www/hiveplusx/report.php)、アプリ (hpx/) の config.php・hpx_report.php を使う。
-//   ・投稿は「確認待ち」で保存し、管理者にメールで知らせる。管理者が hpx/report_admin.php で「公開する」を押したものだけ出す
+//   ・投稿は「確認待ち」で保存し、管理者にメールで知らせる。管理者が report_admin.php (サイトの一番下の歯車) で「公開する」を押したものだけ出す
 //   ・写真はサーバーで作り直して保存する (撮影場所などの写真の中の情報は消える。長辺 1200px に小さくする)
 //     ブラウザでも送る前に小さくする (送る時間を短くし、サーバーの上限で失敗しないように)
 //   ・迷惑な送信を減らす工夫は contact.php と同じ (見えない入力欄、開いてからの時間、回数の制限、リンクの数)
@@ -15,7 +15,7 @@ require_once $APP . '/hpx_report.php';
 
 const R_TO = 'support@hiveplusx.com';
 const R_PER_PAGE = 12;
-const R_IMG = 'hpx/report_img.php';
+const R_IMG = 'report_img.php';
 
 if (!function_exists('h')) { function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); } }
 function r_img_url(string $id, int $n, bool $small): string { return R_IMG . '?id=' . rawurlencode($id) . '&n=' . $n . ($small ? '&s=s' : ''); }
@@ -106,7 +106,7 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
                     $to = array_values(array_filter(array_map('trim', explode(',', (string)(($HPX_REPORT_TO ?? '') !== '' ? $HPX_REPORT_TO
                         : (($HPX_CONTACT_TO ?? '') !== '' ? $HPX_CONTACT_TO : R_TO))))));
                     $body = "hiveplusx.com に「作った・使ったレポート」が届きました。まだ公開していません。\n"
-                        . "次のページで写真を確かめて、「公開する」を押してください (サイト管理者のログインが要ります)。\n"
+                        . "次のページで写真を確かめて、「公開する」を押してください (管理用のパスワードが要ります)。\n"
                         . r_admin_url() . '#' . $id . "\n\n"
                         . "ニックネーム: {$v['nick']}\n"
                         . '作った機器・サーバー・養蜂記録アプリ: ' . implode('・', array_map('r_device_label', $v['devices'])) . "\n写真: {$n}枚\n\n----\n{$v['comment']}\n";
@@ -359,6 +359,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
       <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
       <li><a href="policy.html">オープンソース方針</a></li>
       <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
     </ul>
   </div>
 </footer>
