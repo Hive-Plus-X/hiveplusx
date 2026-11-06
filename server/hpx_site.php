@@ -206,6 +206,9 @@ function hives_of(array $site, string $apiaryId): array
     return array_filter($site['hives'], fn($hv) => ($hv['apiary'] ?? '') === $apiaryId);
 }
 
+// 1つの蜂場だけを出す蜂場ページの URL (一覧・地図から飛ぶ先。保存したあとの戻り先にも使う)
+function apiary_url(string $aid): string { return 'apiary.php?' . http_build_query(['a' => $aid]) . '#a-' . $aid; }
+
 // 蜂場の持ち主。登録されていなければ ''
 function apiary_owner(array $site, string $aid): string { return (string)($site['apiaries'][$aid]['_o'] ?? ''); }
 
