@@ -1,7 +1,5 @@
 id,category,name,detail,shop,url,pack,unit,price,alt_of,core,core_wp,w_cr,w_aa,th_cr,th_aa,a
 ,ケース,ESP32 用透明ボックス,Easy Access Clearly Case Enclosure for ESP32 30Pin,amazon,https://www.amazon.co.jp/s?k=Easy%20Access%20Clearly%20Case%20Enclosure%20ESP32%2030Pin,1,個,912,,1,,,,,,
-,ケース,IP67 ポータブル防水ケース WCシリーズ,タカチ　WC90-21-N-BM,モノタロウ,https://www.monotaro.com/g/05220440/,1,個,739,,,1,,,,,
-,ケース用基板,WC90-21-N用基板,タカチ　WCPB-90,,https://www.monotaro.com/p/5513/0364/,1,枚,129,,,1,,,,,
 ,ケース,小型 汎用プラスチックケース TWシリーズ,タカチ　TW5-3-9B,秋月電子通商,https://akizukidenshi.com/catalog/g/g117042/,1,個,220,,,,1,,,,
 ,ケース,TW5-3-9用基板,タカチ TNF39-70,,https://www.monotaro.com/g/00965857/,1,枚,289,,,,1,,,,
 ,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,359,,,,,1,,,
@@ -11,7 +9,6 @@ id,category,name,detail,shop,url,pack,unit,price,alt_of,core,core_wp,w_cr,w_aa,t
 lc115,ケース,"ハンドタイプ プラスチックケース LCシリーズ
 単3×2電池ボックス",タカチ　LC115H-M2-D,,https://www.takachi-el.co.jp/products/LC,1,個,451,,,,,,,1,
 wh145,ケース,IP67防水ハンドヘルドケース,タカチ　WH145-25-M2-,amazon,https://www.takachi-el.co.jp/products/WH,1,個,1754,,,,,,,,1
-,ケーブル,USB Type-C 延長ケーブル,USB Type-C オス・メス 延長ケーブル 13cm,amazon,https://www.amazon.co.jp/s?k=USB%20C%20%E5%BB%B6%E9%95%B7%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%2013CM%20%E3%82%AA%E3%82%B9%E3%83%A1%E3%82%B9,1,本,697,,,1,,,,,
 c100,電子部品,絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm,コンデンサー100μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g102243/,10,個,280,,,,1,1,1,1,1
 ,電子部品,積層セラミックコンデンサー 0.1μF50V C0G 5mm,コンデンサー0.1μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g117059/,10,個,250,,,,1,1,1,1,1
 hx711,電子部品,HX711,Hailege HX711 ADコンバーター モジュール 3個セット,amazon,https://www.amazon.co.jp/s?k=Hailege%20HX711%203%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88,3,個,660,,,,1,1,,,
@@ -20,7 +17,7 @@ hx711,電子部品,HX711,Hailege HX711 ADコンバーター モジュール 3個
 SHT31・SHT41 なども使えます",amazon,https://www.amazon.co.jp/s?k=GY-SHT30-D%20SHT40%20temperature%20Humidity%20Sensor%20modules%205Pcs,5,個,2100,,,,,,1,1,
 cds,電子部品,CDSセル,Moechando φ5mm CdS セル 5506 (10個入り),amazon,https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506,10,個,395,,,,,,,,1
 ,電子部品,抵抗 10kΩ,小型 金属皮膜抵抗 1/4W 10kΩ (100本入り),秋月電子通商,https://akizukidenshi.com/catalog/g/g108550/,100,本,300,,,,,,1,1,1
-,チップボード,ESP32,Freenove ESP32 開発ボード ESP32 キット,amazon,https://www.amazon.co.jp/dp/B0C9TGJRPH,2,個,2780,,1,1,,,,,
+,チップボード,ESP32,Freenove ESP32 開発ボード ESP32 キット,amazon,https://www.amazon.co.jp/dp/B0C9TGJRPH,2,個,2780,,1,,,,,,
 ,チップボード,nRF52840,Seeed XIAO BLE nRF52840,秋月電子通商,https://akizukidenshi.com/catalog/g/g117341/,1,個,1780,,,,1,1,1,1,1
 ,電源,電池ボックス 単3×2本,電池ボックス 単3×2本 リード線,秋月電子通商,https://akizukidenshi.com/catalog/g/g117271/,1,個,50,,,,,1,,,
 ,電源,単三リチウム電池,エナジャイザー リチウム乾電池 単3形 4本入り,amazon,https://www.amazon.co.jp/dp/B006QVALTM,4,本,1283,,,,,2,,2,2
@@ -39,7 +36,6 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,部材,ゴムクッション,iteck　KGR-40　40×3mm,山新,,4,個,238,,,,,,,,1
 ,部材,強力両面テープ,3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m),amazon,https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R,150,cm,536,,,,20 cm,20 cm,,,
 ,部材,基板固定用タッピングビス EMシリーズ,M2.5ビス　EM-2.3-8,モノタロウ,https://www.monotaro.com/p/7383/0253/,50,本,249,,4,,4,4,,,4
-,部材,基板固定用タッピングビス EMシリーズ,M2.5ビス　EM-1.6,モノタロウ,https://www.monotaro.com/p/8835/6125/,50,本,309,,,4,,,,,
 ,ケーブル,シールド線 AWG28,Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック),amazon,https://www.amazon.co.jp/dp/B0933M5MTL,1,m,680,,,,,,,,1 m
 ,部材,熱収縮チューブ φ1.5mm,オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000007/,2,m,275,,,,,,,,5 cm
 ,部材,熱収縮チューブ φ4mm,オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000001/,2,m,319,,,,,,,,5 cm
@@ -50,3 +46,9 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,代わり,CdSセル (1MΩ) GL5528,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105886/,4,個,100,cds,,,,,,,
 ,代わり,アルミ不等辺アングル t3.0 25×50×300,,山新,,30,cm,648,angle,,,,,,,
 ,代わり,タカチ LCS115H-M2-DR (シリコンカバー付き),,,https://www.takachi-el.co.jp/products/LCS,1,個,1098,lc115,,,,,,,
+,チップボード,ESP32-WROOM-32,ELEGOO ESP-32 開発ボード USB-C CP2102チップ,amazon,https://www.amazon.co.jp/dp/B0FT2SJH3H,2,個,1935,,,1,,,,,
+,ケース,IP67 防水ボックス WPシリーズ,タカチ　WP8-10-4G,モノタロウ,https://www.monotaro.com/p/5513/0662/,1,個,1198,,,1,,,,,
+,ケース用基板,ユニバーサル基板 43×66mm,タカチ　TNF43-66,モノタロウ,https://www.monotaro.com/p/8821/2914/,1,枚,249,,,1,,,,,
+,部材,基板スペーサー クイックロック貼付スペーサー ULCKシリーズ,タカチ　ULCK-6.4,モノタロウ,https://www.monotaro.com/g/06277754/,4,個,119,,,4,,,,,
+,ケーブル,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,1,,,,,
+,ケーブル,USBケーブル,USB Type-C オス-オス 両端L型 20cm (もっと短くてもOK),amazon,https://www.amazon.co.jp/dp/B0FZHSPKT3,2,本,999,,,1,,,,,

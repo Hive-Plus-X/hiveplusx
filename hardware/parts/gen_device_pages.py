@@ -15,6 +15,8 @@ DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
          lead='センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。',
          variants=[('core', '通常版'), ('core_wp', '防水版')],
+         # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
+         cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          wiring=[('HPX-Core_wiring.png', '配線図 (通常版・防水版とも同じ)', 'USB 電源をつなぐだけで、外付けの配線はありません。')],
          note='屋内や軒下に置く通常版と、屋外に置ける防水版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
