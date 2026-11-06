@@ -251,7 +251,7 @@ function memo_form(array $m, array $site, string $back): string
         . '　または <input type="number" name="w_minutes" min="1" max="1440" style="width:5em" value="' . h($wl && ($wl['start'] ?? '') === '' ? (string)$wl['minutes'] : '') . '"> 分'
         . '　人数 <input type="number" name="w_people" min="1" max="99" style="width:4em" value="' . (int)($wl['people'] ?? 1) . '"> 人</div></div>';
     return $o . '</div>' . tag_field(memo_tags(), (array)($m['tags'] ?? []))
-        . '<p><label>メモ</label><textarea name="text" rows="5">' . h((string)($m['text'] ?? '')) . '</textarea></p>'
+        . '<p><label>メモ</label><textarea name="text" rows="5" data-voice>' . h((string)($m['text'] ?? '')) . '</textarea></p>'
         . memo_photo_field($m)
         . '<p><button type="submit">保存</button></p></form>';
 }
@@ -395,7 +395,7 @@ if ($pages > 1) {
     echo '</div>';
 }
 // 対象の巣箱は選んだ蜂場のものだけ。タグの「カスタマイズ」は、その場で一覧を直して、ページ内のすべてのフォームのタグを並べ直す
-echo tag_js('memo.php', memo_tags()) . chart_tip_js();
+echo tag_js('memo.php', memo_tags()) . chart_tip_js() . voice_js();
 echo <<<'JS'
 <script>
 function memoHives(sa){   // iPhone では option の hidden が効かないので、選べる巣箱だけを入れ直す
