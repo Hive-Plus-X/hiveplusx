@@ -179,15 +179,15 @@ function apiary_people(string $owner, string $apiaryId): array
 }
 
 // 警報メール(電柵・HPX-Core が止まった・巣箱の警報)の送り先: 蜂場の持ち主の通知先と、その蜂場を見られるチームの人の通知先。
-//   停止中・招待中のアカウントとデモ用アカウントには送らない。同じアドレスは1つにまとめる。カンマ区切り
-function apiary_alert_to(string $owner, array $apiaryIds): string
+//   停止中・招待中のアカウントとデモ用アカウント、その種類($kind)のお知らせメールを止めている人には送らない。同じアドレスは1つにまとめる。カンマ区切り
+function apiary_alert_to(string $owner, array $apiaryIds, string $kind = ''): string
 {
-    $to = [account_notify($owner)];
+    $to = [account_notify($owner, $kind)];
     foreach (array_unique(array_map('strval', $apiaryIds)) as $aid) {
         foreach (apiary_people($owner, $aid) as $u => $r) {
             $u = (string)$u;
             if ($u === $owner || (users_all()[$u]['status'] ?? '') !== 'active' || is_demo(user_get($u))) continue;
-            $to[] = account_notify($u);
+            $to[] = account_notify($u, $kind);   // お知らせメールを止めている人は '' になる
         }
     }
     $list = [];

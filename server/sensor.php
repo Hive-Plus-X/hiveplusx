@@ -652,6 +652,7 @@ $cal = cal_load($dir);
 if (!$byKind['w']) {
     echo '<p class="muted">重量センサの記録はまだありません。</p>';
 } else {
+    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台ならその2倍 (巣箱の片側に置く使い方)、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。</p>';
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>重さ</th><th>24時間</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
     $calForms = '';

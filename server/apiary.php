@@ -270,13 +270,14 @@ function share_line(array $a): string
 }
 
 // 蜂場の平均のグラフ用: その蜂場の巣箱に紐づいたセンサの記録を、同じ時刻(分単位)ごとに平均する
-//   温度・湿度は温湿度センサすべての平均、重量は較正済みの重量センサ(巣箱ごと)の平均
+//   温度・湿度は温湿度センサすべての平均、重量は巣箱の重さ(重量センサ1台なら2倍、2台以上なら合計)の平均
 //   n: 平均のもとになった群(巣箱)の数。期間内に記録がある巣箱だけ数える
 function apiary_avg(array $hv, array $sensors, int $since): array
 {
     $sum = ['t' => [], 'h' => [], 'w' => []];
     $n = ['t' => [], 'h' => [], 'w' => []];
     foreach ($hv as $hid => $x) {
+        $wSer = []; $nw = 0;
         foreach ((array)($x['sensors'] ?? []) as $k) {
             if (!isset($sensors[$k])) continue;
             $sn = $sensors[$k];
@@ -290,11 +291,19 @@ function apiary_avg(array $hv, array $sensors, int $since): array
                 }
             } else {
                 $c = cal_load($sn['hub'])[$sn['mac']] ?? null;
+                $nw++;
+                if (!$c || !isset($c['per_kg'])) continue;
+                $pts = [];
                 foreach ($d['w'][$sn['mac']] ?? [] as $r) {
                     $v = to_kg($r[1], $c);
-                    if ($v !== null) { $sum['w'][intdiv($r[0], 60) * 60][] = $v; $n['w'][$hid] = 1; }
+                    if ($v !== null) $pts[] = [$r[0], $v];
                 }
+                $wSer[] = $pts;
             }
+        }
+        // 巣箱の重さ (重量センサ1台なら2倍、2台以上なら合計)。較正していないセンサがある巣箱は入れない
+        if ($nw > 0 && count($wSer) === $nw) {
+            foreach (hive_kg_series($wSer) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
         }
     }
     $out = [];
@@ -380,7 +389,7 @@ echo '<style>.vsel{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;m
     . '.asearch{margin:.4em 0;width:16em!important}.aord{margin:.4em 0}.aord .ain,.asorting .aord .aon{display:none}.asorting .aord .ain{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.aord .aon{font-size:.85em;padding:3px 10px}.alist .hd{display:none;width:1%;padding:3px 10px!important;text-align:center;color:#567;font-size:1.3em;cursor:grab;touch-action:none;user-select:none}.asorting .alist .hd{display:table-cell}.asorting .alist a{pointer-events:none;color:inherit;text-decoration:none}.asorting .asearch{display:none}.alist tr[data-id]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.alist tr.adrag td{background:#fdf0c8!important}.asorting .aord .ain{background:#fdf0c8;border:1px solid #e0c060;border-radius:6px;padding:4px 8px}@media(max-width:600px){.alist .ad{display:none}}'
     . '#amap{position:relative;z-index:0;height:65vh;min-height:340px;margin:.4em 0;border:1px solid #ccd;border-radius:6px;background:#e8ecef}'
     . '#amap input{padding:0}.alab{font-size:13px;font-weight:bold;padding:2px 6px}.alab a{color:#1F2328;text-decoration:none}'
-    . '.aleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85em;color:#444}.aleg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px;border:1px solid #fff;box-shadow:0 0 0 1px #aaa}</style>';
+    . '.aleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85em;color:#444}.aleg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px;vertical-align:-2px;border:2px solid #fff;box-shadow:0 0 0 1px #999}.alab.hid{visibility:hidden}</style>';
 if ($one !== '') {
     echo '<div class="vsel"><a href="apiary.php">← すべての蜂場</a></div>';
 } elseif ($site['apiaries']) {
@@ -390,7 +399,9 @@ if ($one !== '') {
 }
 $addbox = fn(string $extra = '') => '<details class="addbox" id="new"' . (!$site['apiaries'] ? ' open' : '') . $extra . '><summary><span class="plus">＋</span>蜂場を追加</summary>'
     . '<div class="card">' . apiary_form([], '', $hubs, $sensors, $site) . '</div></details>';
-$stColor = ['ok' => '#2e7d32', 'ng' => '#8a939c', 'alert' => '#c62828', 'none' => '#1565c0'];
+// 地図の点の色。地図・航空写真は青・緑・黄・茶が多いので、赤・ピンク・オレンジ系にして白いふちを付ける (2026-11-06 TARO)
+$stColor = ['ok' => '#FF7A00', 'ng' => '#F06292', 'alert' => '#B00020', 'none' => '#FFFFFF'];
+$stRing = ['ok' => '#FFFFFF', 'ng' => '#FFFFFF', 'alert' => '#FFFFFF', 'none' => '#FF7A00'];   // 機器なしは白ぬき (オレンジのふち)
 $stText = ['ok' => '機器は正常', 'ng' => '届いていない機器あり', 'alert' => '電柵の異常', 'none' => '機器の登録なし'];
 
 if ($one === '' && $view === 'list' && $site['apiaries']) {
@@ -475,12 +486,18 @@ JS;
     foreach ($site['apiaries'] as $aid => $a) {
         $ll = apiary_latlng($a);
         if (!$ll) { $nopos[$aid] = $a; continue; }
-        $pts[] = ['n' => (string)$a['name'], 'u' => apiary_url((string)$aid), 'la' => $ll[0], 'lo' => $ll[1], 'c' => $stColor[apiary_state($a, $hubs, $sensors, $now)]];
+        $pts[] = ['n' => (string)$a['name'], 'u' => apiary_url((string)$aid), 'la' => $ll[0], 'lo' => $ll[1], 's' => apiary_state($a, $hubs, $sensors, $now)];
     }
     echo '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">'
         . '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>';
+    // 異常の点がいちばん上に重なるように、異常を最後に描く
+    usort($pts, fn($x, $y) => (['none' => 0, 'ok' => 1, 'ng' => 2, 'alert' => 3][$x['s']]) <=> (['none' => 0, 'ok' => 1, 'ng' => 2, 'alert' => 3][$y['s']]));
+    foreach ($pts as &$pt) {
+        $pt += ['c' => $stColor[$pt['s']], 'r' => $stRing[$pt['s']], 'z' => $pt['s'] === 'alert' ? 12 : 10, 'w' => $pt['s'] === 'alert' ? 4 : ($pt['s'] === 'none' ? 3 : 2.5)];
+    }
+    unset($pt);
     echo '<div id="amap"></div><div class="aleg">';
-    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . '"></i>' . h($t) . '</span>';
+    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . ';border-color:' . $stRing[$k] . '"></i>' . h($t) . '</span>';
     echo '</div>';
     if ($nopos) {
         echo '<p class="muted" style="margin-top:.8em">地図に出ていない蜂場 (蜂場の情報の「緯度・経度」が空です。入れると地図に出ます): ';
@@ -495,11 +512,21 @@ JS;
         . 'var std=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",{maxZoom:18,attribution:A}).addTo(m);'
         . 'var pho=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",{maxZoom:18,attribution:A});'
         . 'L.control.layers({"地図":std,"航空写真":pho}).addTo(m);'
-        . 'var b=[];P.forEach(function(p){var mk=L.circleMarker([p.la,p.lo],{radius:10,color:"#fff",weight:2,fillColor:p.c,fillOpacity:1}).addTo(m);'
+        . 'var b=[],T=[];P.forEach(function(p){var mk=L.circleMarker([p.la,p.lo],{radius:p.z,color:p.r,weight:p.w,fillColor:p.c,fillOpacity:1}).addTo(m);'
         . 'var a=document.createElement("a");a.href=p.u;a.textContent=p.n;'
-        . 'mk.bindTooltip(a,{permanent:true,direction:"right",offset:[8,0],interactive:true,className:"alab"});'
-        . 'mk.on("click",function(){location.href=p.u;});b.push([p.la,p.lo]);});'
-        . 'if(b.length===1)m.setView(b[0],15);else if(b.length)m.fitBounds(b,{paddingTopLeft:[30,30],paddingBottomRight:[110,30],maxZoom:16});else m.setView([36.5,138],5);'
+        . 'mk.bindTooltip(a,{permanent:true,direction:"right",offset:[p.z+p.w/2,0],interactive:true,className:"alab"});'
+        . 'mk.on("click",function(){location.href=p.u;});b.push([p.la,p.lo]);T.push(mk);});'
+        // 名前が重ならないように: 右→左→上→下の順で、ほかの名前・点と重ならない向きを選ぶ。どこも重なるなら名前を隠す(拡大すると出る)
+        . 'var O={right:[1,0],left:[-1,0],top:[0,-1],bottom:[0,1]};function off(mk,d){var k=mk.options.radius+mk.options.weight/2;return[O[d][0]*k,O[d][1]*k];}'
+        . 'function hit(a,c){return a.left<c.right&&c.left<a.right&&a.top<c.bottom&&c.top<a.bottom;}'
+        . 'function place(){var mr=m.getContainer().getBoundingClientRect(),dots=T.map(function(mk){var q=m.latLngToContainerPoint(mk.getLatLng()),r=mk.options.radius+2;'
+        . 'return{left:mr.left+q.x-r,right:mr.left+q.x+r,top:mr.top+q.y-r,bottom:mr.top+q.y+r};}),used=[];'
+        . 'T.slice().reverse().forEach(function(mk){var i=T.indexOf(mk),t=mk.getTooltip(),el=t.getElement();if(!el)return;var ok=false;'
+        . 'for(var d in O){t.options.direction=d;t.options.offset=off(mk,d);t.update();var r=el.getBoundingClientRect();'
+        . 'if(!used.some(function(u){return hit(r,u);})&&!dots.some(function(u,j){return j!==i&&hit(r,u);})){used.push(r);ok=true;break;}}'
+        . 'if(!ok){t.options.direction="right";t.options.offset=off(mk,"right");t.update();}el.classList.toggle("hid",!ok);});}'
+        . 'm.on("zoomend moveend",place);'
+        . 'if(b.length===1)m.setView(b[0],15);else if(b.length)m.fitBounds(b,{paddingTopLeft:[30,30],paddingBottomRight:[110,30],maxZoom:16});else m.setView([36.5,138],5);place();'
         . '})();</script>';
     echo $addbox();
 }

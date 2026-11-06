@@ -22,6 +22,46 @@ function hive_alert_conf(array $hv): array
         'w_up' => $num('w_up'), 'w_dn' => $num('w_dn')];
 }
 
+// 巣箱の重さ: 重量センサが1台なら巣箱の片側に置く使い方 (巣箱の半分の重さがかかる) なので、センサの値の2倍。
+//   2台以上なら (巣箱の両側に1台ずつなど、全体の重さがセンサにかかる) センサの値の合計。どれかのセンサの値が無ければ null
+const HW_PAIR_S = 600;        // 2台以上のとき、同じ時刻の記録とみなす幅(前後この秒数まで)
+function hive_kg(array $kgs): ?float
+{
+    if (!$kgs || in_array(null, $kgs, true)) return null;
+    return count($kgs) === 1 ? 2 * (float)reset($kgs) : (float)array_sum($kgs);
+}
+// 巣箱の重さの出し方の説明
+function hive_weight_how(int $n): string
+{
+    return $n <= 1 ? '重量センサ1台の値の2倍' : '重量センサ' . $n . '台の合計';
+}
+// センサごとの重さの記録 [[[epoch, kg], ...], ...] (それぞれ古い順) から、巣箱の重さの記録 [[epoch, kg], ...] を作る。
+//   1台なら2倍。2台以上なら、1台目の記録の時刻に、ほかのセンサのいちばん近い記録 (前後 HW_PAIR_S 秒まで) を足す。どれかが無い時刻は出さない
+function hive_kg_series(array $series): array
+{
+    $series = array_values($series);
+    if (!$series) return [];
+    if (count($series) === 1) return array_map(fn($p) => [$p[0], 2 * $p[1]], $series[0]);
+    $out = [];
+    $idx = array_fill(0, count($series), 0);
+    foreach ($series[0] as $p) {
+        $t = $p[0];
+        $sum = $p[1];
+        for ($s = 1; $s < count($series); $s++) {
+            $r = $series[$s];
+            $n = count($r);
+            if ($n === 0) return [];
+            $i = $idx[$s];
+            while ($i + 1 < $n && abs($r[$i + 1][0] - $t) <= abs($r[$i][0] - $t)) $i++;
+            $idx[$s] = $i;
+            if (abs($r[$i][0] - $t) > HW_PAIR_S) continue 2;
+            $sum += $r[$i][1];
+        }
+        $out[] = [$t, $sum];
+    }
+    return $out;
+}
+
 function ha_kg(int $raw, ?array $c): ?float
 {
     if (!$c || !isset($c['zero'], $c['per_kg']) || (float)$c['per_kg'] == 0.0) return null;
@@ -61,18 +101,18 @@ function ha_scan(string $hubDir, array $at = []): array
     return $out;
 }
 
-// 巣箱の重量センサごとの、基準日からの増減。[[key, name, kg(今), base_kg, diff, epoch(今の記録), base_epoch], ...]
-//   基準日の記録が無いときは base_kg・diff が null。基準日が無ければ空
+// 巣箱の重さ (hive_kg) の、基準日からの増減。[[key, 出し方の説明, kg(今), base_kg, diff, epoch(今の記録), base_epoch]] (1つだけ)
+//   基準日の記録が無いときは base_kg・diff が null。基準日が無い、または今の重さを出せない (較正していないセンサがあるなど) ときは空
 function hive_weight_base(string $owner, array $hv): array
 {
     $conf = hive_alert_conf($hv);
     if ($conf['base'] === '') return [];
-    $out = [];
     $byHub = [];
     foreach ((array)($hv['sensors'] ?? []) as $k) {
         [$hub, $mac] = array_pad(explode('/', (string)$k, 2), 2, '');
         if ($hub !== '' && $mac !== '') $byHub[$hub][] = $mac;
     }
+    $kgs = []; $bkgs = []; $eps = []; $beps = [];
     foreach ($byHub as $hub => $macs) {
         $dir = account_hubs_dir($owner) . '/' . $hub;
         $st = json_load($dir . '/state.json');
@@ -88,19 +128,21 @@ function hive_weight_base(string $owner, array $hv): array
         $base = $at ? ha_scan($dir, $at)['at'] : [];
         foreach ($macs as $m) {
             $l = $now['latest'][$m] ?? null;
-            $kg = $l ? ha_kg((int)$l[1], $cal[$m] ?? null) : null;
-            if ($kg === null) continue;
+            $kgs[] = $l ? ha_kg((int)$l[1], $cal[$m] ?? null) : null;
             $b = $base[$m] ?? null;
-            $bkg = $b ? ha_kg($b[1], $cal[$m] ?? null) : null;
-            $out[] = [$hub . '/' . $m, (string)(($st['sensors'][$m]['name'] ?? '') !== '' ? $st['sensors'][$m]['name'] : $m), $kg, $bkg,
-                $bkg !== null ? $kg - $bkg : null, (int)$l[0], $b ? $b[0] : (int)($at[$m][1] ?? 0)];
+            $bkgs[] = $b ? ha_kg($b[1], $cal[$m] ?? null) : null;
+            $eps[] = $l ? (int)$l[0] : 0;
+            $beps[] = $b ? (int)$b[0] : (int)($at[$m][1] ?? 0);
         }
     }
-    return $out;
+    $kg = hive_kg($kgs);
+    if ($kg === null) return [];
+    $bkg = hive_kg($bkgs);
+    return [['hive', hive_weight_how(count($kgs)), $kg, $bkg, $bkg !== null ? $kg - $bkg : null, min($eps), min($beps)]];
 }
 
 // すべてのアカウントの巣箱の警報を見て、超えた・戻ったときにメールを送る(hpx_cron.php から)
-//   状態はアカウントの site/hive_alert_state.json に、巣箱と項目とセンサごとに持つ。設定を変えたらその巣箱の状態は初めから
+//   状態はアカウントの site/hive_alert_state.json に、巣箱と項目ごと (温度は温湿度計ごと) に持つ。設定を変えたらその巣箱の状態は初めから
 function check_hive_alerts(int $now): void
 {
     if (!users_exist()) return;
@@ -184,7 +226,7 @@ function check_hive_alerts(int $now): void
                             hpx_alert_queue("【HPX】$where の重量が基準日から{$verb} ($d)",
                                 "巣箱の重量が、基準日 (" . date('n/j', strtotime($conf['base'])) . ") から設定した値 ("
                                 . ($t === 'w_up' ? '+' : '-') . $conf[$t] . "kg) を超えて{$verb}。\n\n"
-                                . "巣箱: $where\nセンサ: $nm\n基準日の同時刻: " . number_format((float)$bkg, 2) . "kg (" . date('Y-m-d H:i', $bep) . ")\n"
+                                . "巣箱: $where\n重量: $nm\n基準日の同時刻: " . number_format((float)$bkg, 2) . "kg (" . date('Y-m-d H:i', $bep) . ")\n"
                                 . "今: " . number_format($kg, 2) . "kg (" . date('Y-m-d H:i', $ep) . ")\n増減: $d\n\n$url\n");
                         } elseif ($was && !$back) {
                             $on[$id] = true;
@@ -194,7 +236,7 @@ function check_hive_alerts(int $now): void
             }
             $newState[$hid] = ['sig' => $sig, 'on' => $on];
             // 送り先は巣箱ごと: 持ち主と、その蜂場を見られるチームの人
-            hpx_alert_flush($siteDir, apiary_alert_to($uid, [(string)($hv['apiary'] ?? '')]));
+            hpx_alert_flush($siteDir, apiary_alert_to($uid, [(string)($hv['apiary'] ?? '')], 'hive'));
         }
         json_save($statePath, $newState);
     }
