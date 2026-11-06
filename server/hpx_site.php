@@ -198,6 +198,14 @@ function site_load(): array
             $out['hives'][$hid] = ['_o' => $o] + $x;
         }
     }
+    // 蜂場ページの「並び替え」で決めた順(自分の site.json の apiary_order。共有された蜂場も入る)。
+    //   入っていない蜂場(あとから足した・共有された)は、その後ろに今までの順で並べる
+    $ord = site_read_of($UID, 'site')['apiary_order'] ?? null;
+    if (is_array($ord) && $ord) {
+        $sorted = [];
+        foreach ($ord as $aid) if (isset($out['apiaries'][(string)$aid])) $sorted[(string)$aid] = $out['apiaries'][(string)$aid];
+        $out['apiaries'] = $sorted + $out['apiaries'];
+    }
     return $cache = $out;
 }
 

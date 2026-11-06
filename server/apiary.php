@@ -165,18 +165,27 @@ if (is_post()) {
                 $a['fences'] = array_values(array_diff((array)($a['fences'] ?? []), $selFences));
             }
             unset($a);
-            $old = $s['apiaries'][$newId] ?? ['created' => time(), 'by' => $GLOBALS['UID'], 'share' => $share];
+            // 新しい蜂場は最後に並べる(並び順は一覧の「並び替え」で変える)
+            $old = $s['apiaries'][$newId] ?? ['created' => time(), 'by' => $GLOBALS['UID'], 'share' => $share,
+                'order' => $s['apiaries'] ? max(array_map(fn($x) => (int)($x['order'] ?? 0), $s['apiaries'])) + 1 : 0];
             $s['apiaries'][$newId] = array_merge($old, [
                 'name' => $name, 'address' => str_in('address', 200), 'map' => '', 'map_q' => str_in('map_q', 200), 'photo' => $photo,
                 'owner' => str_in('owner', 200),
                 // 巣箱数(手入力)。巣箱を1つずつ登録せずに蜂場単位で管理する人向け。空なら登録した巣箱の数を出す
                 'hive_count' => is_numeric($_POST['hive_count'] ?? '') && (int)$_POST['hive_count'] >= 0 ? min(9999, (int)$_POST['hive_count']) : null,
-                'note' => str_in('note'), 'order' => (int)($_POST['order'] ?? 0), 'hubs' => $selHubs, 'fences' => $selFences,
+                'note' => str_in('note'), 'hubs' => $selHubs, 'fences' => $selFences,
                 'updated' => time(),
             ]);
             return $s;
         });
         redirect(apiary_url($newId), '蜂場「' . $name . '」を保存しました。');
+    }
+    if ($act === 'apiary_order') {
+        // 一覧の「並び替え」: 見えている蜂場の id を上から順に。自分の site.json に覚える(持ち主の蜂場の情報は変えない)
+        $ids = array_values(array_unique(array_filter(explode(',', (string)($_POST['ids'] ?? '')), fn($x) => isset($site['apiaries'][$x]))));
+        if (!$ids) redirect('apiary.php?v=list');
+        site_update_of($UID, 'site', function (array $s) use ($ids) { $s['apiary_order'] = $ids; return $s; });
+        redirect('apiary.php?v=list', '蜂場の並び順を保存しました。');
     }
     if ($act === 'apiary_delete') {
         $id = (string)($_POST['id'] ?? '');
@@ -219,7 +228,6 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
             . h(isset($a['hive_count']) ? (string)(int)$a['hive_count'] : '') . '"> 群</p>'
         . '<p><label>地主・連絡先</label><input type="text" name="owner" value="' . h((string)($a['owner'] ?? '')) . '"></p>'
         . '<p><label>説明・備考</label><textarea name="note">' . h((string)($a['note'] ?? '')) . '</textarea></p>'
-        . '<p><label>並び順 (小さいほど上)</label><input type="number" name="order" value="' . (int)($a['order'] ?? 0) . '"></p>'
         . '<p><label>この蜂場の HPX-Core (ハブ)</label>';
     if (!$hubs) $o .= '<span class="muted">まだハブからのデータがありません。</span>';
     foreach ($hubs as $hid => $hb) {
@@ -367,9 +375,9 @@ echo flash_html();
 if (!$site['apiaries']) echo '<p class="muted" style="margin-top:1em">まだ蜂場が登録されていません。「＋ 蜂場を追加」から登録してください。</p>';
 echo '<style>.vsel{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:.2em 0 .1em}.vsel .per{margin:0}.vsel .per a{margin-bottom:0}.vsel .cnt{margin-left:auto}'
     . '.cols.one{grid-template-columns:minmax(0,600px);justify-content:center}'
-    . '.alist{font-size:.9em}.alist th,.alist td{padding:3px 6px;vertical-align:middle}.alist td:first-child{white-space:normal;min-width:7em}.alist .chips{margin:0;font-size:1.1em}'
+    . '.alist{font-size:.9em}.alist th,.alist td{padding:3px 6px;vertical-align:middle}.alist td:nth-child(2){white-space:normal;min-width:6em}.alist .chips{margin:0;font-size:1.1em}'
     . '.alist .ad{color:#555;max-width:16em;overflow:hidden;text-overflow:ellipsis}.alist .over{color:#c62828;font-weight:bold}.alist tr:hover td{background:#f4f8fc}'
-    . '.asearch{margin:.4em 0;width:16em!important}@media(max-width:600px){.alist .ad{display:none}}'
+    . '.asearch{margin:.4em 0;width:16em!important}.aord{margin:.4em 0}.aord .ain,.asorting .aord .aon{display:none}.asorting .aord .ain{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.aord .aon{font-size:.85em;padding:3px 10px}.alist .hd{display:none;width:1%;padding:3px 10px!important;text-align:center;color:#567;font-size:1.3em;cursor:grab;touch-action:none;user-select:none}.asorting .alist .hd{display:table-cell}.asorting .alist a{pointer-events:none;color:inherit;text-decoration:none}.asorting .asearch{display:none}.alist tr[data-id]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.alist tr.adrag td{background:#fdf0c8!important}.asorting .aord .ain{background:#fdf0c8;border:1px solid #e0c060;border-radius:6px;padding:4px 8px}@media(max-width:600px){.alist .ad{display:none}}'
     . '#amap{position:relative;z-index:0;height:65vh;min-height:340px;margin:.4em 0;border:1px solid #ccd;border-radius:6px;background:#e8ecef}'
     . '#amap input{padding:0}.alab{font-size:13px;font-weight:bold;padding:2px 6px}.alab a{color:#1F2328;text-decoration:none}'
     . '.aleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85em;color:#444}.aleg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px;border:1px solid #fff;box-shadow:0 0 0 1px #aaa}</style>';
@@ -401,11 +409,18 @@ if ($one === '' && $view === 'list' && $site['apiaries']) {
         echo '<input type="search" class="asearch" placeholder="蜂場名・所在地でしぼりこみ" oninput="var q=this.value.trim().toLowerCase();'
             . 'document.querySelectorAll(\'.alist tr[data-q]\').forEach(function(r){r.style.display=!q||r.dataset.q.indexOf(q)>=0?\'\':\'none\'})">';
     }
-    echo '<div class="wrap"><table class="alist nw"><tr><th>蜂場</th><th>群</th><th>機器</th><th>タスク</th><th class="ad">所在地</th></tr>';
+    $sortable = count($site['apiaries']) >= 2 && !(is_demo($ME) && !empty($HPX_DEMO_READONLY));
+    if ($sortable) {
+        echo '<form method="post" id="aord" class="aord">' . csrf_field() . '<input type="hidden" name="act" value="apiary_order"><input type="hidden" name="ids" value="">'
+            . '<button type="button" class="aon" onclick="aSort(1)">⇅ 並び替え</button>'
+            . '<span class="ain"><span><b>並び替え中</b>: 左の ≡ をつかんで上下に動かしてください</span><button type="submit">保存</button> <button type="button" onclick="aSort(0)">やめる</button></span></form>';
+    }
+    echo '<div class="wrap"><table class="alist nw" id="alist"><tr><th class="hd"></th><th>蜂場</th><th>群</th><th>機器</th><th>タスク</th><th class="ad">所在地</th></tr>';
     foreach ($site['apiaries'] as $aid => $a) {
         $hv = hives_of($site, $aid);
         $addr = (string)($a['address'] ?? '');
-        echo '<tr data-q="' . h(mb_strtolower((string)$a['name'] . ' ' . $addr)) . '">'
+        echo '<tr data-id="' . h((string)$aid) . '" data-q="' . h(mb_strtolower((string)$a['name'] . ' ' . $addr)) . '">'
+            . '<td class="hd" title="つかんで上下に動かす">≡</td>'
             . '<td><a href="' . h(apiary_url((string)$aid)) . '"><b>' . h((string)$a['name']) . '</b></a></td>'
             . '<td class="n"><a href="hive.php?' . h(http_build_query(['a' => $aid])) . '" title="登録した群 / 全部の群">' . count($hv) . '</a>／' . (isset($a['hive_count']) ? (int)$a['hive_count'] : count($hv)) . '</td>'
             . '<td>' . sensor_chips($a, $hv, $hubs, $sensors, (string)$aid, $now, '-') . '</td>'
@@ -413,7 +428,45 @@ if ($one === '' && $view === 'list' && $site['apiaries']) {
                 . (($to[$aid] ?? 0) ? ' <span class="over" title="期限切れ">!' . $to[$aid] . '</span>' : '') : '<span class="muted">-</span>') . '</td>'
             . '<td class="ad" title="' . h($addr) . '">' . ($addr !== '' ? h(mb_strimwidth($addr, 0, 32, '…')) : '<span class="muted">-</span>') . '</td></tr>';
     }
-    echo '</table></div><p class="muted">蜂場名を押すと、その蜂場のページ (タイルの内容) に移ります。</p>';
+    echo '</table></div><p class="muted">蜂場名を押すと、その蜂場のページ (タイルの内容) に移ります。'
+        . ($sortable ? '並び順は「⇅ 並び替え」か、行を長押しして変えられます (タイル・地図・ほかのページの並びも同じになります)。' : '') . '</p>';
+    // 並び替え: ボタンか行の長押しで始める。≡ をつかんで(マウスでも指でも)上下に動かし、保存で送る
+    if ($sortable) echo <<<'JS'
+<script>(function(){
+var T=document.getElementById('alist'),F=document.getElementById('aord'),on=false,drag=null,lp=null,eat=false;
+var rows=function(){return Array.prototype.slice.call(T.querySelectorAll('tr[data-id]'));};
+window.aSort=function(v){
+  if(!v&&on){location.reload();return;}
+  on=!!v;document.body.classList.toggle('asorting',on);
+  if(on){var q=document.querySelector('.asearch');if(q&&q.value){q.value='';rows().forEach(function(r){r.style.display='';});}if(navigator.vibrate)navigator.vibrate(30);}
+};
+F.addEventListener('submit',function(){F.ids.value=rows().map(function(r){return r.dataset.id;}).join(',');});
+// 長押しで並び替えを始める
+T.addEventListener('pointerdown',function(e){
+  if(on||e.button>0||!e.target.closest('tr[data-id]'))return;
+  var x=e.clientX,y=e.clientY;clearTimeout(lp);
+  lp=setTimeout(function(){lp=null;eat=true;aSort(1);},600);
+  var stop=function(ev){if(ev.type!=='pointermove'||Math.abs(ev.clientX-x)+Math.abs(ev.clientY-y)>10){clearTimeout(lp);lp=null;
+    ['pointermove','pointerup','pointercancel'].forEach(function(t){T.removeEventListener(t,stop);});}};
+  ['pointermove','pointerup','pointercancel'].forEach(function(t){T.addEventListener(t,stop);});
+});
+T.addEventListener('click',function(e){if(eat||on){if(eat||e.target.closest('a')){e.preventDefault();}eat=false;}},true);
+T.addEventListener('contextmenu',function(e){if(on||lp||eat)e.preventDefault();});
+// ≡ をつかんで動かす
+T.addEventListener('pointerdown',function(e){
+  var h=e.target.closest('td.hd');if(!on||!h)return;
+  e.preventDefault();drag=h.parentNode;drag.classList.add('adrag');h.setPointerCapture(e.pointerId);
+});
+T.addEventListener('pointermove',function(e){
+  if(!drag)return;var y=e.clientY,p,n;
+  while((p=drag.previousElementSibling)&&p.dataset.id&&y<p.getBoundingClientRect().top+p.offsetHeight/2)T.tBodies[0].insertBefore(drag,p);
+  while((n=drag.nextElementSibling)&&y>n.getBoundingClientRect().top+n.offsetHeight/2)T.tBodies[0].insertBefore(n,drag);
+  if(y<70)window.scrollBy(0,-12);else if(y>window.innerHeight-50)window.scrollBy(0,12);
+});
+var end=function(){if(drag){drag.classList.remove('adrag');drag=null;}};
+T.addEventListener('pointerup',end);T.addEventListener('pointercancel',end);
+})();</script>
+JS;
     echo $addbox();
 } elseif ($one === '' && $view === 'map' && $site['apiaries']) {
     // 地図: 緯度,経度が入っている蜂場に点を打ち、全部が入る縮尺で出す。点か名前を押すとその蜂場のページへ
