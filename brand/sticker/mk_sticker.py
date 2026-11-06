@@ -133,6 +133,30 @@ def F_icon(n):
             + dev_g(n, 500, 830, height=77))
     return frame(body, FOREST)
 
+# ---- 白背景版 (C・D・F) ----
+def C_white(n):
+    body = (logo_g(500, 400, 760, CHAR)
+            + f'<rect x="440" y="575" width="120" height="12" rx="6" fill="{HONEY}"/>'
+            + dev_g(n, 500, 690, height=85, text=CHAR)
+            + text_g('hiveplusx.com', 500, 860, 40, FOREST, spacing=0.02))
+    return frame(body, WHITE, border=True)
+
+def D_white(n):
+    # 上 = 白に hive+x、下 = 緑の細い帯に白文字の機器名 (D の色を入れかえたもの)
+    top = 820
+    body = (logo_g(500, 420, 760, CHAR)
+            + f'<path fill="{FOREST}" d="M3 {top}H{S-3}V{S-RX}A{RX-3} {RX-3} 0 0 1 {S-RX} {S-3}H{RX}A{RX-3} {RX-3} 0 0 1 3 {S-RX}Z"/>'
+            + f'<rect x="3" y="{top-4}" width="{S-6}" height="12" fill="{HONEY}"/>'
+            + dev_g(n, 500, top + 92, height=75))
+    return frame(body, WHITE, border=True)
+
+def F_white(n):
+    fav = clean(find('favicon_v2/E2_hpx_diag_big.svg', 'favicon/favicon_app.svg'))
+    inner = ''.join(re.findall(r'<path [^>]+/>', fav)).replace('#FFFFFF', CHAR)
+    body = (f'<g transform="translate(160 20) scale(7.0)">{inner}</g>'
+            + dev_g(n, 500, 830, height=77, text=CHAR))
+    return frame(body, WHITE, border=True)
+
 out = {
     'A_forest_logo': A_forest(),
     'B_white_logo': B_white(),
@@ -141,6 +165,9 @@ for n in ['Core', 'TH', 'W', 'A']:
     out[f'C_forest_HPX-{n}'] = C_forest(n)
     out[f'D_split_HPX-{n}'] = D_split(n)
     out[f'F_icon_HPX-{n}'] = F_icon(n)
+    out[f'C_white_HPX-{n}'] = C_white(n)
+    out[f'D_white_HPX-{n}'] = D_white(n)
+    out[f'F_white_HPX-{n}'] = F_white(n)
 
 os.makedirs(os.path.join(HERE, 'svg'), exist_ok=True)
 os.makedirs(os.path.join(HERE, 'png'), exist_ok=True)
