@@ -164,7 +164,7 @@ $zip->addFromString('はじめにお読みください.txt', "\xEF\xBB\xBF" . BR
     . '作成: ' . date('Y-m-d H:i', $now) . ' / ' . (string)($ME['email'] ?? '') . "\r\n\r\n"
     . "・CSV は Excel でそのまま開けます (UTF-8)。\r\n"
     . "・蜂場・巣箱・メモ・タスク・作業記録は、蜂場ページなどで見られるもの (チームで共有された蜂場の分も含む) です。\r\n"
-    . "・センサ_<HPX-Core名>.csv は、自分の HPX-Core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。\r\n"
+    . "・センサ_<HPX-Core名>.csv は、自分の HPX-Core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。センサ1台にかかる重さなので、巣箱の重さは重量センサ1台なら2倍、2台なら合計にしてください。\r\n"
     . (!empty($_POST['photos']) ? "・写真フォルダに、蜂場の写真とメモの写真が入っています。\r\n" : ''));
 $zip->close();
 foreach ($sensorTmp as $t) @unlink($t);

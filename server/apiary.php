@@ -262,13 +262,14 @@ function share_line(array $a): string
 }
 
 // 蜂場の平均のグラフ用: その蜂場の巣箱に紐づいたセンサの記録を、同じ時刻(分単位)ごとに平均する
-//   温度・湿度は温湿度センサすべての平均、重量は較正済みの重量センサ(巣箱ごと)の平均
+//   温度・湿度は温湿度センサすべての平均、重量は巣箱の重さ(重量センサ1台なら2倍、2台以上なら合計)の平均
 //   n: 平均のもとになった群(巣箱)の数。期間内に記録がある巣箱だけ数える
 function apiary_avg(array $hv, array $sensors, int $since): array
 {
     $sum = ['t' => [], 'h' => [], 'w' => []];
     $n = ['t' => [], 'h' => [], 'w' => []];
     foreach ($hv as $hid => $x) {
+        $wSer = []; $nw = 0;
         foreach ((array)($x['sensors'] ?? []) as $k) {
             if (!isset($sensors[$k])) continue;
             $sn = $sensors[$k];
@@ -282,11 +283,19 @@ function apiary_avg(array $hv, array $sensors, int $since): array
                 }
             } else {
                 $c = cal_load($sn['hub'])[$sn['mac']] ?? null;
+                $nw++;
+                if (!$c || !isset($c['per_kg'])) continue;
+                $pts = [];
                 foreach ($d['w'][$sn['mac']] ?? [] as $r) {
                     $v = to_kg($r[1], $c);
-                    if ($v !== null) { $sum['w'][intdiv($r[0], 60) * 60][] = $v; $n['w'][$hid] = 1; }
+                    if ($v !== null) $pts[] = [$r[0], $v];
                 }
+                $wSer[] = $pts;
             }
+        }
+        // 巣箱の重さ (重量センサ1台なら2倍、2台以上なら合計)。較正していないセンサがある巣箱は入れない
+        if ($nw > 0 && count($wSer) === $nw) {
+            foreach (hive_kg_series($wSer) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
         }
     }
     $out = [];
