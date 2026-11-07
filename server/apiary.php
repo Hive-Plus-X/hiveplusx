@@ -134,7 +134,10 @@ if (is_post()) {
         $owner = $id !== '' ? apiary_owner($site, $id) : $UID;
         site_use($owner);
         $selHubs = array_values(array_filter((array)($_POST['hubs'] ?? []), fn($v) => ($hubs[(string)$v]['o'] ?? '') === $owner));
-        $selFences = array_values(array_filter((array)($_POST['fences'] ?? []), fn($v) => ($sensors[(string)$v]['kind'] ?? '') === 'fa' && $sensors[(string)$v]['o'] === $owner));
+        // 電柵アラートセンサは、この蜂場に選んだ HPX-Core に登録されたものだけ。前からこの蜂場に紐づいているものは、そのまま残せる
+        $before = $id !== '' ? array_map('strval', (array)($site['apiaries'][$id]['fences'] ?? [])) : [];
+        $selFences = array_values(array_filter((array)($_POST['fences'] ?? []), fn($v) => ($sensors[(string)$v]['kind'] ?? '') === 'fa' && $sensors[(string)$v]['o'] === $owner
+            && (in_array((string)$sensors[(string)$v]['hub'], array_map('strval', $selHubs), true) || in_array((string)$v, $before, true))));
         // 新しい蜂場は、選んだチーム(自分が管理者のもの)の全員に共有する
         $share = [];
         if ($id === '') foreach ((array)($_POST['share'] ?? []) as $tid) if (team_role((string)$tid, $UID) === 'admin') $share[(string)$tid] = null;
@@ -220,7 +223,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     // 地図で選ぶときの最初の中心: この蜂場の位置がなければ、ほかの蜂場のどれかの位置 (なければ日本全体)
     $pickC = '';
     foreach ($site['apiaries'] as $x) if ($ll = apiary_latlng($x)) { $pickC = $ll[0] . ',' . $ll[1]; break; }
-    $o = '<form method="post" class="form" enctype="multipart/form-data">' . csrf_field() . '<input type="hidden" name="act" value="apiary_save"><input type="hidden" name="id" value="' . h($id) . '">'
+    $o = '<form method="post" class="form" enctype="multipart/form-data" data-cf>' . csrf_field() . '<input type="hidden" name="act" value="apiary_save"><input type="hidden" name="id" value="' . h($id) . '">'
         . '<p><label>蜂場の名前 (必須)</label><input type="text" name="name" maxlength="40" required value="' . h((string)($a['name'] ?? '')) . '"></p>'
         . '<p><label>所在地住所</label><input type="text" name="address" value="' . h((string)($a['address'] ?? '')) . '"></p>'
         . '<p><label>緯度・経度 (「地図で選ぶ」を押して地図上の蜂場の場所を押すと入ります。Googleマップでコピーした「35.6812, 139.7671」などを貼り付けてもかまいません)</label>'
@@ -239,12 +242,17 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         $o .= '<span style="display:block"><input type="checkbox" name="hubs[]" value="' . h($hid) . '"' . ($on ? ' checked' : '') . '> '
             . h($hb['name']) . ' <span class="muted">' . h($hid) . ($hb['retired'] ? ' (外した)' : '') . '</span>' . $other($hid) . '</span>';
     }
-    $o .= '</p><p><label>この蜂場の電柵アラートセンサ</label>';
+    $o .= '</p><p><label>この蜂場の電柵アラートセンサ (上で選んだ HPX-Core に登録されたものだけ出ます)</label>';
     $fa = array_filter($sensors, fn($s) => $s['kind'] === 'fa');
-    if (!$fa) $o .= '<span class="muted">電柵アラートセンサはまだ登録されていません (HPX-Core の管理画面で登録します)。</span>';
+    $o .= '<span class="muted cf-none">' . ($fa ? '上で選んだ HPX-Core に登録された電柵アラートセンサがありません。'
+        : '電柵アラートセンサはまだ登録されていません (HPX-Core の管理画面で登録します)。') . '</span>';
+    $mine = array_map('strval', (array)($a['fences'] ?? []));
     foreach ($fa as $k => $s) {
-        $o .= '<span style="display:block"><input type="checkbox" name="fences[]" value="' . h($k) . '"' . (in_array($k, (array)($a['fences'] ?? []), true) ? ' checked' : '') . '> '
-            . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k) . '</span>';
+        $k = (string)$k;
+        $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
+            . '<input type="checkbox" name="fences[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
+            . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k)
+            . ' <span class="ng cf-x" style="display:none">(この蜂場の HPX-Core のセンサではありません。チェックを外して保存すると、もう選べません)</span></span>';
     }
     // 新しい蜂場: 自分が管理者のチームに共有する(初めはすべてオン = チームの全員)。あとからチームページで変えられる
     $adm = array_keys(array_filter(teams_of($UID), fn($r) => $r === 'admin'));
@@ -252,7 +260,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         $o .= '</p><p><label>共有するチーム (チームの全員が見られます。あとから<a href="team.php">チーム</a>のページで変えられます)</label>';
         foreach ($adm as $tid) $o .= '<span style="display:inline-block;margin-right:14px"><input type="checkbox" name="share[]" value="' . h($tid) . '" checked> ' . h((string)team_get($tid)['name']) . '</span>';
     }
-    return $o . '</p><p><button type="submit">保存</button></p></form>';
+    return $o . '</p><p><button type="submit">保存</button></p></form>' . core_filter_js();
 }
 
 // 蜂場の持ち主と共有先の短い説明(チーム機能を使っているときだけ)
