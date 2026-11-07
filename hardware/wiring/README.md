@@ -10,6 +10,7 @@
 | HPX-TH (温湿度) | [HPX-TH_pcb.png](HPX-TH_pcb.png) | SHT40 (SDA=D4, SCL=D5、ピンは上から SDA・SCL・GND・VIN) + サーミスター (D3 → 10kΩ → A2、A2–GND)。電源 CR123A |
 | HPX-A (電柵アラート) | [HPX-A_pcb.png](HPX-A_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.03)。電源 単3リチウム×2 (ケース WH145-25-M2 の電池ボックス) |
 | HPX-Core (親機) | [HPX-Core_wiring.png](HPX-Core_wiring.png) | 外付けの配線なし。USB 電源 (HPX_Core v1.15) |
+| HPX-Core 有線LAN (付けたいときだけ) | [HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) | W5500 モジュール: SCLK=GPIO18, MISO=GPIO19, MOSI=GPIO23, SCS=GPIO5, INT=GPIO4, RST=GPIO16, 3.3V=3V3 (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
 
 部品表は [部品表.md](部品表.md) にあります。
 
@@ -23,5 +24,6 @@
 - HPX-A の CdS セルで警報器の点滅を数えられるか (CdS は反応が遅め)
 - SHT40 モジュール・HX711 モジュールのピンの並び (基板の印字で確認)
 - 基板の図は実際に組んで確かめていません
+- HPX-Core の有線LAN (W5500) は実機で確かめていません (ファーム v1.20 はコンパイルだけ確認)。W5500 モジュールのピンの並びは基板の印字で確認
 
 ケースに合わせたタカチ基板 (TNF39-70・TNF34-124・TNF44-69) の図は [case/](case/) にあります。

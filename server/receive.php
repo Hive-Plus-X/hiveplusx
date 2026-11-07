@@ -265,6 +265,7 @@ $state = [
     'build' => (int)($d['build'] ?? 0),
     'vbat' => isset($d['vbat']) ? (float)$d['vbat'] : null,
     'rssi' => isset($d['rssi']) ? (int)$d['rssi'] : null,
+    'net' => (isset($d['net']) && $d['net'] === 'lan') ? 'lan' : 'wifi',   // HPX-Core v1.20 から。有線LANなら 'lan'
     'sensors' => $sens,
 ];
 file_put_contents($statePath, json_encode($state, JSON_UNESCAPED_UNICODE));
