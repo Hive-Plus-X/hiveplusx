@@ -19,7 +19,7 @@ DEVICES = [
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
-         wiring=[(None, '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm の基板に載せる図を準備中です。', 'core'),
+         wiring=[('HPX-Core_LAN_pcb.png', '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
                 ('HPX-Core_wiring.png', '防水Wi-Fi版の配線図', 'USB 電源をつなぐだけで、外付けの配線はありません。', 'core_wp')],
          note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
