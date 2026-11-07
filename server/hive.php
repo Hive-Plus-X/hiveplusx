@@ -123,12 +123,12 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
 }
 
 // QR コードのマークと、押すと出るメニュー (この巣箱の PNG、この蜂場・すべての蜂場の巣箱の印刷用 PDF)。
-// QR コードの中身は hive.php?h=巣箱id の URL。ログインしていなければ、ログインのあとでその巣箱を開く
+// QR コードの中身は memo.php?qr=巣箱id の URL (その巣箱の内検メモを書く欄が開く)。ログインしていなければ、ログインのあとで開く
 function qr_menu(array $site, string $aid, string $hid): string
 {
     $item = function (string $id) use ($site): array {
         $hv = $site['hives'][$id];
-        return ['name' => (string)$hv['name'], 'apiary' => (string)($site['apiaries'][$hv['apiary']]['name'] ?? ''), 'url' => site_url('hive.php?h=' . $id)];
+        return ['name' => (string)$hv['name'], 'apiary' => (string)($site['apiaries'][$hv['apiary']]['name'] ?? ''), 'url' => site_url('memo.php?qr=' . $id)];
     };
     $here = []; $all = [];
     foreach ($site['apiaries'] as $x => $a) {
@@ -144,7 +144,7 @@ function qr_menu(array $site, string $aid, string $hid): string
         . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm1-9h2v2H6zm10 0h2v2h-2zM6 16h2v2H6zm7-3h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm4 0h2v2h-2zm2-2h2v2h-2zm0 4h2v2h-2zm-4 0h2v2h-2zm2-6h2v2h-2z"/></svg>'
         . '<span>QR</span></summary><div class="qrp">'
         . '<p class="qrt">巣箱に貼る QR コード</p>'
-        . '<p class="muted" style="margin:.2em 0 .5em">スマホのカメラで読むと、この巣箱のページが開きます (ログインが必要です)。ラベルは 50mm 角です。</p>'
+        . '<p class="muted" style="margin:.2em 0 .5em">スマホのカメラで読むと、この巣箱の内検メモを書く画面が開きます (ログインが必要です)。ラベルは 50mm 角です。</p>'
         . '<img class="qrimg" alt="この巣箱のQRコード" data-h="' . $j($me) . '">'
         . '<p><button type="button" data-qr="png" data-h="' . $j($me) . '">この巣箱の PNG</button></p>'
         . '<p style="margin:.6em 0 .2em"><b>印刷用 PDF</b> <span class="muted">(A4 に 15 枚)</span></p>'
