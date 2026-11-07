@@ -7,8 +7,9 @@
 // v1.20 の変更
 //   * 有線LAN(W5500 SPIモジュール)でも送信できるようにした。Wi-Fi の無い LTE ルーターに LAN ケーブルでつなげる。
 //       - 接続方法(Wi-Fi / 有線LAN)は、初回設定の画面か「動作設定」で選ぶ。初期値は Wi-Fi(これまでどおり)
-//       - 配線(W5500 → ESP32): SCK→GPIO18, MISO(MO ではなく MI/SO)→GPIO19, MOSI→GPIO23, CS(SCS)→GPIO5,
-//         INT→GPIO4, RST→GPIO16, 3.3V→3V3, GND→GND(ETH_*_PIN で変えられる)
+//       - 配線(W5500 → ESP32): SCK→GPIO18(D18), MISO(MI)→GPIO4(D4), MOSI(MO)→GPIO23(D23), CS→GPIO5(D5),
+//         INT→GPIO17(TX2), RST→GPIO16(RX2), 3.3V(V)→3V3, GND(G)→GND(ETH_*_PIN で変えられる)
+//         6×8cm 基板の配線図(hardware/wiring/HPX-Core_LAN_pcb.png)で裏の線が交わらないように選んだピン
 //       - 有線LANのときは、管理画面を開くための Wi-Fi「HPX-Setup-xxxx」を出したままにする(LTE ルーターに Wi-Fi が無いため)。
 //         スマートフォンをこの Wi-Fi につなぎ、http://192.168.4.1/ を開く。動作設定で止めることもできる
 //       - サーバーへ "net"("wifi" / "lan")を送る。有線LANのときは電波の強さ "rssi" は送らない
@@ -199,14 +200,14 @@ constexpr uint32_t WIFI_DOWN_RESTART_MS = 30UL * 60 * 1000;  // 常時稼働で�
 constexpr uint8_t NET_WIFI = 0;
 constexpr uint8_t NET_LAN = 1;
 
-// 有線LAN(W5500 SPIモジュール)のピン。ESP32 の VSPI(18・19・23)を使う
-constexpr int ETH_SCK_PIN = 18;
-constexpr int ETH_MISO_PIN = 19;
-constexpr int ETH_MOSI_PIN = 23;
-constexpr int ETH_CS_PIN = 5;
-constexpr int ETH_INT_PIN = 4;     // -1 にすると INT を使わず定期的に確認する(配線を1本減らせる)
-constexpr int ETH_RST_PIN = 16;    // -1 にすると RST を使わない
-constexpr uint8_t ETH_SPI_MHZ = 20;
+// 有線LAN(W5500 SPIモジュール)のピン。基板の配線図(HPX-Core_LAN_pcb)に合わせてある
+constexpr int ETH_SCK_PIN = 18;    // D18
+constexpr int ETH_MISO_PIN = 4;    // D4(VSPI 本来の 19 ではないが、ESP32 はどのピンでも SPI に使える)
+constexpr int ETH_MOSI_PIN = 23;   // D23
+constexpr int ETH_CS_PIN = 5;      // D5
+constexpr int ETH_INT_PIN = 17;    // TX2。-1 にすると INT を使わず定期的に確認する(配線を1本減らせる)
+constexpr int ETH_RST_PIN = 16;    // RX2。-1 にすると RST を使わない
+constexpr uint8_t ETH_SPI_MHZ = 16;  // MISO を本来のピン以外にしたので、余裕をみて 16MHz
 constexpr uint32_t LAN_CONNECT_TIMEOUT_MS = 15000;  // LAN ケーブル接続 → IPアドレスをもらうまでの待ち
 
 // 設定用AP

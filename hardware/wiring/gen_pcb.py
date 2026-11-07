@@ -4,7 +4,7 @@ import sys, os
 OUT = sys.argv[1]
 os.makedirs(OUT, exist_ok=True)
 
-FONT = "'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"
+FONT = "'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"
 COL = {
     "red": "#e53935", "black": "#212121", "yellow": "#fdd835", "blue": "#1e88e5",
     "white": "#fafafa", "green": "#43a047", "orange": "#fb8c00", "purple": "#8e24aa",
@@ -163,7 +163,7 @@ def cr123a(s, x, y):
 # ------------------------------------------------------------------ 小さな基板版
 P = 40                      # 穴の間隔 (px) = 2.54mm
 OX, OY = 600, 200           # 穴 A1 の位置
-COLS = "ABCDEFGHIJKLMNOPQRSTUVWX"
+COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 NC, NR = 12, 11             # 図ごとに変える
 
 
@@ -635,4 +635,106 @@ y = table(s, 60, y + 50, [
 finish(s, y, COMMON_NOTES + [
     "・フェンスアラート（StaFIX）の回路と XIAO を電線でつながない。光だけで読む（柵線の高電圧が回り込むため）。",
 ], "HPX-A_pcb.svg")
+
+# ================================================================== HPX-Core 有線LAN（6×8cm 基板）
+OX, OY = 260, 200
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）有線LAN 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム HPX_Core v1.20")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33。写真の向きから右へ90度回す）")
+
+def R(n):   # 行の番号（1〜33）→ 図の行（0〜）
+    return n - 1
+
+def module(c1, c2, rtop, rbot, fill, stroke, label, sub=None):
+    """モジュールの外形（穴の単位。半端な値でよい）"""
+    x1, y1 = OX + c1 * P, OY + rtop * P
+    x2, y2 = OX + c2 * P, OY + rbot * P
+    s.top.append(f'<rect x="{x1}" y="{y1}" width="{x2-x1}" height="{y2-y1}" rx="10" fill="{fill}" fill-opacity="0.62" stroke="{stroke}" stroke-width="3"/>')
+    rec_part(x1, y1, x2 - x1, y2 - y1, label)
+    return x1, y1, x2, y2
+
+def pins(col, first_row, names, side, used):
+    p = {}
+    for i, n in enumerate(names):
+        c, r = col, R(first_row + i)
+        x, y = H(c, r)
+        p[n] = (c, r)
+        rec_pin(x, y, n)
+        on = n in used
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+        dx = -14 if side == "R" else 14
+        s.text(x + dx, y + 5, n.rstrip("0123456789") if len(n) <= 3 and n[0] in "VG" else n, 13, "end" if side == "R" else "start", "bold", "#fff" if on else "#ddd", layer=s.top)
+    return p
+
+# ESP-32（USB-C が下）。ピン列は B 列と L 列（10穴離れている）、14〜28 行
+EL = ["EN", "VP", "VN", "D34", "D35", "D32", "D33", "D25", "D26", "D27", "D14", "D12", "D13", "GND", "VIN"]
+ER = ["D23", "D22", "TX0", "RX0", "D21", "D19", "D18", "D5", "TX2", "RX2", "D4", "D2", "D15", "GND", "3V3"]
+x1, y1, x2, y2 = module(1 - 0.47, 11 + 0.47, R(14) - 2.3, R(28) + 4.6, "#212121", "#000", "ESP-32")
+s.top.append(f'<rect x="{(x1+x2)/2-60}" y="{y1+30}" width="120" height="150" rx="4" fill="#b0bec5" fill-opacity="0.8" stroke="#78909c"/>')
+s.text((x1 + x2) / 2, y1 + 100, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 120, "WROOM-32", 15, "middle", "bold", "#263238", layer=s.top)
+s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y2-20}" width="68" height="44" rx="8" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+s.text((x1 + x2) / 2, y2 + 46, "USB-C（下向き）", 13, "middle", "bold", "#333", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 230, "ELEGOO ESP-32", 16, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 252, "ピンソケット 15ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+pe_l = pins(1, 14, EL, "L", {"GND"})
+pe_r = pins(11, 14, ER, "R", {"D23", "D18", "D5", "TX2", "RX2", "D4", "3V3"})
+
+# W5500（LAN 差し込み口が下）。ピン列は N 列と V 列（8穴離れている）、24〜29 行
+x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, R(24) - 0.5, R(24) - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
+s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+30}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
+s.text((x1 + x2) / 2, y1 + 70, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-150}" width="160" height="170" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
+s.text((x1 + x2) / 2, y2 - 60, "LAN 差し込み口", 13, "middle", "bold", "#37474f", layer=s.top)
+s.text((x1 + x2) / 2, y2 + 46, "LAN ケーブル（下へ）", 13, "middle", "bold", "#333", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 120, "W5500 モジュール", 14, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 140, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+WL = ["MI", "RST", "NC", "V", "V2", "G"]       # 上から（下から G, V, V, NC, RST, MI）
+WR = ["INT", "CS", "SCK", "MO", "G2", "G3"]     # 上から（下から G, G, MO, SCK, CS, INT）
+pw_l = pins(13, 24, WL, "L", {"MI", "RST", "V2", "G"})
+pw_r = pins(21, 24, WR, "R", {"INT", "CS", "SCK", "MO"})
+
+def Lc(ch):
+    return COLS.index(ch)
+
+def w(color, *holes):
+    wireh(s, [(Lc(h[0]), R(int(h[1:]))) for h in holes], color)
+
+w("blue",   "L14", "Y14", "Y27", "V27")          # D23(MOSI) → MO
+w("yellow", "L20", "X20", "X26", "V26")          # D18(SCK) → SCK
+w("orange", "L21", "W21", "W25", "V25")          # D5(CS) → CS
+w("purple", "L22", "V22", "V24")                 # TX2(GPIO17) → INT
+w("white",  "L23", "O23", "O25", "N25")          # RX2(GPIO16) → RST
+w("green",  "L24", "N24")                        # D4(GPIO4, MISO) → MI
+w("red",    "L28", "N28")                        # 3V3 → V
+w("black",  "B27", "A27", "A30", "N30", "N29")   # GND → G
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LAN_pcb.svg")
+y = table(s, 60, yb + 40, [
+    ["線", "ESP-32 のピン（穴）", "通る穴", "W5500 のピン（穴）"],
+    ["blue", "D23 = GPIO23・MOSI（L14）", "L14 → Y14 → Y27 → V27", "MO（V27）"],
+    ["yellow", "D18 = GPIO18・SCK（L20）", "L20 → X20 → X26 → V26", "SCK（V26）"],
+    ["orange", "D5 = GPIO5・CS（L21）", "L21 → W21 → W25 → V25", "CS（V25）"],
+    ["purple", "TX2 = GPIO17（L22）", "L22 → V22 → V24", "INT（V24）"],
+    ["white", "RX2 = GPIO16（L23）", "L23 → O23 → O25 → N25", "RST（N25）"],
+    ["green", "D4 = GPIO4・MISO（L24）", "L24 → N24", "MI（N24）"],
+    ["red", "3V3（L28）", "L28 → N28", "V（N28）"],
+    ["black", "GND（左の列 B27）", "B27 → A27 → A30 → N30 → N29", "G（N29）"],
+], [100, 320, 420, 380], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）", "1", "B14〜B28・L14〜L28。USB-C を下に向ける"],
+    ["ピンソケット（メス）15ピン", "2", "B14〜B28、L14〜L28 にはんだ付けして ESP-32 を差す"],
+    ["W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）", "1", "N24〜N29・V24〜V29。LAN 差し込み口を下に向ける"],
+    ["ピンソケット（メス）6ピン", "2", "N24〜N29、V24〜V29 にはんだ付けして W5500 を差す"],
+    ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+], [620, 60, 520], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。",
+    "・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・裏の線どうしは交わらず、ほかのピンの穴の上も通らない。ESP-32・W5500 の下を通る線は、裏なので部品には触れない。",
+    "・灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。",
+    "・線を交わらせないため、ファームのピンを変えた: MISO＝GPIO4（D4）、INT＝GPIO17（TX2）、RST＝GPIO16（RX2）。HPX_Core v1.20 はこのピンに合わせてある。",
+    "・ESP-32 の左右のピン列は10穴、W5500 の左右のピン列は8穴離れているとして描いた（ESP-32 は写真から、W5500 は幅23mm から計算）。差す前に実物で確かめる。",
+    "・W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。",
+], "HPX-Core_LAN_pcb.svg")
 print("ok")

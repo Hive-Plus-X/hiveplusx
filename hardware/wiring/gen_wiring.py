@@ -424,7 +424,7 @@ s.save("HPX-Core_wiring.svg")
 print("ok")
 
 # ------------------------------------------------------------------ HPX-Core 有線LAN (W5500)
-s = S(1280, 1740)
+s = S(1280, 1770)
 title(s, "HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ファーム HPX_Core v1.20 以降 ／ 電源 USB")
 # ESP32 ボード
 cx, cy = 150, 170
@@ -433,10 +433,10 @@ s.rect(cx + 50, cy + 30, 150, 150, "#b0bec5", "#78909c", 6, 2)
 s.text(cx + 125, cy + 100, "ESP32-", 16, "middle", "bold", "#263238")
 s.text(cx + 125, cy + 122, "WROOM-32E", 16, "middle", "bold", "#263238")
 s.rect(cx + 115, cy + 505, 70, 30, "#b0b0b0", "#777", 6)
-s.text(cx + 150, cy - 30, "Freenove FNK0090B", 15, "middle", "bold")
-s.text(cx + 150, cy - 10, "（図はイメージ。ピンの場所は基板の印字で確認）", 12, "middle", fill="#666")
+s.text(cx + 150, cy - 30, "ELEGOO ESP-32（USB-C）", 15, "middle", "bold")
+s.text(cx + 150, cy - 10, "（図は線の対応だけ。並びは基板の図を見る）", 12, "middle", fill="#666")
 esp = {}
-epins = ["3V3", "GND", "GPIO18", "GPIO19", "GPIO23", "GPIO5", "GPIO4", "GPIO16"]
+epins = ["3V3", "GND", "D18", "D4", "D23", "D5", "TX2", "RX2"]
 for i, n in enumerate(epins):
     py = cy + 210 + i * 38
     s.pad(cx + 300, py, n, "R"); esp[n] = (cx + 300, py)
@@ -449,16 +449,14 @@ s.rect(wx + 250, wy + 270, 90, 100, "#cfd8dc", "#607d8b", 6, 3)      # LAN の�
 s.rect(wx + 268, wy + 300, 54, 40, "#37474f", "#222", 3, 1)
 s.text(wx + 295, wy + 262, "LAN 差し込み口", 13, "middle", "bold")
 s.text(wx + 130, wy - 30, "W5500 イーサネットモジュール", 15, "middle", "bold")
-s.text(wx + 130, wy - 10, "（ピン 2列×5本。並びは基板の印字で確認）", 12, "middle", fill="#666")
+s.text(wx + 130, wy - 10, "（ピン 6本×2列。図は線の対応だけ。並びは基板の図を見る）", 12, "middle", fill="#666")
 w5 = {}
-wpins = ["3.3V", "GND", "SCLK", "MISO", "MOSI", "SCS", "INT", "RST"]
+wpins = ["V", "G", "SCK", "MI", "MO", "CS", "INT", "RST"]
 for i, n in enumerate(wpins):
     py = wy + 40 + i * 38
     s.pad(wx, py, n, "L"); w5[n] = (wx, py)
-s.pad(wx + 200, wy + 340, "5V", "L")
-s.text(wx + 200, wy + 375, "5V はつながない", 12, "middle", "bold", "#ffeb3b")
-wires = [("3V3", "3.3V", "red"), ("GND", "GND", "black"), ("GPIO18", "SCLK", "yellow"), ("GPIO19", "MISO", "green"),
-         ("GPIO23", "MOSI", "blue"), ("GPIO5", "SCS", "orange"), ("GPIO4", "INT", "purple"), ("GPIO16", "RST", "white")]
+wires = [("3V3", "V", "red"), ("GND", "G", "black"), ("D18", "SCK", "yellow"), ("D4", "MI", "green"),
+         ("D23", "MO", "blue"), ("D5", "CS", "orange"), ("TX2", "INT", "purple"), ("RX2", "RST", "white")]
 for i, (a, b, c) in enumerate(wires):
     (x1, y1), (x2, y2) = esp[a], w5[b]
     mx = 560 + i * 22
@@ -478,20 +476,20 @@ s.text(cx + 150, 850, "（5V・1A 以上）", 12, "middle", fill="#666")
 s.text(640, 905, "センサ（HPX-W・HPX-TH・HPX-A）は、これまでどおり電波（BLE）で受け取ります。", 15, "middle", "bold", "#1565c0")
 y = table(s, 60, 960, [
     ["線の色（例）", "W5500 のピン", "ESP32 のピン", "メモ"],
-    ["red", "3.3V（V33・3V3）", "3V3", "電源。5V のピンは使わない"],
-    ["black", "GND", "GND", ""],
-    ["yellow", "SCLK（SCK）", "GPIO18", "SPI の時計"],
-    ["green", "MISO（MI・SO）", "GPIO19", "W5500 → ESP32"],
-    ["blue", "MOSI（MO・SI）", "GPIO23", "ESP32 → W5500"],
-    ["orange", "SCS（CS・SS）", "GPIO5", "選択"],
-    ["purple", "INT", "GPIO4", "知らせ（ファームで -1 にすれば無くてもよい）"],
-    ["white", "RST（RSTn）", "GPIO16", "リセット（ファームで -1 にすれば無くてもよい）"],
-], [180, 260, 200, 520], "つなぐ線（メス－メスのジャンパー線 10〜15cm）")
+    ["red", "V（3.3V）", "3V3", "電源"],
+    ["black", "G（GND）", "GND", ""],
+    ["yellow", "SCK", "D18（GPIO18）", "SPI の時計"],
+    ["green", "MI（MISO）", "D4（GPIO4）", "W5500 → ESP32"],
+    ["blue", "MO（MOSI）", "D23（GPIO23）", "ESP32 → W5500"],
+    ["orange", "CS", "D5（GPIO5）", "選択"],
+    ["purple", "INT", "TX2（GPIO17）", "知らせ（ファームで -1 にすれば無くてもよい）"],
+    ["white", "RST", "RX2（GPIO16）", "リセット（ファームで -1 にすれば無くてもよい）"],
+], [180, 260, 200, 520], "つなぐ線（基板に組むときは HPX-Core_LAN_pcb.png、試すだけならジャンパー線でも可）")
 y = table(s, 60, y + 60, [
     ["部品", "数", "使うところ・メモ"],
-    ["ESP32 開発ボード Freenove FNK0090B 4MB", "1", "本体（親機）。いまの HPX-Core のまま"],
-    ["W5500 イーサネットモジュール（2列×5ピン、3.3V/5V 両用）", "1", "有線LAN。例 ACEIRMC W5500（3個入り）"],
-    ["ジャンパー線 メス－メス 10〜15cm", "8", "ESP32 と W5500 をつなぐ"],
+    ["ESP32 開発ボード ELEGOO ESP-32（USB-C・30ピン）", "1", "本体（親機）。いまの HPX-Core のまま"],
+    ["W5500 イーサネットモジュール（ACEIRMC、6ピン×2）", "1", "有線LAN"],
+    ["ユニバーサル基板 6×8cm・ピンソケット 15ピン×2・6ピン×2", "1式", "基板に組む（HPX-Core_LAN_pcb.png）"],
     ["LAN ケーブル（カテゴリー5e 以上）", "1", "W5500 → LTE ルーター"],
     ["防水の LAN コネクター（パネル取付）またはケーブルグランド", "1", "ケースの壁に通す。型番は未定"],
     ["USB ケーブル・USB 電源アダプター 5V（1A 以上）", "各1", "いまと同じ"],
@@ -500,8 +498,9 @@ notes(s, 60, y + 20, [
     "・管理画面の「動作設定」（初めてなら設定用 Wi-Fi の画面）で、接続方法を「有線LAN」にして保存します。",
     "・有線LANのときも、管理画面用の Wi-Fi「HPX-Setup-xxxx」は出たままです。スマートフォンでつなぎ http://192.168.4.1/ を開く。",
     "・動作モードは「常時稼働（商用電源）」で使う。W5500 は眠っている間も電気を使うので、電池には向きません。",
-    "・3.3V と 5V の両方にはつながない。電源を入れたまま線を抜き差ししない。",
+    "・電源を入れたまま抜き差ししない。",
     "・実機ではまだ確かめていません（ファーム v1.20 はコンパイルだけ確認済み）。",
+    "・ピンは基板の裏の線が交わらないように選んだ（MISO＝D4、INT＝TX2、RST＝RX2）。",
 ])
 s.save("HPX-Core_LAN_wiring.svg")
 print("ok LAN")
