@@ -37,7 +37,11 @@ if (is_post()) {
             redirect($selfUrl(), '巣箱を変えられるのは、蜂場の持ち主とチーム管理者だけです (ほかの人の蜂場へは移せません)。');
         }
         site_use($owner);
-        $sel = array_values(array_filter((array)($_POST['sensors'] ?? []), fn($v) => in_array($sensors[(string)$v]['kind'] ?? '', ['th', 'w'], true) && $sensors[(string)$v]['o'] === $owner));
+        // 選べるのは、移す先の蜂場の HPX-Core に登録されたセンサだけ。前からこの巣箱に紐づいているものは、そのまま残せる
+        $apHubs = array_map('strval', (array)($site['apiaries'][$to]['hubs'] ?? []));
+        $before = $id !== '' ? array_map('strval', (array)($site['hives'][$id]['sensors'] ?? [])) : [];
+        $sel = array_values(array_filter((array)($_POST['sensors'] ?? []), fn($v) => in_array($sensors[(string)$v]['kind'] ?? '', ['th', 'w'], true) && $sensors[(string)$v]['o'] === $owner
+            && (in_array((string)$sensors[(string)$v]['hub'], $apHubs, true) || in_array((string)$v, $before, true))));
         $state = (string)($_POST['state'] ?? '');
         if (!in_array($state, S_HIVE_STATES, true) && $state !== (string)($site['hives'][$id]['state'] ?? '')) $state = '';   // 外した状態も、前から付いていればそのまま
         $newId = $id !== '' ? $id : new_id();
@@ -97,10 +101,11 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
     $sensors = array_filter($sensors, fn($sn) => $sn['o'] === $own);
     $owner = [];
     foreach ($site['hives'] as $hid => $x) foreach ((array)($x['sensors'] ?? []) as $v) $owner[$v] = $hid;
-    $o = '<form method="post" class="form">' . csrf_field() . '<input type="hidden" name="act" value="hive_save"><input type="hidden" name="id" value="' . h($id) . '">'
+    $o = '<form method="post" class="form" data-cf>' . csrf_field() . '<input type="hidden" name="act" value="hive_save"><input type="hidden" name="id" value="' . h($id) . '">'
         . '<div class="grid2"><p><label>巣箱の名前 (必須)</label><input type="text" name="name" maxlength="40" required value="' . h((string)($hv['name'] ?? '')) . '"></p>'
         . '<p><label>蜂場</label><select name="apiary">';
-    foreach ($site['apiaries'] as $x => $a) $o .= '<option value="' . h($x) . '"' . ((($hv['apiary'] ?? $aid) === $x) ? ' selected' : '') . '>' . h((string)$a['name']) . '</option>';
+    foreach ($site['apiaries'] as $x => $a) $o .= '<option value="' . h($x) . '" data-hubs="' . h(json_encode(array_values(array_map('strval', (array)($a['hubs'] ?? []))))) . '"'
+        . ((($hv['apiary'] ?? $aid) === $x) ? ' selected' : '') . '>' . h((string)$a['name']) . '</option>';
     $o .= '</select></p><p><label>状態</label><select name="state"><option value="">-</option>';
     $sts = S_HIVE_STATES;
     if (($hv['state'] ?? '') !== '' && !in_array($hv['state'], $sts, true)) $sts[] = (string)$hv['state'];
@@ -110,16 +115,22 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
         . '<p><label>巣箱 (種類・段数・巣枠の数など)</label><input type="text" name="box" value="' . h((string)($hv['box'] ?? '')) . '"></p></div>'
         . '<p><label>備考</label><textarea name="note">' . h((string)($hv['note'] ?? '')) . '</textarea></p>'
         . '<p><label>並び順 (小さいほど上)</label><input type="number" name="order" value="' . (int)($hv['order'] ?? 0) . '"></p>'
-        . '<p><label>この巣箱のセンサ (温湿度・重量)</label>';
+        . '<p><label>この巣箱のセンサ (温湿度・重量。この蜂場の HPX-Core に登録されたセンサだけ出ます)</label>';
     $list = array_filter($sensors, fn($s) => $s['kind'] === 'th' || $s['kind'] === 'w');
-    if (!$list) $o .= '<span class="muted">センサはまだ登録されていません (HPX-Core の管理画面で登録します)。</span>';
+    // 選んだ蜂場の HPX-Core のセンサだけを出す (core_filter_js)。JavaScript が動かないときは全部出る (保存のときにサーバーで確かめる)
+    $o .= '<span class="muted cf-none">' . ($list ? 'この蜂場の HPX-Core に登録されたセンサがありません。蜂場の情報で「この蜂場の HPX-Core」を選ぶと、その HPX-Core のセンサが出ます。'
+        : 'センサはまだ登録されていません (HPX-Core の管理画面で登録します)。') . '</span>';
+    $mine = array_map('strval', (array)($hv['sensors'] ?? []));
     foreach ($list as $k => $s) {
-        $o .= '<span style="display:block"><input type="checkbox" name="sensors[]" value="' . h($k) . '"' . (in_array($k, (array)($hv['sensors'] ?? []), true) ? ' checked' : '') . '> '
+        $k = (string)$k;
+        $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
+            . '<input type="checkbox" name="sensors[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">[' . h(kind_text($s['kind'])) . '] ' . h($s['hubName']) . ($s['retired'] ? ' (外した)' : '') . '</span>'
             . (isset($owner[$k]) && $owner[$k] !== $id ? ' <span class="muted">(今は「' . h(target_label($site, (string)($site['hives'][$owner[$k]]['apiary'] ?? ''), $owner[$k])) . '」。選ぶとこちらに移ります)</span>' : '')
+            . ' <span class="ng cf-x" style="display:none">(この蜂場の HPX-Core のセンサではありません。チェックを外して保存すると、もう選べません)</span>'
             . '</span>';
     }
-    return $o . '</p><p><button type="submit">保存</button></p></form>';
+    return $o . '</p><p><button type="submit">保存</button></p></form>' . core_filter_js();
 }
 
 // QR コードのマークと、押すと出るメニュー (この巣箱の PNG、この蜂場・すべての蜂場の巣箱の印刷用 PDF)。
@@ -148,7 +159,7 @@ function qr_menu(array $site, string $aid, string $hid): string
         . '<img class="qrimg" alt="この巣箱のQRコード" data-h="' . $j($me) . '">'
         . '<p><button type="button" data-qr="png" data-h="' . $j($me) . '">この巣箱の PNG</button></p>'
         . '<p style="margin:.6em 0 .2em"><b>印刷用 PDF</b> <span class="muted">(A4 に 15 枚)</span></p>'
-        . '<p><button type="button" data-qr="pdf" data-f="' . h('QR_' . preg_replace('/[\\\/:*?"<>|\s]+/u', '_', (string)$site['apiaries'][$aid]['name']) . '.pdf') . '" data-h="' . $j($here) . '">この蜂場の巣箱 (' . count($here) . ')</button></p>'
+        . '<p><button type="button" data-qr="pdf" data-f="' . h('QR_' . preg_replace('#[\\\\/:*?"<>|\s]+#u', '_', (string)$site['apiaries'][$aid]['name']) . '.pdf') . '" data-h="' . $j($here) . '">この蜂場の巣箱 (' . count($here) . ')</button></p>'
         . ($multi ? '<p><button type="button" data-qr="pdf" data-f="QR_all.pdf" data-h="' . $j($all) . '">すべての蜂場の巣箱 (' . count($all) . ')</button></p>' : '')
         . '<p class="muted" style="font-size:.8em;margin:.6em 0 0">屋外に貼るときは、耐水・屋外用のラベル用紙に印刷するか、上から透明の防水テープやラミネートで覆うと長持ちします。</p>'
         . '</div></details>';

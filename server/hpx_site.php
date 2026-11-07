@@ -547,6 +547,53 @@ function tagPanel(btn){
 JS;
 }
 
+// センサの選択欄を「その蜂場の HPX-Core に登録されたセンサ」だけにする (巣箱フォーム・蜂場フォームで共通)
+//   フォームに data-cf を付け、センサの行 (.cf) に data-hub="ハブid"、今の紐づけ先がこのフォームなら data-keep="1"。
+//   どの HPX-Core が選ばれているかは、巣箱フォームは蜂場の選択肢 (option の data-hubs、JSON)、蜂場フォームは hubs[] のチェック。
+//   ほかの HPX-Core のセンサは隠して送らない。前から紐づいているものだけは注意書き付きで残し、外せるようにする。
+//   1ページに何度出しても script は1回だけ
+function core_filter_js(): string
+{
+    static $done = false;
+    if ($done) return '';
+    $done = true;
+    return <<<'JS'
+<script>
+(function(){
+  function apply(f){
+    var allow = {}, sel = f.querySelector('select[name=apiary]');
+    if (sel) {
+      var op = sel.options[sel.selectedIndex];
+      try { (JSON.parse(op ? op.getAttribute('data-hubs') || '[]' : '[]')).forEach(function(h){ allow[h] = 1; }); } catch (e) {}
+    } else {
+      f.querySelectorAll('input[name="hubs[]"]').forEach(function(c){ if (c.checked) allow[c.value] = 1; });
+    }
+    var n = 0;
+    f.querySelectorAll('.cf').forEach(function(r){
+      var ok = allow[r.getAttribute('data-hub')] === 1, keep = r.getAttribute('data-keep') === '1';
+      var c = r.querySelector('input'), x = r.querySelector('.cf-x');
+      r.style.display = (ok || keep) ? 'block' : 'none';
+      c.disabled = !(ok || keep);
+      if (x) x.style.display = ok ? 'none' : '';
+      if (ok || keep) n++;
+    });
+    var none = f.querySelector('.cf-none');
+    if (none) none.style.display = n ? 'none' : '';
+  }
+  function init(){
+    document.querySelectorAll('form[data-cf]').forEach(function(f){
+      apply(f);
+      f.addEventListener('change', function(e){
+        if (e.target.name === 'apiary' || e.target.name === 'hubs[]') apply(f);
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+JS;
+}
+
 // 音声入力ボタン(🎤)。data-voice の付いたメモ欄の上に出す。文字起こしはブラウザの音声認識(Web Speech API、日本語)が
 // するので、サーバーには文字だけが届き、音声は送らず保存もしない。使えないブラウザではボタンを出さない
 function voice_js(): string
