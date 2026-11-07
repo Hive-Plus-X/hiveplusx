@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1770" viewBox="0 0 1280 1770">
+<rect width="100%" height="100%" fill="#fffdf6"/>
+<rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）有線LAN（W5500）の部品表と配線図</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ファーム HPX_Core v1.20 以降 ／ 電源 USB</text>
+<rect x="150" y="170" width="300" height="520" rx="10" fill="#263238" stroke="#111" stroke-width="3"/>
+<rect x="200" y="200" width="150" height="150" rx="6" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+<text x="275" y="270" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32-</text>
+<text x="275" y="292" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">WROOM-32E</text>
+<rect x="265" y="675" width="70" height="30" rx="6" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
+<text x="300" y="140" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ELEGOO ESP-32（USB-C）</text>
+<text x="300" y="160" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（図は線の対応だけ。並びは基板の図を見る）</text>
+<circle cx="450" cy="380" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="380" r="3" fill="#5a4a14"/>
+<text x="436" y="385" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">3V3</text>
+<circle cx="450" cy="418" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="418" r="3" fill="#5a4a14"/>
+<text x="436" y="423" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<circle cx="450" cy="456" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="456" r="3" fill="#5a4a14"/>
+<text x="436" y="461" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D18</text>
+<circle cx="450" cy="494" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="494" r="3" fill="#5a4a14"/>
+<text x="436" y="499" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D4</text>
+<circle cx="450" cy="532" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="532" r="3" fill="#5a4a14"/>
+<text x="436" y="537" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D23</text>
+<circle cx="450" cy="570" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="570" r="3" fill="#5a4a14"/>
+<text x="436" y="575" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D5</text>
+<circle cx="450" cy="608" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="608" r="3" fill="#5a4a14"/>
+<text x="436" y="613" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">TX2</text>
+<circle cx="450" cy="646" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="450" cy="646" r="3" fill="#5a4a14"/>
+<text x="436" y="651" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">RX2</text>
+<rect x="790" y="230" width="260" height="400" rx="10" fill="#1565c0" stroke="#0d3c7a" stroke-width="3"/>
+<rect x="910" y="360" width="110" height="110" rx="4" fill="#212121" stroke="#000" stroke-width="2"/>
+<text x="965" y="420" font-size="15" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500</text>
+<rect x="1040" y="500" width="90" height="100" rx="6" fill="#cfd8dc" stroke="#607d8b" stroke-width="3"/>
+<rect x="1058" y="530" width="54" height="40" rx="3" fill="#37474f" stroke="#222" stroke-width="1"/>
+<text x="1085" y="492" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">LAN 差し込み口</text>
+<text x="920" y="200" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 イーサネットモジュール</text>
+<text x="920" y="220" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（ピン 6本×2列。図は線の対応だけ。並びは基板の図を見る）</text>
+<circle cx="790" cy="270" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="270" r="3" fill="#5a4a14"/>
+<text x="804" y="275" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">V</text>
+<circle cx="790" cy="308" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="308" r="3" fill="#5a4a14"/>
+<text x="804" y="313" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">G</text>
+<circle cx="790" cy="346" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="346" r="3" fill="#5a4a14"/>
+<text x="804" y="351" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SCK</text>
+<circle cx="790" cy="384" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="384" r="3" fill="#5a4a14"/>
+<text x="804" y="389" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">MI</text>
+<circle cx="790" cy="422" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="422" r="3" fill="#5a4a14"/>
+<text x="804" y="427" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">MO</text>
+<circle cx="790" cy="460" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="460" r="3" fill="#5a4a14"/>
+<text x="804" y="465" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">CS</text>
+<circle cx="790" cy="498" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="498" r="3" fill="#5a4a14"/>
+<text x="804" y="503" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">INT</text>
+<circle cx="790" cy="536" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="790" cy="536" r="3" fill="#5a4a14"/>
+<text x="804" y="541" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">RST</text>
+<path d="M450,380 L560,380 L560,270 L790,270" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,380 L560,380 L560,270 L790,270" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,380 L560,380 L560,270 L790,270" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,418 L582,418 L582,308 L790,308" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,418 L582,418 L582,308 L790,308" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,418 L582,418 L582,308 L790,308" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,456 L604,456 L604,346 L790,346" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,456 L604,456 L604,346 L790,346" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,456 L604,456 L604,346 L790,346" fill="none" stroke="#fdd835" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,494 L626,494 L626,384 L790,384" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,494 L626,494 L626,384 L790,384" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,494 L626,494 L626,384 L790,384" fill="none" stroke="#43a047" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,532 L648,532 L648,422 L790,422" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,532 L648,532 L648,422 L790,422" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,532 L648,532 L648,422 L790,422" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,570 L670,570 L670,460 L790,460" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,570 L670,570 L670,460 L790,460" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,570 L670,570 L670,460 L790,460" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,608 L692,608 L692,498 L790,498" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,608 L692,608 L692,498 L790,498" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,608 L692,608 L692,498 L790,498" fill="none" stroke="#8e24aa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,646 L714,646 L714,536 L790,536" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,646 L714,646 L714,536 L790,536" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M450,646 L714,646 L714,536 L790,536" fill="none" stroke="#fafafa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1130,550 L1190,550 L1190,800" stroke="#1e88e5" stroke-width="9" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1180" y="690" font-size="14" text-anchor="end" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">LAN ケーブル</text>
+<rect x="990" y="800" width="260" height="84" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="1010" y="835" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">LTE ルーター → サーバー</text>
+<text x="1010" y="862" font-size="13" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">LAN 差し込み口へ（Wi-Fi 無しでよい）</text>
+<path d="M300,705 L300,790" stroke="#424242" stroke-width="9" stroke-linecap="round"/>
+<text x="315" y="760" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB ケーブル</text>
+<rect x="240" y="790" width="120" height="70" rx="10" fill="#eeeeee" stroke="#999" stroke-width="2"/>
+<text x="300" y="830" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB 電源</text>
+<text x="300" y="850" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（5V・1A 以上）</text>
+<text x="640" y="905" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">センサ（HPX-W・HPX-TH・HPX-A）は、これまでどおり電波（BLE）で受け取ります。</text>
+<text x="60" y="948" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ線（基板に組むときは HPX-Core_LAN_pcb.png、試すだけならジャンパー線でも可）</text>
+<rect x="60" y="960" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="981" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線の色（例）</text>
+<text x="250" y="981" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 のピン</text>
+<text x="510" y="981" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32 のピン</text>
+<text x="710" y="981" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
+<rect x="60" y="990" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="999" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1011" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
+<text x="250" y="1011" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">V（3.3V）</text>
+<text x="510" y="1011" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">3V3</text>
+<text x="710" y="1011" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電源</text>
+<rect x="60" y="1020" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1029" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
+<text x="250" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">G（GND）</text>
+<text x="510" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<text x="710" y="1041" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<rect x="60" y="1050" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1059" width="34" height="12" rx="3" fill="#fdd835" stroke="#555" stroke-width="1"/>
+<text x="112" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黄</text>
+<text x="250" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SCK</text>
+<text x="510" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D18（GPIO18）</text>
+<text x="710" y="1071" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SPI の時計</text>
+<rect x="60" y="1080" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1089" width="34" height="12" rx="3" fill="#43a047" stroke="#555" stroke-width="1"/>
+<text x="112" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">緑</text>
+<text x="250" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">MI（MISO）</text>
+<text x="510" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D4（GPIO4）</text>
+<text x="710" y="1101" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 → ESP32</text>
+<rect x="60" y="1110" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1119" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
+<text x="112" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">青</text>
+<text x="250" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">MO（MOSI）</text>
+<text x="510" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D23（GPIO23）</text>
+<text x="710" y="1131" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32 → W5500</text>
+<rect x="60" y="1140" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1149" width="34" height="12" rx="3" fill="#fb8c00" stroke="#555" stroke-width="1"/>
+<text x="112" y="1161" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">橙</text>
+<text x="250" y="1161" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">CS</text>
+<text x="510" y="1161" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D5（GPIO5）</text>
+<text x="710" y="1161" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">選択</text>
+<rect x="60" y="1170" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1179" width="34" height="12" rx="3" fill="#8e24aa" stroke="#555" stroke-width="1"/>
+<text x="112" y="1191" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">紫</text>
+<text x="250" y="1191" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">INT</text>
+<text x="510" y="1191" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">TX2（GPIO17）</text>
+<text x="710" y="1191" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">知らせ（ファームで -1 にすれば無くてもよい）</text>
+<rect x="60" y="1200" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1209" width="34" height="12" rx="3" fill="#fafafa" stroke="#555" stroke-width="1"/>
+<text x="112" y="1221" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">白</text>
+<text x="250" y="1221" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">RST</text>
+<text x="510" y="1221" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">RX2（GPIO16）</text>
+<text x="710" y="1221" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">リセット（ファームで -1 にすれば無くてもよい）</text>
+<text x="60" y="1278" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品表（いまの HPX-Core に足すもの）</text>
+<rect x="60" y="1290" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1311" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品</text>
+<text x="630" y="1311" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
+<text x="680" y="1311" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使うところ・メモ</text>
+<rect x="60" y="1320" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1341" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32 開発ボード ELEGOO ESP-32（USB-C・30ピン）</text>
+<text x="630" y="1341" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="1341" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">本体（親機）。いまの HPX-Core のまま</text>
+<rect x="60" y="1350" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1371" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 イーサネットモジュール（ACEIRMC、6ピン×2）</text>
+<text x="630" y="1371" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="1371" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">有線LAN</text>
+<rect x="60" y="1380" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm・ピンソケット 15ピン×2・6ピン×2</text>
+<text x="630" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1式</text>
+<text x="680" y="1401" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">基板に組む（HPX-Core_LAN_pcb.png）</text>
+<rect x="60" y="1410" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">LAN ケーブル（カテゴリー5e 以上）</text>
+<text x="630" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="1431" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 → LTE ルーター</text>
+<rect x="60" y="1440" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">防水の LAN コネクター（パネル取付）またはケーブルグランド</text>
+<text x="630" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="1461" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの壁に通す。型番は未定</text>
+<rect x="60" y="1470" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1491" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB ケーブル・USB 電源アダプター 5V（1A 以上）</text>
+<text x="630" y="1491" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">各1</text>
+<text x="680" y="1491" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">いまと同じ</text>
+<rect x="60" y="1520" width="1160" height="190" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="1546" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
+<text x="78" y="1574" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・管理画面の「動作設定」（初めてなら設定用 Wi-Fi の画面）で、接続方法を「有線LAN」にして保存します。</text>
+<text x="78" y="1600" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・有線LANのときも、管理画面用の Wi-Fi「HPX-Setup-xxxx」は出たままです。スマートフォンでつなぎ http://192.168.4.1/ を開く。</text>
+<text x="78" y="1626" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・動作モードは「常時稼働（商用電源）」で使う。W5500 は眠っている間も電気を使うので、電池には向きません。</text>
+<text x="78" y="1652" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・電源を入れたまま抜き差ししない。</text>
+<text x="78" y="1678" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・実機ではまだ確かめていません（ファーム v1.20 はコンパイルだけ確認済み）。</text>
+<text x="78" y="1704" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ピンは基板の裏の線が交わらないように選んだ（MISO＝D4、INT＝TX2、RST＝RX2）。</text>
+<circle cx="450" cy="380" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="270" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="418" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="308" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="456" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="346" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="494" r="5" fill="#43a047" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="384" r="5" fill="#43a047" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="532" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="422" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="570" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="460" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="608" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="498" r="5" fill="#8e24aa" stroke="#333" stroke-width="1.5"/>
+<circle cx="450" cy="646" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+<circle cx="790" cy="536" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+</svg>
