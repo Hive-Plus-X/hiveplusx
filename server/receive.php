@@ -266,6 +266,11 @@ $state = [
     'vbat' => isset($d['vbat']) ? (float)$d['vbat'] : null,
     'rssi' => isset($d['rssi']) ? (int)$d['rssi'] : null,
     'net' => (isset($d['net']) && $d['net'] === 'lan') ? 'lan' : 'wifi',   // HPX-Core v1.20 から。有線LANなら 'lan'
+    // 管理画面の場所 (HPX-Core v1.21 から)。センサページの「管理画面を開く」ボタンに使う
+    'ip' => (isset($d['ip']) && filter_var($d['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && $d['ip'] !== '0.0.0.0') ? (string)$d['ip'] : null,
+    'host' => (isset($d['host']) && is_string($d['host']) && preg_match('/^[a-z0-9-]{1,63}$/', $d['host'])) ? $d['host'] : null,
+    'pm' => (isset($d['pm']) && in_array($d['pm'], ['always', 'sleep'], true)) ? $d['pm'] : null,
+    'lanap' => (isset($d['lanap']) && is_string($d['lanap']) && preg_match('/^HPX-Setup-[0-9A-F]{4}$/', $d['lanap'])) ? $d['lanap'] : null,
     'sensors' => $sens,
 ];
 file_put_contents($statePath, json_encode($state, JSON_UNESCAPED_UNICODE));

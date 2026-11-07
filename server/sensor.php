@@ -41,6 +41,8 @@ function page_head(string $title, bool $refresh = false): void
         . '.tabs a.on,.per a.on{background:#234;color:#fff;border-color:#234}.per a{padding:3px 10px;font-size:.9em}'
         . 'dl.info{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0}dl.info dt{color:#555}dl.info dd{margin:0}'
         . '.danger{border-color:#e0b4b4;background:#fff7f7}'
+        . 'a.admbtn{display:inline-block;padding:6px 14px;margin:0 6px 4px 0;border-radius:6px;background:#234;color:#fff;text-decoration:none}'
+        . 'a.admbtn.sub{background:#fff;color:#234;border:1px solid #234}'
         . 'body{padding-top:0}nav{position:sticky;top:0;background:#234;margin:0 -16px;padding:8px 16px;z-index:5;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}'
         . 'nav a{color:#fff;text-decoration:none;padding:4px 2px}nav a.on{border-bottom:2px solid #ffd54f;font-weight:bold}nav .r{margin-left:auto;font-size:.85em}'
         . '.badge{display:inline-block;background:#c62828;color:#fff;border-radius:10px;padding:0 7px;font-size:.8em;margin-left:3px}.badge.soon{background:#b26a00}'
@@ -583,6 +585,26 @@ $lastRx = (int)($st['last_rx'] ?? 0);
 $rxOk = $lastRx > 0 && $now - $lastRx < (int)($HPX_HUB_MISSING_S ?? 3600);
 $vbat = isset($st['vbat']) && is_numeric($st['vbat']) && (float)$st['vbat'] > 0 ? number_format((float)$st['vbat'], 2) . ' V' : '';
 $fw = trim((string)($st['fw'] ?? '') . ((int)($st['build'] ?? 0) ? ' (build ' . (int)$st['build'] . ')' : ''));
+// HPX-Core の管理画面 (HPX-Core v1.21 から ip・host が届く)。家の中のネットワークのアドレスなので、同じネットワークにつながっている端末からしか開けない
+$admIp = (string)($st['ip'] ?? '');
+$admHost = (string)($st['host'] ?? '');
+$admLanAp = (string)($st['lanap'] ?? '');
+if ($admIp !== '' || $admHost !== '') {
+    $adm = ($admIp !== '' ? '<a class="admbtn" href="' . h('http://' . $admIp . '/') . '" target="_blank" rel="noopener">管理画面を開く</a>' : '')
+        . ($admHost !== '' ? '<a class="admbtn sub" href="' . h('http://' . $admHost . '.local/') . '" target="_blank" rel="noopener">名前で開く (' . h($admHost) . '.local)</a>' : '')
+        . '<br><small class="muted">'
+        . ($admIp !== '' ? 'アドレス: http://' . h($admIp) . '/<br>' : '')
+        . '<b>スマートフォンやPCを、HPX-Core と同じネットワーク (同じ Wi-Fi・同じルーター) につないでいるときだけ開けます。</b>'
+        . '外出先や携帯電話の回線 (4G/5G) からは開けません。'
+        . (($st['net'] ?? '') === 'lan' && $admLanAp !== ''
+            ? 'このHPX-Coreは有線LANなので、HPX-Core が出している Wi-Fi「' . h($admLanAp) . '」につないで http://192.168.4.1/ を開く方法もあります。'
+            : '')
+        . (($st['pm'] ?? '') === 'sleep' ? 'ディープスリープ (電池) で動かしているときは、HPX-Core の RESET ボタンを押してから約10分間だけ開けます。' : '')
+        . 'アドレスは最後にデータが届いたときのものです。ルーターの都合で変わることがあります。名前で開くボタンは iPhone・Mac・Windows 向けで、Android では開けないことがあります。'
+        . '</small>';
+} else {
+    $adm = '<span class="muted">HPX-Core のファームウェアを v1.21 以降にすると、ここに管理画面を開くボタンが出ます。</span>';
+}
 echo '<div class="card"><dl class="info">'
     . '<dt>設置場所</dt><dd>' . ($place !== '' ? '<a href="hive.php?' . h(http_build_query(['a' => $placeId])) . '">' . h($place) . '</a>'
         : '<span class="muted">未設定 (<a href="apiary.php">蜂場ページ</a>でこの機器を蜂場に紐づけます)</span>') . '</dd>'
@@ -593,6 +615,7 @@ echo '<div class="card"><dl class="info">'
     . ((($st['net'] ?? '') === 'lan')
         ? '<dt>通信</dt><dd>有線LAN</dd>'
         : '<dt>Wi-Fiの電波</dt><dd>' . rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>')
+    . '<dt>管理画面</dt><dd>' . $adm . '</dd>'
     . '</dl></div>';
 
 // ---- 温湿度計の表 ----
