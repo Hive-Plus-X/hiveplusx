@@ -42,8 +42,9 @@ $HPX_VIEW_PASSWORD = '';
 $HPX_SITE_URL = '';
 // 1つのアカウントにつなげる HPX-Core の台数の上限(0 なら無制限。サーバー管理者は無制限)
 $HPX_MAX_HUBS = 5;
-// HPX-Core のファームウェア自動更新サーバーのURL (マニフェストの https:// のURL。空なら用意していない)。
-//   マイアカウントの「HPX-Core の接続」に表示し、利用者が HPX-Core の管理画面「動作設定」に入れる
+// HPX-Core のファームウェア自動更新サーバーのURL (manifest.txt の https:// のURL)。
+//   マイアカウントの「HPX-Core の接続」に表示し、利用者が HPX-Core の管理画面「動作設定」に入れる。
+//   空なら、このフォルダの firmware/manifest.txt があるときに、そのURL (例 https://hiveplusx.com/hpx/firmware/manifest.txt) を表示する
 $HPX_OTA_URL = '';
 // アカウント登録のときに同意してもらう「データの利用」の文 (空なら決まった文。サーバー管理ページの「全アカウントのデータのダウンロード」の前提)。
 //   登録方法 (招待 / 申請→承認 / 自由登録) はサーバー管理ページで切り替える。

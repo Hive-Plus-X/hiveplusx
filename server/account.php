@@ -101,14 +101,17 @@ echo ($off !== [] && count($off) === count(A_MAIL_KINDS) ? '<p class="ng">いま
     . '<button type="submit">保存</button></form></div>';
 
 $token = (string)($acct['token'] ?? '');
+// ファームウェア自動更新サーバーのURL: config の $HPX_OTA_URL、無ければこのサーバーの firmware/manifest.txt (置いてあるときだけ)
+$otaUrl = trim((string)($HPX_OTA_URL ?? ''));
+if ($otaUrl === '' && is_file(__DIR__ . '/firmware/manifest.txt')) $otaUrl = site_url('firmware/manifest.txt');
 echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="card form">'
     . '<p>HPX-Core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
     . '<details><summary>送信先のURLを表示する</summary><p><input type="text" readonly value="' . h(site_url('receive.php')) . '" onclick="this.select()"></p></details>'
     . '<details><summary>送信先のトークンを表示する</summary><p><input type="text" readonly value="' . h($token) . '" onclick="this.select()"></p>'
     . '<p class="muted">このトークンを知っている人は、このアカウントに記録を送れます。人に見せないでください。'
     . ($token !== '' && !empty($acct['token_at']) ? ' (' . h(date('Y-m-d H:i', (int)$acct['token_at'])) . ' に作成)' : '') . '</p></details>'
-    . (trim((string)($HPX_OTA_URL ?? '')) !== ''
-        ? '<details><summary>ファームウェア自動更新サーバーのURLを表示する</summary><p><input type="text" readonly value="' . h(trim((string)$HPX_OTA_URL)) . '" onclick="this.select()"></p>'
+    . ($otaUrl !== ''
+        ? '<details><summary>ファームウェア自動更新サーバーのURLを表示する</summary><p><input type="text" readonly value="' . h($otaUrl) . '" onclick="this.select()"></p>'
           . '<p class="muted">入れなくても動きます。入れておくと、新しいファームウェアが出たときに HPX-Core が自分で更新します (電池なら1日1回、常時稼働なら6時間ごとに確かめます)。'
           . '管理画面「動作設定」の「ファームウェア自動更新サーバーのURL」に入れてください。</p></details>'
         : '<p class="muted">ファームウェア自動更新サーバーのURL: まだ用意されていません (HPX-Core の管理画面のその欄は空欄のままで動きます)。</p>')
