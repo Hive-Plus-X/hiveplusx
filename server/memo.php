@@ -324,9 +324,14 @@ echo '<p class="muted" style="font-size:.85em;margin:0 0 .5em">内検の記録�
 
 // ---- 新しいメモ ----
 $nt = (string)($_GET['new'] ?? '');
+// 巣箱に貼った QR コードから来たとき (memo.php?qr=巣箱id): その蜂場・巣箱で、内容「内検」のメモを書く欄を開く
+$qr = (string)($_GET['qr'] ?? '');
+$fromQr = isset($site['hives'][$qr]);
+if ($fromQr) $nt = $site['hives'][$qr]['apiary'] . '|' . $qr;
 $pre = parse_target($site, $nt) ?? ['', ''];   // 対象の初期は「すべて」(蜂場・巣箱のページから来たときはその対象)
 echo '<details id="memo-form"' . ($nt !== '' ? ' open' : '') . '><summary>＋ メモを書く</summary><div class="card">'
-    . memo_form(['apiary' => $pre[0], 'hive' => $pre[1], 'type' => ''], $site, $selfUrl()) . '</div></details>';
+    . memo_form(['apiary' => $pre[0], 'hive' => $pre[1], 'type' => $fromQr ? '内検' : ''], $site, $selfUrl()) . '</div></details>';
+if ($fromQr) echo '<script>document.getElementById("memo-form").scrollIntoView();</script>';
 
 // ---- メモ検索(蜂場・巣箱はプルダウン。選んだらすぐ絞り込む) ----
 echo '<p style="margin:.8em 0 .2em"><b>メモ検索</b></p><form method="get" class="msearch">'
