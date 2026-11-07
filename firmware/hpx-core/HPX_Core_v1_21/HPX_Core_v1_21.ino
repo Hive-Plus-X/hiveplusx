@@ -10,6 +10,7 @@
 //   * サーバーへ送るデータに、管理画面の場所を足した: "ip"(ルーターが割り当てたIPアドレス)、"host"(<機器ID>.local の機器ID部分)、
 //     "pm"("always"=常時稼働 / "sleep"=ディープスリープ)、有線LANで管理用Wi-Fiを出しているときは "lanap"(そのWi-Fiの名前)。
 //     HPX-note のセンサページに「管理画面を開く」ボタンを出すのに使う。
+//   * 動作設定の「ファーム更新マニフェストのURL」の表記を「ファームウェア自動更新サーバーのURL」にした(中身は同じ)。
 //
 // 対象   : Freenove ESP32 (ESP32-WROOM-32E, 4MB) / ボード "ESP32 Dev Module"
 //          arduino-esp32 3.3.x / Partition "Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS)"
@@ -2969,7 +2970,7 @@ void handleSettingsPage()
   h += "<input type='text' id='surl' name='surl' maxlength='200' size='50' value='" + htmlEscape(serverUrl) + "'><br><br>";
   h += "<label for='stoken'>送信先のトークン(Bearer、不要なら空欄)</label><br>";
   h += "<input type='text' id='stoken' name='stoken' maxlength='200' size='50' value='" + htmlEscape(serverToken) + "'><br><br>";
-  h += "<label for='murl'>ファーム更新マニフェストのURL (https://、空欄なら遠隔更新しない)</label><br>";
+  h += "<label for='murl'>ファームウェア自動更新サーバーのURL (https://、空欄なら自動更新しない)</label><br>";
   h += "<input type='text' id='murl' name='murl' maxlength='200' size='50' value='" + htmlEscape(otaUrl) + "'><br><br>";
   h += "<hr><h3>BLEセンサ (温湿度：HPX-TH・Inkbird IBS-TH2 / TH2 PLUS・SwitchBot 温湿度計 / 防水温湿度計、重量：HPX-W、電柵アラート：HPX-A)</h3>";
   h += "<label for='bleiv'>保存間隔(この間隔で記録し、サーバーへ送信します)</label><br><select id='bleiv' name='bleiv'>";
@@ -3014,7 +3015,7 @@ void handleSettingsSave()
   }
   if (!validUrl(murl, true))
   {
-    sendText(400, "更新マニフェストのURLは https:// で始まる200文字以内にしてください。");
+    sendText(400, "ファームウェア自動更新サーバーのURLは https:// で始まる200文字以内にしてください。");
     return;
   }
   if (stoken.length() > 200)
