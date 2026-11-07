@@ -229,9 +229,9 @@ def cost(r, n):
     """その数を使ったときの部品代 (数が「適宜」などなら None)"""
     if not r.get('price') or not n:
         return None
-    m = re.match(r'^(\d+)\s*PIN\s*×\s*(\d+)$', n)      # 「7PIN×2」= 7ピンを 2個
-    if m:
-        return int(m.group(1)) * int(m.group(2)) * int(r['price']) / float(r.get('pack') or 1)
+    ms = [re.match(r'^(\d+)\s*PIN\s*×\s*(\d+)$', x.strip()) for x in n.split('・')]   # 「7PIN×2」= 7ピンを 2個、「15PIN×2・6PIN×2」も
+    if all(ms):
+        return sum(int(m.group(1)) * int(m.group(2)) for m in ms) * int(r['price']) / float(r.get('pack') or 1)
     m = re.match(r'^([0-9.]+)\s*(cm|m)?$', n)
     if not m:
         return None
