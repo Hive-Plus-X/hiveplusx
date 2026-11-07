@@ -185,9 +185,9 @@
   <div class="hero wrap">
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
-    <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。</p>
-    <p class="lead">屋内や軒下に置く通常版と、屋外に置ける防水版があります。</p>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">通常版</button><button type="button" data-v="core_wp" aria-pressed="false">防水版</button></div>
+    <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。</p>
+    <p class="lead">LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版があります。</p>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">有線LAN版</button><button type="button" data-v="core_wp" aria-pressed="false">防水Wi-Fi版</button></div>
   </div>
 
   <section id="parts">
@@ -195,20 +195,28 @@
       <span class="tag">ハブ</span>
       <h2>部品表</h2>
       <div data-variant="core">
-      <p class="note">通常版に必要な部品と数です。</p>
+      <p class="note">有線LAN版に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
         <tr class="cat"><th colspan="3">チップボード</th></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FT2SJH3H" target="_blank" rel="noopener">ESP32-WROOM-32</a></b><span>ELEGOO ESP-32 開発ボード USB-C CP2102チップ</span><span class="price">1,935円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B09NFF41YH" target="_blank" rel="noopener">有線LANモジュール W5500</a></b><span>ACEIRMC W5500 イーサネットネットワークモジュール</span><span class="price">2,999円 / 3個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">15PIN×2・6PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
         <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Easy%20Access%20Clearly%20Case%20Enclosure%20ESP32%2030Pin" target="_blank" rel="noopener">ESP32 用透明ボックス</a></b><span>Easy Access Clearly Case Enclosure for ESP32 30Pin</span><span class="price">912円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 1,880円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 3,132円</td></tr></tfoot>
       </table>
       </div>
       <div data-variant="core_wp">
-      <p class="note">防水版に必要な部品と数です。</p>
+      <p class="note">防水Wi-Fi版に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -233,9 +241,13 @@
     <div class="reveal wrap">
       <h2>作り方</h2>
       <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
-      <figure class="wiring">
-        <figcaption><b>配線図 (通常版・防水版とも同じ)</b>USB 電源をつなぐだけで、外付けの配線はありません。</figcaption>
-        <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core 配線図 (通常版・防水版とも同じ)" loading="lazy"></a>
+      <figure class="wiring" data-variant="core">
+        <figcaption><b>有線LAN版の配線図</b>ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。</figcaption>
+        <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core 有線LAN版の配線図" loading="lazy"></a>
+      </figure>
+      <figure class="wiring" data-variant="core_wp">
+        <figcaption><b>防水Wi-Fi版の配線図</b>USB 電源をつなぐだけで、外付けの配線はありません。</figcaption>
+        <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core 防水Wi-Fi版の配線図" loading="lazy"></a>
       </figure>
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>

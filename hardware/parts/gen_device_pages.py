@@ -13,13 +13,15 @@ SITE = ROOT / 'site'
 # 機器ごとの版 (parts.csv の数の列名, 画面に出す名前)
 DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
-         lead='センサの記録を Bluetooth で集め、Wi-Fi でサーバーへ送る中心的な機器です。',
-         variants=[('core', '通常版'), ('core_wp', '防水版')],
+         lead='センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。',
+         # 版の名前は TARO 2026-11-07 に 通常版→有線LAN版、防水版→防水Wi-Fi版 (列名・?v= はそのまま)
+         variants=[('core', '有線LAN版'), ('core_wp', '防水Wi-Fi版')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
-         wiring=[('HPX-Core_wiring.png', '配線図 (通常版・防水版とも同じ)', 'USB 電源をつなぐだけで、外付けの配線はありません。')],
-         note='屋内や軒下に置く通常版と、屋外に置ける防水版があります。'),
+         wiring=[('HPX-Core_LAN_pcb.png', '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
+                ('HPX-Core_wiring.png', '防水Wi-Fi版の配線図', 'USB 電源をつなぐだけで、外付けの配線はありません。', 'core_wp')],
+         note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
@@ -218,7 +220,7 @@ def price_text(r):
     if not r.get('price'):
         return ''
     pk = r.get('pack') or '1'
-    if pk == '1' and r.get('unit') in ('個', '本', '枚', ''):
+    if pk == '1' and r.get('unit') in ('個', '本', '枚', 'セット', ''):
         return yen(int(r['price']))
     return f'{yen(int(r["price"]))} / {pk}{r.get("unit", "")}入り' if r.get('unit') not in ('cm', 'm', 'PIN') else f'{yen(int(r["price"]))} / {pk}{r["unit"]}'
 
@@ -227,9 +229,9 @@ def cost(r, n):
     """その数を使ったときの部品代 (数が「適宜」などなら None)"""
     if not r.get('price') or not n:
         return None
-    m = re.match(r'^(\d+)\s*PIN\s*×\s*(\d+)$', n)      # 「7PIN×2」= 7ピンを 2個
-    if m:
-        return int(m.group(1)) * int(m.group(2)) * int(r['price']) / float(r.get('pack') or 1)
+    ms = [re.match(r'^(\d+)\s*PIN\s*×\s*(\d+)$', x.strip()) for x in n.split('・')]   # 「7PIN×2」= 7ピンを 2個、「15PIN×2・6PIN×2」も
+    if all(ms):
+        return sum(int(m.group(1)) * int(m.group(2)) for m in ms) * int(r['price']) / float(r.get('pack') or 1)
     m = re.match(r'^([0-9.]+)\s*(cm|m)?$', n)
     if not m:
         return None
@@ -357,6 +359,11 @@ def wiring_html(dev):
     for w in dev.get('wiring', []):
         f, cap, note = w[:3]
         dv = f' data-variant="{w[3]}"' if len(w) > 3 else ''
+        if not f:   # 図がまだないときは説明だけ
+            figs.append(f'''      <figure class="wiring"{dv}>
+        <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
+      </figure>''')
+            continue
         figs.append(f'''      <figure class="wiring"{dv}>
         <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
         <a href="img/wiring/{f}" target="_blank" rel="noopener"><img src="img/wiring/{f}" alt="{esc(dev["name"])} {esc(cap)}" loading="lazy"></a>
