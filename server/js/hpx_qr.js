@@ -8,7 +8,9 @@
   var DPI = 600;
   var MM = DPI / 25.4;                 // 1mm の点の数
   var SIZE = Math.round(50 * MM);      // ラベルの1辺 (1181px)
-  var FONT = "'Hiragino Kaku Gothic ProN','Meiryo','Yu Gothic',sans-serif";
+  // 日本の字形のフォントを先に並べる (中国語の字形のフォントで描かないように)。
+  //   Mac・iPhone=ヒラギノ、Windows=メイリオ・游ゴシック、Android=Noto Sans CJK JP、Linux など=IPA・Noto
+  var FONT = "'Hiragino Kaku Gothic ProN','Meiryo','Yu Gothic','YuGothic','BIZ UDPGothic','Noto Sans JP','Noto Sans CJK JP','IPAexGothic','IPAPGothic','IPAGothic',sans-serif";
   var GREEN = '#2F5D45';
 
   // ラベル1枚を canvas に描く。h = {name, apiary, url}
