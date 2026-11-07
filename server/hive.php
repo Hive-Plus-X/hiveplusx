@@ -12,6 +12,8 @@ $sensors = hpx_sensors();
 $hubs = hpx_hubs();
 
 $aid = (string)($_GET['a'] ?? $_POST['a'] ?? '');
+// QRコードから開いたとき (hive.php?h=巣箱id だけ) は、その巣箱の蜂場を選ぶ
+if ($aid === '' && isset($site['hives'][(string)($_GET['h'] ?? '')])) $aid = (string)$site['hives'][(string)$_GET['h']]['apiary'];
 if (!isset($site['apiaries'][$aid])) $aid = (string)(array_key_first($site['apiaries']) ?? '');
 $per = (int)($_GET['p'] ?? S_PERIOD_DEFAULT);
 if (!array_key_exists($per, S_PERIODS)) $per = S_PERIOD_DEFAULT;
@@ -120,7 +122,44 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
     return $o . '</p><p><button type="submit">保存</button></p></form>';
 }
 
+// QR コードのマークと、押すと出るメニュー (この巣箱の PNG、この蜂場・すべての蜂場の巣箱の印刷用 PDF)。
+// QR コードの中身は hive.php?h=巣箱id の URL。ログインしていなければ、ログインのあとでその巣箱を開く
+function qr_menu(array $site, string $aid, string $hid): string
+{
+    $item = function (string $id) use ($site): array {
+        $hv = $site['hives'][$id];
+        return ['name' => (string)$hv['name'], 'apiary' => (string)($site['apiaries'][$hv['apiary']]['name'] ?? ''), 'url' => site_url('hive.php?h=' . $id)];
+    };
+    $here = []; $all = [];
+    foreach ($site['apiaries'] as $x => $a) {
+        foreach (hives_of($site, (string)$x) as $id => $hv) {
+            $all[] = $item((string)$id);
+            if ($x === $aid) $here[] = $item((string)$id);
+        }
+    }
+    $me = $item($hid);
+    $j = fn($v) => h(json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    $multi = count($site['apiaries']) > 1;
+    return '<details class="qrm"><summary title="QRコード">'
+        . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm1-9h2v2H6zm10 0h2v2h-2zM6 16h2v2H6zm7-3h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm4 0h2v2h-2zm2-2h2v2h-2zm0 4h2v2h-2zm-4 0h2v2h-2zm2-6h2v2h-2z"/></svg>'
+        . '<span>QR</span></summary><div class="qrp">'
+        . '<p class="qrt">巣箱に貼る QR コード</p>'
+        . '<p class="muted" style="margin:.2em 0 .5em">スマホのカメラで読むと、この巣箱のページが開きます (ログインが必要です)。ラベルは 50mm 角です。</p>'
+        . '<img class="qrimg" alt="この巣箱のQRコード" data-h="' . $j($me) . '">'
+        . '<p><button type="button" data-qr="png" data-h="' . $j($me) . '">この巣箱の PNG</button></p>'
+        . '<p style="margin:.6em 0 .2em"><b>印刷用 PDF</b> <span class="muted">(A4 に 15 枚)</span></p>'
+        . '<p><button type="button" data-qr="pdf" data-f="' . h('QR_' . preg_replace('/[\\\/:*?"<>|\s]+/u', '_', (string)$site['apiaries'][$aid]['name']) . '.pdf') . '" data-h="' . $j($here) . '">この蜂場の巣箱 (' . count($here) . ')</button></p>'
+        . ($multi ? '<p><button type="button" data-qr="pdf" data-f="QR_all.pdf" data-h="' . $j($all) . '">すべての蜂場の巣箱 (' . count($all) . ')</button></p>' : '')
+        . '<p class="muted" style="font-size:.8em;margin:.6em 0 0">屋外に貼るときは、耐水・屋外用のラベル用紙に印刷するか、上から透明の防水テープやラミネートで覆うと長持ちします。</p>'
+        . '</div></details>';
+}
+
 page_head('巣箱 - ' . S_TITLE, 'hive.php');
+echo '<style>.qrrow{display:flex;align-items:flex-start;gap:8px}.qrrow .per{flex:1}'
+    . '.qrm{position:relative;margin:0}.qrm>summary{list-style:none;display:flex;align-items:center;gap:3px;padding:2px 8px;border:1px solid #bbc;border-radius:4px;background:#fff;color:#234;font-size:.85em}'
+    . '.qrm>summary::-webkit-details-marker{display:none}.qrm[open]>summary{background:#234;color:#fff}.qrm>summary svg{background:none;border:0;width:22px;height:22px}'
+    . '.qrp{position:absolute;right:0;top:calc(100% + 4px);z-index:20;width:260px;background:#fff;border:1px solid #bbc;border-radius:6px;padding:10px 12px;box-shadow:0 3px 12px rgba(0,0,0,.18)}'
+    . '.qrp p{margin:.3em 0}.qrp .qrt{font-weight:bold;margin-top:0}.qrp button{width:100%}.qrimg{display:block;width:150px;height:150px;margin:0 auto 4px;border:1px solid #ddd}</style>';
 echo flash_html();
 
 if (!$site['apiaries']) {
@@ -161,10 +200,10 @@ $since = $per === 0 ? 0 : $now - $per * 86400;
 foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // 巣箱名は上の巣箱のボタンで分かるので、ボックスには出さない
     echo '<div class="card hive" id="h-' . h($hid) . '">';
-    // グラフの期間(巣箱名の下)
-    echo '<div class="per sq">';
+    // グラフの期間(巣箱名の下)。右端に QR コードのマーク
+    echo '<div class="qrrow"><div class="per sq">';
     foreach (S_PERIODS as $v => $lb) echo '<a href="' . h($selfUrl(['p' => $v])) . '"' . ($per === $v ? ' class="on"' : '') . '>' . h($lb) . '</a>';
-    echo '</div>';
+    echo '</div>' . qr_menu($site, $aid, $hid) . '</div>';
     // 群の詳細(グラフ・タスク・メモの後に出す)
     ob_start();
     $info = [];
@@ -325,4 +364,11 @@ if ($hsel === 'new') {
     echo '<div class="card hive" id="new"><h3>「' . h((string)$ap['name']) . '」に巣箱を追加</h3>' . hive_form([], '', $aid, $site, $sensors) . '</div>';
 }
 echo chart_tip_js();
+// QR コード (ラベルの絵はブラウザで作る)
+echo '<script src="js/qrcode.js"></script><script src="js/hpx_qr.js"></script><script>'
+    . 'document.querySelectorAll("details.qrm").forEach(function(d){d.addEventListener("toggle",function(){var i=d.querySelector(".qrimg");if(d.open&&!i.src)hpxQr.preview(i,JSON.parse(i.dataset.h));});});'
+    . 'document.addEventListener("click",function(e){if(!e.isTrusted)return;document.querySelectorAll("details.qrm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});'
+    . 'var b=e.target.closest("[data-qr]");if(!b)return;var h=JSON.parse(b.dataset.h),t=b.textContent;b.disabled=true;b.textContent="作成中…";'
+    . '(b.dataset.qr==="png"?hpxQr.png(h):hpxQr.pdf(h,b.dataset.f)).catch(function(x){alert("作れませんでした: "+x);}).then(function(){b.disabled=false;b.textContent=t;});});'
+    . '</script>';
 echo '</body></html>';
