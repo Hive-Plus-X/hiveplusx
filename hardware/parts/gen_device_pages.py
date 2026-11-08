@@ -189,6 +189,7 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
+  .back-top { margin-top:0; margin-bottom:18px; }
 '''
 
 
@@ -434,6 +435,7 @@ def device_page(dev, rows, parts):
           ''.join(f'<button type="button" data-v="{k}" aria-pressed="{"true" if i == 0 else "false"}">{esc(v)}</button>'
                   for i, (k, v) in enumerate(dev['variants'])) + '</div>') if multi else ''
     body = f'''  <div class="hero wrap">
+    <a class="back back-top" href="devices.html">← 機器の一覧へ戻る</a>
     <p class="eyebrow">Devices</p>
     <h1>{esc(dev["name"])}</h1>
     <p class="lead">{esc(dev["lead"])}</p>
