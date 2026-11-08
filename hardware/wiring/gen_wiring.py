@@ -376,28 +376,41 @@ notes(s, 60, y + 20, [
 s.save("HPX-A_wiring.svg")
 
 # ------------------------------------------------------------------ HPX-Core
-s = S(1280, 1260)
-title(s, "HPX-Core（親機）部品表と配線図", "ファーム HPX_Core v1.15 ／ Freenove FNK0090B（ESP32-WROOM-32E）／ 電源 USB")
-cx, cy = 520, 160
-s.rect(cx, cy, 240, 400, "#263238", "#111", 10, 3)
-s.rect(cx + 40, cy + 30, 160, 170, "#b0bec5", "#78909c", 6, 2)
-s.text(cx + 120, cy + 110, "ESP32-", 16, "middle", "bold", "#263238")
-s.text(cx + 120, cy + 132, "WROOM-32E", 16, "middle", "bold", "#263238")
-s.rect(cx + 85, cy + 385, 70, 30, "#b0b0b0", "#777", 6)
-s.rect(cx + 30, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 50, cy + 370, "BOOT", 13, "middle", "bold", "#eee")
-s.rect(cx + 170, cy + 320, 40, 30, "#eceff1", "#555", 4); s.text(cx + 190, cy + 370, "RESET", 13, "middle", "bold", "#eee")
-s.add(f'<circle cx="{cx+120}" cy="{cy+260}" r="10" fill="#42a5f5" stroke="#0d47a1" stroke-width="2"/>')
-s.text(cx + 140, cy + 266, "LED（GPIO2）", 13, fill="#eee")
-for i in range(15):
-    s.add(f'<circle cx="{cx+14}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
-    s.add(f'<circle cx="{cx+226}" cy="{cy+40+i*22}" r="5" fill="#d4af37"/>')
-s.text(cx + 120, cy - 30, "Freenove FNK0090B", 15, "middle", "bold")
-s.text(cx + 120, cy - 10, "（図はイメージ。ボタンの位置は実物で確認）", 12, "middle", fill="#666")
-s.rect(cx + 60, 680 - 40, 120, 70, "#eeeeee", "#999", 10, 2)
-s.text(cx + 120, 680, "USB 電源", 15, "middle", "bold")
-s.text(cx + 120, 700, "（5V・コンセント）", 12, "middle", fill="#666")
-s.add(f'<path d="M{cx+120},{cy+415} L{cx+120},640" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
-s.text(cx + 135, 610, "USB ケーブル", 14, fill="#333")
+# 防水Wi-Fi－USB給電版 (TARO 2026-11-08: 基板を Olimex ESP32-DEVKIT-LIPO に、電源は防水USBカプラーから)
+# Olimex の部品の位置は公式資料 (GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D) から: アンテナが上、micro USB が下、
+# RST ボタンが左下、BAT コネクタが右下。BOOT ボタンと GPIO2 の LED はない。
+s = S(1280, 1180)
+title(s, "HPX-Core（親機）防水Wi-Fi－USB給電版の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB")
+cx, cy = 524, 170
+s.rect(cx, cy, 232, 400, "#c62828", "#7f0000", 10, 3)
+s.rect(cx + 56, cy - 14, 120, 44, "#212121", "#111", 4, 2)
+s.text(cx + 116, cy + 12, "アンテナ", 12, "middle", "bold", "#eee")
+s.rect(cx + 46, cy + 34, 140, 150, "#b0bec5", "#78909c", 6, 2)
+s.text(cx + 116, cy + 104, "ESP32-", 16, "middle", "bold", "#263238")
+s.text(cx + 116, cy + 126, "WROOM-32E", 16, "middle", "bold", "#263238")
+s.text(cx + 116, cy + 236, "Olimex", 15, "middle", "bold", "#fff")
+s.text(cx + 116, cy + 256, "ESP32-DevKit-LiPo", 13, "middle", "bold", "#fff")
+s.rect(cx + 90, cy + 372, 52, 34, "#b0b0b0", "#777", 5)          # micro USB
+s.rect(cx + 22, cy + 330, 40, 40, "#eceff1", "#555", 4); s.text(cx + 42, cy + 322, "RST", 13, "middle", "bold", "#fff")
+s.rect(cx + 164, cy + 340, 50, 40, "#fafafa", "#9e9e9e", 4); s.text(cx + 189, cy + 332, "BAT", 13, "middle", "bold", "#fff")
+for i in range(19):
+    s.add(f'<circle cx="{cx+12}" cy="{cy+30+i*19.5}" r="5" fill="#d4af37"/>')
+    s.add(f'<circle cx="{cx+220}" cy="{cy+30+i*19.5}" r="5" fill="#d4af37"/>')
+s.text(cx + 116, cy - 40, "Olimex ESP32-DEVKIT-LIPO", 15, "middle", "bold")
+s.text(cx + 116, cy - 22, "（図はイメージ。部品の位置は公式資料から）", 12, "middle", fill="#666")
+s.text(cx + 250, cy + 365, "← BAT コネクタは使わない", 13, fill="#c62828", weight="bold")
+s.text(cx + 100, cy + 440, "micro USB", 13, "end", "bold", "#333")
+# ケーブル → 防水USBカプラー（ケースの壁）→ 外の USB 電源
+s.add(f'<path d="M{cx+116},{cy+412} L{cx+116},700" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+s.text(cx + 132, 650, "USB-C to MicroUSB ケーブル 15cm", 14, fill="#333")
+s.rect(330, 720, 620, 16, "#90a4ae", "#607d8b", 3, 1)
+s.text(316, 733, "ケースの壁", 13, "end", "bold", "#607d8b")
+s.rect(cx + 56, 700, 120, 56, "#455a64", "#263238", 8, 2)
+s.text(cx + 116, 726, "防水USBカプラー", 13, "middle", "bold", "#fff")
+s.text(cx + 116, 745, "USB-C メス-メス", 11, "middle", fill="#eceff1")
+s.add(f'<path d="M{cx+116},756 L{cx+116},800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>')
+s.text(cx + 132, 790, "ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ", 13, fill="#666")
+s.text(960, 690, "ケースの中", 13, "end", "bold", "#999"); s.text(960, 770, "ケースの外", 13, "end", "bold", "#999")
 for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-A", "電柵アラート（BLE）")]):
     yy = 210 + i * 110
     s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
@@ -408,17 +421,17 @@ s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
 s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
 s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
 s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
-y = table(s, 60, 800, [
+y = table(s, 60, 860, [
     ["部品", "数", "使うところ・メモ"],
-    ["ESP32 開発ボード Freenove FNK0090B 4MB", "1", "本体（親機）"],
-    ["USB ケーブル（ボードの差し込み口に合うもの）", "1", "電源と書き込み"],
-    ["USB 電源アダプター 5V（1A 以上）", "1", "コンセントから電源を取る"],
+    ["ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO", "1", "本体（親機）。差し込み口は micro USB"],
+    ["USB-C to MicroUSB ケーブル 15cm", "1", "ケースの中で、防水USBカプラーと Olimex をつなぐ"],
+    ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
 ], [560, 50, 550], "部品表")
 notes(s, 60, y + 20, [
-    "・HPX-Core には外付けの部品も配線もありません。USB 電源をつなぐだけで動きます。",
-    "・コンデンサー（0.1µF・100µF）と電池ケースは、USB 電源なら要りません。",
+    "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
+    "・基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。",
     "・管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
-    "・BOOT：工場出荷リセットに使う（RESET を押して離し、3秒以内に BOOT を5秒長押し）。",
+    "・Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。",
 ])
 s.save("HPX-Core_wiring.svg")
 print("ok")

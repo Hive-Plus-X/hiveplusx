@@ -21,7 +21,7 @@ DEVICES = [
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
          wiring=[('HPX-Core_LAN_pcb.png', '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
-                ('HPX-Core_wiring.png', '防水Wi-Fi－USB給電版の配線図', 'USB 電源をつなぐだけで、外付けの配線はありません (図の基板は前の Freenove のイメージです。Olimex ESP32-DEVKIT-LIPO でもつなぎ方は同じです)。', 'core_wp'),
+                ('HPX-Core_wiring.png', '防水Wi-Fi－USB給電版の配線図', 'ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。', 'core_wp'),
                 ('HPX-Core_BAT_pcb.png', '防水Wi-Fi－電池版の配線図', 'ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。', 'core_bat')],
          note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版 (USB給電版・電池版) があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
