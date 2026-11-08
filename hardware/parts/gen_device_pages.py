@@ -15,13 +15,15 @@ DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
          lead='センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。',
          # 版の名前は TARO 2026-11-07 に 通常版→有線LAN版、防水版→防水Wi-Fi版 (列名・?v= はそのまま)
-         variants=[('core', '有線LAN版'), ('core_wp', '防水Wi-Fi版')],
+         # TARO 2026-11-08: 防水Wi-Fi版を USB給電版 (core_wp、基板を Olimex に) と電池版 (core_bat) の2つに分けた
+         variants=[('core', '有線LAN版'), ('core_wp', '防水Wi-Fi－USB給電版'), ('core_bat', '防水Wi-Fi－電池版')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
          wiring=[('HPX-Core_LAN_pcb.png', '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
-                ('HPX-Core_wiring.png', '防水Wi-Fi版の配線図', 'USB 電源をつなぐだけで、外付けの配線はありません。', 'core_wp')],
-         note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版があります。'),
+                ('HPX-Core_wiring.png', '防水Wi-Fi－USB給電版の配線図', 'USB 電源をつなぐだけで、外付けの配線はありません (図の基板は前の Freenove のイメージです。Olimex ESP32-DEVKIT-LIPO でもつなぎ方は同じです)。', 'core_wp'),
+                ('', '防水Wi-Fi－電池版の配線図 (準備中)', '単三リチウム電池3本 (直列、約4.5〜5.4V) を、Olimex ESP32-DEVKIT-LIPO の 5V (VIN) 端子と GND につなぎます。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。電池のもちは、保存間隔30分で3〜4か月の見込みです (まだ測っていません)。', 'core_bat')],
+         note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版 (USB給電版・電池版) があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
