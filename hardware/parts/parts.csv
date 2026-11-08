@@ -58,13 +58,12 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,部材,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,1,,,,,,
 ,部材,USBケーブル,USB-C to MicroUSB ケーブル 15cm,amazon,https://www.amazon.co.jp/dp/B0H14RX1M1,2,本,559,,,1,,,,,,
 ,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,240,,,,,,,,,,1,1
-,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF 50V 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E7%A9%8D%E5%B1%A4%E3%82%BB%E3%83%A9%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%87%E3%83%B3%E3%82%B5%E3%83%BC+10%CE%BCF+50V,,,,,,,,,,,,,1,1
+,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF50V X7S 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/g/g108155/,1,個,60,,,,,,,,,,1,1
 ,電子部品,抵抗 100kΩ,小型 金属皮膜抵抗 1/4W100kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108563/,100,本,300,,,,,,,,,,2,2
-,電子部品,抵抗 20kΩ,金属皮膜抵抗 1/4W 20kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+20k%CE%A9,,,,,,,,,,,,,1
+,電子部品,抵抗 20kΩ,小型 金属皮膜抵抗 1/4W20kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108554/,100,本,250,,,,,,,,,,1
 ,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦,秋月電子通商,https://akizukidenshi.com/catalog/g/g101310/,1,個,40,,,,,,,,,,1,1
-,ケーブル,平型ヒューズホルダー,線の途中に入れる平型ヒューズホルダー (防水タイプがよい),amazon,https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC+%E9%98%B2%E6%B0%B4,,,,,,,,,,,,,2,2
-,ケーブル,平型ヒューズ 1A,自動車用 平型ヒューズ 1A,amazon,https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA+1A,,,,,,,,,,,,,2,2
-,ケーブル,電線 0.3〜0.5mm²,赤・青・黒 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/s?k=%E3%83%93%E3%83%8B%E3%83%BC%E3%83%AB%E7%B7%9A+0.5sq,,,,,,,,,,,,,適宜,適宜
-,ケーブル,丸形圧着端子,コントローラーの端子の大きさに合うもの,amazon,https://www.amazon.co.jp/s?k=%E4%B8%B8%E5%BD%A2%E5%9C%A7%E7%9D%80%E7%AB%AF%E5%AD%90,,,,,,,,,,,,,3,3
+,ケーブル,ミニ平型ヒューズホルダー,エーモン ミニ平型ヒューズホルダー (線の途中に入れる),amazon,https://www.amazon.co.jp/dp/B09FL4Q7B8,1,個,415,,,,,,,,,,2,2
+,ケーブル,ミニ平型ヒューズ 1A,ミニ平型ヒューズ 1A (ARISELIFT),amazon,https://www.amazon.co.jp/dp/B0FRR6FTGF,5,個,567,,,,,,,,,,2,2
+,ケーブル,電線 0.3〜0.5mm²,サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/dp/B0HJGDW3TT,1,セット,980,,,,,,,,,,適宜,適宜
 ,電子部品,抵抗 15kΩ,小型 金属皮膜抵抗 1/4W15kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108552/,100,本,300,,,,,,,,,,,1
 ,電子部品,抵抗 8.2kΩ,小型 金属皮膜抵抗 1/2WS 8.2kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g116644/,100,本,300,,,,,,,,,,,1
