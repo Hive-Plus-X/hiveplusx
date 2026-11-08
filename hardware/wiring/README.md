@@ -11,6 +11,7 @@
 | HPX-A (電柵アラート) | [HPX-A_pcb.png](HPX-A_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.03)。電源 単3リチウム×2 (ケース WH145-25-M2 の電池ボックス) |
 | HPX-Core (親機) | [HPX-Core_wiring.png](HPX-Core_wiring.png) | 外付けの配線なし。USB 電源 (HPX_Core v1.15) |
 | HPX-Core 有線LAN (付けたいときだけ) | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図)・[HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) (線の対応) | ELEGOO ESP-32 + W5500 (ACEIRMC): SCK=D18, MI=D4, MO=D23, CS=D5, INT=TX2(GPIO17), RST=RX2(GPIO16), V=3V3, G=GND (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
+| HPX-Core 防水Wi-Fi－電池版 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | Olimex ESP32-DEVKIT-LIPO の 5V (左の列のピン19) ← 単三リチウム×3 の＋、GND (左の列のピン14) ← −。BAT コネクタは使わない。動作モードはディープスリープ |
 
 部品表は [部品表.md](部品表.md) にあります。
 
@@ -25,5 +26,6 @@
 - SHT40 モジュール・HX711 モジュールのピンの並び (基板の印字で確認)
 - 基板の図は実際に組んで確かめていません
 - HPX-Core の有線LAN (W5500) は実機で確かめていません (ファーム v1.20 はコンパイルだけ確認)。ESP-32 の左右のピン列 10穴・W5500 の左右のピン列 8穴は計算で、実物では未確認。W5500 のピンがモジュールの上下のどこにあるかも未確認
+- HPX-Core 電池版: PCB36-47 の穴の数 (13×17) は見込み。ケースの深さに収まるか、Olimex の 5V 端子の先の HX6211 の入力上限 (販売店の資料で 6V) は未確認
 
 ケースに合わせたタカチ基板 (TNF39-70・TNF34-124・TNF44-69) の図は [case/](case/) にあります。
