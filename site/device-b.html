@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPX-B の作り方 | Hive Plus X</title>
+<meta name="description" content="HPX-B を作るのに必要な部品の一覧です。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ページの見出し */
+  .hero { padding:200px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:140px 20px 0; } }
+  .hero h1 { font-size:clamp(26px, 4.4vw, 38px); margin-top:6px; line-height:1.4; }
+  .hero p.lead { margin:14px auto 0; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+  .jump { display:flex; justify-content:center; gap:8px; margin-top:28px; flex-wrap:wrap; list-style:none; }
+  .jump a { display:block; padding:5px 16px; border-radius:999px; border:1px solid var(--line); background:var(--panel); text-decoration:none; font-size:14px; }
+  .jump a:hover { border-color:var(--honey); }
+
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  section { margin-top:200px; scroll-margin-top:80px; }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { section { margin-top:140px; } main { padding-bottom:200px; } }
+  .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .tag { color:var(--honey); } }
+  h2 { font-size:clamp(22px, 3vw, 28px); margin-top:6px; line-height:1.4; }
+  .note { color:var(--sub); margin-top:8px; }
+
+  /* 機器の一覧 (devices.html) */
+  .devs { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; margin-top:56px; }
+  @media (max-width:760px) { .devs { grid-template-columns:1fr; } }
+  .dev { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; text-decoration:none; display:block; scroll-margin-top:80px; }
+  a.dev:hover { border-color:var(--honey); }
+  .dev h3 { font-size:20px; margin-top:8px; }
+  .dev p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .dev .vars { font-size:13px; margin-top:10px; color:var(--text); }
+  .dev.soon { border-style:dashed; }
+
+  /* 部品表 */
+  .parts { width:100%; border-collapse:collapse; margin-top:24px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
+  .parts th, .parts td { padding:10px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .parts thead th { border-top:0; font-size:13px; color:var(--sub); font-weight:700; white-space:nowrap; }
+  .parts .cat th { background:rgba(47,93,69,.07); color:var(--forest); font-size:13px; padding:6px 14px; }
+  @media (prefers-color-scheme: dark) { .parts .cat th { background:rgba(0,0,0,.18); color:var(--honey); } }
+  .parts td.n { text-align:center; white-space:nowrap; font-weight:700; width:96px; }
+  .parts td.n.none { color:var(--sub); font-weight:400; }
+  .parts .part b { display:block; font-weight:600; }
+  .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
+  .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts .part .price { margin-top:2px; }
+  .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
+  .parts .part .alt a { font-weight:400; }
+  .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
+  .parts tfoot td.n { width:auto; }
+  .parts tr.diff td { background:var(--honey-soft); }
+  .legend { font-size:13px; color:var(--sub); margin-top:10px; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
+  /* スマホ: 1部品ずつのかたまりにする */
+  @media (max-width:760px) {
+    .parts, .parts tbody, .parts tr, .parts td, .parts th { display:block; width:auto; }
+    .parts thead { display:none; }
+    .parts tr { border-top:1px solid var(--line); padding:10px 14px; }
+    .parts .cat { padding:0; }
+    .parts td { border:0; padding:0; }
+    .parts tr.diff { background:var(--honey-soft); }
+    .parts tr.diff td { background:none; }
+    .parts td.shop { margin-top:2px; font-size:13px; }
+    .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
+    .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+    .parts tfoot tr { border-top:2px solid var(--line); }
+    .parts tfoot td { border:0; }
+  }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
+  .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
+  .extra h3 { font-size:16px; margin-bottom:6px; }
+  .extra .ex { margin-top:6px; color:var(--sub); }
+  .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
+  .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <p class="eyebrow">Devices</p>
+    <h1>HPX-B</h1>
+    <p class="lead">ソーラーパネルで充電する 12V バッテリーとパネルの電圧を測り、Bluetooth で発信します。電源はそのバッテリーから取ります。</p>
+    
+  </div>
+
+  <section id="parts">
+    <div class="reveal wrap">
+      <span class="tag">バッテリー電圧</span>
+      <h2>部品表</h2>
+      <p class="note">必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span><span class="price">1,780円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+100k%CE%A9" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>金属皮膜抵抗 1/4W 100kΩ 1%</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+20k%CE%A9" target="_blank" rel="noopener">抵抗 20kΩ</a></b><span>金属皮膜抵抗 1/4W 20kΩ 1%</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a></b><span>コンデンサー0.1μF</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E7%A9%8D%E5%B1%A4%E3%82%BB%E3%83%A9%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%87%E3%83%B3%E3%82%B5%E3%83%BC+10%CE%BCF+50V" target="_blank" rel="noopener">コンデンサー 10μF</a></b><span>積層セラミックコンデンサー 10μF 50V 5mm (BP5293-50 の入力側)</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF+3P+5.08mm" target="_blank" rel="noopener">端子台 3極</a></b><span>基板用ねじ式端子台 3P 5.08mm</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ピンヘッダー（オス）</a></b><span>ロープロファイルピンヘッダー(低オス) 7.7mm</span><span class="price">40円 / 40PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr class="cat"><th colspan="3">電源</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g111188/" target="_blank" rel="noopener">三端子DCDCレギュレーター 5V</a></b><span>ROHM BP5293-50 (入力 7〜26V、出力 5V 1A)</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケーブル</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC+%E9%98%B2%E6%B0%B4" target="_blank" rel="noopener">平型ヒューズホルダー</a></b><span>線の途中に入れる平型ヒューズホルダー (防水タイプがよい)</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA+1A" target="_blank" rel="noopener">平型ヒューズ 1A</a></b><span>自動車用 平型ヒューズ 1A</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%83%93%E3%83%8B%E3%83%BC%E3%83%AB%E7%B7%9A+0.5sq" target="_blank" rel="noopener">電線 0.3〜0.5mm²</a></b><span>赤・青・黒 (コントローラーの端子から端子台まで)</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E4%B8%B8%E5%BD%A2%E5%9C%A7%E7%9D%80%E7%AB%AF%E5%AD%90" target="_blank" rel="noopener">丸形圧着端子</a></b><span>コントローラーの端子の大きさに合うもの</span></td><td class="shop">amazon</td><td class="n" data-v="数">3</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 2,900円</td></tr></tfoot>
+      </table>
+      <div class="extra"><h3>その他</h3><p>※ソーラーチャージャー（充電コントローラー）の「パネル−」と「バッテリー−」がつながっている（共通マイナス）機種でだけ、パネル電圧を正しく測れます。コントローラーの線を外し、テスターの導通モードで確かめてください。一部の部品はまだ値段を入れていないので、部品代の目安には入っていません。ファームウェアは準備中です。</p></div>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="reveal wrap">
+      <h2>作り方</h2>
+      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring">
+        <figcaption><b>配線図</b>6×8cm のユニバーサル基板を縦に置き、XIAO・三端子 DCDC レギュレーター・抵抗・端子台を並べる図です (表と裏、線はすべて裏)。ケースは HPX-Core 有線LAN版と同じ PFF10-4-10W です。</figcaption>
+        <a href="img/wiring/HPX-B_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-B_pcb.png" alt="HPX-B 配線図" loading="lazy"></a>
+      </figure>
+      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
+        <thead><tr><th>線</th><th>どこから（穴）</th><th>通る穴</th><th>どこへ（穴）</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>端子台 バッテリー＋（O32）</td><td>O32 → O20 → O14</td><td>100kΩ の右の足（O14）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>（とちゅうの O20）</td><td>O20 → R20 → R18（R20 → R21 も）</td><td>BP5293 VIN（R18）・10µF（R21）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>BP5293 VOUT（T18）</td><td>T18 → T4 → P4</td><td>XIAO 5V（P4）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>端子台 マイナス（M32）</td><td>M32 → M5 → P5 → S5 → S18 → S21 → T21</td><td>XIAO GND（P5）・BP5293 GND（S18）・10µF（T21）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>0.1µF・20kΩ・10kΩ・0.1µF の下の足</td><td>H16→M16、I18→M18、L24→M24、L26→M26</td><td>マイナスの線（M 列）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>XIAO D1/A1（J5）</td><td>J5 → G5 → G14 → K14</td><td>0.1µF（H14）・20kΩ（I14）・100kΩ（K14）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>端子台 パネル＋（K32）</td><td>K32 → K20</td><td>100kΩ の右の足（K20）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>XIAO D0/A0（J4）</td><td>J4 → F4 → F26 → J26（F20→G20、F24→H24 も）</td><td>100kΩ（G20）・10kΩ（H24）・0.1µF（J26）</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</td><td>1</td><td>J4〜J10・P4〜P10。USB-C を上に向ける</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>R18・S18・T18（印字面を手前（下）に向けて左から VIN・GND・VOUT）。立てて付ける</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>R21・T21（BP5293 の入力側。なくても動くが付けると安定する）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>K14〜O14（バッテリー用）、G20〜K20（パネル用）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 20kΩ 1%</td><td>1</td><td>I14〜I18（バッテリー用）</td></tr><tr><td>金属皮膜抵抗 10kΩ 1%</td><td>1</td><td>H24〜L24（パネル用）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>H14〜H16（バッテリー用）、J26〜L26（パネル用）</td></tr><tr><td>端子台 3極 5.08mm（基板用、ねじ式）</td><td>1</td><td>K32・M32・O32（左から パネル＋・マイナス・バッテリー＋）</td></tr><tr><td>平型ヒューズホルダー（線の途中に入れる）＋ 1A 平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線に1つずつ。コントローラーの端子のすぐ近くに</td></tr><tr><td>線 0.3〜0.5mm²（赤・青・黒）・丸形圧着端子</td><td>少し</td><td>コントローラーのバッテリー＋・パネル＋・バッテリー− から端子台まで</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr><tr><td>ケース タカチ PFF10-4-10W（壁掛け、内側 約 67×90mm）</td><td>1</td><td>基板はスペーサーで浮かせて留める。線を通す穴をあける</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらない。100kΩ（K14〜O14）・10kΩ・0.1µF（J26〜L26）は、裏の線（黒・青）の上をまたいで付ける（表と裏なので触れない）。</li><li>バッテリーは 100kΩ と 20kΩ で 1/6 に（18V で 3.0V）、パネルは 100kΩ と 10kΩ で 1/11 に（33V で 3.0V）下げて XIAO で読む。</li><li>ヒューズはコントローラーの端子のすぐ近くに入れる（線がショートしたときの火事よけ）。基板の上には載せない。</li><li>マイナスはコントローラーの「バッテリー−」につなぐ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（5V が USB とぶつからないように）。</li><li>BP5293-50 の足の並び（VIN・GND・VOUT）は、差す前に秋月の資料（データシート）の図で確かめる。逆に差すと壊れる。</li><li>BP5293-50 の入力は 26V まで。バッテリー（充電中でも 15V くらい）にはつないでよいが、パネル＋には絶対につながない（開放電圧 23.5V、寒い日はもっと上がる）。</li></ul></div>
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
+      <a class="back" href="devices.html">機器の一覧へ戻る</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

@@ -257,6 +257,29 @@ unset($rep['sensors']['ble']);   // 記録本体はble.csvにあるので、状�
 $line = json_encode(['rx' => date('c', $now)] + $rep, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 @file_put_contents($dir . '/reports-' . date('Y-m', $now) . '.jsonl', $line . "\n", FILE_APPEND);
 
+// --- 12V バッテリーの電圧 (HPX-Core 有線LAN＋電圧チェック版、v1.22〜) ---
+// "vb" = バッテリー電圧、"vpv" = パネル電圧 (V)。5V 未満は線が外れているなど測れていないとみなし、メールの判定に使わない
+$vb = isset($d['vb']) && is_numeric($d['vb']) ? round((float)$d['vb'], 2) : null;
+$vpv = isset($d['vpv']) && is_numeric($d['vpv']) ? round((float)$d['vpv'], 2) : null;
+$vbLow = !empty($state['vb_low']);
+if ($vb !== null && $vb >= 5.0) {
+    $warnV = (float)($HPX_BATT12_WARN_V ?? 12.0);
+    $okV = (float)($HPX_BATT12_OK_V ?? 12.6);
+    $pvTxt = $vpv !== null ? "\nパネル電圧: " . number_format($vpv, 2) . " V" : '';
+    if (!$vbLow && $vb < $warnV) {
+        $vbLow = true;
+        hpx_alert_queue("【HPX】バッテリーの電圧が下がっています ($name)",
+            "ハブ「$name」のバッテリー電圧が " . number_format($vb, 2) . " V になりました (知らせる電圧: $warnV V 未満)。$pvTxt\n"
+            . "時刻: " . date('Y-m-d H:i', $now) . "\n\n"
+            . "鉛バッテリーは 12.0V で残り半分くらいです。このまま下がると、ソーラーチャージャーが HPX-Core への電気を切ることがあります。\n"
+            . "曇りや雪が続いていないか、パネルの汚れや線の外れがないか見てください。\n");
+    } elseif ($vbLow && $vb >= $okV) {
+        $vbLow = false;
+        hpx_alert_queue("【HPX】バッテリーの電圧が戻りました ($name)",
+            "ハブ「$name」のバッテリー電圧が " . number_format($vb, 2) . " V に戻りました。$pvTxt\n時刻: " . date('Y-m-d H:i', $now) . "\n");
+    }
+}
+
 // --- 状態を更新 ---
 $state = [
     'name' => $name,
@@ -264,6 +287,9 @@ $state = [
     'fw' => (string)($d['fw'] ?? ''),
     'build' => (int)($d['build'] ?? 0),
     'vbat' => isset($d['vbat']) ? (float)$d['vbat'] : null,
+    'vb' => $vb,      // 12V バッテリー電圧 (有線LAN＋電圧チェック版)
+    'vpv' => $vpv,    // ソーラーパネル電圧
+    'vb_low' => $vbLow,
     'rssi' => isset($d['rssi']) ? (int)$d['rssi'] : null,
     'net' => (isset($d['net']) && $d['net'] === 'lan') ? 'lan' : 'wifi',   // HPX-Core v1.20 から。有線LANなら 'lan'
     // 管理画面の場所 (HPX-Core v1.21 から)。センサページの「管理画面を開く」ボタンに使う
