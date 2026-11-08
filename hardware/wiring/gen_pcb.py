@@ -737,4 +737,134 @@ finish(s, y, [
     "・ESP-32 の左右のピン列は10穴、W5500 の左右のピン列は8穴離れているとして描いた（ESP-32 は写真から、W5500 は幅23mm から計算）。差す前に実物で確かめる。",
     "・W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。",
 ], "HPX-Core_LAN_pcb.svg")
+
+# ================================================================== HPX-B バッテリー電圧（6×8cm 基板、ケース PFF10-4-10W）
+OX, OY = 260, 200
+s = S(1500, 3200)
+title(s, "HPX-B（バッテリー電圧）基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ XIAO nRF52840 ＋ 降圧 5V ／ ケース タカチ PFF10-4-10W")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+
+def hole(h):
+    return (Lc(h[0]), R(int(h[1:])))
+
+def res_flat(a, b, label, bands, lpos, anchor="middle"):
+    """抵抗を寝かせて付ける（足の間 4穴＝10mm）。本体は 2つの穴の間"""
+    (x1, y1), (x2, y2) = H(*hole(a)), H(*hole(b))
+    rec_pin(x1, y1, label); rec_pin(x2, y2, label)
+    cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
+    horiz = y1 == y2
+    bw, bh = (78, 24) if horiz else (24, 78)
+    s.top.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#888" stroke-width="3"/>')
+    s.top.append(f'<rect x="{cx-bw/2}" y="{cy-bh/2}" width="{bw}" height="{bh}" rx="10" fill="#e8c88f" stroke="#a07c3c" stroke-width="2"/>')
+    for i, c in enumerate(bands):
+        o = -24 + i * 12
+        if horiz:
+            s.top.append(f'<rect x="{cx+o-3}" y="{cy-bh/2}" width="6" height="{bh}" fill="{c}"/>')
+        else:
+            s.top.append(f'<rect x="{cx-bw/2}" y="{cy+o-3}" width="{bw}" height="6" fill="{c}"/>')
+    for x, y in ((x1, y1), (x2, y2)):
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="4" fill="#666"/>')
+    tag(lpos[0], lpos[1], label, 13, anchor)
+
+def cap_b(a, b, lpos, anchor="start"):
+    cap_flat(s, hole(a), hole(b), "0.1µF")
+    tag(lpos[0], lpos[1], "0.1µF", 13, anchor, w=50)
+
+# XIAO（USB-C が上）。左の列 J4〜J10（D0〜D6）、右の列 P4〜P10（5V, GND, 3V3, D10〜D7）
+p = xiao_pcb(s, Lc("J"), R(4))
+
+# 降圧 DC-DC（Pololu D24V5F5）。ピンは Q18〜T18（左から SHDN・VIN・GND・VOUT）、本体は下へ
+x1, y1 = H(Lc("Q"), R(18)); x2, _ = H(Lc("T"), R(18))
+s.top.append(f'<rect x="{x1-22}" y="{y1-20}" width="{x2-x1+44}" height="{4*P+44}" rx="6" fill="#1565c0" fill-opacity="0.85" stroke="#0d3c7a" stroke-width="2"/>')
+rec_part(x1 - 22, y1 - 20, x2 - x1 + 44, 4 * P + 44, "DC-DC")
+s.text((x1 + x2) / 2, y1 + 70, "降圧 DC-DC 5V", 13, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 90, "Pololu D24V5F5", 12, "middle", "bold", "#e3f2fd", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 108, "（ピンは上に4本）", 11, "middle", fill="#e3f2fd", layer=s.top)
+for i, n in enumerate(["SHDN", "VIN", "GND", "VOUT"]):
+    x, y = H(Lc("Q") + i, R(18))
+    rec_pin(x, y, n)
+    on = n != "SHDN"
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+    tag(x, y - 16, n, 11, "middle", w=len(n) * 8 + 8)
+
+# 端子台 3極（5.08mm）。K32 = パネル＋、M32 = マイナス、O32 = バッテリー＋。線を入れる口は下向き
+x1, y1 = H(Lc("K"), R(32)); x2, _ = H(Lc("O"), R(32))
+s.top.append(f'<rect x="{x1-36}" y="{y1-30}" width="{x2-x1+72}" height="{P+58}" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>')
+rec_part(x1 - 36, y1 - 30, x2 - x1 + 72, P + 58, "端子台")
+for h, n, col in (("K32", "パネル＋", "blue"), ("M32", "マイナス", "black"), ("O32", "バッテリー＋", "red")):
+    x, y = H(*hole(h))
+    rec_pin(x, y, n)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{x}" cy="{y+P}" r="13" fill="#bdbdbd" stroke="#424242" stroke-width="2"/>')
+    s.top.append(f'<line x1="{x-8}" y1="{y+P}" x2="{x+8}" y2="{y+P}" stroke="#424242" stroke-width="3"/>')
+    # 外から来る線（ヒューズを通る）
+    ybot = OY + (NR - 1) * P + 26
+    s.add(f'<path d="M{x},{y+P+16} L{x},{ybot+70}" fill="none" stroke="{COL[col]}" stroke-width="7"/>')
+s.text(H(Lc("K"), 0)[0] - 200, OY + (NR - 1) * P + 70, "端子台 3極（ねじで線を留める）", 14, "start", "bold", "#1b5e20")
+yy = OY + (NR - 1) * P + 120
+s.text(H(Lc("K"), 0)[0], yy, "パネル＋", 13, "middle", "bold", "#1565c0")
+s.text(H(Lc("K"), 0)[0], yy + 18, "1A ヒューズ経由", 11, "middle", fill="#555")
+s.text(H(Lc("M"), 0)[0], yy + 40, "マイナス", 13, "middle", "bold", "#212121")
+s.text(H(Lc("M"), 0)[0], yy + 58, "バッテリー−へ", 11, "middle", fill="#555")
+s.text(H(Lc("O"), 0)[0], yy, "バッテリー＋", 13, "middle", "bold", "#c62828")
+s.text(H(Lc("O"), 0)[0], yy + 18, "1A ヒューズ経由", 11, "middle", fill="#555")
+
+# 抵抗とコンデンサー
+res_flat("K14", "O14", "100kΩ", ["#8d5524", "#212121", "#f9a825"], (H(Lc("M"), R(14))[0], H(0, R(14))[1] - 22))
+res_flat("I14", "I18", "20kΩ", ["#e53935", "#212121", "#f57c00"], (H(Lc("J"), 0)[0] - 8, H(0, R(17))[1] + 5), "start")
+cap_b("H14", "H16", (H(Lc("D"), 0)[0], H(0, R(15))[1] + 5), "middle")
+res_flat("G20", "K20", "100kΩ", ["#8d5524", "#212121", "#f9a825"], (H(Lc("I"), 0)[0], H(0, R(20))[1] - 22))
+res_flat("H24", "L24", "10kΩ", ["#8d5524", "#212121", "#f57c00"], (H(Lc("J"), 0)[0], H(0, R(24))[1] - 22))
+cap_b("J26", "L26", (H(Lc("K"), 0)[0], H(0, R(27))[1] + 18), "middle")
+
+# 裏の線
+w("black",  "M32", "M26", "M24", "M18", "M16", "M5", "P5", "S5", "S18")   # マイナス（真ん中の背骨）→ XIAO GND → DC-DC GND
+w("black",  "H16", "M16")                                           # 0.1µF（バッテリー側）→ マイナス
+w("black",  "I18", "M18")                                           # 20kΩ → マイナス
+w("black",  "L24", "M24")                                           # 10kΩ → マイナス
+w("black",  "L26", "M26")                                           # 0.1µF（パネル側）→ マイナス
+w("red",    "O32", "O20", "O14")                                    # バッテリー＋ → 100kΩ
+w("red",    "O20", "R20", "R18")                                    # バッテリー＋ → DC-DC VIN
+w("orange", "T18", "T4", "P4")                                      # DC-DC VOUT → XIAO 5V
+w("green",  "J5", "G5", "G14", "H14", "I14", "K14")                 # バッテリーの測る点 → XIAO D1(A1)
+w("blue",   "K32", "K20")                                           # パネル＋ → 100kΩ
+w("yellow", "J4", "F4", "F20", "F24", "F26", "J26")                 # パネルの測る点 → XIAO D0(A0)
+w("yellow", "F20", "G20")
+w("yellow", "F24", "H24")
+yb = back_section(s, OY + (NR - 1) * P + 220, "HPX-B_pcb.svg")
+y = table(s, 60, yb + 40, [
+    ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
+    ["red", "端子台 バッテリー＋（O32）", "O32 → O20 → O14", "100kΩ の右の足（O14）"],
+    ["red", "（とちゅうの O20）", "O20 → R20 → R18", "DC-DC VIN（R18）"],
+    ["orange", "DC-DC VOUT（T18）", "T18 → T4 → P4", "XIAO 5V（P4）"],
+    ["black", "端子台 マイナス（M32）", "M32 → M5 → P5 → S5 → S18", "XIAO GND（P5）・DC-DC GND（S18）"],
+    ["black", "0.1µF・20kΩ・10kΩ・0.1µF の下の足", "H16→M16、I18→M18、L24→M24、L26→M26", "マイナスの線（M 列）"],
+    ["green", "XIAO D1/A1（J5）", "J5 → G5 → G14 → K14", "0.1µF（H14）・20kΩ（I14）・100kΩ（K14）"],
+    ["blue", "端子台 パネル＋（K32）", "K32 → K20", "100kΩ の右の足（K20）"],
+    ["yellow", "XIAO D0/A0（J4）", "J4 → F4 → F26 → J26（F20→G20、F24→H24 も）", "100kΩ（G20）・10kΩ（H24）・0.1µF（J26）"],
+], [100, 330, 470, 420], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", "J4〜J10・P4〜P10。USB-C を上に向ける"],
+    ["降圧 DC-DC 5V Pololu D24V5F5（入力 〜36V）＋ ピンヘッダ 4ピン", "1", "Q18〜T18（左から SHDN・VIN・GND・VOUT）。SHDN はつながない"],
+    ["金属皮膜抵抗 100kΩ 1%", "2", "K14〜O14（バッテリー用）、G20〜K20（パネル用）。寝かせて付ける"],
+    ["金属皮膜抵抗 20kΩ 1%", "1", "I14〜I18（バッテリー用）"],
+    ["金属皮膜抵抗 10kΩ 1%", "1", "H24〜L24（パネル用）"],
+    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "H14〜H16（バッテリー用）、J26〜L26（パネル用）"],
+    ["端子台 3極 5.08mm（基板用、ねじ式）", "1", "K32・M32・O32（左から パネル＋・マイナス・バッテリー＋）"],
+    ["平型ヒューズホルダー（線の途中に入れる）＋ 1A 平型ヒューズ", "2", "バッテリー＋とパネル＋の線に1つずつ。コントローラーの端子のすぐ近くに"],
+    ["線 0.3〜0.5mm²（赤・青・黒）・丸形圧着端子", "少し", "コントローラーのバッテリー＋・パネル＋・バッテリー− から端子台まで"],
+    ["ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+    ["ケース タカチ PFF10-4-10W（壁掛け、内側 約 67×90mm）", "1", "基板はスペーサーで浮かせて留める。線を通す穴をあける"],
+], [640, 60, 520], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。",
+    "・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・裏の線どうしは交わらない。100kΩ（K14〜O14）・10kΩ・0.1µF（J26〜L26）は、裏の線（黒・青）の上をまたいで付ける（表と裏なので触れない）。",
+    "・バッテリーは 100kΩ と 20kΩ で 1/6 に（18V で 3.0V）、パネルは 100kΩ と 10kΩ で 1/11 に（33V で 3.0V）下げて XIAO で読む。",
+    "・ヒューズはコントローラーの端子のすぐ近くに入れる（線がショートしたときの火事よけ）。基板の上には載せない。",
+    "・マイナスはコントローラーの「バッテリー−」につなぐ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。",
+    "・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（5V が USB とぶつからないように）。",
+    "・DC-DC のピンの並び（SHDN・VIN・GND・VOUT）は実物の印字で確かめてから差す。",
+], "HPX-B_pcb.svg")
 print("ok")

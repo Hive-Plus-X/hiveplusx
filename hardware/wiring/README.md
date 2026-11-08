@@ -11,6 +11,7 @@
 | HPX-A (電柵アラート) | [HPX-A_pcb.png](HPX-A_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.03)。電源 単3リチウム×2 (ケース WH145-25-M2 の電池ボックス) |
 | HPX-Core (親機) | [HPX-Core_wiring.png](HPX-Core_wiring.png) | 外付けの配線なし。USB 電源 (HPX_Core v1.15) |
 | HPX-Core 有線LAN (付けたいときだけ) | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図)・[HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) (線の対応) | ELEGOO ESP-32 + W5500 (ACEIRMC): SCK=D18, MI=D4, MO=D23, CS=D5, INT=TX2(GPIO17), RST=RX2(GPIO16), V=3V3, G=GND (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
+| HPX-B (バッテリー電圧、試作中) | [HPX-B_pcb.png](HPX-B_pcb.png) (6×8cm 基板、ケース タカチ PFF10-4-10W) | バッテリー＋ → 100kΩ/20kΩ → D1(A1)、パネル＋ → 100kΩ/10kΩ → D0(A0)、降圧 DC-DC 5V (Pololu D24V5F5) → 5V。端子台 3極 (パネル＋・マイナス・バッテリー＋)、ヒューズ 1A×2 は線の途中。ファームはまだ無い |
 
 部品表は [部品表.md](部品表.md) にあります。
 
@@ -24,6 +25,7 @@
 - HPX-A の CdS セルで警報器の点滅を数えられるか (CdS は反応が遅め)
 - SHT40 モジュール・HX711 モジュールのピンの並び (基板の印字で確認)
 - 基板の図は実際に組んで確かめていません
+- HPX-B: DC-DC (D24V5F5) のピンの並び、PFF10-4-10W の内側の寸法と基板の留め方、使うソーラーコントローラーが共通マイナスか (違うとパネル電圧は測れない) は未確認
 - HPX-Core の有線LAN (W5500) は実機で確かめていません (ファーム v1.20 はコンパイルだけ確認)。ESP-32 の左右のピン列 10穴・W5500 の左右のピン列 8穴は計算で、実物では未確認。W5500 のピンがモジュールの上下のどこにあるかも未確認
 
 ケースに合わせたタカチ基板 (TNF39-70・TNF34-124・TNF44-69) の図は [case/](case/) にあります。
