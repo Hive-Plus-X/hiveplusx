@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1180" viewBox="0 0 1280 1180">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
-<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）Wi-Fi＋USB給電（防水）の部品表と配線図</text>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）＋防水の部品表と配線図</text>
 <text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex ESP32-DEVKIT-LIPO ／ 電源 USB</text>
 <rect x="524" y="170" width="232" height="400" rx="10" fill="#c62828" stroke="#7f0000" stroke-width="3"/>
 <rect x="580" y="156" width="120" height="44" rx="4" fill="#212121" stroke="#111" stroke-width="2"/>

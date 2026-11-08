@@ -186,8 +186,8 @@
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
     <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。</p>
-    <p class="lead">LAN ケーブルでルーターにつなぐ「有線LAN＋USB給電」「有線LAN＋バッテリーチェック」(ソーラー＋12V バッテリーで動き、その電圧も測る) と、屋外に置けて Wi-Fi でつなぐ「Wi-Fi＋USB給電（防水）」「Wi-Fi＋電池（防水）」があります。</p>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">有線LAN＋USB給電</button><button type="button" data-v="core_lanv" aria-pressed="false">有線LAN＋バッテリーチェック</button><button type="button" data-v="core_wp" aria-pressed="false">Wi-Fi＋USB給電（防水）</button><button type="button" data-v="core_bat" aria-pressed="false">Wi-Fi＋電池（防水）</button></div>
+    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動などのオプション実装が可能です。</p>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button></div>
   </div>
 
   <section id="parts">
@@ -195,7 +195,7 @@
       <span class="tag">ハブ</span>
       <h2>部品表</h2>
       <div data-variant="core">
-      <p class="note">有線LAN＋USB給電に必要な部品と数です。</p>
+      <p class="note">＋有線LANに必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -216,7 +216,7 @@
       </table>
       </div>
       <div data-variant="core_lanv">
-      <p class="note">有線LAN＋バッテリーチェックに必要な部品と数です。</p>
+      <p class="note">＋有線LAN＆ソーラーシステムチェックに必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -250,7 +250,7 @@
       </table>
       </div>
       <div data-variant="core_wp">
-      <p class="note">Wi-Fi＋USB給電（防水）に必要な部品と数です。</p>
+      <p class="note">＋防水に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -267,7 +267,7 @@
       </table>
       </div>
       <div data-variant="core_bat">
-      <p class="note">Wi-Fi＋電池（防水）に必要な部品と数です。</p>
+      <p class="note">＋防水＆電池駆動に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -296,8 +296,8 @@
       <h2>作り方</h2>
       <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
       <figure class="wiring" data-variant="core">
-        <figcaption><b>有線LAN＋USB給電の配線図</b>ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。</figcaption>
-        <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core 有線LAN＋USB給電の配線図" loading="lazy"></a>
+        <figcaption><b>＋有線LANの配線図</b>ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。</figcaption>
+        <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core ＋有線LANの配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core">
       <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
@@ -311,23 +311,23 @@
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらず、ほかのピンの穴の上も通らない。ESP-32・W5500 の下を通る線は、裏なので部品には触れない。</li><li>灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。</li><li>線を交わらせないため、ファームのピンを変えた: MISO＝GPIO4（D4）、INT＝GPIO17（TX2）、RST＝GPIO16（RX2）。HPX_Core v1.20 はこのピンに合わせてある。</li><li>ESP-32 の左右のピン列は10穴、W5500 の左右のピン列は8穴離れているとして描いた（ESP-32 は写真から、W5500 は幅23mm から計算）。差す前に実物で確かめる。</li><li>W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_lanv">
-        <figcaption><b>有線LAN＋バッテリーチェックの配線図</b>有線LAN＋USB給電と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。ESP32 は USB ではなくバッテリーから動かします。ファームウェアは v1.22 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
-        <a href="img/wiring/HPX-Core_LANV_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LANV_pcb.png" alt="HPX-Core 有線LAN＋バッテリーチェックの配線図" loading="lazy"></a>
+        <figcaption><b>＋有線LAN＆ソーラーシステムチェックの配線図</b>「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。ESP32 は USB ではなくバッテリーから動かします。ファームウェアは v1.22 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
+        <a href="img/wiring/HPX-Core_LANV_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LANV_pcb.png" alt="HPX-Core ＋有線LAN＆ソーラーシステムチェックの配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_lanv">
-      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は有線LAN＋USB給電と同じ）</h3><div class="scroll"><table>
+      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」と同じ）</h3><div class="scroll"><table>
         <thead><tr><th>線</th><th>どこから（穴）</th><th>通る穴</th><th>どこへ（穴）</th></tr></thead>
         <tbody><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>D23 = GPIO23・MOSI（L14）</td><td>L14 → Y14 → Y27 → V27</td><td>W5500 MO（V27）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>D18 = GPIO18・SCK（L20）</td><td>L20 → X20 → X26 → V26</td><td>W5500 SCK（V26）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>D5 = GPIO5・CS（L21）</td><td>L21 → W21 → W25 → V25</td><td>W5500 CS（V25）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>TX2 = GPIO17（L22）</td><td>L22 → V22 → V24</td><td>W5500 INT（V24）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>RX2 = GPIO16（L23）</td><td>L23 → O23 → O25 → N25</td><td>W5500 RST（N25）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>D4 = GPIO4・MISO（L24）</td><td>L24 → N24</td><td>W5500 MI（N24）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>3V3（L28）</td><td>L28 → N28</td><td>W5500 V（N28）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>GND（左の列 B27）</td><td>B27 → A27 → A30 → N30 → N29</td><td>W5500 G（N29）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>（とちゅうの A27）</td><td>A27 → A1 → X1 → X3（H1→H3、P1→P3、T1→T3、V1→V2 も）</td><td>8.2kΩ・15kΩ・0.1µF・BP5293 GND・10µF・端子台 マイナス</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>D34（B17）</td><td>B17 → C17 → C5 → H5</td><td>100kΩ（F5）・8.2kΩ（G5）・0.1µF（H5）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>D35（B18）</td><td>B18 → D18 → D6 → N6 → N5 → Q5</td><td>15kΩ（N5）・0.1µF（P5）・100kΩ（Q5）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>VIN（B28）</td><td>B28 → E28 → E7 → S7 → S3</td><td>BP5293 VOUT（S3）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>端子台 バッテリー＋（X5）</td><td>X5 → U5 → U3（V5→V4 も）</td><td>100kΩ（U5）・BP5293 VIN（U3）・10µF（V4）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>端子台 パネル＋（X7）</td><td>X7 → X9 → F9</td><td>100kΩ（F9）</td></tr></tbody>
       </table></div></div>
       <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
-        <tbody><tr><td>ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）＋ ピンソケット 15ピン×2</td><td>1</td><td>B14〜B28・L14〜L28。USB-C を下に向ける（有線LAN＋USB給電と同じ）</td></tr><tr><td>W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</td><td>1</td><td>N24〜N29・V24〜V29（有線LAN＋USB給電と同じ）</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>S3・T3・U3（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>V2・V4（BP5293 の入力側）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>F5〜F9（パネル用、縦）、Q5〜U5（バッテリー用、横）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 15kΩ 1%</td><td>1</td><td>N1〜N5（バッテリー用）</td></tr><tr><td>金属皮膜抵抗 8.2kΩ 1%</td><td>1</td><td>G1〜G5（パネル用）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>H3〜H5（パネル用）、P3〜P5（バッテリー用）</td></tr><tr><td>端子台 3極 5.08mm（基板用、ねじ式）</td><td>1</td><td>X3・X5・X7（上から マイナス・バッテリー＋・パネル＋）。線を入れる口を右に向ける</td></tr><tr><td>平型ヒューズホルダー ＋ 1A 平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線の途中（コントローラーの近く）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
+        <tbody><tr><td>ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）＋ ピンソケット 15ピン×2</td><td>1</td><td>B14〜B28・L14〜L28。USB-C を下に向ける（「＋有線LAN」と同じ）</td></tr><tr><td>W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</td><td>1</td><td>N24〜N29・V24〜V29（「＋有線LAN」と同じ）</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>S3・T3・U3（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>V2・V4（BP5293 の入力側）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>F5〜F9（パネル用、縦）、Q5〜U5（バッテリー用、横）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 15kΩ 1%</td><td>1</td><td>N1〜N5（バッテリー用）</td></tr><tr><td>金属皮膜抵抗 8.2kΩ 1%</td><td>1</td><td>G1〜G5（パネル用）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>H3〜H5（パネル用）、P3〜P5（バッテリー用）</td></tr><tr><td>端子台 3極 5.08mm（基板用、ねじ式）</td><td>1</td><td>X3・X5・X7（上から マイナス・バッテリー＋・パネル＋）。線を入れる口を右に向ける</td></tr><tr><td>平型ヒューズホルダー ＋ 1A 平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線の途中（コントローラーの近く）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>ESP-32・W5500 と、その 8本の線は有線LAN＋USB給電と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。</li><li>ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる（マイナスをバッテリーとそろえるため）。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（VIN の 5V と USB の 5V がぶつからないように）。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）下げて読む。</li><li>100kΩ（F5〜F9）は裏の線（緑・橙）を、15kΩ・8.2kΩ・0.1µF は裏の線（青・緑・黄）をまたいで付ける（表と裏なので触れない）。</li><li>ファーム v1.22 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。</li><li>BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>ESP-32・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。</li><li>ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる（マイナスをバッテリーとそろえるため）。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（VIN の 5V と USB の 5V がぶつからないように）。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）下げて読む。</li><li>100kΩ（F5〜F9）は裏の線（緑・橙）を、15kΩ・8.2kΩ・0.1µF は裏の線（青・緑・黄）をまたいで付ける（表と裏なので触れない）。</li><li>ファーム v1.22 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。</li><li>BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_wp">
-        <figcaption><b>Wi-Fi＋USB給電（防水）の配線図</b>ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。</figcaption>
-        <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core Wi-Fi＋USB給電（防水）の配線図" loading="lazy"></a>
+        <figcaption><b>＋防水の配線図</b>ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。</figcaption>
+        <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core ＋防水の配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_wp">
       <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
@@ -337,8 +337,8 @@
       <div class="wnote"><h3>注意</h3><ul><li>HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</li><li>基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。</li><li>管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</li><li>Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_bat">
-        <figcaption><b>Wi-Fi＋電池（防水）の配線図</b>ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
-        <a href="img/wiring/HPX-Core_BAT_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BAT_pcb.png" alt="HPX-Core Wi-Fi＋電池（防水）の配線図" loading="lazy"></a>
+        <figcaption><b>＋防水＆電池駆動の配線図</b>ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
+        <a href="img/wiring/HPX-Core_BAT_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BAT_pcb.png" alt="HPX-Core ＋防水＆電池駆動の配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_bat">
       <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
