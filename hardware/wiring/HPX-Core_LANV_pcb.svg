@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="4370" viewBox="0 0 1500 4370">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1500" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
-<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）有線LAN＋電圧チェック 基板の配線図</text>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）＋有線LAN＆ソーラーシステムチェック 基板の配線図</text>
 <text x="1470" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">6×8cm（穴 A〜Y × 1〜33）縦置き ／ ESP-32 ＋ W5500 ＋ 電圧チェック ／ ファーム HPX_Core v1.22</text>
 <rect x="228" y="168" width="1024" height="1344" rx="10" fill="#c8a165" stroke="#8d6e3f" stroke-width="2"/>
 <rect x="234" y="174" width="1012" height="1332" rx="6" fill="#e8d3a8" stroke="#b08d57" stroke-width="1.5"/>
@@ -3717,7 +3717,7 @@
 <circle cx="1180.0" cy="440.0" r="4" fill="#1e88e5" stroke="#333" stroke-width="1.2"/>
 <circle cx="1180.0" cy="520.0" r="4" fill="#1e88e5" stroke="#333" stroke-width="1.2"/>
 <circle cx="460.0" cy="520.0" r="4" fill="#1e88e5" stroke="#333" stroke-width="1.2"/></g>
-<text x="60" y="3170" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は有線LAN版と同じ）</text>
+<text x="60" y="3170" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」と同じ）</text>
 <rect x="60" y="3182" width="1320" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="3203" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線</text>
 <text x="170" y="3203" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">どこから（穴）</text>
@@ -3815,11 +3815,11 @@
 <rect x="60" y="3712" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）＋ ピンソケット 15ピン×2</text>
 <text x="710" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">B14〜B28・L14〜L28。USB-C を下に向ける（有線LAN版と同じ）</text>
+<text x="770" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">B14〜B28・L14〜L28。USB-C を下に向ける（「＋有線LAN」と同じ）</text>
 <rect x="60" y="3742" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</text>
 <text x="710" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">N24〜N29・V24〜V29（有線LAN版と同じ）</text>
+<text x="770" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">N24〜N29・V24〜V29（「＋有線LAN」と同じ）</text>
 <rect x="60" y="3772" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</text>
 <text x="710" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
@@ -3849,7 +3849,7 @@
 <text x="710" y="3973" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="770" y="3973" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">X3・X5・X7（上から マイナス・バッテリー＋・パネル＋）。線を入れる口を右に向ける</text>
 <rect x="60" y="3982" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="4003" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">平型ヒューズホルダー ＋ 1A 平型ヒューズ</text>
+<text x="70" y="4003" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ</text>
 <text x="710" y="4003" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
 <text x="770" y="4003" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">バッテリー＋とパネル＋の線の途中（コントローラーの近く）</text>
 <rect x="60" y="4012" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
@@ -3859,7 +3859,7 @@
 <rect x="60" y="4062" width="1380" height="268" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
 <text x="78" y="4088" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
 <text x="78" y="4116" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</text>
-<text x="78" y="4142" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ESP-32・W5500 と、その 8本の線は有線LAN版と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。</text>
+<text x="78" y="4142" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ESP-32・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。</text>
 <text x="78" y="4168" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる（マイナスをバッテリーとそろえるため）。</text>
 <text x="78" y="4194" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（VIN の 5V と USB の 5V がぶつからないように）。</text>
 <text x="78" y="4220" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）下げて読む。</text>

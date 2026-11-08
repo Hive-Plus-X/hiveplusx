@@ -3713,11 +3713,11 @@
 <text x="710" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="770" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">K32・M32・O32（左から パネル＋・マイナス・バッテリー＋）</text>
 <rect x="60" y="3832" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">平型ヒューズホルダー（線の途中に入れる）＋ 1A 平型ヒューズ</text>
+<text x="70" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ミニ平型ヒューズホルダー（線の途中に入れる）＋ 1A ミニ平型ヒューズ</text>
 <text x="710" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
 <text x="770" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">バッテリー＋とパネル＋の線に1つずつ。コントローラーの端子のすぐ近くに</text>
 <rect x="60" y="3862" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線 0.3〜0.5mm²（赤・青・黒）・丸形圧着端子</text>
+<text x="70" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線 0.3〜0.5mm²（AWG20、赤・青・黒）</text>
 <text x="710" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">少し</text>
 <text x="770" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">コントローラーのバッテリー＋・パネル＋・バッテリー− から端子台まで</text>
 <rect x="60" y="3892" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>

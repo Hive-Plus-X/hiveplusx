@@ -376,11 +376,11 @@ notes(s, 60, y + 20, [
 s.save("HPX-A_wiring.svg")
 
 # ------------------------------------------------------------------ HPX-Core
-# 防水Wi-Fi－USB給電版 (TARO 2026-11-08: 基板を Olimex ESP32-DEVKIT-LIPO に、電源は防水USBカプラーから)
+# ＋防水 (TARO 2026-11-08: 基板を Olimex ESP32-DEVKIT-LIPO に、電源は防水USBカプラーから)
 # Olimex の部品の位置は公式資料 (GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D) から: アンテナが上、micro USB が下、
 # RST ボタンが左下、BAT コネクタが右下。BOOT ボタンと GPIO2 の LED はない。
 s = S(1280, 1180)
-title(s, "HPX-Core（親機）防水Wi-Fi－USB給電版の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB")
+title(s, "HPX-Core（親機）＋防水の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB")
 cx, cy = 524, 170
 s.rect(cx, cy, 232, 400, "#c62828", "#7f0000", 10, 3)
 s.rect(cx + 56, cy - 14, 120, 44, "#212121", "#111", 4, 2)
