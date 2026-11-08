@@ -51,6 +51,17 @@ DEVICES = [
          # 部品表の下の「その他」: (説明, [(商品の例, 販売店, URL)])
          extra=('※HPX-A本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。',
                 [('フェンスアラート (電圧降下警告灯)', 'amazon', 'https://www.amazon.co.jp/dp/B00N3MUG1A')])),
+    # HPX-B (TARO 2026-11-08): ソーラー＋12V バッテリー運用の電源を見守る。ケース・基板は HPX-Core 有線LAN版と同じ
+    dict(key='b', file='device-b.html', tag='バッテリー電圧', name='HPX-B',
+         lead='ソーラーパネルで充電する 12V バッテリーとパネルの電圧を測り、Bluetooth で発信します。電源はそのバッテリーから取ります。',
+         variants=[('b', '数')], note='',
+         cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
+         no_cost_note=True,   # 値段をまだ入れていない部品がある
+         order=['抵抗 100kΩ', '抵抗 20kΩ', '抵抗 10kΩ', '積層セラミックコンデンサー 0.1μF50V C0G 5mm', '端子台 3極',
+                'ピンソケット（メス）', 'ピンヘッダー（オス）', 'ジャンパー線'],
+         wiring=[('HPX-B_pcb.png', '配線図', '6×8cm のユニバーサル基板を縦に置き、XIAO・降圧 DC-DC・抵抗・端子台を並べる図です (表と裏、線はすべて裏)。ケースは HPX-Core 有線LAN版と同じ PFF10-4-10W です。')],
+         extra=('※ソーラーチャージャー（充電コントローラー）の「パネル−」と「バッテリー−」がつながっている（共通マイナス）機種でだけ、パネル電圧を正しく測れます。コントローラーの線を外し、テスターの導通モードで確かめてください。一部の部品はまだ値段を入れていないので、部品代の目安には入っていません。ファームウェアは準備中です。',
+                [])),
 ]
 # 表に出す分類の順
 CATS = ['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', 'ケーブル', '部材']
@@ -309,7 +320,7 @@ def parts_table(dev, rows):
         text, items = dev['extra']
         ex = '、'.join(f'{link(n, u)}（{esc(sh)}）' if sh else link(n, u) for n, sh, u in items)
         t += (f'\n      <div class="extra"><h3>その他</h3><p>{esc(text)}</p>'
-              f'<p class="ex">商品の例: {ex}</p></div>')
+              + (f'<p class="ex">商品の例: {ex}</p>' if items else '') + '</div>')
     return t
 
 
@@ -466,7 +477,7 @@ def index_page(parts):
       </div>
     </div>
   </section>'''
-    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-A) の作り方と部品表です。', body, parts)
+    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-A・HPX-B) の作り方と部品表です。', body, parts)
 
 
 def main():
