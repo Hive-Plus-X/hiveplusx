@@ -738,6 +738,98 @@ finish(s, y, [
     "・W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。",
 ], "HPX-Core_LAN_pcb.svg")
 
+# ================================================================== HPX-Core 防水Wi-Fi－電池版（タカチ PCB36-47）
+# TARO 2026-11-08: PCB36-47 に Olimex ESP32-DEVKIT-LIPO を載せ、単三リチウム3本（ケース WH145-25-M3 の電池ボックス）から 5V 端子へ。
+# Olimex のピンの並びは公式資料（GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D、ESP32-DevKitC と同じ）。左右のピン列は 25.4mm（10穴）離れている。
+# PCB36-47 は 36×47mm（取付穴 30×41mm）。穴は 13×17（A〜M × 1〜17）と見込んで描いた（実物で未確認）。
+OX, OY = 520, 420
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）防水Wi-Fi－電池版の配線図", "タカチ PCB36-47（穴 A〜M × 1〜17 の見込み）／ Olimex ESP32-DEVKIT-LIPO ／ 単三リチウム ×3 → 5V 端子")
+board(s, 13, 17, " ")
+s.text(OX + 6 * P, 120, "ケース用基板 PCB36-47（36×47mm）を縦に置いたところ。穴 13×17 は見込み、四隅は取付穴", 15, "middle", "bold", "#5d4520")
+for c, r in ((0, 0), (12, 0), (0, 16), (12, 16)):   # 四隅は取付穴（その位置の穴は使わない）
+    x, y = H(c, r)
+    s.add(f'<circle cx="{x}" cy="{y}" r="15" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+    s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#c8a165" stroke="#8d6e3f" stroke-width="1.5"/>')
+REC["board"] = REC["board"] + s.items[-8:]
+
+# Olimex（USB が下）。左の列 B（EXT1）、右の列 L（EXT2）。ピン19（5V）を 16 行に置く → ピン1〜3 は基板の上の外にはみ出す
+OL = ["3V3", "EN", "IO36", "IO39", "IO34", "IO35", "IO32", "IO33", "IO25", "IO26", "IO27", "IO14", "IO12", "GND", "IO13", "IO9", "IO10", "IO11", "5V"]
+OR = ["GND", "IO23", "IO22", "IO1", "IO3", "IO21", "GND", "IO19", "IO18", "IO5", "IO17", "IO16", "IO4", "IO0", "IO2", "IO15", "IO8", "IO7", "IO6"]
+x1, y1, x2, y2 = module(0.5, 11.5, R(16) - 18.5, R(16) + 0.5, "#c62828", "#7f0000", "Olimex")
+s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y1-34}" width="160" height="60" rx="4" fill="#212121" fill-opacity="0.85"/>')
+s.text((x1 + x2) / 2, y1 - 8, "アンテナ（上）", 12, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{(x1+x2)/2-70}" y="{y1+30}" width="140" height="160" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
+s.text((x1 + x2) / 2, y1 + 105, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 125, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 250, "Olimex", 16, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 272, "ESP32-DEVKIT-LIPO", 14, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 294, "ピンソケット 16ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+ux = (x1 + x2) / 2
+s.top.append(f'<rect x="{ux-30}" y="{y2-26}" width="60" height="40" rx="6" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+s.text(ux, y2 + 40, "micro USB（下向き。電池版では使わない）", 13, "middle", "bold", "#333", layer=s.top)
+bx = x1 + (151.384 - 129.54) / 2.54 * P
+s.top.append(f'<rect x="{bx-26}" y="{y2-44}" width="52" height="40" rx="4" fill="#fafafa" stroke="#9e9e9e" stroke-width="2"/>')
+s.text(bx, y2 - 52, "BAT", 12, "middle", "bold", "#fff", layer=s.top)
+s.text(bx + 40, y2 + 84, "↑ BAT コネクタ：乾電池はつながない", 13, "middle", "bold", "#c62828", layer=s.top)
+# ピン（1〜3 は基板の外、4〜19 がソケットに入る）
+def opins(col, side):
+    names = OL if side == "L" else OR
+    used = {"5V", "GND"} if side == "L" else set()
+    out = {}
+    for i, n in enumerate(names):
+        r = R(16) - 18 + i
+        x, y = H(col, r)
+        on = side == "L" and (n == "5V" or (n == "GND" and i == 13))
+        if r >= 0:
+            rec_pin(x, y, n)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+        dx = 14 if side == "L" else -14
+        s.text(x + dx, y + 5, n, 12, "start" if side == "L" else "end", "bold", "#fff" if on else "#eee", layer=s.top)
+        out[(n, i)] = (col, r)
+    return out
+opins(1, "L"); opins(11, "R")
+
+# 電池ボックス（ケース WH145-25-M3 の単3×3）。＋の線を A16、−の線を A11 に直接はんだ付けし、裏で B16（5V）・B11（GND）へ
+tp, tm = H(0, R(16)), H(0, R(11))
+bx0, by0 = 60, OY + 17 * P + 110
+s.rect(bx0, by0, 440, 80, "#455a64", "#263238", 10, 3)
+for i in range(3):
+    s.rect(bx0 + 18 + i * 140, by0 + 18, 124, 44, "#c0ca33", "#827717", 20, 2)
+    s.text(bx0 + 80 + i * 140, by0 + 46, "単3", 15, "middle", "bold", "#333")
+s.text(bx0 + 426, by0 + 24, "＋", 16, "end", "bold", "#fff")
+s.text(bx0 + 14, by0 + 24, "−", 18, "start", "bold", "#fff")
+s.text(bx0 + 220, by0 + 106, "ケース WH145-25-M3 の電池ボックス ＋ 単三リチウム電池 ×3（直列 約4.5〜5.4V）", 14, "middle", "bold")
+s.wire([(bx0 + 440, by0 + 40), (bx0 + 470, by0 + 40), (bx0 + 470, tp[1]), tp], "red")
+s.wire([(bx0, by0 + 40), (bx0 - 30, by0 + 40), (bx0 - 30, tm[1]), tm], "black")
+solder_mark(s, 0, R(16)); solder_mark(s, 0, R(11))
+w("red", "A16", "B16")      # 電池＋ → 5V（ピン19）
+w("black", "A11", "B11")    # 電池− → GND（左の列のピン14）
+check_back("HPX-Core_BAT_pcb.svg")
+yb = backview(s, by0 + 140, OX + (NC - 1) * P / 2, y1 - 90, OY + (NR - 1) * P + 36)
+y = table(s, 60, yb + 40, [
+    ["線", "どこから（穴）", "どこへ（穴）", "役目"],
+    ["red", "電池ボックスの＋の線（A16 に直接はんだ付け）", "裏で A16 → B16（Olimex の 5V、左の列のいちばん下）", "電池の＋を 5V 端子へ"],
+    ["black", "電池ボックスの−の線（A11 に直接はんだ付け）", "裏で A11 → B11（Olimex の GND、左の列の下から6本目）", "電池の−を GND へ"],
+], [100, 400, 460, 240], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["Olimex ESP32-DEVKIT-LIPO（micro USB、ピンヘッダ付き）", "1", "B1〜B16・L1〜L16 のソケットに差す。USB を下、アンテナを上に向ける"],
+    ["ピンソケット（メス）16ピン（20ピンを切る）", "2", "B1〜B16、L1〜L16 にはんだ付け。Olimex のピン4〜19 が入る"],
+    ["ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池", "1／3", "＋の線を A16、−の線を A11 にはんだ付け"],
+    ["ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線", "1", "線は裏の2本だけ"],
+], [600, 60, 540], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・電池は Olimex の「5V」端子（左の列のいちばん下）と「GND」へつなぐ。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池は絶対につながない。",
+    "・電池を入れたまま micro USB をつながない（書き込みは電池を外してから）。USB の 5V と電池がぶつかるおそれがある。",
+    "・新品の単三リチウム3本は約5.4V。5V 端子の先は、ダイオード（約0.3V 下がる）を通って 3.3V を作る部品（HX6211、入力の上限 6V と販売店の資料）へ行く。上限の内側だが余裕は少ない。",
+    "・Olimex は長さ 48mm で基板（47mm）より長く、ピンは19本ある。ピン1〜3（3V3・EN・IO36 と GND・IO23・IO22）は基板の上の端からはみ出す。",
+    "・PCB36-47 の穴の数（13×17）は見込み。四隅の取付穴に近い B1・L1 の穴がなければ、ソケットを15ピンにして B2〜B16・L2〜L16 にする。",
+    "・ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋Olimex が収まるか未確認。足りないときは、ソケットを使わずに Olimex のピンを基板へ直接はんだ付けする。",
+    "・管理画面の動作モードは「ディープスリープ」にする。電池のもちは保存間隔30分で 2〜4か月の見込み（未実測）。",
+], "HPX-Core_BAT_pcb.svg")
+
 # ================================================================== HPX-B バッテリー電圧（6×8cm 基板、ケース PFF10-4-10W）
 OX, OY = 260, 200
 s = S(1500, 3200)
