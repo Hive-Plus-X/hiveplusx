@@ -421,19 +421,29 @@ s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
 s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
 s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
 s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
-y = table(s, 60, 860, [
+CORE_ROWS = [
     ["部品", "数", "使うところ・メモ"],
     ["ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO", "1", "本体（親機）。差し込み口は micro USB"],
     ["USB-C to MicroUSB ケーブル 15cm", "1", "ケースの中で、防水USBカプラーと Olimex をつなぐ"],
     ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
-], [560, 50, 550], "部品表")
-notes(s, 60, y + 20, [
+]
+y = table(s, 60, 860, CORE_ROWS, [560, 50, 550], "部品表")
+CORE_NOTES = [
     "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
     "・基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。",
     "・管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
     "・Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。",
-])
+]
+notes(s, 60, y + 20, CORE_NOTES)
 s.save("HPX-Core_wiring.svg")
+# ウェブサイト用 (TARO 2026-11-08): 図だけの SVG (部品表の上で切る) と、部品表・注意の文字 (JSON)。表・注意はページに HTML で出す
+_full = open(os.path.join(OUT, "HPX-Core_wiring.svg"), encoding="utf-8").read()
+_cut = 820
+open(os.path.join(OUT, "HPX-Core_wiring_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+import json
+json.dump({"tables": [{"head": "部品の使いどころ", "rows": CORE_ROWS}], "notes": [n.lstrip("・") for n in CORE_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("ok")
 
 # ------------------------------------------------------------------ HPX-Core 有線LAN (W5500)

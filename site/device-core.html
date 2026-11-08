@@ -280,6 +280,13 @@
         <figcaption><b>防水Wi-Fi－USB給電版の配線図</b>ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。</figcaption>
         <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core 防水Wi-Fi－USB給電版の配線図" loading="lazy"></a>
       </figure>
+      <div data-variant="core_wp">
+      <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
+        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。差し込み口は micro USB</td></tr><tr><td>USB-C to MicroUSB ケーブル 15cm</td><td>1</td><td>ケースの中で、防水USBカプラーと Olimex をつなぐ</td></tr><tr><td>防水USBカプラー（USB Type-C メス-メス）</td><td>1</td><td>ケースの壁に取り付ける。外から USB 電源をつなぐ</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</li><li>基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。</li><li>管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</li><li>Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。</li></ul></div>
+      </div>
       <figure class="wiring" data-variant="core_bat">
         <figcaption><b>防水Wi-Fi－電池版の配線図</b>ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
         <a href="img/wiring/HPX-Core_BAT_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BAT_pcb.png" alt="HPX-Core 防水Wi-Fi－電池版の配線図" loading="lazy"></a>
