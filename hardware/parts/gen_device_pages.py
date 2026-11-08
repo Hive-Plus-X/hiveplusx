@@ -48,12 +48,13 @@ DEVICES = [
          order=['温湿度センサ', 'サーミスター', 'コンデンサー100μF', 'コンデンサー0.1μF', '抵抗 10kΩ',
                 'ピンソケット（メス）', 'ピンヘッダー（オス）', 'ジャンパー線'],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
-    dict(key='a', file='device-a.html', tag='電柵アラート', name='HPX-A',
+    # HPX-F (TARO 2026-11-08 に HPX-A から改名。列名・ページも a → f)
+    dict(key='f', file='device-f.html', tag='電柵アラート', name='HPX-F',
          lead='電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。',
-         variants=[('a', '数')], note='',
-         wiring=[('HPX-A_pcb.png', '配線図', '5×7cm のユニバーサル基板の左上に載せる図です。')],
+         variants=[('f', '数')], note='',
+         wiring=[('HPX-F_pcb.png', '配線図', '5×7cm のユニバーサル基板の左上に載せる図です。')],
          # 部品表の下の「その他」: (説明, [(商品の例, 販売店, URL)])
-         extra=('※HPX-A本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。',
+         extra=('※HPX-F本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。',
                 [('フェンスアラート (電圧降下警告灯)', 'amazon', 'https://www.amazon.co.jp/dp/B00N3MUG1A')])),
     # HPX-B (TARO 2026-11-08): ソーラー＋12V バッテリー運用の電源を見守る。ケース・基板は HPX-Core 有線LAN版と同じ
     dict(key='b', file='device-b.html', tag='バッテリー電圧', name='HPX-B',
@@ -483,7 +484,7 @@ def index_page(parts):
       </div>
     </div>
   </section>'''
-    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-A・HPX-B) の作り方と部品表です。', body, parts)
+    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-F・HPX-B) の作り方と部品表です。', body, parts)
 
 
 def main():

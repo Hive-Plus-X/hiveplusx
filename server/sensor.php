@@ -805,7 +805,7 @@ if (!$byKind['w']) {
 // ---- アラート状況の表 ----
 echo '<h2 id="fence">電柵アラート</h2>';
 if (!$byKind['fa']) {
-    echo '<p class="muted">電柵アラート (HPX-A) の記録はまだありません。</p>';
+    echo '<p class="muted">電柵アラート (HPX-F) の記録はまだありません。</p>';
 } else {
     $nodeLimit = (int)($HPX_ALERT_MISSING_S ?? 3600);
     echo '<div class="wrap"><table><tr><th>名前</th><th>蜂場</th><th>状態</th><th>電圧低下の回数(通算)</th><th>電池</th><th>最後の記録</th></tr>';

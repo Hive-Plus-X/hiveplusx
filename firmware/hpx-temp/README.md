@@ -44,7 +44,7 @@ BLE address: XX:XX:XX:XX:XX:XX  (ハブの登録画面に出るアドレスと�
 
 | バイト | 内容 |
 |---|---|
-| 0..1 | 0xFF 0xFF (試験用の会社ID。HPX-W・HPX-A と同じ) |
+| 0..1 | 0xFF 0xFF (試験用の会社ID。HPX-W・HPX-F と同じ) |
 | 2 | 'T' |
 | 3 | 版 = 1 |
 | 4..5 | 通し番号 (uint16, LE) |

@@ -100,7 +100,7 @@
 <rect x="240" y="790" width="120" height="70" rx="10" fill="#eeeeee" stroke="#999" stroke-width="2"/>
 <text x="300" y="830" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB 電源</text>
 <text x="300" y="850" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（5V・1A 以上）</text>
-<text x="640" y="905" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">センサ（HPX-W・HPX-TH・HPX-A）は、これまでどおり電波（BLE）で受け取ります。</text>
+<text x="640" y="905" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">センサ（HPX-W・HPX-TH・HPX-F）は、これまでどおり電波（BLE）で受け取ります。</text>
 <text x="60" y="948" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ線（基板に組むときは HPX-Core_LAN_pcb.png、試すだけならジャンパー線でも可）</text>
 <rect x="60" y="960" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="981" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線の色（例）</text>

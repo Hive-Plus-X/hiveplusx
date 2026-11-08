@@ -300,9 +300,9 @@ notes(s, 60, y + 20, [
 ])
 s.save("HPX-TH_wiring.svg")
 
-# ------------------------------------------------------------------ HPX-A
+# ------------------------------------------------------------------ HPX-F
 s = S(1280, 1720)
-title(s, "HPX-A（電柵アラート）部品表と配線図", "ファーム HPX_Alert v1.02 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
+title(s, "HPX-F（電柵アラート）部品表と配線図", "ファーム HPX_F v1.04 ／ D1→10kΩ→D0(A0)、CdS セル D0–GND ／ 電源 CR123A")
 p = xiao(s, 190, 200)
 bx, by = 560, 170
 s.rect(bx, by, 340, 380, "#f1efe6", "#cfc8b0", 10, 2)
@@ -411,7 +411,7 @@ s.text(cx + 116, 745, "USB-C メス-メス", 11, "middle", fill="#eceff1")
 s.add(f'<path d="M{cx+116},756 L{cx+116},800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>')
 s.text(cx + 132, 790, "ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ", 13, fill="#666")
 s.text(960, 690, "ケースの中", 13, "end", "bold", "#999"); s.text(960, 770, "ケースの外", 13, "end", "bold", "#999")
-for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-A", "電柵アラート（BLE）")]):
+for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-F", "電柵アラート（BLE）")]):
     yy = 210 + i * 110
     s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
     s.text(90, yy + 30, n, 16, weight="bold"); s.text(90, yy + 54, d, 14, fill="#666")
@@ -496,7 +496,7 @@ s.text(cx + 165, 760, "USB ケーブル", 14, fill="#333")
 s.rect(cx + 90, 790, 120, 70, "#eeeeee", "#999", 10, 2)
 s.text(cx + 150, 830, "USB 電源", 15, "middle", "bold")
 s.text(cx + 150, 850, "（5V・1A 以上）", 12, "middle", fill="#666")
-s.text(640, 905, "センサ（HPX-W・HPX-TH・HPX-A）は、これまでどおり電波（BLE）で受け取ります。", 15, "middle", "bold", "#1565c0")
+s.text(640, 905, "センサ（HPX-W・HPX-TH・HPX-F）は、これまでどおり電波（BLE）で受け取ります。", 15, "middle", "bold", "#1565c0")
 y = table(s, 60, 960, [
     ["線の色（例）", "W5500 のピン", "ESP32 のピン", "メモ"],
     ["red", "V（3.3V）", "3V3", "電源"],

@@ -14,7 +14,7 @@
 declare(strict_types=1);
 
 // 作った機器・使ったもの。保存する名前 => 役割 (画面ではかっこ付きで出す)
-const R_DEVICES = ['HPX-Core' => 'ハブ', 'HPX-TH' => '温湿度センサ', 'HPX-W' => '重量センサ', 'HPX-A' => 'アラーム',
+const R_DEVICES = ['HPX-Core' => 'ハブ', 'HPX-TH' => '温湿度センサ', 'HPX-W' => '重量センサ', 'HPX-F' => 'アラーム',
     'HPX-note' => '養蜂記録アプリ', 'HPX-Server' => 'サーバー', 'その他' => ''];
 function r_device_label(string $d): string { $r = R_DEVICES[$d] ?? ''; return $r !== '' ? $d . '（' . $r . '）' : $d; }
 const R_MAX_PHOTOS = 3;                 // 1つの報告の写真の枚数

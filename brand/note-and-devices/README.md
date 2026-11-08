@@ -3,7 +3,7 @@
 書体・配色は hive+x ロゴ (brand/final/) と同じです。文字はアウトライン化済みなので、フォントのインストールは要りません。
 
 - hive+x note: 元の hive+x ロゴの右に「note」(Inter SemiBold) を付けたもの。白背景では note を Forest、緑背景では Honey にしています
-- 機器名 (HPX-note / HPX-W / HPX-TH / HPX-Core / HPX-A): Inter ExtraBold。「-」だけ Honey (hive+x の「+」と同じ色)
+- 機器名 (HPX-note / HPX-W / HPX-TH / HPX-Core / HPX-F): Inter ExtraBold。「-」だけ Honey (hive+x の「+」と同じ色)
 
 ## ファイル (SVG と、幅1600pxの PNG)
 | ファイル | 内容 | 用途 |

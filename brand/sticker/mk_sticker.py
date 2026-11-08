@@ -42,7 +42,7 @@ def logo_g(cx, cy, width, text=WHITE):
 
 # --- 機器名 (HPX-Core など) ---
 DEV = {}
-for n in ['Core', 'TH', 'W', 'A']:
+for n in ['Core', 'TH', 'W', 'F']:
     s = clean(os.path.join(BRAND, 'note-and-devices', f'HPX-{n}.svg'))
     vbw = float(re.search(r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+)', s).group(1))
     dark = re.search(r'<path fill="#1F2328" d="([^"]+)"', s).group(1)
@@ -161,7 +161,7 @@ out = {
     'A_forest_logo': A_forest(),
     'B_white_logo': B_white(),
 }
-for n in ['Core', 'TH', 'W', 'A']:
+for n in ['Core', 'TH', 'W', 'F']:
     out[f'C_forest_HPX-{n}'] = C_forest(n)
     out[f'D_split_HPX-{n}'] = D_split(n)
     out[f'F_icon_HPX-{n}'] = F_icon(n)

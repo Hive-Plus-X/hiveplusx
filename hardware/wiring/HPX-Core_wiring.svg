@@ -78,7 +78,7 @@
 <text x="90" y="374" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">温湿度（BLE）</text>
 <path d="M380,355 L504,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
 <rect x="70" y="430" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
-<text x="90" y="460" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-A</text>
+<text x="90" y="460" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-F</text>
 <text x="90" y="484" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電柵アラート（BLE）</text>
 <path d="M380,465 L504,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
 <text x="220" y="190" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電線なし（電波で受信）</text>
