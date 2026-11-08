@@ -11,6 +11,7 @@
 | HPX-A (電柵アラート) | [HPX-A_pcb.png](HPX-A_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_Alert v1.03)。電源 単3リチウム×2 (ケース WH145-25-M2 の電池ボックス) |
 | HPX-Core 防水Wi-Fi－USB給電版 | [HPX-Core_wiring.png](HPX-Core_wiring.png) | Olimex ESP32-DEVKIT-LIPO。外付けの配線なし。防水USBカプラー (USB-C) から USB-C to MicroUSB ケーブルで給電 |
 | HPX-Core 有線LAN (付けたいときだけ) | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図)・[HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) (線の対応) | ELEGOO ESP-32 + W5500 (ACEIRMC): SCK=D18, MI=D4, MO=D23, CS=D5, INT=TX2(GPIO17), RST=RX2(GPIO16), V=3V3, G=GND (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
+| HPX-Core 有線LAN＋電圧チェック | [HPX-Core_LANV_pcb.png](HPX-Core_LANV_pcb.png) (6×8cm 基板、ケース PFF10-4-10W) | 有線LAN版と同じ ESP-32・W5500 に、パネル＋ → 100kΩ/8.2kΩ → D34、バッテリー＋ → 100kΩ/15kΩ → D35、BP5293-50 (バッテリー → 5V → VIN)、端子台 3極 (マイナス・バッテリー＋・パネル＋) を足す。USB ではなくバッテリーで動かす (HPX_Core v1.22 以降、動作設定で「バッテリー・パネルの電圧を測る」) |
 | HPX-Core 防水Wi-Fi－電池版 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | Olimex ESP32-DEVKIT-LIPO の 5V (左の列のピン19) ← 単三リチウム×3 の＋、GND (左の列のピン14) ← −。BAT コネクタは使わない。動作モードはディープスリープ |
 | HPX-B (バッテリー電圧、試作中) | [HPX-B_pcb.png](HPX-B_pcb.png) (6×8cm 基板、ケース タカチ PFF10-4-10W) | バッテリー＋ → 100kΩ/20kΩ → D1(A1)、パネル＋ → 100kΩ/10kΩ → D0(A0)、三端子 DCDC レギュレーター BP5293-50 (ROHM、入力 7〜26V) → 5V、入力側 10µF。端子台 3極 (パネル＋・マイナス・バッテリー＋)、ヒューズ 1A×2 は線の途中。ファームはまだ無い |
 

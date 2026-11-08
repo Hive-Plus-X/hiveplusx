@@ -291,12 +291,44 @@ $hubId = (string)($_GET['hub'] ?? $_POST['hub'] ?? '');
 if (!isset($hubs[$hubId])) $hubId = (string)(array_key_first($hubs) ?? '');
 $hub = $hubs[$hubId] ?? null;
 
-// グラフごとの期間(pt=温度 ph=湿度 pw=重量)
+// グラフごとの期間(pt=温度 ph=湿度 pw=重量 pv=バッテリー・パネル電圧)
 $per = [];
-foreach (['pt', 'ph', 'pw'] as $k) {
+foreach (['pt', 'ph', 'pw', 'pv'] as $k) {
     $v = (int)($_GET[$k] ?? $_POST[$k] ?? D_PERIOD_DEFAULT);
     $per[$k] = array_key_exists($v, D_PERIODS) ? $v : D_PERIOD_DEFAULT;
 }
+// 12V バッテリー・パネル電圧の記録 (HPX-Core 有線LAN＋電圧チェック版)。状態の履歴 reports-YYYY-MM.jsonl から読む
+// 返り値: ['vb' => [[epoch, V], ...], 'vpv' => [[epoch, V], ...]]
+function read_volts(string $dir, int $since): array
+{
+    $out = ['vb' => [], 'vpv' => []];
+    $files = glob($dir . '/reports-*.jsonl') ?: [];
+    sort($files);
+    foreach ($files as $f) {
+        if (!preg_match('/reports-(\d{4})-(\d{2})\.jsonl$/', $f, $m)) continue;
+        if (strtotime("$m[1]-$m[2]-01 00:00:00 +1 month") < $since) continue;   // 期間より前の月は読まない
+        $fh = @fopen($f, 'r');
+        if (!$fh) continue;
+        while (($line = fgets($fh)) !== false) {
+            if (strpos($line, '"vb"') === false) continue;
+            $r = json_decode($line, true);
+            if (!is_array($r)) continue;
+            $e = strtotime((string)($r['rx'] ?? '')) ?: 0;
+            if ($e < $since) continue;
+            if (is_numeric($r['vb'] ?? null)) $out['vb'][] = [$e, (float)$r['vb']];
+            if (is_numeric($r['vpv'] ?? null)) $out['vpv'][] = [$e, (float)$r['vpv']];
+        }
+        fclose($fh);
+    }
+    return $out;
+}
+
+// 鉛バッテリーの残りの目安 (%)。休んでいるとき (夜明け前) の電圧で見る。11.5V = 0%、12.7V = 100% として直線で
+function lead_pct(float $v): int
+{
+    return (int)max(0, min(100, round(($v - 11.5) / 1.2 * 100)));
+}
+
 function self_url(array $change = [], string $anchor = ''): string
 {
     global $hubId, $per;
@@ -584,6 +616,23 @@ $whereTd = function (string $mac) use ($where, $hubId): string {
 $lastRx = (int)($st['last_rx'] ?? 0);
 $rxOk = $lastRx > 0 && $now - $lastRx < (int)($HPX_HUB_MISSING_S ?? 3600);
 $vbat = isset($st['vbat']) && is_numeric($st['vbat']) && (float)$st['vbat'] > 0 ? number_format((float)$st['vbat'], 2) . ' V' : '';
+// 12V バッテリー・パネル電圧 (有線LAN＋電圧チェック版)。届いたときだけ出す
+$vbRow = '';
+if (isset($st['vb']) && is_numeric($st['vb'])) {
+    $vbNow = (float)$st['vb'];
+    $vpvNow = isset($st['vpv']) && is_numeric($st['vpv']) ? (float)$st['vpv'] : null;
+    $warnV = (float)($HPX_BATT12_WARN_V ?? 12.0);
+    // 夜明け前 (3〜5時) のいちばん低い値。今が6時前なら前の日の朝
+    $dawnFrom = strtotime(date('Y-m-d', $now - ((int)date('G', $now) < 6 ? 86400 : 0)) . ' 03:00:00');
+    $dawn = null;
+    foreach (read_volts($dir, $dawnFrom)['vb'] as [$e, $v]) if ($e < $dawnFrom + 3 * 3600 && $v >= 5) $dawn = $dawn === null ? $v : min($dawn, $v);
+    $vbRow = '<dt>バッテリー電圧</dt><dd>' . ($vbNow < 5 ? '<span class="ng">' . h(number_format($vbNow, 2)) . ' V (測れていません。線を確かめてください)</span>'
+            : h(number_format($vbNow, 2)) . ' V' . ($vbNow < $warnV ? ' <span class="ng">低い</span>' : ''))
+        . ($dawn !== null ? '<br><small>今朝 (' . h(date('n/j', $dawnFrom)) . ' 3〜6時) の電圧 ' . h(number_format($dawn, 2)) . ' V → 残りの目安 約 ' . lead_pct($dawn) . '%</small>' : '')
+        . '<br><small class="muted">昼は充電中なので電圧が高く出ます。残りの目安は、充電していない夜明け前の電圧から出しています (鉛バッテリーの場合)。</small></dd>'
+        . ($vpvNow !== null ? '<dt>パネル電圧</dt><dd>' . h(number_format($vpvNow, 2)) . ' V'
+            . ($vpvNow < 1 ? ' <span class="muted">(発電していません。夜・日かげ、または線が外れています)</span>' : ' <span class="muted">(日が当たっています)</span>') . '</dd>' : '');
+}
 $fw = trim((string)($st['fw'] ?? '') . ((int)($st['build'] ?? 0) ? ' (build ' . (int)$st['build'] . ')' : ''));
 // HPX-Core の管理画面 (HPX-Core v1.21 から ip・host が届く)。家の中のネットワークのアドレスなので、同じネットワークにつながっている端末からしか開けない
 $admIp = (string)($st['ip'] ?? '');
@@ -612,6 +661,7 @@ echo '<div class="card"><dl class="info">'
         . ($rxOk ? '<span class="ok">受信中</span>' : '<span class="ng">届いていません</span>') . '</dd>'
     . '<dt>ファームウェア</dt><dd>' . h($fw !== '' ? $fw : '-') . '</dd>'
     . ($vbat !== '' ? '<dt>電池電圧</dt><dd>' . h($vbat) . '</dd>' : '')   // HPX-Core が電池電圧を送るときだけ出す
+    . $vbRow
     . ((($st['net'] ?? '') === 'lan')
         ? '<dt>通信</dt><dd>有線LAN</dd>'
         : '<dt>Wi-Fiの電波</dt><dd>' . rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>')
@@ -815,6 +865,15 @@ echo '<h2 id="g-temp">温度のグラフ</h2>' . $perLinks('pt', 'g-temp');
 echo $tS ? chart_svg($tS, $range($per['pt']), $now, '℃', 2) : '<p class="muted">温湿度計の記録はまだありません。</p>';
 echo '<h2 id="g-hum">湿度のグラフ</h2>' . $perLinks('ph', 'g-hum');
 echo $hS ? chart_svg($hS, $range($per['ph']), $now, '%', 5, 0) : '<p class="muted">温湿度計の記録はまだありません。</p>';
+if ($vbRow !== '') {   // 有線LAN＋電圧チェック版のときだけ
+    $fv = $range($per['pv']);
+    $vs = read_volts($dir, $fv);
+    $vS = [];
+    if ($vs['vb']) $vS[] = ['バッテリー電圧', '#c62828', $vs['vb']];
+    if ($vs['vpv']) $vS[] = ['パネル電圧', '#1565c0', $vs['vpv'], '6 4'];
+    echo '<h2 id="g-volt">バッテリー・パネル電圧のグラフ</h2>' . $perLinks('pv', 'g-volt');
+    echo $vS ? chart_svg($vS, $fv, $now, 'V', 2, 2) : '<p class="muted">この期間の記録はありません。</p>';
+}
 
 // ---- データダウンロード・データクリア ----
 echo '<h2 id="data">データ</h2>';

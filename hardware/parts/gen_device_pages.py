@@ -16,14 +16,16 @@ DEVICES = [
          lead='センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。',
          # 版の名前は TARO 2026-11-07 に 通常版→有線LAN版、防水版→防水Wi-Fi版 (列名・?v= はそのまま)
          # TARO 2026-11-08: 防水Wi-Fi版を USB給電版 (core_wp、基板を Olimex に) と電池版 (core_bat) の2つに分けた
-         variants=[('core', '有線LAN版'), ('core_wp', '防水Wi-Fi－USB給電版'), ('core_bat', '防水Wi-Fi－電池版')],
+         # TARO 2026-11-08: 有線LAN＋電圧チェック版 (core_lanv) を追加 (12V バッテリーとソーラーパネルの電圧を測る)
+         variants=[('core', '有線LAN版'), ('core_lanv', '有線LAN＋電圧チェック版'), ('core_wp', '防水Wi-Fi－USB給電版'), ('core_bat', '防水Wi-Fi－電池版')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          cats=['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
          wiring=[('HPX-Core_LAN_pcb.png', '有線LAN版の配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
+                ('HPX-Core_LANV_pcb.png', '有線LAN＋電圧チェック版の配線図', '有線LAN版と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。ESP32 は USB ではなくバッテリーから動かします。ファームウェアは v1.22 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。', 'core_lanv'),
                 ('HPX-Core_wiring.png', '防水Wi-Fi－USB給電版の配線図', 'ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。', 'core_wp'),
                 ('HPX-Core_BAT_pcb.png', '防水Wi-Fi－電池版の配線図', 'ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。', 'core_bat')],
-         note='LAN ケーブルでルーターにつなぐ有線LAN版と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版 (USB給電版・電池版) があります。'),
+         note='LAN ケーブルでルーターにつなぐ有線LAN版 (ソーラー＋12V バッテリーの電圧も測る「電圧チェック版」あり) と、屋外に置けて Wi-Fi でつなぐ防水Wi-Fi版 (USB給電版・電池版) があります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
