@@ -13,7 +13,7 @@ lc115,ケース,"ハンドタイプ プラスチックケース LCシリーズ
 単3×2電池ボックス",タカチ　LC115H-M2-D,,https://www.takachi-el.co.jp/products/LC,1,個,451,,,,,,,,1,
 wh145,ケース,IP67防水ハンドヘルドケース,タカチ　WH145-25-M2-,amazon,https://www.takachi-el.co.jp/products/WH,1,個,1754,,,,,,,,,1
 c100,電子部品,絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm,コンデンサー100μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g102243/,10,個,280,,,,,1,1,1,1,1
-,電子部品,積層セラミックコンデンサー 0.1μF50V C0G 5mm,コンデンサー0.1μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g117059/,10,個,250,,,,,1,1,1,1,1,2,2
+,電子部品,コンデンサー0.1μF,積層セラミックコンデンサー 0.1μF50V C0G 5mm,秋月電子通商,https://akizukidenshi.com/catalog/g/g117059/,10,個,250,,,,,1,1,1,1,1,2,2
 hx711,電子部品,HX711,Hailege HX711 ADコンバーター モジュール 3個セット,amazon,https://www.amazon.co.jp/s?k=Hailege%20HX711%203%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88,3,個,660,,,,,1,1,,,
 ,電子部品,サーミスター,サーミスター 10kΩ (平行線タイプ),秋月電子通商,https://akizukidenshi.com/catalog/g/g107257/,1,個,200,,,,,,,1,1,
 ,電子部品,SHT40,"SHT40 温湿度センサ モジュール 5個入り
@@ -57,14 +57,14 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,部材,基板スペーサー クイックロック貼付スペーサー ULCKシリーズ,タカチ　ULCK-6.4,モノタロウ,https://www.monotaro.com/g/06277754/,4,個,119,,,,,,,,,
 ,部材,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,1,,,,,,
 ,部材,USBケーブル,USB-C to MicroUSB ケーブル 15cm,amazon,https://www.amazon.co.jp/dp/B0H14RX1M1,2,本,559,,,1,,,,,,
-,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,,,,,,,,,,,1,1
+,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,240,,,,,,,,,,1,1
 ,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF 50V 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E7%A9%8D%E5%B1%A4%E3%82%BB%E3%83%A9%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%87%E3%83%B3%E3%82%B5%E3%83%BC+10%CE%BCF+50V,,,,,,,,,,,,,1,1
-,電子部品,抵抗 100kΩ,金属皮膜抵抗 1/4W 100kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+100k%CE%A9,,,,,,,,,,,,,2,2
+,電子部品,抵抗 100kΩ,小型 金属皮膜抵抗 1/4W100kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108563/,100,本,300,,,,,,,,,,2,2
 ,電子部品,抵抗 20kΩ,金属皮膜抵抗 1/4W 20kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+20k%CE%A9,,,,,,,,,,,,,1
-,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF+3P+5.08mm,,,,,,,,,,,,,1,1
+,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦,秋月電子通商,https://akizukidenshi.com/catalog/g/g101310/,1,個,40,,,,,,,,,,1,1
 ,ケーブル,平型ヒューズホルダー,線の途中に入れる平型ヒューズホルダー (防水タイプがよい),amazon,https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC+%E9%98%B2%E6%B0%B4,,,,,,,,,,,,,2,2
 ,ケーブル,平型ヒューズ 1A,自動車用 平型ヒューズ 1A,amazon,https://www.amazon.co.jp/s?k=%E5%B9%B3%E5%9E%8B%E3%83%92%E3%83%A5%E3%83%BC%E3%82%BA+1A,,,,,,,,,,,,,2,2
 ,ケーブル,電線 0.3〜0.5mm²,赤・青・黒 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/s?k=%E3%83%93%E3%83%8B%E3%83%BC%E3%83%AB%E7%B7%9A+0.5sq,,,,,,,,,,,,,適宜,適宜
 ,ケーブル,丸形圧着端子,コントローラーの端子の大きさに合うもの,amazon,https://www.amazon.co.jp/s?k=%E4%B8%B8%E5%BD%A2%E5%9C%A7%E7%9D%80%E7%AB%AF%E5%AD%90,,,,,,,,,,,,,3,3
-,電子部品,抵抗 15kΩ,金属皮膜抵抗 1/4W 15kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+15k%CE%A9,,,,,,,,,,,,,,1
-,電子部品,抵抗 8.2kΩ,金属皮膜抵抗 1/4W 8.2kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+8.2k%CE%A9,,,,,,,,,,,,,,1
+,電子部品,抵抗 15kΩ,小型 金属皮膜抵抗 1/4W15kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108552/,100,本,300,,,,,,,,,,,1
+,電子部品,抵抗 8.2kΩ,小型 金属皮膜抵抗 1/2WS 8.2kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g116644/,100,本,300,,,,,,,,,,,1
