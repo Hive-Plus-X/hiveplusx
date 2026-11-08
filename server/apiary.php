@@ -401,7 +401,7 @@ echo '<style>.vsel{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;m
     . '.asearch{margin:.4em 0;width:16em!important}.aord{margin:.4em 0}.aord .ain,.asorting .aord .aon{display:none}.asorting .aord .ain{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.aord .aon{font-size:.85em;padding:3px 10px}.alist .hd{display:none;width:1%;padding:3px 10px!important;text-align:center;color:#567;font-size:1.3em;cursor:grab;touch-action:none;user-select:none}.asorting .alist .hd{display:table-cell}.asorting .alist a{pointer-events:none;color:inherit;text-decoration:none}.asorting .asearch{display:none}.alist tr[data-id]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.alist tr.adrag td{background:#fdf0c8!important}.asorting .aord .ain{background:#fdf0c8;border:1px solid #e0c060;border-radius:6px;padding:4px 8px}@media(max-width:600px){.alist .ad{display:none}}'
     . '#amap{position:relative;z-index:0;height:65vh;min-height:340px;margin:.4em 0;border:1px solid #ccd;border-radius:6px;background:#e8ecef}'
     . '#amap input{padding:0}.alab{font-size:13px;font-weight:bold;padding:2px 6px}.alab a{color:#1F2328;text-decoration:none}'
-    . '.aleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85em;color:#444}.aleg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px;vertical-align:-2px;border:2px solid #fff;box-shadow:0 0 0 1px #999}.alab.hid{visibility:hidden}</style>';
+    . '.aleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85em;color:#444}.aleg i{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:4px;vertical-align:middle;border:2px solid #fff;box-shadow:0 0 0 1px #999;color:#fff;font:bold 10px/13px sans-serif;font-style:normal;text-align:center}.abang{color:#fff;font:bold 15px/24px sans-serif;text-align:center}.alab.hid{visibility:hidden}</style>';
 if ($one !== '') {
     echo '<div class="vsel"><a href="apiary.php">← すべての蜂場</a></div>';
 } elseif ($site['apiaries']) {
@@ -413,7 +413,8 @@ $addbox = fn(string $extra = '') => '<details class="addbox" id="new"' . (!$site
     . '<div class="card">' . apiary_form([], '', $hubs, $sensors, $site) . '</div></details>';
 // 地図の点の色。地図・航空写真は青・緑・黄・茶が多いので、赤・ピンク・オレンジ系にして白いふちを付ける (2026-11-06 TARO)
 //   色分け (2026-11-07 TARO): 正常=オレンジ / タスクあり=ピンク / センサ異常=赤。両方あてはまるときは赤を先に
-$stColor = ['ok' => '#FF7A00', 'task' => '#F06292', 'bad' => '#B00020'];
+// 地図の点の色 (2026-11-08 TARO指定): 正常=青、タスクあり=黄、センサ異常=赤 (白抜きの「！」付き)。どれも白い縁取り
+$stColor = ['ok' => '#1E6FD9', 'task' => '#F2C300', 'bad' => '#D32F2F'];
 $stText = ['ok' => '正常', 'task' => 'タスクあり', 'bad' => 'センサ異常'];
 
 if ($one === '' && $view === 'list' && $site['apiaries']) {
@@ -495,7 +496,7 @@ JS;
     // 地図: 緯度,経度が入っている蜂場に点を打ち、全部が入る縮尺で出す。点か名前を押すとその蜂場のページへ
     //   地図は国土地理院の地図(地理院タイル)。キー不要。表示には Leaflet (オープンソースの地図の部品) を使う
     $pts = []; $nopos = [];
-    // ピンク(タスクあり): 期限が今日まで(期限切れも)の未完了タスクがある蜂場。「すべての蜂場」向けのタスクは数えない(全部ピンクになるため)
+    // 黄色(タスクあり): 期限が今日まで(期限切れも)の未完了タスクがある蜂場。「すべての蜂場」向けのタスクは数えない(全部黄色になるため)
     $dueAp = [];
     foreach (works_load()['todos'] as $t) {
         if (empty($t['done']) && ($t['apiary'] ?? '') !== '' && ($t['due'] ?? '') !== '' && $t['due'] <= $today) $dueAp[(string)$t['apiary']] = true;
@@ -516,7 +517,7 @@ JS;
     }
     unset($pt);
     echo '<div id="amap"></div><div class="aleg">';
-    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . '"></i>' . h($t) . '</span>';
+    foreach ($stText as $k => $t) echo '<span><i style="background:' . $stColor[$k] . '">' . ($k === 'bad' ? '!' : '') . '</i>' . h($t) . '</span>';
     echo '</div>';
     if ($nopos) {
         echo '<p class="muted" style="margin-top:.8em">地図に出ていない蜂場 (蜂場の情報の「緯度・経度」が空です。入れると地図に出ます): ';
@@ -534,7 +535,9 @@ JS;
         . 'var b=[],T=[];P.forEach(function(p){var mk=L.circleMarker([p.la,p.lo],{radius:p.z,color:p.r,weight:p.w,fillColor:p.c,fillOpacity:1}).addTo(m);'
         . 'var a=document.createElement("a");a.href=p.u;a.textContent=p.n;'
         . 'mk.bindTooltip(a,{permanent:true,direction:"right",offset:[p.z+p.w/2,0],interactive:true,className:"alab"});'
-        . 'mk.on("click",function(){location.href=p.u;});b.push([p.la,p.lo]);T.push(mk);});'
+        . 'mk.on("click",function(){location.href=p.u;});b.push([p.la,p.lo]);T.push(mk);'
+        // センサ異常の点には白抜きの「！」を重ねる (押せない飾りなので、押すと下の点が反応する)
+        . 'if(p.s==="bad")L.marker([p.la,p.lo],{icon:L.divIcon({className:"abang",html:"!",iconSize:[24,24]}),interactive:false,keyboard:false}).addTo(m);});'
         // 名前が重ならないように: 右→左→上→下の順で、ほかの名前・点と重ならない向きを選ぶ。どこも重なるなら名前を隠す(拡大すると出る)
         . 'var O={right:[1,0],left:[-1,0],top:[0,-1],bottom:[0,1]};function off(mk,d){var k=mk.options.radius+mk.options.weight/2;return[O[d][0]*k,O[d][1]*k];}'
         . 'function hit(a,c){return a.left<c.right&&c.left<a.right&&a.top<c.bottom&&c.top<a.bottom;}'
