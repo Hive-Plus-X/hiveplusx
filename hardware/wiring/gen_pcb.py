@@ -833,7 +833,7 @@ finish(s, y, [
 # ================================================================== HPX-B バッテリー電圧（6×8cm 基板、ケース PFF10-4-10W）
 OX, OY = 260, 200
 s = S(1500, 3200)
-title(s, "HPX-B（バッテリー電圧）基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ XIAO nRF52840 ＋ 降圧 5V ／ ケース タカチ PFF10-4-10W")
+title(s, "HPX-B（バッテリー電圧）基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ XIAO nRF52840 ＋ BP5293-50 ／ ケース タカチ PFF10-4-10W")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
 
 def hole(h):
@@ -865,19 +865,19 @@ def cap_b(a, b, lpos, anchor="start"):
 # XIAO（USB-C が上）。左の列 J4〜J10（D0〜D6）、右の列 P4〜P10（5V, GND, 3V3, D10〜D7）
 p = xiao_pcb(s, Lc("J"), R(4))
 
-# 降圧 DC-DC（Pololu D24V5F5）。ピンは Q18〜T18（左から SHDN・VIN・GND・VOUT）、本体は下へ
-x1, y1 = H(Lc("Q"), R(18)); x2, _ = H(Lc("T"), R(18))
-s.top.append(f'<rect x="{x1-22}" y="{y1-20}" width="{x2-x1+44}" height="{4*P+44}" rx="6" fill="#1565c0" fill-opacity="0.85" stroke="#0d3c7a" stroke-width="2"/>')
-rec_part(x1 - 22, y1 - 20, x2 - x1 + 44, 4 * P + 44, "DC-DC")
-s.text((x1 + x2) / 2, y1 + 70, "降圧 DC-DC 5V", 13, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 90, "Pololu D24V5F5", 12, "middle", "bold", "#e3f2fd", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 108, "（ピンは上に4本）", 11, "middle", fill="#e3f2fd", layer=s.top)
-for i, n in enumerate(["SHDN", "VIN", "GND", "VOUT"]):
-    x, y = H(Lc("Q") + i, R(18))
+# 三端子 DCDC レギュレーター ROHM BP5293-50（7〜26V → 5V 1A）。足は R18・S18・T18（印字面を下＝手前に向けて左から VIN・GND・VOUT）。立てて付ける
+x1, y1 = H(Lc("R"), R(18)); x2, _ = H(Lc("T"), R(18))
+s.top.append(f'<rect x="{x1-26}" y="{y1+12}" width="{x2-x1+52}" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>')
+rec_part(x1 - 26, y1 + 12, x2 - x1 + 52, 22, "")
+s.text((x1 + x2) / 2, y1 + 28, "BP5293-50", 12, "middle", "bold", "#fff", layer=s.top)
+tag(x2 + 34, y1 + 30, "← 印字面を手前（下）に", 11, "start", w=150)
+for i, n in enumerate(["VIN", "GND", "VOUT"]):
+    x, y = H(Lc("R") + i, R(18))
     rec_pin(x, y, n)
-    on = n != "SHDN"
-    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
     tag(x, y - 16, n, 11, "middle", w=len(n) * 8 + 8)
+s.text((x1 + x2) / 2, H(0, R(22))[1] + 26, "10µF（入力側）", 12, "middle", "bold", "#333", layer=s.top)
+cap_flat(s, hole("R21"), hole("T21"), "10µF", True)
 
 # 端子台 3極（5.08mm）。K32 = パネル＋、M32 = マイナス、O32 = バッテリー＋。線を入れる口は下向き
 x1, y1 = H(Lc("K"), R(32)); x2, _ = H(Lc("O"), R(32))
@@ -910,14 +910,16 @@ res_flat("H24", "L24", "10kΩ", ["#8d5524", "#212121", "#f57c00"], (H(Lc("J"), 0
 cap_b("J26", "L26", (H(Lc("K"), 0)[0], H(0, R(27))[1] + 18), "middle")
 
 # 裏の線
-w("black",  "M32", "M26", "M24", "M18", "M16", "M5", "P5", "S5", "S18")   # マイナス（真ん中の背骨）→ XIAO GND → DC-DC GND
+w("black",  "M32", "M26", "M24", "M18", "M16", "M5", "P5", "S5", "S18")   # マイナス（真ん中の背骨）→ XIAO GND → BP5293 GND
+w("black",  "S18", "S21", "T21")                                    # BP5293 GND → 10µF
 w("black",  "H16", "M16")                                           # 0.1µF（バッテリー側）→ マイナス
 w("black",  "I18", "M18")                                           # 20kΩ → マイナス
 w("black",  "L24", "M24")                                           # 10kΩ → マイナス
 w("black",  "L26", "M26")                                           # 0.1µF（パネル側）→ マイナス
 w("red",    "O32", "O20", "O14")                                    # バッテリー＋ → 100kΩ
-w("red",    "O20", "R20", "R18")                                    # バッテリー＋ → DC-DC VIN
-w("orange", "T18", "T4", "P4")                                      # DC-DC VOUT → XIAO 5V
+w("red",    "O20", "R20", "R18")                                    # バッテリー＋ → BP5293 VIN
+w("red",    "R20", "R21")                                           # → 10µF
+w("orange", "T18", "T4", "P4")                                      # BP5293 VOUT → XIAO 5V
 w("green",  "J5", "G5", "G14", "H14", "I14", "K14")                 # バッテリーの測る点 → XIAO D1(A1)
 w("blue",   "K32", "K20")                                           # パネル＋ → 100kΩ
 w("yellow", "J4", "F4", "F20", "F24", "F26", "J26")                 # パネルの測る点 → XIAO D0(A0)
@@ -927,9 +929,9 @@ yb = back_section(s, OY + (NR - 1) * P + 220, "HPX-B_pcb.svg")
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
     ["red", "端子台 バッテリー＋（O32）", "O32 → O20 → O14", "100kΩ の右の足（O14）"],
-    ["red", "（とちゅうの O20）", "O20 → R20 → R18", "DC-DC VIN（R18）"],
-    ["orange", "DC-DC VOUT（T18）", "T18 → T4 → P4", "XIAO 5V（P4）"],
-    ["black", "端子台 マイナス（M32）", "M32 → M5 → P5 → S5 → S18", "XIAO GND（P5）・DC-DC GND（S18）"],
+    ["red", "（とちゅうの O20）", "O20 → R20 → R18（R20 → R21 も）", "BP5293 VIN（R18）・10µF（R21）"],
+    ["orange", "BP5293 VOUT（T18）", "T18 → T4 → P4", "XIAO 5V（P4）"],
+    ["black", "端子台 マイナス（M32）", "M32 → M5 → P5 → S5 → S18 → S21 → T21", "XIAO GND（P5）・BP5293 GND（S18）・10µF（T21）"],
     ["black", "0.1µF・20kΩ・10kΩ・0.1µF の下の足", "H16→M16、I18→M18、L24→M24、L26→M26", "マイナスの線（M 列）"],
     ["green", "XIAO D1/A1（J5）", "J5 → G5 → G14 → K14", "0.1µF（H14）・20kΩ（I14）・100kΩ（K14）"],
     ["blue", "端子台 パネル＋（K32）", "K32 → K20", "100kΩ の右の足（K20）"],
@@ -938,7 +940,8 @@ y = table(s, 60, yb + 40, [
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
     ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", "J4〜J10・P4〜P10。USB-C を上に向ける"],
-    ["降圧 DC-DC 5V Pololu D24V5F5（入力 〜36V）＋ ピンヘッダ 4ピン", "1", "Q18〜T18（左から SHDN・VIN・GND・VOUT）。SHDN はつながない"],
+    ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "R18・S18・T18（印字面を手前（下）に向けて左から VIN・GND・VOUT）。立てて付ける"],
+    ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "R21・T21（BP5293 の入力側。なくても動くが付けると安定する）"],
     ["金属皮膜抵抗 100kΩ 1%", "2", "K14〜O14（バッテリー用）、G20〜K20（パネル用）。寝かせて付ける"],
     ["金属皮膜抵抗 20kΩ 1%", "1", "I14〜I18（バッテリー用）"],
     ["金属皮膜抵抗 10kΩ 1%", "1", "H24〜L24（パネル用）"],
@@ -957,6 +960,7 @@ finish(s, y, [
     "・ヒューズはコントローラーの端子のすぐ近くに入れる（線がショートしたときの火事よけ）。基板の上には載せない。",
     "・マイナスはコントローラーの「バッテリー−」につなぐ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。",
     "・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（5V が USB とぶつからないように）。",
-    "・DC-DC のピンの並び（SHDN・VIN・GND・VOUT）は実物の印字で確かめてから差す。",
+    "・BP5293-50 の足の並び（VIN・GND・VOUT）は、差す前に秋月の資料（データシート）の図で確かめる。逆に差すと壊れる。",
+    "・BP5293-50 の入力は 26V まで。バッテリー（充電中でも 15V くらい）にはつないでよいが、パネル＋には絶対につながない（開放電圧 23.5V、寒い日はもっと上がる）。",
 ], "HPX-B_pcb.svg")
 print("ok")

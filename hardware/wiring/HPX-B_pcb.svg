@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="4224" viewBox="0 0 1500 4224">
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="4280" viewBox="0 0 1500 4280">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1500" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-B（バッテリー電圧）基板の配線図</text>
-<text x="1470" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ XIAO nRF52840 ＋ 降圧 5V ／ ケース タカチ PFF10-4-10W</text>
+<text x="1470" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ XIAO nRF52840 ＋ BP5293-50 ／ ケース タカチ PFF10-4-10W</text>
 <rect x="228" y="168" width="1024" height="1344" rx="10" fill="#c8a165" stroke="#8d6e3f" stroke-width="2"/>
 <rect x="234" y="174" width="1012" height="1332" rx="6" fill="#e8d3a8" stroke="#b08d57" stroke-width="1.5"/>
 <text x="260" y="162" font-size="13" text-anchor="middle" font-weight="bold" fill="#8d6e3f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">A</text>
@@ -1726,6 +1726,8 @@
 <text x="820" y="1618" font-size="11" text-anchor="middle" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1A ヒューズ経由</text>
 <path d="M740,1440 L740,1200 L740,1120 L740,880 L740,800 L740,360 L860,360 L980,360 L980,880" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
 <path d="M740,1440 L740,1200 L740,1120 L740,880 L740,800 L740,360 L860,360 L980,360 L980,880" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+<path d="M980,880 L980,1000 L1020,1000" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
+<path d="M980,880 L980,1000 L1020,1000" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 <path d="M540,800 L740,800" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
 <path d="M540,800 L740,800" fill="none" stroke="#212121" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 <path d="M580,880 L740,880" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
@@ -1738,6 +1740,8 @@
 <path d="M820,1440 L820,960 L820,720" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 <path d="M820,960 L940,960 L940,880" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
 <path d="M820,960 L940,960 L940,880" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+<path d="M940,960 L940,1000" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
+<path d="M940,960 L940,1000" fill="none" stroke="#e53935" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 <path d="M1020,880 L1020,320 L860,320" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
 <path d="M1020,880 L1020,320 L860,320" fill="none" stroke="#fb8c00" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 <path d="M620,360 L500,360 L500,720 L540,720 L580,720 L660,720" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round" opacity="0.8"/>
@@ -3467,12 +3471,13 @@
 <text transform="matrix(-1,0,0,1,2520.0,0)" x="1260" y="1485" font-size="13" text-anchor="end" font-weight="bold" fill="#8d6e3f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">33</text>
 <rect x="606" y="296" width="268" height="288" rx="6" fill="#ffffff" fill-opacity="0.35" stroke="#78909c" stroke-width="2" stroke-dasharray="6 4"/>
 <text transform="matrix(-1,0,0,1,1480.0,0)" x="740.0" y="445.0" font-size="13" text-anchor="middle" font-weight="bold" fill="#607d8b" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">XIAO</text>
-<rect x="878" y="860" width="164" height="204" rx="6" fill="#ffffff" fill-opacity="0.35" stroke="#78909c" stroke-width="2" stroke-dasharray="6 4"/>
-<text transform="matrix(-1,0,0,1,1920.0,0)" x="960.0" y="967.0" font-size="13" text-anchor="middle" font-weight="bold" fill="#607d8b" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DC-DC</text>
+<rect x="914" y="892" width="132" height="22" rx="6" fill="#ffffff" fill-opacity="0.35" stroke="#78909c" stroke-width="2" stroke-dasharray="6 4"/>
 <rect x="624" y="1410" width="232" height="98" rx="6" fill="#ffffff" fill-opacity="0.35" stroke="#78909c" stroke-width="2" stroke-dasharray="6 4"/>
 <text transform="matrix(-1,0,0,1,1480.0,0)" x="740.0" y="1464.0" font-size="13" text-anchor="middle" font-weight="bold" fill="#607d8b" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">端子台</text>
 <path d="M740.0,1440.0 L740.0,1200.0 L740.0,1120.0 L740.0,880.0 L740.0,800.0 L740.0,360.0 L860.0,360.0 L980.0,360.0 L980.0,880.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M740.0,1440.0 L740.0,1200.0 L740.0,1120.0 L740.0,880.0 L740.0,800.0 L740.0,360.0 L860.0,360.0 L980.0,360.0 L980.0,880.0" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M980.0,880.0 L980.0,1000.0 L1020.0,1000.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M980.0,880.0 L980.0,1000.0 L1020.0,1000.0" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M540.0,800.0 L740.0,800.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M540.0,800.0 L740.0,800.0" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M580.0,880.0 L740.0,880.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
@@ -3485,6 +3490,8 @@
 <path d="M820.0,1440.0 L820.0,960.0 L820.0,720.0" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M820.0,960.0 L940.0,960.0 L940.0,880.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M820.0,960.0 L940.0,960.0 L940.0,880.0" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940.0,960.0 L940.0,1000.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940.0,960.0 L940.0,1000.0" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M1020.0,880.0 L1020.0,320.0 L860.0,320.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M1020.0,880.0 L1020.0,320.0 L860.0,320.0" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M620.0,360.0 L500.0,360.0 L500.0,720.0 L540.0,720.0 L580.0,720.0 L660.0,720.0" fill="none" stroke="#9e9e9e" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
@@ -3525,14 +3532,16 @@
 <text transform="matrix(-1,0,0,1,1742.0,0)" x="871.0" y="511.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D8</text>
 <circle cx="860.0" cy="560.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
 <text transform="matrix(-1,0,0,1,1742.0,0)" x="871.0" y="551.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D7</text>
-<circle cx="900.0" cy="880.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
-<text transform="matrix(-1,0,0,1,1822.0,0)" x="911.0" y="871.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SHDN</text>
 <circle cx="940.0" cy="880.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
 <text transform="matrix(-1,0,0,1,1902.0,0)" x="951.0" y="871.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VIN</text>
 <circle cx="980.0" cy="880.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
 <text transform="matrix(-1,0,0,1,1982.0,0)" x="991.0" y="871.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
 <circle cx="1020.0" cy="880.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
 <text transform="matrix(-1,0,0,1,2062.0,0)" x="1031.0" y="871.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VOUT</text>
+<circle cx="940.0" cy="1000.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
+<text transform="matrix(-1,0,0,1,1902.0,0)" x="951.0" y="991.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">10µF</text>
+<circle cx="1020.0" cy="1000.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
+<text transform="matrix(-1,0,0,1,2062.0,0)" x="1031.0" y="991.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">10µF</text>
 <circle cx="660.0" cy="1440.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
 <text transform="matrix(-1,0,0,1,1342.0,0)" x="671.0" y="1431.0" font-size="11" text-anchor="end" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネル＋</text>
 <circle cx="740.0" cy="1440.0" r="8.5" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
@@ -3572,6 +3581,9 @@
 <circle cx="860.0" cy="360.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
 <circle cx="980.0" cy="360.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
 <circle cx="980.0" cy="880.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
+<circle cx="980.0" cy="880.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
+<circle cx="980.0" cy="1000.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
+<circle cx="1020.0" cy="1000.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
 <circle cx="540.0" cy="800.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
 <circle cx="740.0" cy="800.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
 <circle cx="580.0" cy="880.0" r="4" fill="#212121" stroke="#333" stroke-width="1.2"/>
@@ -3586,6 +3598,8 @@
 <circle cx="820.0" cy="960.0" r="4" fill="#e53935" stroke="#333" stroke-width="1.2"/>
 <circle cx="940.0" cy="960.0" r="4" fill="#e53935" stroke="#333" stroke-width="1.2"/>
 <circle cx="940.0" cy="880.0" r="4" fill="#e53935" stroke="#333" stroke-width="1.2"/>
+<circle cx="940.0" cy="960.0" r="4" fill="#e53935" stroke="#333" stroke-width="1.2"/>
+<circle cx="940.0" cy="1000.0" r="4" fill="#e53935" stroke="#333" stroke-width="1.2"/>
 <circle cx="1020.0" cy="880.0" r="4" fill="#fb8c00" stroke="#333" stroke-width="1.2"/>
 <circle cx="1020.0" cy="320.0" r="4" fill="#fb8c00" stroke="#333" stroke-width="1.2"/>
 <circle cx="860.0" cy="320.0" r="4" fill="#fb8c00" stroke="#333" stroke-width="1.2"/>
@@ -3623,20 +3637,20 @@
 <rect x="70" y="3311" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
 <text x="170" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（とちゅうの O20）</text>
-<text x="500" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">O20 → R20 → R18</text>
-<text x="970" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DC-DC VIN（R18）</text>
+<text x="500" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">O20 → R20 → R18（R20 → R21 も）</text>
+<text x="970" y="3323" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BP5293 VIN（R18）・10µF（R21）</text>
 <rect x="60" y="3332" width="1320" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="3341" width="34" height="12" rx="3" fill="#fb8c00" stroke="#555" stroke-width="1"/>
 <text x="112" y="3353" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">橙</text>
-<text x="170" y="3353" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DC-DC VOUT（T18）</text>
+<text x="170" y="3353" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BP5293 VOUT（T18）</text>
 <text x="500" y="3353" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">T18 → T4 → P4</text>
 <text x="970" y="3353" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">XIAO 5V（P4）</text>
 <rect x="60" y="3362" width="1320" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="3371" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
 <text x="170" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">端子台 マイナス（M32）</text>
-<text x="500" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">M32 → M5 → P5 → S5 → S18</text>
-<text x="970" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">XIAO GND（P5）・DC-DC GND（S18）</text>
+<text x="500" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">M32 → M5 → P5 → S5 → S18 → S21 → T21</text>
+<text x="970" y="3383" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">XIAO GND（P5）・BP5293 GND（S18）・10µF（T21）</text>
 <rect x="60" y="3392" width="1320" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="3401" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="3413" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
@@ -3671,55 +3685,60 @@
 <text x="710" y="3613" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="770" y="3613" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">J4〜J10・P4〜P10。USB-C を上に向ける</text>
 <rect x="60" y="3622" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3643" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">降圧 DC-DC 5V Pololu D24V5F5（入力 〜36V）＋ ピンヘッダ 4ピン</text>
+<text x="70" y="3643" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</text>
 <text x="710" y="3643" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3643" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Q18〜T18（左から SHDN・VIN・GND・VOUT）。SHDN はつながない</text>
+<text x="770" y="3643" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">R18・S18・T18（印字面を手前（下）に向けて左から VIN・GND・VOUT）。立てて付ける</text>
 <rect x="60" y="3652" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 100kΩ 1%</text>
-<text x="710" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
-<text x="770" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">K14〜O14（バッテリー用）、G20〜K20（パネル用）。寝かせて付ける</text>
+<text x="70" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">積層セラミックコンデンサー 10µF 50V 5mm</text>
+<text x="710" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="770" y="3673" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">R21・T21（BP5293 の入力側。なくても動くが付けると安定する）</text>
 <rect x="60" y="3682" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 20kΩ 1%</text>
-<text x="710" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">I14〜I18（バッテリー用）</text>
+<text x="70" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 100kΩ 1%</text>
+<text x="710" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
+<text x="770" y="3703" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">K14〜O14（バッテリー用）、G20〜K20（パネル用）。寝かせて付ける</text>
 <rect x="60" y="3712" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 10kΩ 1%</text>
+<text x="70" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 20kΩ 1%</text>
 <text x="710" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">H24〜L24（パネル用）</text>
+<text x="770" y="3733" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">I14〜I18（バッテリー用）</text>
 <rect x="60" y="3742" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">積層セラミックコンデンサー 0.1µF 50V 5mm</text>
-<text x="710" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
-<text x="770" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">H14〜H16（バッテリー用）、J26〜L26（パネル用）</text>
+<text x="70" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">金属皮膜抵抗 10kΩ 1%</text>
+<text x="710" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="770" y="3763" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">H24〜L24（パネル用）</text>
 <rect x="60" y="3772" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">端子台 3極 5.08mm（基板用、ねじ式）</text>
-<text x="710" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">K32・M32・O32（左から パネル＋・マイナス・バッテリー＋）</text>
+<text x="70" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">積層セラミックコンデンサー 0.1µF 50V 5mm</text>
+<text x="710" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
+<text x="770" y="3793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">H14〜H16（バッテリー用）、J26〜L26（パネル用）</text>
 <rect x="60" y="3802" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">平型ヒューズホルダー（線の途中に入れる）＋ 1A 平型ヒューズ</text>
-<text x="710" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
-<text x="770" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">バッテリー＋とパネル＋の線に1つずつ。コントローラーの端子のすぐ近くに</text>
+<text x="70" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">端子台 3極 5.08mm（基板用、ねじ式）</text>
+<text x="710" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="770" y="3823" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">K32・M32・O32（左から パネル＋・マイナス・バッテリー＋）</text>
 <rect x="60" y="3832" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線 0.3〜0.5mm²（赤・青・黒）・丸形圧着端子</text>
-<text x="710" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">少し</text>
-<text x="770" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">コントローラーのバッテリー＋・パネル＋・バッテリー− から端子台まで</text>
+<text x="70" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">平型ヒューズホルダー（線の途中に入れる）＋ 1A 平型ヒューズ</text>
+<text x="710" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
+<text x="770" y="3853" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">バッテリー＋とパネル＋の線に1つずつ。コントローラーの端子のすぐ近くに</text>
 <rect x="60" y="3862" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</text>
-<text x="710" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">縦に置く。線はすべて裏</text>
+<text x="70" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線 0.3〜0.5mm²（赤・青・黒）・丸形圧着端子</text>
+<text x="710" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">少し</text>
+<text x="770" y="3883" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">コントローラーのバッテリー＋・パネル＋・バッテリー− から端子台まで</text>
 <rect x="60" y="3892" width="1220" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="3913" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケース タカチ PFF10-4-10W（壁掛け、内側 約 67×90mm）</text>
+<text x="70" y="3913" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</text>
 <text x="710" y="3913" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="770" y="3913" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">基板はスペーサーで浮かせて留める。線を通す穴をあける</text>
-<rect x="60" y="3942" width="1380" height="242" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
-<text x="78" y="3968" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
-<text x="78" y="3996" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</text>
-<text x="78" y="4022" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。下の「裏から見た図」が実際に配線する向き（左右が逆）。</text>
-<text x="78" y="4048" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・裏の線どうしは交わらない。100kΩ（K14〜O14）・10kΩ・0.1µF（J26〜L26）は、裏の線（黒・青）の上をまたいで付ける（表と裏なので触れない）。</text>
-<text x="78" y="4074" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・バッテリーは 100kΩ と 20kΩ で 1/6 に（18V で 3.0V）、パネルは 100kΩ と 10kΩ で 1/11 に（33V で 3.0V）下げて XIAO で読む。</text>
-<text x="78" y="4100" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ヒューズはコントローラーの端子のすぐ近くに入れる（線がショートしたときの火事よけ）。基板の上には載せない。</text>
-<text x="78" y="4126" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・マイナスはコントローラーの「バッテリー−」につなぐ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</text>
-<text x="78" y="4152" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（5V が USB とぶつからないように）。</text>
-<text x="78" y="4178" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・DC-DC のピンの並び（SHDN・VIN・GND・VOUT）は実物の印字で確かめてから差す。</text>
+<text x="770" y="3913" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">縦に置く。線はすべて裏</text>
+<rect x="60" y="3922" width="1220" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="3943" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケース タカチ PFF10-4-10W（壁掛け、内側 約 67×90mm）</text>
+<text x="710" y="3943" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="770" y="3943" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">基板はスペーサーで浮かせて留める。線を通す穴をあける</text>
+<rect x="60" y="3972" width="1380" height="268" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="3998" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
+<text x="78" y="4026" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。</text>
+<text x="78" y="4052" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。下の「裏から見た図」が実際に配線する向き（左右が逆）。</text>
+<text x="78" y="4078" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・裏の線どうしは交わらない。100kΩ（K14〜O14）・10kΩ・0.1µF（J26〜L26）は、裏の線（黒・青）の上をまたいで付ける（表と裏なので触れない）。</text>
+<text x="78" y="4104" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・バッテリーは 100kΩ と 20kΩ で 1/6 に（18V で 3.0V）、パネルは 100kΩ と 10kΩ で 1/11 に（33V で 3.0V）下げて XIAO で読む。</text>
+<text x="78" y="4130" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ヒューズはコントローラーの端子のすぐ近くに入れる（線がショートしたときの火事よけ）。基板の上には載せない。</text>
+<text x="78" y="4156" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・マイナスはコントローラーの「バッテリー−」につなぐ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</text>
+<text x="78" y="4182" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（5V が USB とぶつからないように）。</text>
+<text x="78" y="4208" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・BP5293-50 の足の並び（VIN・GND・VOUT）は、差す前に秋月の資料（データシート）の図で確かめる。逆に差すと壊れる。</text>
+<text x="78" y="4234" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・BP5293-50 の入力は 26V まで。バッテリー（充電中でも 15V くらい）にはつないでよいが、パネル＋には絶対につながない（開放電圧 23.5V、寒い日はもっと上がる）。</text>
 <rect x="606" y="296" width="268" height="288" rx="8" fill="#1b5e20" fill-opacity="0.92" stroke="#0d3311" stroke-width="2"/>
 <rect x="716.0" y="288" width="48" height="18" rx="5" fill="#b0b0b0" stroke="#777"/>
 <rect x="696.0" y="384.0" width="88" height="76" rx="3" fill="#cfd8dc" stroke="#90a4ae"/>
@@ -3754,13 +3773,10 @@
 <text x="846" y="525" font-size="13" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D8</text>
 <circle cx="860" cy="560" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <text x="846" y="565" font-size="13" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D7</text>
-<rect x="878" y="860" width="164" height="204" rx="6" fill="#1565c0" fill-opacity="0.85" stroke="#0d3c7a" stroke-width="2"/>
-<text x="960.0" y="950" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">降圧 DC-DC 5V</text>
-<text x="960.0" y="970" font-size="12" text-anchor="middle" font-weight="bold" fill="#e3f2fd" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Pololu D24V5F5</text>
-<text x="960.0" y="988" font-size="11" text-anchor="middle" font-weight="normal" fill="#e3f2fd" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（ピンは上に4本）</text>
-<circle cx="900" cy="880" r="8.5" fill="#9e9e9e" stroke="#5d4520" stroke-width="2"/>
-<rect x="880.0" y="851" width="40" height="20" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
-<text x="900" y="864" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SHDN</text>
+<rect x="914" y="892" width="132" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>
+<text x="980.0" y="908" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BP5293-50</text>
+<rect x="1049" y="897" width="150" height="20" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
+<text x="1054" y="910" font-size="11" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">← 印字面を手前（下）に</text>
 <circle cx="940" cy="880" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>
 <rect x="924.0" y="851" width="32" height="20" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
 <text x="940" y="864" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VIN</text>
@@ -3770,6 +3786,11 @@
 <circle cx="1020" cy="880" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>
 <rect x="1000.0" y="851" width="40" height="20" rx="4" fill="#fffdf6" fill-opacity="0.95"/>
 <text x="1020" y="864" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VOUT</text>
+<text x="980.0" y="1066" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">10µF（入力側）</text>
+<line x1="940" y1="1000" x2="1020" y2="1000" stroke="#888" stroke-width="3"/>
+<rect x="965.0" y="985.0" width="30" height="30" rx="7" fill="#f0c419" stroke="#555" stroke-width="1.5"/>
+<circle cx="940" cy="1000" r="4" fill="#666"/>
+<circle cx="1020" cy="1000" r="4" fill="#666"/>
 <rect x="624" y="1410" width="232" height="98" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>
 <circle cx="660" cy="1440" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>
 <circle cx="660" cy="1480" r="13" fill="#bdbdbd" stroke="#424242" stroke-width="2"/>
@@ -3830,6 +3851,8 @@
 <text x="660" y="1258" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">0.1µF</text>
 <circle cx="740" cy="1440" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="980" cy="880" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<circle cx="980" cy="880" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
+<circle cx="1020" cy="1000" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="540" cy="800" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="740" cy="800" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
 <circle cx="580" cy="880" r="5" fill="#fff" stroke="#212121" stroke-width="2.5"/>
@@ -3842,6 +3865,8 @@
 <circle cx="820" cy="720" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="820" cy="960" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="940" cy="880" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
+<circle cx="940" cy="960" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
+<circle cx="940" cy="1000" r="5" fill="#fff" stroke="#e53935" stroke-width="2.5"/>
 <circle cx="1020" cy="880" r="5" fill="#fff" stroke="#fb8c00" stroke-width="2.5"/>
 <circle cx="860" cy="320" r="5" fill="#fff" stroke="#fb8c00" stroke-width="2.5"/>
 <circle cx="620" cy="360" r="5" fill="#fff" stroke="#43a047" stroke-width="2.5"/>

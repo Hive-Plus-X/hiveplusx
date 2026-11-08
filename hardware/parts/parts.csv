@@ -57,7 +57,8 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,部材,基板スペーサー クイックロック貼付スペーサー ULCKシリーズ,タカチ　ULCK-6.4,モノタロウ,https://www.monotaro.com/g/06277754/,4,個,119,,,,,,,,,
 ,部材,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,1,,,,,,
 ,部材,USBケーブル,USB-C to MicroUSB ケーブル 15cm,amazon,https://www.amazon.co.jp/dp/B0H14RX1M1,2,本,559,,,1,,,,,,
-,電源,降圧 DC-DC コンバーター 5V,Pololu D24V5F5 (入力 〜36V、出力 5V 500mA、ピンヘッダー付き),Pololu,https://www.pololu.com/search?query=D24V5F5,1,個,,,,,,,,,,,1
+,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,,,,,,,,,,,1
+,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF 50V 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E7%A9%8D%E5%B1%A4%E3%82%BB%E3%83%A9%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%87%E3%83%B3%E3%82%B5%E3%83%BC+10%CE%BCF+50V,,,,,,,,,,,,,1
 ,電子部品,抵抗 100kΩ,金属皮膜抵抗 1/4W 100kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+100k%CE%A9,,,,,,,,,,,,,2
 ,電子部品,抵抗 20kΩ,金属皮膜抵抗 1/4W 20kΩ 1%,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E9%87%91%E5%B1%9E%E7%9A%AE%E8%86%9C%E6%8A%B5%E6%8A%97+20k%CE%A9,,,,,,,,,,,,,1
 ,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?keyword=%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF+3P+5.08mm,,,,,,,,,,,,,1
