@@ -754,7 +754,7 @@
 <text x="690" y="1763" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
 <text x="750" y="1763" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">置き場所・メモ</text>
 <rect x="60" y="1772" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Seeed XIAO ESP32S3 Sense（カメラ OV2640・microSD 枠付き。付属の Wi-Fi アンテナを付ける）</text>
+<text x="70" y="1793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Seeed Studio XIAO ESP32S3 Sense（カメラ OV3660・microSD 枠付き。付属の外付けアンテナを付ける。秋月電子 2,660円）</text>
 <text x="690" y="1793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="750" y="1793" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">C3〜I9 のソケットに差す。USB-C を上に向ける</text>
 <rect x="60" y="1802" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
