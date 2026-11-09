@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>設置ガイド | Hive Plus X</title>
+<meta name="description" content="Hive Plus X の設置ガイド。サーバー HPX-Server の導入、HPX-Core の設定、センサの登録と、蜂場での電源・ルーター・HPX-Core・センサの設置の手順を説明します。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:36px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 450px、スマホ 300px) */
+  section { padding:0; margin-top:450px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:300px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  .more { display:inline-block; margin-top:20px; font-weight:600; text-decoration:none; border-bottom:2px solid var(--honey); }
+
+  /* トピック: 左右2列。テキストは上から 左→右→左… (.rev がテキスト右) */
+  .topic { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+  .topic.rev .text { order:2; }
+  .topic.rev .visual { order:1; }
+  .topic .lead { max-width:none; }
+  .topic ul { margin-top:16px; padding-left:1.2em; color:var(--sub); }
+  .topic .entry { justify-content:flex-start; }
+  @media (max-width:760px) {
+    .topic { grid-template-columns:1fr; gap:36px; }
+    .topic.rev .text, .topic.rev .visual { order:0; }
+  }
+
+  /* しくみ図 (縦の流れ) */
+  .flow { display:flex; flex-direction:column; gap:22px; max-width:360px; margin:0 auto; }
+  .flow .node { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; text-align:center; position:relative; }
+  .flow .node b { display:block; font-size:15px; }
+  .flow .node span { display:block; font-size:12px; color:var(--sub); margin-top:2px; line-height:1.5; }
+  .flow .node:not(:last-child)::after { content:"↓"; position:absolute; left:50%; bottom:-22px; transform:translateX(-50%); color:var(--honey); font-weight:700; line-height:22px; }
+  /* 市販品を使うルーターだけ、少し灰色にして控えめに */
+  .flow .node.shop { background:#F0EFEB; }
+  @media (prefers-color-scheme: dark) { .flow .node.shop { background:rgba(0,0,0,.18); } }
+
+  /* カード */
+  .cards { display:grid; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; display:block; }
+  a.card:hover { border-color:var(--honey); }
+  .card .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .card .tag { color:var(--honey); } }
+  .card h3 { font-size:17px; margin-top:8px; }
+  .card p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .card .soon { color:var(--sub); font-size:12px; }
+
+  /* 画面写真の場所 */
+  .shot { aspect-ratio:4/3; width:100%; border-radius:14px; border:1px dashed var(--line); background:var(--panel);
+          display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:13px; }
+
+  /* ダウンロードの図 (公開しているものの一覧) */
+  .files { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .files .row { display:flex; align-items:center; gap:14px; padding:18px 24px; }
+  .files .row + .row { border-top:1px solid var(--line); }
+  .files .name { flex:1; min-width:0; }
+  .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
+  .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
+
+  /* ライセンスの注釈 (各1行) */
+  .lic-notes { margin-top:20px; font-size:14px; }
+  .lic-notes div { display:flex; gap:12px; padding:4px 0; }
+  .lic-notes dt { flex:none; width:112px; font-weight:700; }
+  .lic-notes dd { color:var(--sub); }
+  @media (max-width:760px) { .lic-notes div { flex-direction:column; gap:0; padding:6px 0; } .lic-notes dt { width:auto; } }
+
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* しくみページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  .hero.sub h1 { font-size:clamp(28px, 5vw, 40px); margin-top:0; }
+  .ico { width:48px; height:48px; color:var(--forest); display:block; }
+  .ico .fill { fill:currentColor; stroke:none; }
+  .ico .accent { stroke:var(--honey); }
+  @media (prefers-color-scheme: dark) { .ico { color:var(--honey); } .ico .accent { stroke:#fff; } }
+  /* 分類ごとの説明 */
+  .role .visual { display:flex; flex-direction:column; gap:18px; }
+  .role .pict { display:flex; gap:14px; }
+  .role .pict .ico { width:72px; height:72px; }
+  .topic .note { font-size:14px; color:var(--sub); margin-top:14px; }
+  .topic .framed { font-size:14px; margin-top:14px; padding:14px 18px; background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--honey); border-radius:10px; }
+  .topic .more + .framed { margin-top:28px; }
+  .spec { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .spec div { display:grid; grid-template-columns:8.5em 1fr; gap:12px; padding:12px 20px; font-size:14px; }
+  .spec div + div { border-top:1px solid var(--line); }
+  .spec dt { font-weight:700; }
+  .spec dd { color:var(--sub); margin:0; }
+  @media (max-width:760px) { .spec div { grid-template-columns:1fr; gap:2px; } }
+  /* データの流れ */
+  .steps { list-style:none; margin-top:48px; display:grid; gap:14px; counter-reset:st; }
+  .steps li { counter-increment:st; display:grid; grid-template-columns:56px 1fr; gap:18px; align-items:start; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 22px; }
+  .steps li::before { content:counter(st); width:40px; height:40px; border-radius:50%; background:var(--honey); color:#1F2328; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .steps b { display:block; font-size:16px; }
+  .steps span { display:block; color:var(--sub); font-size:14px; margin-top:4px; }
+  .steps .when { display:inline-block; margin-top:8px; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .steps .when { color:var(--honey); } }
+  /* 設置ガイド */
+  section { scroll-margin-top:72px; }
+  #toc { margin-top:120px; }
+  .toc { display:grid; grid-template-columns:1fr 1fr; gap:72px; }
+  .toc-list { list-style:none; margin-top:24px; display:grid; gap:10px; counter-reset:tc; }
+  .toc-list li { counter-increment:tc; }
+  .toc-list a { display:flex; align-items:center; gap:14px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 18px; text-decoration:none; font-weight:700; }
+  .toc-list a:hover { border-color:var(--honey); }
+  .toc-list a::before { content:counter(tc); flex:none; width:32px; height:32px; border-radius:50%; background:var(--honey); color:#1F2328; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  @media (max-width:760px) { #toc { margin-top:80px; } .toc { grid-template-columns:1fr; gap:56px; } }
+  .reveal + .reveal { margin-top:56px; }
+  .steps a { color:var(--text); }
+  code { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:.92em; background:var(--honey-soft); padding:1px 6px; border-radius:6px; word-break:break-all; }
+  .mini { margin-top:10px; font-size:13px; display:grid; gap:6px; }
+  .mini div { display:grid; grid-template-columns:15em 1fr; gap:10px; }
+  .mini dt { font-weight:700; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; word-break:break-all; }
+  .mini dd { color:var(--sub); margin:0; }
+  @media (max-width:760px) { .mini div { grid-template-columns:1fr; gap:0; } }
+  .framed { font-size:14px; margin-top:28px; padding:14px 18px; background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--honey); border-radius:10px; }
+  .spec.wide { margin-top:28px; }
+  .spec.wide div { grid-template-columns:13em 1fr; }
+  @media (max-width:760px) { .spec.wide div { grid-template-columns:1fr; } }
+  .sub-h { font-size:20px; margin-bottom:16px; }
+  .sub-h + .spec.wide { margin-top:0; }
+  .sensors { grid-template-columns:repeat(3, 1fr); gap:18px; margin-bottom:48px; }
+  .sensors .card ul { margin-top:10px; padding-left:1.2em; font-size:14px; color:var(--sub); }
+  .sensors .card li + li { margin-top:4px; }
+  .sensors .more { font-size:14px; margin-top:14px; }
+  @media (max-width:900px) { .sensors { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap sub">
+    <p class="eyebrow">Install guide</p>
+    <h1>設置ガイド</h1>
+    <p>Hive Plus X を使いはじめるまでの手順です。前半の「HPXシステム」は家や事務所でできる準備、後半の「蜂場」は現地での設置です。</p>
+  </div>
+
+  <section id="toc">
+    <div class="reveal wrap">
+      <div class="toc">
+        <div class="toc-group">
+          <p class="eyebrow">Part 1</p>
+          <h2>HPXシステム</h2>
+          <p class="lead">家でできる準備です。蜂場へ持っていく前に、ここまで済ませておくと現地の作業が短くなります。</p>
+          <ol class="toc-list">
+            <li><a href="#server">サーバーの導入方法</a></li>
+            <li><a href="#core">HPX-Core の設定</a></li>
+            <li><a href="#register">センサの登録方法</a></li>
+          </ol>
+        </div>
+        <div class="toc-group">
+          <p class="eyebrow">Part 2</p>
+          <h2>蜂場</h2>
+          <p class="lead">蜂場での設置です。電源と通信を先に用意し、最後に HPX-Core とセンサを置きます。</p>
+          <ol class="toc-list">
+            <li><a href="#power">電源の確保</a></li>
+            <li><a href="#network">ルーターの準備</a></li>
+            <li><a href="#core-place">HPX-Core の設置</a></li>
+            <li><a href="#sensor">センサの設置</a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HPXシステム ===================== -->
+
+  <section id="server">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">HPX System 1</p>
+        <h2>サーバーの導入方法</h2>
+        <p class="lead">HPX-Core から届いた記録を保存し、養蜂管理アプリ HPX-note を表示するサーバー HPX-Server を用意します。PHP が使えるレンタルサーバーに、ファイルを置くだけで動きます。データベースはいりません。</p>
+        <p class="note">開発者は、さくらのレンタルサーバ (ライトプラン) で動かしています。ほかのレンタルサーバーでも動く見込みですが、まだ確かめていません。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></div>
+        <dl class="spec">
+          <div><dt>サーバー</dt><dd>PHP が動き、https:// で開けるレンタルサーバー (開発では PHP 8.3 で確認)</dd></div>
+          <div><dt>メール</dt><dd>お知らせメールを送るための Gmail のアカウント (2段階認証とアプリパスワードを使います)</dd></div>
+          <div><dt>定期実行</dt><dd>15分ごとに見張りのページを動かすしくみ。サーバーの CRON か、無料の外部サービス (cron-job.org など)</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <ol class="steps">
+        <li><div><b>ファイルをダウンロードする</b><span><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a> の <code>server</code> フォルダ一式をダウンロードします。</span></div></li>
+        <li><div><b>設定ファイルを作る</b><span><code>config.sample.php</code> をコピーして <code>config.php</code> という名前にし、メモ帳などで開いて書き換えます。最初に決めるのは次の項目です。</span>
+          <dl class="mini">
+            <div><dt>$HPX_VIEW_PASSWORD</dt><dd>最初の管理者アカウントを作るときの合言葉 (8文字以上)</dd></div>
+            <div><dt>$HPX_MAIL_FROM / $HPX_SMTP_USER</dt><dd>メールを送る Gmail のアドレス</dd></div>
+            <div><dt>$HPX_SMTP_PASS</dt><dd>Gmail のアプリパスワード (16文字)</dd></div>
+            <div><dt>$HPX_CRON_TOKEN</dt><dd>外部サービスから定期実行するときの合言葉 (英数字20文字以上。CRON が使えるなら空欄)</dd></div>
+            <div><dt>$HPX_SITE_URL</dt><dd>サーバーの住所 (例 https://example.com/hpx)</dd></div>
+          </dl></div></li>
+        <li><div><b>アップロードする</b><span>レンタルサーバーの公開フォルダに <code>hpx</code> フォルダを作り、中身をすべて入れます。<code>data</code> フォルダの中の <code>.htaccess</code> (ブラウザから記録を開けないようにする設定) も必ず入れてください。</span></div></li>
+        <li><div><b>管理者アカウントを作る</b><span>ブラウザで <code>https://(あなたのドメイン)/hpx/login.php</code> を開きます。初期設定の画面が出るので、<code>$HPX_VIEW_PASSWORD</code> の合言葉を入れ、あなたのメールアドレス (ログインID になります) とパスワードを決めます。</span></div></li>
+        <li><div><b>定期実行を設定する</b><span><code>hpx_cron.php</code> を15分ごとに動かします。HPX-Core から届かなくなったときや、タスクの期限のお知らせに使います。</span>
+          <dl class="mini">
+            <div><dt>CRON があるとき</dt><dd><code>/usr/local/bin/php /home/(アカウント名)/www/hpx/hpx_cron.php</code> (置いた場所に合わせる)</dd></div>
+            <div><dt>CRON が無いとき</dt><dd>外部サービスから <code>https://(ドメイン)/hpx/hpx_cron.php?k=(合言葉)</code> を呼ぶ。ブラウザで開いて <code>ok</code> と出れば成功</dd></div>
+          </dl></div></li>
+        <li><div><b>使う人を登録する</b><span>HPX-note の「サーバー管理」で、登録のしかた (招待 / 申請して承認 / 自由登録) を選びます。家族や仲間と使うときは、チーム機能で記録を共有できます。</span></div></li>
+        <li><div><b>HPX-Core 用の情報を控える</b><span>HPX-note の「マイアカウント」→「HPX-Core の接続」に、送信先のURL とトークン (合言葉) が出ます。次の「HPX-Core の設定」で使います。</span></div></li>
+      </ol>
+      <p class="framed"><code>config.php</code> と <code>data</code> フォルダには、パスワードや記録が入っています。人に見せたり、GitHub などに上げたりしないでください。</p>
+    </div>
+  </section>
+
+  <section id="core">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">HPX System 2</p>
+        <h2>HPX-Core の設定</h2>
+        <p class="lead">HPX-Core に、どのネットワークにつなぐかと、記録の送り先を教えます。設定はスマートフォンのブラウザだけでできます。</p>
+        <p class="note">HPX-Core の作り方とファームウェアの書き込みは、<a href="device-core.html">HPX-Core の機器ページ</a>を見てください (Arduino IDE、ボードは ESP32 Dev Module、パーティションは Minimal SPIFFS)。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
+        <dl class="spec">
+          <div><dt>HPX-Core</dt><dd>ファームウェアを書き込んだもの</dd></div>
+          <div><dt>スマートフォン</dt><dd>設定用の Wi-Fi につないで、ブラウザで設定します</dd></div>
+          <div><dt>ルーターの情報</dt><dd>Wi-Fi でつなぐときは、ルーターの Wi-Fi の名前 (SSID) とパスワード。2.4GHz の Wi-Fi だけ使えます</dd></div>
+          <div><dt>サーバーの情報</dt><dd>前の章で控えた、送信先のURL とトークン</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <ol class="steps">
+        <li><div><b>設定用の Wi-Fi につなぐ</b><span>HPX-Core に電源を入れると、<code>HPX-Setup-xxxx</code> という Wi-Fi が出ます (xxxx は機器ごとに違います)。スマートフォンでこの Wi-Fi につなぎ (初期パスワード <code>12345678</code>)、ブラウザで <code>http://192.168.4.1/</code> を開きます。</span></div></li>
+        <li><div><b>ネットワークを設定する</b><span>接続方法 (Wi-Fi か有線LAN)、Wi-Fi の名前とパスワード、管理画面のパスワード (6〜32文字。ユーザー名は admin)、動作モードを入れて保存します。コンセントやソーラーで電気が来るなら、動作モードは「常時稼働」を選びます。</span></div></li>
+        <li><div><b>管理画面のURL を控える</b><span>Wi-Fi のときは、HPX-Core がその場で試しにつなぎ、管理画面のURL (<code>http://(IPアドレス)/</code> と <code>http://(機器ID).local/</code>) を表示します。控えたら「URLを控えました」にチェックして OK を押すと、再起動して切り替わります。つながらなかったときは、その場で入れ直せます。</span></div></li>
+        <li><div><b>送り先を入れる</b><span>管理画面の「動作設定」に、送信先のURL とトークンを入れます。記録の間隔 (15分・30分・60分。初めは30分) もここで選びます。「ファームウェア自動更新サーバーのURL」は空欄でも動きます。</span></div></li>
+        <li><div><b>届いたことを確かめる</b><span>次の記録の時刻を過ぎたら、HPX-note のセンサページに HPX-Core が出ます。蜂場のページで「この蜂場の HPX-Core」にチェックを入れると、蜂場とつながります。</span></div></li>
+      </ol>
+      <dl class="spec wide">
+        <div><dt>有線LAN のとき</dt><dd>再起動したあとも、管理画面用に <code>HPX-Setup-xxxx</code> の Wi-Fi が出たままになります。管理画面は、この Wi-Fi につないで <code>http://192.168.4.1/</code> で開きます。</dd></div>
+        <div><dt>管理画面を開くには</dt><dd>スマートフォンやパソコンを、HPX-Core と同じルーターにつないでおきます。HPX-note のセンサページの「管理画面を開く」からも開けます。ディープスリープ (電池) のときは、RESET ボタンを押してから約10分だけ開けます。</dd></div>
+        <div><dt>最初からやり直す</dt><dd>RESET ボタンを押して離し、3秒以内に BOOT ボタンを5秒長押しすると、設定が消えて初めの状態に戻ります。</dd></div>
+        <div><dt>ソーラーの電圧を見る</dt><dd>「＋有線LAN＆ソーラーシステムチェック」版では、動作設定の「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて合わせます。</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="register">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">HPX System 3</p>
+        <h2>センサの登録方法</h2>
+        <p class="lead">センサは、HPX-Core の管理画面で登録します。センサは Bluetooth で発信しているだけなので、ペアリングはいりません。1台の HPX-Core に10台まで登録できます。</p>
+        <p class="note">登録は、HPX-Core とセンサを手元に並べて、家でしておくのがおすすめです。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="3"/><path d="M16 22v-6h8v6M40 22v-6h8v6"/><path d="M16 38h8M20 34v8M40 38h8"/><path d="M33 26l-5 10h7l-4 10" class="accent"/></svg></div>
+        <dl class="spec">
+          <div><dt>HPX-W</dt><dd>重量センサ (巣箱の重さ)</dd></div>
+          <div><dt>HPX-TH</dt><dd>温湿度センサ (巣箱の中の温度・湿度)</dd></div>
+          <div><dt>HPX-F</dt><dd>電柵アラート (電柵の電圧低下)</dd></div>
+          <div><dt>市販温湿度計</dt><dd>Inkbird IBS-TH2 / TH2 PLUS、SwitchBot 温湿度計 / 防水温湿度計</dd></div>
+          <div><dt>HPX-B</dt><dd>バッテリー電圧 (準備中)</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <ol class="steps">
+        <li><div><b>センサに電池を入れる</b><span>電池を入れたセンサを、HPX-Core から1〜2m のところに置きます。</span></div></li>
+        <li><div><b>周りのセンサを探す</b><span>HPX-Core の管理画面で「センサの登録」→「周辺のセンサを探す」を押します。約8秒で、見つかったセンサが電波の強い順に並びます。[重量センサ] [温湿度センサ HPX-TH] [電柵アラート] のように種類も出ます。</span></div></li>
+        <li><div><b>名前を付けて登録する</b><span>「1番箱 重さ」「1番箱 温度」のように、どの巣箱のものかわかる名前を付けて登録します。センサ本体にも同じ名前のラベルを貼っておくと、設置のときに迷いません。</span></div></li>
+        <li><div><b>重量センサを較正する</b><span>HPX-W は、管理画面の「重量センサの較正」で、何も載せないときと、重さのわかる物を載せたときの2回測って、kg に直せるようにします。</span></div></li>
+        <li><div><b>巣箱・蜂場とつなぐ</b><span>HPX-note の巣箱のページで、その巣箱の HPX-W・HPX-TH を選びます。電柵アラート HPX-F は、蜂場のページで選びます。選べるのは、その蜂場の HPX-Core に登録したセンサだけです。</span></div></li>
+      </ol>
+      <p class="framed">近くにほかの人のセンサがあると、一覧に出ることがあります。手元のセンサは、ふつう一覧のいちばん上 (電波がいちばん強い) に出ます。迷ったときは、センサの電池を抜いてもう一度探し、消えたものが手元のセンサです。</p>
+    </div>
+  </section>
+
+  <!-- ===================== 蜂場 ===================== -->
+
+  <section id="power">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">Apiary 1</p>
+        <h2>電源の確保</h2>
+        <p class="lead">HPX-Core とルーターは、一日中電気を使います。蜂場に合わせて電源を選びます。センサ (HPX-W・HPX-TH・HPX-F) は電池で動くので、電源はいりません。</p>
+        <p class="note">コンセントの無い蜂場では、ソーラーパネルで 12V のバッテリーを充電して使います。下はその組み方です。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="50" cy="12" r="5" class="accent"/><path d="M50 2v2M50 20v2M40 12h2M58 12h2M43 5l1.5 1.5M55.5 17.5L57 19M43 19l1.5-1.5M55.5 6.5L57 5" class="accent"/><path d="M6 40l8-18h26l-8 18z"/><path d="M10 31h26M23 22l-4 18"/><path d="M19 40v8"/><rect x="34" y="44" width="24" height="14" rx="2"/><path d="M40 44v-3M52 44v-3"/><path d="M42 51h8M46 47v8" /></svg></div>
+        <dl class="spec">
+          <div><dt>コンセントがある</dt><dd>家庭用の 100V がいちばん安定していて、おすすめです。HPX-Core は USB の AC アダプター (5V) で動かします</dd></div>
+          <div><dt>コンセントが無い</dt><dd>ソーラーパネル＋チャージコントローラー＋12V バッテリー。発電とバッテリーの大きさに余裕がないと、雨が続いたときに止まることがあります</dd></div>
+          <div><dt>短い期間だけ</dt><dd>「＋防水＆電池駆動」版の HPX-Core (単三リチウム電池3本)。Wi-Fi が届く場所で使います。30分ごとの記録で3〜4か月の見込み (まだ実測していません)</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <h3 class="sub-h">ソーラーパネルとバッテリーで組む</h3>
+      <dl class="spec wide">
+        <div><dt>ソーラーパネル</dt><dd>12V バッテリー用のもの。開発者は 100W のパネルを使っています。電池の入った小さなソーラーパネル (10W 以下のもの) では、毎日の電気をまかないきれないことがあります</dd></div>
+        <div><dt>チャージコントローラー</dt><dd>パネルの電気でバッテリーを充電し、使い過ぎを防ぐ機器。USB の出口が付いたものなら、HPX-Core をそこから動かせます。開発者は PWM 式 30A (12V/24V 兼用) を使っています</dd></div>
+        <div><dt>USB 電源ポート</dt><dd>コントローラーに USB の出口が無いときや足りないときに、12V を USB の 5V に変えるもの。機器が多いときは、配線を分ける端子台 (分岐ターミナル) があると便利です</dd></div>
+        <div><dt>12V バッテリー</dt><dd>車用のバッテリーで 60〜90Ah くらいのもの。開発者は 95D26L を使っています。ディープサイクル用ならさらに長持ちします</dd></div>
+        <div><dt>ヒューズ</dt><dd>バッテリーのプラスのすぐ近くに入れます。線がショートしたときの火事を防ぎます。小さすぎると、晴れた日の充電の電流で切れてしまうので、パネルの大きさと線の太さに合わせて選びます</dd></div>
+        <div><dt>箱</dt><dd>コントローラーとバッテリーを雨から守る箱。バッテリー用の収納ボックスや防水のプラスチックボックスのほか、使っていない古い巣箱もバッテリーが入り、機器をねじで留められるので便利です</dd></div>
+      </dl>
+      <ol class="steps">
+        <li><div><b>使う電気を見積もる</b><span>目安は、HPX-Core が1日に約1Ah、LTE ルーター (平均2W のもの) が1日に約4Ah で、合わせて1日 約5Ah (12V) です。鉛のバッテリーは半分より減らさないほうが長持ちするので、曇りや雨が5日続いても半分残る大きさ (50Ah 以上) を選ぶと安心です。秋の長雨や冬は発電が少ないので、パネルも余裕のある大きさ (100W くらい) にします。</span><span class="when">数字は目安です。まだ実測していません</span></div></li>
+        <li><div><b>パネルの置き場所を決める</b><span>一日中影がかからない場所に、南向きに置きます。冬は太陽が低いので、30度くらい傾けるか、少し立て気味にすると冬でも充電できます。風で飛ばないよう、しっかり固定してください。蜂の出入りの邪魔にならないよう、巣門の前は避けます。</span></div></li>
+        <li><div><b>つなぐ順番を守る</b><span>コントローラーに、①バッテリー → ②ソーラーパネル → ③HPX-Core やルーター の順でつなぎます。パネルを先につなぐと、コントローラーがバッテリーの電圧を正しく見分けられないことがあります。バッテリーをつないだらコントローラーの表示が出ること、パネルをつないだらパネルの表示が出ることを確かめながら進めます。外すときは逆の順番です。パネルは光が当たると電気が出るので、作業中は布などでおおっておきます。</span><span class="when">お使いのコントローラーの説明書に順番が書いてあれば、そちらに従ってください</span></div></li>
+        <li><div><b>機器はコントローラーの出口につなぐ</b><span>HPX-Core やルーターは、コントローラーの「負荷」の出口 (電球のマーク) か USB の出口につなぎます。コントローラーは、バッテリーが減りすぎると出口を止めてバッテリーを守ります (止まる電圧は機種ごとに決まっていて、変えられるものもあります)。機器が動かないときは、出口がオンになっているかを確かめてください。少し減っても止めたくない機器だけ、バッテリーに直接つなぎます (そのぶんバッテリーは傷みやすくなります)。</span></div></li>
+        <li><div><b>雨と熱から守る</b><span>コントローラーとバッテリーは、雨の入らない箱に入れます。線のつなぎ目は自己融着テープで巻いて、水が入らないようにします。車用のような液を入れたバッテリーは、充電中にガスが出ることがあるので、箱を完全に閉め切らず、空気の通り道を作ります。夏の直射日光で箱の中が熱くなりすぎないよう、日陰に置きます。</span></div></li>
+        <li><div><b>電圧を見守る</b><span>「＋有線LAN＆ソーラーシステムチェック」版の HPX-Core なら、バッテリーとパネルの電圧を HPX-note で見られます。バッテリーが 12.0V を下回るとメールで知らせます。</span></div></li>
+      </ol>
+      <p class="framed">バッテリーのプラスとマイナスを直接つなぐと、大きな電流が流れて危険です。工具や金属をバッテリーの上に置かないでください。作業の前に、ヒューズを外しておくと安全です。</p>
+    </div>
+  </section>
+
+  <section id="network">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">Apiary 2</p>
+        <h2>ルーターの準備</h2>
+        <p class="lead">HPX-Core は、ルーターを通してインターネットのサーバーへ記録を送ります。家の Wi-Fi が届く蜂場ならそのまま使うのがいちばん安上がりです。離れた蜂場では、携帯電話の電波 (LTE) を使う「LTE ルーター」に SIM カードを入れて使います。</p>
+        <p class="note">モバイル Wi-Fi (ポケット型の Wi-Fi) も使えますが、電池が入っていて夏の暑さに弱く、機種によっては動きが不安定になります。ずっと置いておくなら、電池の入っていない機器向けの LTE ルーター (M2M ルーター、IoT ルーターとも呼ばれます) がおすすめです。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></div>
+        <dl class="spec">
+          <div><dt>暑さ・寒さ</dt><dd>動作温度が広いもの (例 −20〜60℃)。家庭用は 0〜40℃ くらいが多く、夏の箱の中では足りません</dd></div>
+          <div><dt>電池</dt><dd>電池の入っていないもの。熱で電池がふくらむ心配がありません</dd></div>
+          <div><dt>電源</dt><dd>12V のバッテリーから直接動かせるもの (DC 入力) だと、ソーラーと組み合わせやすい</dd></div>
+          <div><dt>つなぎ方</dt><dd>Wi-Fi (2.4GHz) か、有線LAN の口。有線LAN だけのルーターには「＋有線LAN」版の HPX-Core を使います</dd></div>
+          <div><dt>SIM</dt><dd>使いたい携帯会社の SIM に対応しているもの。SIM の大きさ (標準・nano など) も確かめます</dd></div>
+          <div><dt>自動復旧</dt><dd>通信が止まったときに自分でつなぎ直す機能があると、蜂場まで行かずに済みます</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <ol class="steps">
+        <li><div><b>蜂場の電波を確かめる</b><span>使う予定の携帯会社のスマートフォンを蜂場に持っていき、電波が入るかを見ます。弱いときは、ルーターに外付けのアンテナを付けて、高い所に出すと良くなることがあります。</span></div></li>
+        <li><div><b>SIM カードを用意する</b><span>データ通信用の SIM を用意します。機器向けの「IoT 用 SIM」には、年に数千円ほどの安いプランもあります。HPX-Core が送る記録は文字だけで小さいので、データ量の少ないプランで足りる見込みです (使う量はまだ実測していません)。同じルーターに防犯カメラもつなぐときは、映像でデータを多く使うので、プランを選び直してください。</span></div></li>
+        <li><div><b>家で設定する</b><span>LTE ルーターに SIM を入れ、説明書に沿って接続の設定 (APN) をします。HPX-Core もつないで、HPX-note に記録が届くことを家で確かめてから蜂場へ持っていきます。</span></div></li>
+        <li><div><b>蜂場に置く</b><span>雨の入らない箱に入れます。金属の箱の中では電波が通りにくいので、プラスチックの箱を使うか、アンテナを箱の外に出します。</span></div></li>
+      </ol>
+      <dl class="spec wide">
+        <div><dt>開発者が試している機種</dt><dd>サン電子 Rooster RX220 (中古)。DC 5〜27.4V で動き、−20〜60℃、ドコモ・au・ソフトバンクの SIM に対応、有線LAN の口が2つあります。Wi-Fi は無いので「＋有線LAN」版の HPX-Core とつなぎます。蜂場での長期の動作はこれから確かめます。</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="core-place">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">Apiary 3</p>
+        <h2>HPX-Core の設置</h2>
+        <p class="lead">HPX-Core は、蜂場に1台置きます。センサの Bluetooth の電波を受けられて、ルーターにもつながる場所を選びます。</p>
+        <p class="note">Bluetooth が届くのは、見通しの良い所で約10m が目安です。間に巣箱や地面、金属があると短くなります。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
+        <dl class="spec">
+          <div><dt>基本モデル</dt><dd>Wi-Fi＋USB 給電。小屋の中など、雨の当たらない場所に</dd></div>
+          <div><dt>＋防水</dt><dd>屋外にそのまま置くとき</dd></div>
+          <div><dt>＋有線LAN</dt><dd>Wi-Fi の無い LTE ルーターに LAN ケーブルでつなぐとき</dd></div>
+          <div><dt>＋有線LAN＆ソーラーシステムチェック</dt><dd>ソーラーのバッテリーとパネルの電圧も見たいとき</dd></div>
+          <div><dt>＋防水＆電池駆動</dt><dd>電源の無い所で、短い期間使うとき</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <ol class="steps">
+        <li><div><b>置き場所を決める</b><span>巣箱や電柵アラートから、なるべく近くて見通しの良い場所を選びます。地面に直接置かず、少し高い所に置くと電波が届きやすくなります。</span></div></li>
+        <li><div><b>雨と熱から守る</b><span>防水版でなければ、雨の入らない箱や小屋の中に置きます。直射日光の当たる箱の中は夏にとても熱くなるので、日陰を選びます。</span></div></li>
+        <li><div><b>電源とルーターにつなぐ</b><span>USB ケーブルで電源につなぎます (ソーラーシステムチェック版はバッテリーから)。有線LAN 版は、LAN ケーブルでルーターとつなぎます。</span></div></li>
+        <li><div><b>センサの電波を確かめる</b><span>スマートフォンで HPX-Core の管理画面を開き、「BLEセンサの記録」で、登録したセンサが全部受信できているかを見ます。届かないセンサがあれば、HPX-Core の位置や高さを変えます。</span></div></li>
+        <li><div><b>HPX-note に届くまで待つ</b><span>次の記録の時刻 (初めは30分ごと) を過ぎたら、HPX-note のセンサページに新しい記録が出るかを確かめてから、蜂場を離れます。</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="sensor">
+    <div class="reveal wrap topic role">
+      <div class="text">
+        <p class="eyebrow">Apiary 4</p>
+        <h2>センサの設置</h2>
+        <p class="lead">登録したセンサを、巣箱や電柵に取り付けます。センサは電池で動くので、配線はいりません。取り付けたら、HPX-note で値が届いているかを確かめます。</p>
+        <p class="note">登録したときの名前と、取り付ける巣箱が合っているかを確かめながら作業してください。</p>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="3"/><path d="M16 22v-6h8v6M40 22v-6h8v6"/><path d="M16 38h8M20 34v8M40 38h8"/><path d="M33 26l-5 10h7l-4 10" class="accent"/></svg></div>
+        <dl class="spec">
+          <div><dt>HPX-W</dt><dd>巣箱の下</dd></div>
+          <div><dt>HPX-TH</dt><dd>巣箱の中</dd></div>
+          <div><dt>HPX-F</dt><dd>電柵のフェンスアラートの LED の上</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="reveal wrap">
+      <div class="cards sensors">
+        <div class="card"><span class="tag">重量センサ</span><h3>HPX-W</h3>
+          <p>巣箱の片側の下にロードセルを置き、巣箱の半分の重さを量ります。HPX-note では、1台なら2倍、同じ巣箱に2台なら合計を巣箱の重さとして出します。</p>
+          <ul><li>平らで固い台の上に、傾かないように置きます</li><li>巣箱の重さが、ロードセル以外 (台の縁や周りの物) にかからないようにします</li><li>置いたあと、HPX-note の重さが空の巣箱の重さに近いかを見ます</li></ul>
+          <a class="more" href="device-w.html">HPX-W の機器ページ</a></div>
+        <div class="card"><span class="tag">温湿度センサ</span><h3>HPX-TH</h3>
+          <p>巣箱の中の温度と湿度を測ります。温度はケースから出したサーミスター (細い線の先の温度センサ) で測ります。</p>
+          <ul><li>サーミスターの先を、育児圏 (幼虫やさなぎのいる巣枠) の中心あたりに入れます</li><li>本体は、蜂にふさがれたり、ふたで線をつぶしたりしない位置に置きます</li><li>内検のときに引っかけないよう、線をまとめておきます</li></ul>
+          <a class="more" href="device-th.html">HPX-TH の機器ページ</a></div>
+        <div class="card"><span class="tag">電柵アラート</span><h3>HPX-F</h3>
+          <p>電柵のフェンスアラートの LED の点滅を、光センサで電線をつながずに読み取ります。</p>
+          <ul><li>光センサを、フェンスアラートの赤いカバーに向けて貼ります</li><li>日光が入らないよう、赤いカバーごと黒いキャップやテープでおおいます</li><li>フェンスアラートの回路と HPX-F を、電線でつながないでください (電柵の高い電圧がかかります)</li><li>LED が点滅するたびに、HPX-F の赤いランプが一瞬光れば、読み取れています</li></ul>
+          <a class="more" href="devices.html">機器の一覧</a></div>
+      </div>
+      <ol class="steps">
+        <li><div><b>取り付ける</b><span>上のそれぞれの注意に沿って取り付けます。</span></div></li>
+        <li><div><b>HPX-Core の受信を確かめる</b><span>取り付けた場所からも電波が届いているかを、HPX-Core の管理画面「BLEセンサの記録」で確かめます。巣箱の中や地面に近い所は、電波が弱くなりがちです。</span></div></li>
+        <li><div><b>HPX-note で値を見る</b><span>次の記録の時刻を過ぎたら、巣箱のページで重さ・温度・湿度が出ているかを見ます。電池の残りもセンサページで見られます。</span></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
