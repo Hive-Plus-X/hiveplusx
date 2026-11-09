@@ -527,3 +527,146 @@ notes(s, 60, y + 20, [
 ])
 s.save("HPX-Core_LAN_wiring.svg")
 print("ok LAN")
+
+# ------------------------------------------------------------------ HPX-Core ＋LTE＆ソーラー (TARO 2026-11-09)
+# Olimex ESP32-DEVKIT-LIPO ＋ M5Stamp CatM (SIM7080G) ＋ DFRobot DFR0559 (ソーラー充電・5V 昇圧) ＋ 18650×2 並列。
+# ESP32 は電池から Olimex の BAT コネクタで動かし、LTE モジュールは DFR0559 の 5V 出力 (EN を GPIO25 で入り切り) から。
+# 送るときだけ 5V を入れるので、眠っている間 LTE モジュールは電気を使わない。図は線の対応だけ (基板の穴の図は部品が届いてから)。
+s = S(1280, 1810)
+title(s, "HPX-Core（親機）＋LTE＆ソーラーの部品表と配線図", "試作中 ／ 実機未確認 ／ ファーム準備中")
+def board_box(x, y, w, h, fill, stroke, name, sub):
+    s.rect(x, y, w, h, fill, stroke, 10, 3)
+    s.text(x + w / 2, y + h / 2 - 4, name, 16, "middle", "bold", "#fff")
+    s.text(x + w / 2, y + h / 2 + 18, sub, 12, "middle", fill="#eee")
+# ソーラーパネル
+s.rect(60, 115, 240, 110, "#0d47a1", "#06244f", 6, 3)
+for i in range(1, 4):
+    s.add(f'<line x1="{60+i*60}" y1="115" x2="{60+i*60}" y2="225" stroke="#90caf9" stroke-width="1"/>')
+s.text(180, 250, "ソーラーパネル 5V・5〜10W", 15, "middle", "bold")
+s.text(180, 270, "（開放電圧 6V 以下）", 12, "middle", fill="#666")
+s.pad(300, 150, "＋", "R"); s.pad(300, 200, "−", "R")
+# DFR0559
+s.rect(440, 110, 300, 240, "#1565c0", "#0d3c7a", 10, 3)
+s.text(590, 215, "DFR0559", 17, "middle", "bold", "#fff")
+s.text(590, 237, "ソーラーパワーマネージャー 5V", 12, "middle", fill="#e3f2fd")
+dfr = {}
+for n, y in (("SOLAR＋", 150), ("SOLAR−", 200), ("BAT＋", 290), ("BAT−", 330)):
+    s.pad(440, y, n, "L"); dfr[n] = (440, y)
+s.pad(740, 300, "EN", "R"); dfr["EN"] = (740, 300)
+for n, x in (("5V", 600), ("GND", 660)):
+    s.add(f'<circle cx="{x}" cy="350" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, 336, n, 14, "middle", "bold", "#fff"); dfr[n] = (x, 350)
+s.text(588, 395, "USB でなくピンの 5V →", 12, "end", fill="#666")
+# 18650 ×2 並列
+s.rect(60, 420, 280, 150, "#455a64", "#263238", 10, 3)
+for i in range(2):
+    s.rect(80, 440 + i * 60, 240, 44, "#2e7d32", "#1b5e20", 20, 2)
+    s.text(200, 468 + i * 60, "18650（保護回路付き）", 14, "middle", "bold", "#fff")
+s.pad(340, 450, "＋", "R"); s.pad(340, 520, "−", "R")
+s.text(60, 408, "18650 ×2（並列 約3.7V）", 15, weight="bold"); s.text(250, 408, "＋どうし・−どうしをつなぐ", 12, fill="#666")
+# M5Stamp CatM
+s.rect(540, 440, 240, 140, "#eceff1", "#90a4ae", 10, 3)
+s.text(660, 505, "M5Stamp CatM", 16, "middle", "bold", "#263238")
+s.text(660, 527, "SIM7080G（LTE-M）・microSIM", 12, "middle", fill="#455a64")
+st = {}
+for n, x in (("5V", 600), ("GND", 660)):
+    s.add(f'<circle cx="{x}" cy="440" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, 466, n, 14, "middle", "bold", "#333"); st[n] = (x, 440)
+for n, y in (("TX", 490), ("RX", 530)):
+    s.add(f'<circle cx="780" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(766, y + 5, n, 14, "end", "bold", "#333"); st[n] = (780, y)
+# アンテナ (付属の IPEX-SMA ケーブル → ケースの壁 → 付属アンテナ)
+s.add('<path d="M560,580 L560,610 L470,610" stroke="#616161" stroke-width="3" fill="none" stroke-dasharray="6 5"/>')
+s.add('<rect x="452" y="600" width="18" height="20" fill="#bdbdbd" stroke="#616161"/>')
+s.add('<path d="M461,600 L461,560" stroke="#212121" stroke-width="6" stroke-linecap="round"/>')
+s.text(480, 645, "付属アンテナ（ケースの外へ、SMA）", 12, fill="#666")
+# Olimex
+s.rect(900, 120, 240, 400, "#c62828", "#7f0000", 10, 3)
+s.rect(956, 106, 120, 40, "#212121", "#111", 4, 2)
+s.text(1016, 132, "アンテナ", 12, "middle", "bold", "#eee")
+s.text(1020, 330, "Olimex", 16, "middle", "bold", "#fff")
+s.text(1020, 352, "ESP32-DevKit-LiPo", 13, "middle", "bold", "#fff")
+ol = {}
+for n, y in (("D25", 300), ("D16", 380), ("D17", 420)):
+    s.pad(900, y, n, "L"); ol[n] = (900, y)
+for n, y in (("D36", 220), ("D34", 260)):
+    s.pad(1140, y, n, "R"); ol[n] = (1140, y)
+s.rect(940, 470, 90, 40, "#fafafa", "#9e9e9e", 4)
+s.text(985, 495, "BAT", 13, "middle", "bold", "#333")
+ol["BAT−"], ol["BAT＋"] = (960, 520), (1000, 520)
+s.text(1060, 545, "BAT（JST PH 2ピン）", 12, "start", "bold", "#333")
+s.text(1030, 600, "micro USB は書き込みのときだけ", 12, fill="#666")
+# 分圧の抵抗 (下の抵抗と 0.1µF は GND へ)
+def divider(x, y, top, bot):
+    s.rect(x, y, 90, 90, "#fff8e1", "#c9a227", 8, 2)
+    s.text(x + 45, y + 24, top, 13, "middle", "bold")
+    s.text(x + 45, y + 44, "↓", 13, "middle")
+    s.text(x + 45, y + 62, bot, 13, "middle", "bold")
+    s.text(x + 45, y + 80, "＋0.1µF→GND", 10, "middle", fill="#666")
+divider(1180, 120, "100kΩ", "20kΩ")
+divider(1180, 330, "100kΩ", "100kΩ")
+# 線
+s.wire([(300, 150), (440, 150)], "red")
+s.wire([(300, 200), (440, 200)], "black")
+s.wire([(340, 450), (380, 450), (380, 290), (440, 290)], "red")
+s.wire([(340, 520), (400, 520), (400, 330), (440, 330)], "black")
+s.wire([(200, 570), (200, 710), (1000, 710), (1000, 520)], "red")
+s.wire([(260, 570), (260, 680), (960, 680), (960, 520)], "black")
+s.wire([dfr["5V"], st["5V"]], "orange")
+s.wire([dfr["GND"], st["GND"]], "black")
+s.wire([dfr["EN"], ol["D25"]], "purple")
+s.wire([st["TX"], (840, 490), (840, 380), ol["D16"]], "yellow")
+s.wire([st["RX"], (870, 530), (870, 420), ol["D17"]], "green")
+s.wire([(370, 150), (370, 90), (1225, 90), (1225, 120)], "blue")
+s.wire([(1200, 210), (1200, 220), ol["D36"]], "blue")
+s.wire([(1000, 710), (1240, 710), (1240, 420)], "white")
+s.wire([(1220, 330), (1220, 260), ol["D34"]], "white")
+s.dot(370, 150, "red"); s.dot(1000, 710, "red")
+s.text(640, 760, "センサ（HPX-W・HPX-TH・HPX-F）は、これまでどおり電波（BLE）で受け取ります。ルーターは使いません。", 15, "middle", "bold", "#1565c0")
+LTE_WIRES = [
+    ["線の色（例）", "どこから", "どこへ", "メモ"],
+    ["red", "ソーラーパネル＋", "DFR0559 SOLAR＋", "USB 出力品は切った赤い線"],
+    ["black", "ソーラーパネル−", "DFR0559 SOLAR−", "USB 出力品は切った黒い線"],
+    ["red", "18650 の＋（2本並列）", "DFR0559 BAT＋ と Olimex BAT＋", "Olimex へは JST PH ケーブル"],
+    ["black", "18650 の−（2本並列）", "DFR0559 BAT− と Olimex BAT−", "ここで GND が共通になる"],
+    ["orange", "DFR0559 5V（ピン）", "M5Stamp CatM 5V", "LTE モジュールの電源"],
+    ["black", "DFR0559 GND（ピン）", "M5Stamp CatM GND", ""],
+    ["purple", "DFR0559 EN", "Olimex D25（GPIO25）", "送るときだけ 5V を入れる"],
+    ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "115200bps"],
+    ["green", "M5Stamp CatM RX", "Olimex D17（GPIO17、送信）", ""],
+    ["blue", "パネル＋ → 100kΩ", "Olimex D36（GPIO36）", "20kΩ と 0.1µF で GND へ（パネル電圧）"],
+    ["white", "電池＋ → 100kΩ", "Olimex D34（GPIO34）", "100kΩ と 0.1µF で GND へ（電池電圧）"],
+]
+y = table(s, 60, 830, LTE_WIRES, [150, 300, 330, 380], "つなぐ線")
+LTE_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO", "1", "本体（親機）。電池から BAT コネクタで動かす"],
+    ["M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル", "1", "LTE-M でサーバーへ送る。付属アンテナを使う（技適）"],
+    ["LTE-M 対応 SIM（microSIM）", "1", "ドコモまたは au の LTE-M。会社は未定"],
+    ["DFRobot DFR0559 ソーラーパワーマネージャー 5V", "1", "電池の充電と、LTE モジュール用の 5V"],
+    ["ソーラーパネル 5V・5〜10W", "1", "開放電圧 6V 以下"],
+    ["18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用", "各2", "並列につなぐ"],
+    ["抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2", "1式", "電池とパネルの電圧を測る"],
+]
+y = table(s, 60, y + 60, LTE_ROWS, [560, 50, 550], "部品の使いどころ")
+LTE_NOTES = [
+    "・試作中の図です。実機では確かめていません。LTE 用のファームウェアは準備中です。",
+    "・DFR0559 の EN が High で ON か、何もつながないとき ON か OFF かは未確認。届いたらテスターで確かめる。",
+    "・ESP32 は眠る前に D25 を Low にして固定し、LTE モジュールの電源を切る（ファームで行う）。",
+    "・M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。",
+    "・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする。",
+    "・JST PH ケーブルは＋−の向きが製品で逆のことがある。Olimex の基板の印字で確かめる。",
+    "・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。",
+    "・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。",
+    "・動作モードはディープスリープ（30分ごと）。基板の穴の図とケースは部品が届いてから決める。",
+]
+notes(s, 60, y + 20, LTE_NOTES)
+s.save("HPX-Core_LTE_wiring.svg")
+_full = open(os.path.join(OUT, "HPX-Core_LTE_wiring.svg"), encoding="utf-8").read()
+_cut = 790
+open(os.path.join(OUT, "HPX-Core_LTE_wiring_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+json.dump({"tables": [{"head": "つなぐ線", "rows": LTE_WIRES}, {"head": "部品の使いどころ", "rows": LTE_ROWS}],
+           "notes": [n.lstrip("・") for n in LTE_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_LTE_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok LTE")

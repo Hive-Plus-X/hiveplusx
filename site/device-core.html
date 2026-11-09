@@ -187,9 +187,9 @@
     <a class="back back-top" href="devices.html">← 機器の一覧へ戻る</a>
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
-    <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi または有線LAN でサーバーへ送る中心的な機器です。</p>
-    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動などのオプション実装が可能です。</p>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button></div>
+    <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi・有線LAN・LTE のどれかでサーバーへ送る中心的な機器です。</p>
+    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。</p>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE＆ソーラー</button></div>
   </div>
 
   <section id="parts">
@@ -289,6 +289,33 @@
         <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,345円</td></tr></tfoot>
       </table>
       </div>
+      <div data-variant="core_lte">
+      <p class="note">＋LTE＆ソーラーに必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://www.marutsu.co.jp/pc/i/46418664/" target="_blank" rel="noopener">ESP32-WROOM-32</a></b><span>Olimex ESP32-DEVKIT-LIPO</span><span class="price">1,692円</span></td><td class="shop">マルツオンライン</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">コンデンサー0.1μF</a></b><span>積層セラミックコンデンサー 0.1μF50V C0G 5mm</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">3</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108554/" target="_blank" rel="noopener">抵抗 20kΩ</a></b><span>小型 金属皮膜抵抗 1/4W20kΩ</span><span class="price">250円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.switch-science.com/search?q=M5Stamp%20CatM" target="_blank" rel="noopener">LTE-M 通信モジュール</a></b><span>M5Stamp CatM（SIM7080G、M5STACK-S003）
+SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う</span><span class="price">7,282円</span></td><td class="shop">スイッチサイエンス</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電源</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?search=x&amp;keyword=DFR0559" target="_blank" rel="noopener">ソーラーパワーマネージャー 5V</a></b><span>DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）</span><span class="price">1,940円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%BD%E3%83%BC%E3%83%A9%E3%83%BC%E3%83%91%E3%83%8D%E3%83%AB%205V%2010W%20%E9%98%B2%E6%B0%B4" target="_blank" rel="noopener">ソーラーパネル 5V 5〜10W</a></b><span>開放電圧 6V 以下のもの。USB 出力品は差し込み口を切り、赤＝＋・黒＝−（テスターで確認）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">18650 リチウムイオン電池（保護回路付き）</a></b><span>3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A" target="_blank" rel="noopener">18650 電池ホルダー 1本用</a></b><span>リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b>LTE-M 対応 SIM（microSIM）</b><span>ドコモまたは au の LTE-M が使える IoT 用 SIM。会社は未定</span></td><td class="shop">—</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケーブル</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB" target="_blank" rel="noopener">JST PH 2ピン ケーブル</a></b><span>Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 10,976円</td></tr></tfoot>
+      </table>
+      </div>
     </div>
   </section>
 
@@ -351,6 +378,21 @@
         <tbody><tr><td>Olimex ESP32-DEVKIT-LIPO（micro USB、ピンヘッダ付き）</td><td>1</td><td>B1〜B16・L1〜L16 のソケットに差す。USB を下、アンテナを上に向ける</td></tr><tr><td>ピンソケット（メス）16ピン（20ピンを切る）</td><td>2</td><td>B1〜B16、L1〜L16 にはんだ付け。Olimex のピン4〜19 が入る</td></tr><tr><td>ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池</td><td>1／3</td><td>＋の線を A16、−の線を A11 にはんだ付け</td></tr><tr><td>ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線</td><td>1</td><td>線は裏の2本だけ</td></tr></tbody>
       </table></div></div>
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>電池は Olimex の「5V」端子（左の列のいちばん下）と「GND」へつなぐ。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池は絶対につながない。</li><li>電池を入れたまま micro USB をつながない（書き込みは電池を外してから）。USB の 5V と電池がぶつかるおそれがある。</li><li>新品の単三リチウム3本は約5.4V。5V 端子の先は、ダイオード（約0.3V 下がる）を通って 3.3V を作る部品（HX6211、入力の上限 6V と販売店の資料）へ行く。上限の内側だが余裕は少ない。</li><li>Olimex は長さ 48mm で基板（47mm）より長く、ピンは19本ある。ピン1〜3（3V3・EN・IO36 と GND・IO23・IO22）は基板の上の端からはみ出す。</li><li>PCB36-47 の穴の数（13×17）は見込み。四隅の取付穴に近い B1・L1 の穴がなければ、ソケットを15ピンにして B2〜B16・L2〜L16 にする。</li><li>ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋Olimex が収まるか未確認。足りないときは、ソケットを使わずに Olimex のピンを基板へ直接はんだ付けする。</li><li>管理画面の動作モードは「ディープスリープ」にする。電池のもちは保存間隔30分で 2〜4か月の見込み（未実測）。</li></ul></div>
+      </div>
+      <figure class="wiring" data-variant="core_lte">
+        <figcaption><b>＋LTE＆ソーラーの配線図</b>LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。ソーラーパネルで 18650 電池2本 (並列) を DFR0559 で充電し、ESP32 は電池から、LTE モジュールは DFR0559 の 5V から動かします (送るときだけ ON)。電池とパネルの電圧も測ります。試作中の線の対応図で、基板の穴の図とファームウェアは準備中です。</figcaption>
+        <a href="img/wiring/HPX-Core_LTE_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_wiring.png" alt="HPX-Core ＋LTE＆ソーラーの配線図" loading="lazy"></a>
+      </figure>
+      <div data-variant="core_lte">
+      <div class="wtab"><h3>つなぐ線</h3><div class="scroll"><table>
+        <thead><tr><th>線の色（例）</th><th>どこから</th><th>どこへ</th><th>メモ</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>ソーラーパネル＋</td><td>DFR0559 SOLAR＋</td><td>USB 出力品は切った赤い線</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>ソーラーパネル−</td><td>DFR0559 SOLAR−</td><td>USB 出力品は切った黒い線</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>18650 の＋（2本並列）</td><td>DFR0559 BAT＋ と Olimex BAT＋</td><td>Olimex へは JST PH ケーブル</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>18650 の−（2本並列）</td><td>DFR0559 BAT− と Olimex BAT−</td><td>ここで GND が共通になる</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>DFR0559 5V（ピン）</td><td>M5Stamp CatM 5V</td><td>LTE モジュールの電源</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>DFR0559 GND（ピン）</td><td>M5Stamp CatM GND</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>DFR0559 EN</td><td>Olimex D25（GPIO25）</td><td>送るときだけ 5V を入れる</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>M5Stamp CatM TX</td><td>Olimex D16（GPIO16、受信）</td><td>115200bps</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>M5Stamp CatM RX</td><td>Olimex D17（GPIO17、送信）</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>パネル＋ → 100kΩ</td><td>Olimex D36（GPIO36）</td><td>20kΩ と 0.1µF で GND へ（パネル電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>電池＋ → 100kΩ</td><td>Olimex D34（GPIO34）</td><td>100kΩ と 0.1µF で GND へ（電池電圧）</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
+        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。電池から BAT コネクタで動かす</td></tr><tr><td>M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル</td><td>1</td><td>LTE-M でサーバーへ送る。付属アンテナを使う（技適）</td></tr><tr><td>LTE-M 対応 SIM（microSIM）</td><td>1</td><td>ドコモまたは au の LTE-M。会社は未定</td></tr><tr><td>DFRobot DFR0559 ソーラーパワーマネージャー 5V</td><td>1</td><td>電池の充電と、LTE モジュール用の 5V</td></tr><tr><td>ソーラーパネル 5V・5〜10W</td><td>1</td><td>開放電圧 6V 以下</td></tr><tr><td>18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用</td><td>各2</td><td>並列につなぐ</td></tr><tr><td>抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2</td><td>1式</td><td>電池とパネルの電圧を測る</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。LTE 用のファームウェアは準備中です。</li><li>DFR0559 の EN が High で ON か、何もつながないとき ON か OFF かは未確認。届いたらテスターで確かめる。</li><li>ESP32 は眠る前に D25 を Low にして固定し、LTE モジュールの電源を切る（ファームで行う）。</li><li>M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。</li><li>18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする。</li><li>JST PH ケーブルは＋−の向きが製品で逆のことがある。Olimex の基板の印字で確かめる。</li><li>リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。</li><li>アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</li><li>動作モードはディープスリープ（30分ごと）。基板の穴の図とケースは部品が届いてから決める。</li></ul></div>
       </div>
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
