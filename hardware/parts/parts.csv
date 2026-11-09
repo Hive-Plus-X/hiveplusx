@@ -74,4 +74,4 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
 ,電源,18650 リチウムイオン電池（保護回路付き）,3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に,amazon,https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D,2,本,,,,,,,,,,,,,2
 ,電源,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,2
 ,ケーブル,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,1
-,部材,LTE-M 対応 SIM（microSIM）,ドコモまたは au の LTE-M が使える IoT 用 SIM。会社は未定,,,1,枚,,,,,,,,,,,,,1
+,部材,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,1
