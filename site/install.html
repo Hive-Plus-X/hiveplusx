@@ -161,15 +161,22 @@
   .steps .when { display:inline-block; margin-top:8px; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
   @media (prefers-color-scheme: dark) { .steps .when { color:var(--honey); } }
   /* 設置ガイド */
+  /* HPXシステム / 蜂場 の切り替えボタン (機器ページの版ボタンと同じ見た目) */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:36px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 28px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .toc-group { max-width:560px; margin:0 auto; }
+  .next-part { margin-top:72px; text-align:center; }
+  .next-part button { font:inherit; font-size:15px; font-weight:700; padding:12px 26px; border-radius:999px; border:0; background:var(--honey); color:#1F2328; cursor:pointer; }
   section { scroll-margin-top:72px; }
   #toc { margin-top:120px; }
-  .toc { display:grid; grid-template-columns:1fr 1fr; gap:72px; }
   .toc-list { list-style:none; margin-top:24px; display:grid; gap:10px; counter-reset:tc; }
   .toc-list li { counter-increment:tc; }
   .toc-list a { display:flex; align-items:center; gap:14px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 18px; text-decoration:none; font-weight:700; }
   .toc-list a:hover { border-color:var(--honey); }
   .toc-list a::before { content:counter(tc); flex:none; width:32px; height:32px; border-radius:50%; background:var(--honey); color:#1F2328; display:flex; align-items:center; justify-content:center; font-size:14px; }
-  @media (max-width:760px) { #toc { margin-top:80px; } .toc { grid-template-columns:1fr; gap:56px; } }
+  @media (max-width:760px) { #toc { margin-top:80px; } }
   .reveal + .reveal { margin-top:56px; }
   .steps a { color:var(--text); }
   code { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:.92em; background:var(--honey-soft); padding:1px 6px; border-radius:6px; word-break:break-all; }
@@ -213,13 +220,14 @@
   <div class="hero wrap sub">
     <p class="eyebrow">Install guide</p>
     <h1>設置ガイド</h1>
-    <p>Hive Plus X を使いはじめるまでの手順です。前半の「HPXシステム」は家や事務所でできる準備、後半の「蜂場」は現地での設置です。</p>
+    <p>Hive Plus X を使いはじめるまでの手順です。<br>「HPXシステム」は家でできる準備、「蜂場」は現地での設置です。</p>
+    <div class="vsw" role="group" aria-label="見る手順を選ぶ"><button type="button" data-v="system" aria-pressed="true">HPXシステム</button><button type="button" data-v="apiary" aria-pressed="false">蜂場</button></div>
   </div>
 
   <section id="toc">
     <div class="reveal wrap">
       <div class="toc">
-        <div class="toc-group">
+        <div class="toc-group" data-part="system">
           <p class="eyebrow">Part 1</p>
           <h2>HPXシステム</h2>
           <p class="lead">家でできる準備です。蜂場へ持っていく前に、ここまで済ませておくと現地の作業が短くなります。</p>
@@ -229,7 +237,7 @@
             <li><a href="#register">センサの登録方法</a></li>
           </ol>
         </div>
-        <div class="toc-group">
+        <div class="toc-group" data-part="apiary">
           <p class="eyebrow">Part 2</p>
           <h2>蜂場</h2>
           <p class="lead">蜂場での設置です。電源と通信を先に用意し、最後に HPX-Core とセンサを置きます。</p>
@@ -246,7 +254,7 @@
 
   <!-- ===================== HPXシステム ===================== -->
 
-  <section id="server">
+  <section id="server" data-part="system">
     <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">HPX System 1</p>
@@ -288,7 +296,7 @@
     </div>
   </section>
 
-  <section id="core">
+  <section id="core" data-part="system">
     <div class="reveal wrap topic role rev">
       <div class="text">
         <p class="eyebrow">HPX System 2</p>
@@ -323,7 +331,7 @@
     </div>
   </section>
 
-  <section id="register">
+  <section id="register" data-part="system">
     <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">HPX System 3</p>
@@ -352,11 +360,12 @@
       </ol>
       <p class="framed">近くにほかの人のセンサがあると、一覧に出ることがあります。手元のセンサは、ふつう一覧のいちばん上 (電波がいちばん強い) に出ます。迷ったときは、センサの電池を抜いてもう一度探し、消えたものが手元のセンサです。</p>
     </div>
+    <div class="wrap next-part"><button type="button" data-go="apiary">次は「蜂場」の設置へ →</button></div>
   </section>
 
   <!-- ===================== 蜂場 ===================== -->
 
-  <section id="power">
+  <section id="power" data-part="apiary">
     <div class="reveal wrap topic role rev">
       <div class="text">
         <p class="eyebrow">Apiary 1</p>
@@ -395,7 +404,7 @@
     </div>
   </section>
 
-  <section id="network">
+  <section id="network" data-part="apiary">
     <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">Apiary 2</p>
@@ -428,7 +437,7 @@
     </div>
   </section>
 
-  <section id="core-place">
+  <section id="core-place" data-part="apiary">
     <div class="reveal wrap topic role rev">
       <div class="text">
         <p class="eyebrow">Apiary 3</p>
@@ -458,7 +467,7 @@
     </div>
   </section>
 
-  <section id="sensor">
+  <section id="sensor" data-part="apiary">
     <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">Apiary 4</p>
@@ -496,8 +505,38 @@
         <li><div><b>HPX-note で値を見る</b><span>次の記録の時刻を過ぎたら、巣箱のページで重さ・温度・湿度が出ているかを見ます。電池の残りもセンサページで見られます。</span></div></li>
       </ol>
     </div>
+    <div class="wrap next-part"><button type="button" data-go="system">← 「HPXシステム」の準備に戻る</button></div>
   </section>
 </main>
+
+<script>
+/* HPXシステム / 蜂場 の切り替え。?p=apiary か、#power などの見出しへのリンクでも選べる */
+(function () {
+  var bs = document.querySelectorAll('.vsw button');
+  function show(k, top) {
+    bs.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === k ? 'true' : 'false'); });
+    document.querySelectorAll('[data-part]').forEach(function (e) { e.hidden = e.getAttribute('data-part') !== k; });
+    if (top) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function pick(k, top) {
+    show(k, top);
+    try { var u = new URL(location.href); u.searchParams.set('p', k); u.hash = ''; history.replaceState(null, '', u); } catch (e) {}
+  }
+  bs.forEach(function (b) { b.addEventListener('click', function () { pick(b.getAttribute('data-v'), false); }); });
+  document.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { pick(b.getAttribute('data-go'), true); }); });
+  function fromUrl() {
+    var k = null, h = location.hash.slice(1);
+    var t = h ? document.getElementById(h) : null;
+    if (t && t.closest('[data-part]')) k = t.closest('[data-part]').getAttribute('data-part');
+    if (!k) { try { k = new URL(location.href).searchParams.get('p'); } catch (e) {} }
+    if (k !== 'system' && k !== 'apiary') k = 'system';
+    show(k, false);
+    if (t) t.scrollIntoView();
+  }
+  window.addEventListener('hashchange', fromUrl);
+  fromUrl();
+})();
+</script>
 
 <footer>
   <div class="wrap">
