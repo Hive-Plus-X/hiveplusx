@@ -17,7 +17,7 @@
 //          START_INTERVAL_MS(10秒)ごとに測る。
 //
 // 広告データ(メーカーデータ16バイト。ハブ側 HPX_Core v1.16 の bleParseT と同じ):
-//   [0..1]   0xFF 0xFF   (会社ID。試験用の値。HPX-W・HPX-A と同じ)
+//   [0..1]   0xFF 0xFF   (会社ID。試験用の値。HPX-W・HPX-F と同じ)
 //   [2]      'T'
 //   [3]      版 = 1
 //   [4..5]   通し番号 (uint16, LE)

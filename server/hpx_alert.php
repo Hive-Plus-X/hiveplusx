@@ -1,13 +1,13 @@
 <?php
 // HPX 電柵アラートのメール通知。receive.php と hpx_cron.php から読み込んで使う。
 //
-//   HPX-A (電柵アラート)の記録(sensors.ble の "al" 付きの記録)を見て、状態が変わったときにメールを送る。
+//   HPX-F (電柵アラート)の記録(sensors.ble の "al" 付きの記録)を見て、状態が変わったときにメールを送る。
 //     正常 → 電圧低下        : 「電柵の電圧が下がっています」
 //     正常のまま回数が増えた : 「一時的に電圧が下がりました」(ハブが受信する間の短い低下)
 //     電圧低下 → 正常        : 「電柵の電圧が戻りました」
 //     常時点灯                : 「光センサが点灯したままです」(遮光不良・配線の確認)
-//     電池電圧が低い          : 「HPX-A の電池を交換してください」
-//     しばらく受信できない    : 「HPX-A から受信できていません」(ハブは届いているのにノードの記録が来ないとき)
+//     電池電圧が低い          : 「HPX-F の電池を交換してください」
+//     しばらく受信できない    : 「HPX-F から受信できていません」(ハブは届いているのにノードの記録が来ないとき)
 //   HPX-W (重量)・HPX-TH (温湿度) と市販の温湿度計も見る (hpx_sensor_batt_record・hpx_alert_check_missing)。
 //     電池電圧が低い          : 「HPX-W / HPX-TH の電池を交換してください」(センサページの表に交換が出るのと同じ電圧で1回)
 //     しばらく受信できない    : 「〇〇 から受信できていません」($HPX_SENSOR_MISSING_S、初期 24 時間)
@@ -53,7 +53,7 @@ function hpx_alert_record(array &$s, array $r, int $epoch, string $hubName, stri
             . "場所: $where\n時刻: $when\n直近1分の点滅: " . (int)($r['bl'] ?? 0) . "回$agoText\n");
     } elseif ($st === 2 && $prevSt !== 2) {
         hpx_alert_queue("【HPX】電柵アラートの光センサが点灯したままです ($where)",
-            "HPX-A の入力が光りっぱなしになっています。電圧低下かどうか判定できません。\n"
+            "HPX-F の入力が光りっぱなしになっています。電圧低下かどうか判定できません。\n"
             . "光センサの遮光(日光が入っていないか)と配線を確認してください。\n\n場所: $where\n時刻: $when\n");
     } elseif ($st === 0 && $hadState && $prevSt !== 0) {
         hpx_alert_queue("【HPX】電柵の電圧が戻りました ($where)",
@@ -72,8 +72,8 @@ function hpx_alert_record(array &$s, array $r, int $epoch, string $hubName, stri
         $s['fence_bv'] = $bv;
         $limit = (float)($HPX_ALERT_BATT_V ?? 2.6);
         if ($bv < $limit && empty($s['batt_notified'])) {
-            hpx_alert_queue("【HPX】HPX-A の電池を交換してください ($where)",
-                "HPX-A の電池電圧が " . number_format($bv, 2) . "V に下がっています。\n\n場所: $where\n時刻: $when\n");
+            hpx_alert_queue("【HPX】HPX-F の電池を交換してください ($where)",
+                "HPX-F の電池電圧が " . number_format($bv, 2) . "V に下がっています。\n\n場所: $where\n時刻: $when\n");
             $s['batt_notified'] = 1;
         } elseif ($bv >= $limit + 0.1) {
             unset($s['batt_notified']);
@@ -86,7 +86,7 @@ function hpx_alert_record(array &$s, array $r, int $epoch, string $hubName, stri
 function hpx_sensor_label(array $s): string
 {
     $k = (string)($s['kind'] ?? '');
-    if ($k === 'fa') return 'HPX-A';
+    if ($k === 'fa') return 'HPX-F';
     if ($k === 'w') return 'HPX-W';
     if (!empty($s['th_bv']) || ($s['model'] ?? '') === 'hpx_th') return 'HPX-TH';
     return '温湿度計';
@@ -115,7 +115,7 @@ function hpx_sensor_batt_record(array &$s, ?float $bv, bool $stopped, int $epoch
 }
 
 // ハブからレポートが届くたびに呼ぶ。センサの記録がしばらく来ていなければ知らせる。
-//   HPX-A は $HPX_ALERT_MISSING_S (初期1時間)、HPX-W・HPX-TH・温湿度計は $HPX_SENSOR_MISSING_S (初期24時間)。
+//   HPX-F は $HPX_ALERT_MISSING_S (初期1時間)、HPX-W・HPX-TH・温湿度計は $HPX_SENSOR_MISSING_S (初期24時間)。
 //   $registered: いまハブに登録されているセンサのアドレス(空なら全部見る)。ハブから外したセンサは見ない。
 function hpx_alert_check_missing(array &$sens, int $now, string $hubName, array $registered = []): void
 {
@@ -138,8 +138,8 @@ function hpx_alert_check_missing(array &$sens, int $now, string $hubName, array 
             $s['missing_notified'] = 1;
             continue;
         }
-        hpx_alert_queue("【HPX】HPX-A から受信できていません ($where)",
-            "ハブ(HPX-Core)からは届いていますが、HPX-A の記録が " . intdiv($now - $last, 60) . " 分来ていません。\n"
+        hpx_alert_queue("【HPX】HPX-F から受信できていません ($where)",
+            "ハブ(HPX-Core)からは届いていますが、HPX-F の記録が " . intdiv($now - $last, 60) . " 分来ていません。\n"
             . "電池・設置場所(ハブとの距離)を確認してください。この間の電柵の状態は分かりません。\n\n"
             . "場所: $where\n最後の記録: " . date('Y-m-d H:i', $last) . "\n");
         $s['missing_notified'] = 1;

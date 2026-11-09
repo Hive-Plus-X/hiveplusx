@@ -1,7 +1,7 @@
 # brand
 
 - `logo/` ロゴ (配色と使い方のルールは logo/README.md)
-- `note-and-devices/` 「hive+x note」(養蜂管理アプリ HPX-note のメニューバー) と、機器のステッカー用の名前ロゴ (HPX-note・HPX-W・HPX-TH・HPX-Core・HPX-A)。説明は note-and-devices/README.md
+- `note-and-devices/` 「hive+x note」(養蜂管理アプリ HPX-note のメニューバー) と、機器のステッカー用の名前ロゴ (HPX-note・HPX-W・HPX-TH・HPX-Core・HPX-F)。説明は note-and-devices/README.md
 - `sticker/` 機器に貼る正方形ステッカー (50mm 角、hive+x のみ・機器名入り)。説明は sticker/README.md
 - `favicon/` ファビコン。`favicon_app.svg` = 養蜂管理アプリ HPX-note、`favicon_site.svg` = hiveplusx.com
 

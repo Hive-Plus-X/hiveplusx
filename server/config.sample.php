@@ -31,7 +31,7 @@ $HPX_SMTP_PORT = 587;
 $HPX_SMTP_SECURE = 'tls';
 $HPX_SMTP_USER = '';
 $HPX_SMTP_PASS = '';
-$HPX_ALERT_MISSING_S = 3600;   // HPX-A の記録がこの秒数来なければ知らせる
+$HPX_ALERT_MISSING_S = 3600;   // HPX-F の記録がこの秒数来なければ知らせる
 $HPX_SENSOR_MISSING_S = 86400; // HPX-W・HPX-TH・温湿度計の記録がこの秒数来なければ知らせる (24時間)
 $HPX_HUB_MISSING_S = 3600;     // ハブ(HPX-Core)からこの秒数届かなければ知らせる(hpx_cron.php)
 // hpx_cron.php を URL から呼ぶときのトークン(ライトプランなど CRON が無いとき)。機器用の $HPX_TOKEN とは別の、英数字20文字以上にする
@@ -51,7 +51,7 @@ $HPX_OTA_URL = '';
 $HPX_CONSENT_TEXT = '';
 // 利用規約のページの URL (https://… 空なら同意の文にリンクを付けない)
 $HPX_TERMS_URL = '';
-$HPX_ALERT_BATT_V = 2.6;       // HPX-A の電池電圧(V)がこれ未満なら知らせる
+$HPX_ALERT_BATT_V = 2.6;       // HPX-F の電池電圧(V)がこれ未満なら知らせる
 $HPX_W_BATT_V = 2.8;           // HPX-W の電池電圧(V)がこれ未満なら知らせる (センサページの「そろそろ交換」と同じ)
 $HPX_TH_BATT_V = 2.7;          // HPX-TH の電池電圧(V)がこれ未満なら知らせる (センサページの「交換」と同じ)
 // HPX-Core 有線LAN＋電圧チェック版 (ファーム v1.22〜) の 12V バッテリー

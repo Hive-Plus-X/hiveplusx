@@ -14,7 +14,7 @@ hive+x ロゴ (brand/logo/) と機器名ロゴ (brand/note-and-devices/) をそ�
 | D 白 | D の色を入れかえた版 (上が白に hive+x、下の緑の帯に白文字の機器名) | svg/D_white_HPX-*.svg |
 | F 白 | F の白背景版 (h と x は Charcoal) | svg/F_white_HPX-*.svg |
 
-機器名は HPX-Core / HPX-TH / HPX-W / HPX-A の4種類です。PNG (1000px) は png/、一覧は preview_all.png です。
+機器名は HPX-Core / HPX-TH / HPX-W / HPX-F の4種類です。PNG (1000px) は png/、一覧は preview_all.png です。
 作り直すときは `python3 mk_sticker.py` を実行します (fonttools と cairosvg が必要)。
 
 ## 印刷のヒント

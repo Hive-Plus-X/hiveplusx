@@ -13,7 +13,7 @@
 |---|---|---|
 | `firmware/hpx-core/` | HPX-Core (ESP32)。センサのBLE広告を受けて、Wi-Fi でサーバーへ送るハブ | MIT |
 | `firmware/hpx-weight/` | HPX-W (XIAO nRF52840 + HX711 + ロードセル)。重量センサ | MIT |
-| `firmware/hpx-alert/` | HPX-A (XIAO nRF52840)。アラームのLED点滅を光センサで読み、BLEで知らせる | MIT |
+| `firmware/hpx-fence/` | HPX-F (XIAO nRF52840)。電柵のフェンスアラートのLED点滅を光センサで読み、BLEで知らせる | MIT |
 | `firmware/hpx-temp/` | HPX-TH (XIAO nRF52840)。温湿度センサ (SHT40 + サーミスター) | MIT |
 | `firmware/experiments/` | 試作・検討中のもの | MIT |
 | `server/` | 養蜂管理アプリ HPX-note (PHP。蜂場・巣箱・メモ・作業記録・センサ・チーム・アカウントなど) | MIT |

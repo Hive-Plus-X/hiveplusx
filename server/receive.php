@@ -196,7 +196,7 @@ if (is_array($ble) && count($ble) > 0) {
             if ($isA) hpx_alert_record($s, $r, $epoch, $name, $nm !== '' ? $nm : $key);
             elseif (isset($r['bv']) && is_numeric($r['bv']))   // HPX-W・HPX-TH の電池電圧
                 hpx_sensor_batt_record($s, (float)$r['bv'], false, $epoch, $name, $nm !== '' ? $nm : $key);
-            if (!$isA) unset($s['missing_notified']);   // また届いた(HPX-A は hpx_alert_record で消す)
+            if (!$isA) unset($s['missing_notified']);   // また届いた(HPX-F は hpx_alert_record で消す)
             $s['last_epoch'] = max((int)($s['last_epoch'] ?? 0), $epoch);
             $sens[$key] = $s;
             $saved++;
@@ -209,7 +209,7 @@ foreach ($sidMap as $e) {
     if (isset($sens[$e['mac']]) && $e['name'] !== '') $sens[$e['mac']]['name'] = $e['name'];
 }
 
-// センサの記録が途切れていないか (HPX-A は1時間、HPX-W・HPX-TH・温湿度計は24時間)。ハブに登録中のセンサだけ見る
+// センサの記録が途切れていないか (HPX-F は1時間、HPX-W・HPX-TH・温湿度計は24時間)。ハブに登録中のセンサだけ見る
 hpx_alert_check_missing($sens, $now, $name, array_values(array_map(fn($e) => $e['mac'], $sidMap)));
 
 // --- 重量センサの較正(HPX-Core v1.14 以降の管理画面で較正したもの) ---
