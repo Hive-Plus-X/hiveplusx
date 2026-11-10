@@ -10,6 +10,26 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / 'site'
 
+# HPX-Core の選択チャート (TARO 2026-11-10)。電源 × 通信方法 → (印, 版の列名 または None, 説明)
+#   印: ◎ = ぴったりの版がある、○ = 近い版を少し変えて作る、✕ = 今は版がない
+CORE_POWER = [('home', '家庭用電源（USB）'), ('car', 'ソーラーパネル＋チャージャー＋カーバッテリー'),
+              ('aa', '単三リチウム電池'), ('li', '小型ソーラーパネル＋18650')]
+CORE_NET = [('lan', '有線ルーター（LAN ケーブル）'), ('wifi', 'Wi-Fi ルーター'), ('lte', 'LTE-M（ルーターなし）')]
+CORE_CHOOSER = {
+    ('home', 'lan'): ('◎', 'core', '「＋有線LAN」を作ります。USB 電源で動かします。'),
+    ('home', 'wifi'): ('◎', 'core_wp', '基本モデル（Wi-Fi＋USB給電）です。屋外に置くときは「＋防水」を作ります。屋内なら防水ケースでなくてもかまいません。'),
+    ('home', 'lte'): ('○', 'core_lte', '「＋LTE-M＆ソーラー」を作り、ソーラーパネルの代わりに USB 充電器（5V）を USB-C メス基板に差します。'),
+    ('car', 'lan'): ('◎', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。'),
+    ('car', 'wifi'): ('○', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。'),
+    ('car', 'lte'): ('✕', None, '今はこの組み合わせの版はありません。LTE-M を使うときは「＋LTE-M＆ソーラー」（小型ソーラーパネル＋18650）を作ってください。'),
+    ('aa', 'lan'): ('✕', None, '有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。'),
+    ('aa', 'wifi'): ('◎', 'core_bat', '「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。'),
+    ('aa', 'lte'): ('✕', None, 'LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M＆ソーラー」を作ってください。'),
+    ('li', 'lan'): ('✕', None, '有線LANモジュール（W5500）は電気を多く使うので、小型ソーラーパネル＋18650 には向きません。'),
+    ('li', 'wifi'): ('○', 'core_lte', '「＋LTE-M＆ソーラー」を作り、LTE-M 通信モジュール（M5Stamp CatM）と SIM を付けずに、接続方法を Wi-Fi にします。'),
+    ('li', 'lte'): ('◎', 'core_lte', '「＋LTE-M＆ソーラー」を作ります。ルーターがいらず、ソーラーパネルで 18650 を充電して動かします。'),
+}
+
 # 機器ごとの版 (parts.csv の数の列名, 画面に出す名前)
 DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
@@ -31,6 +51,8 @@ DEVICES = [
                 ('HPX-Core_LTE_pcb.png', '＋LTE-M＆ソーラーの基板の配線図（下の段）', 'ユニバーサル基板 タカチ PCB72-95 を2枚使って2段に組みます。これは下の段の図で、Olimex ESP32-DEVKIT-LIPO をピンソケットで左端に差し、右上に M5Stamp CatM、その下に USB-C メス基板を貼り、下に電池とパネルの電圧を測る抵抗を載せます (表と裏、線はすべて裏)。上の段の部品からの線は赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です。', 'core_lte'),
                 ('HPX-Core_LTE_stack.png', '＋LTE-M＆ソーラーの2段の組み方（上の段）', '上の段 (2枚目の PCB72-95) に DFR0559 と 18650 電池ホルダー2個を載せ、M3 オスメス スペーサー 25mm で下の段の上に留めます。下の Olimex のアンテナの上は空けておきます。高さはベースから約 55mm の見込みで、ケースに入るかは届いてから確かめます。', 'core_lte'),
                 ('HPX-Core_LTE_wiring.png', '＋LTE-M＆ソーラーの線の対応図', 'LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。ソーラーパネルで 18650 電池2本 (並列) を DFR0559 で充電し、ESP32 は電池から、LTE モジュールは DFR0559 の 5V から動かします (送るときだけ ON)。電池とパネルの電圧も測ります。試作中の線の対応図です (基板に組むときは上の図)。ファームウェアは準備中です。', 'core_lte')],
+         # TARO 2026-11-10: どの版を作ればよいかの選択チャート (電源 × 通信方法)
+         chooser=CORE_CHOOSER,
          note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
@@ -208,6 +230,22 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
   @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
   .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .chooser { margin:36px auto 0; max-width:880px; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .chooser h2 { font-size:20px; margin:0 0 4px; }
+  .chooser .q { margin-top:16px; font-weight:700; font-size:15px; }
+  .chooser .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .chooser .opts button { font:inherit; font-size:14px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--line); background:transparent; color:var(--text); cursor:pointer; }
+  .chooser .opts button[aria-pressed="true"] { border-color:var(--forest); background:var(--forest); color:#fff; }
+  .chooser .ans { margin-top:18px; padding:14px 18px; border-radius:12px; background:var(--honey-soft); font-size:15px; }
+  .chooser .ans b { font-size:16px; }
+  .chooser .ans button { font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
+  .chooser details { margin-top:18px; font-size:14px; }
+  .chooser summary { cursor:pointer; color:var(--forest); font-weight:700; }
+  .ctab { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  .ctab th, .ctab td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
+  .ctab thead th { background:rgba(47,93,69,.07); }
+  .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
+  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -450,6 +488,71 @@ SWITCH_JS = '''<script>
 </script>'''
 
 
+def chooser_html(dev):
+    """電源と通信方法を選ぶと、作る版を教えるチャート (JS なしでも下の表で分かる)"""
+    ch = dev.get('chooser')
+    if not ch:
+        return ''
+    names = dict(dev['variants'])
+    def vname(k):
+        return '基本モデル（＋防水）' if k == 'core_wp' else names.get(k, '')
+    data = {f'{p}|{n}': [m, k or '', vname(k) if k else '', d] for (p, n), (m, k, d) in ch.items()}
+    btn = lambda grp, opts: ''.join(f'<button type="button" data-{grp}="{k}" aria-pressed="false">{esc(v)}</button>' for k, v in opts)
+    head = ''.join(f'<th>{esc(v.split("（")[0])}</th>' for _, v in CORE_NET)   # 表は短い名前で (スマートフォンでも読めるように)
+    body = ''
+    for pk, pv in CORE_POWER:
+        tds = ''
+        for nk, _ in CORE_NET:
+            m, k, d = ch[(pk, nk)]
+            tds += f'<td><span class="m">{m}</span>{esc(vname(k)) if k else "版なし"}</td>'
+        body += f'<tr><th>{esc(pv)}</th>{tds}</tr>'
+    return f'''
+    <div class="chooser" id="chooser">
+      <h2>どれを作ればいい？</h2>
+      <p class="note">電源と通信方法を選ぶと、作る版が分かります。</p>
+      <p class="q">1. 電源は？</p><div class="opts">{btn("p", CORE_POWER)}</div>
+      <p class="q">2. 通信方法は？</p><div class="opts">{btn("n", CORE_NET)}</div>
+      <div class="ans" id="chooser-ans" hidden></div>
+      <details><summary>組み合わせの一覧を見る</summary>
+        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th>{head}</tr></thead><tbody>{body}</tbody></table>
+        <p class="note">◎ ぴったりの版があります　○ 近い版を少し変えて作ります　✕ 今は版がありません</p>
+      </details>
+      <script>
+      (function () {{
+        var D = {json.dumps(data, ensure_ascii=False)};
+        var p = null, n = null, ans = document.getElementById('chooser-ans');
+        function pick(attr, v) {{
+          document.querySelectorAll('.chooser [data-' + attr + ']').forEach(function (b) {{ b.setAttribute('aria-pressed', b.getAttribute('data-' + attr) === v ? 'true' : 'false'); }});
+        }}
+        function upd() {{
+          if (!p || !n) return;
+          var r = D[p + '|' + n];
+          ans.hidden = false;
+          ans.textContent = '';
+          var b = document.createElement('b');
+          b.textContent = r[0] + ' ' + (r[2] || '今は版がありません');
+          var t = document.createElement('div');
+          t.textContent = r[3];
+          ans.appendChild(b); ans.appendChild(t);
+          if (r[1]) {{
+            var go = document.createElement('button');
+            go.type = 'button';
+            go.textContent = 'この版の部品表を見る';
+            go.addEventListener('click', function () {{
+              var v = document.querySelector('.vsw button[data-v="' + r[1] + '"]');
+              if (v) v.click();
+              document.getElementById('parts').scrollIntoView({{behavior: 'smooth'}});
+            }});
+            ans.appendChild(go);
+          }}
+        }}
+        document.querySelectorAll('.chooser [data-p]').forEach(function (b) {{ b.addEventListener('click', function () {{ p = b.getAttribute('data-p'); pick('p', p); upd(); }}); }});
+        document.querySelectorAll('.chooser [data-n]').forEach(function (b) {{ b.addEventListener('click', function () {{ n = b.getAttribute('data-n'); pick('n', n); upd(); }}); }});
+      }})();
+      </script>
+    </div>'''
+
+
 def device_page(dev, rows, parts):
     multi = len(dev['variants']) > 1
     sw = ('\n    <div class="vsw" role="group" aria-label="版を選ぶ">' +
@@ -460,7 +563,7 @@ def device_page(dev, rows, parts):
     <p class="eyebrow">Devices</p>
     <h1>{esc(dev["name"])}</h1>
     <p class="lead">{esc(dev["lead"])}</p>
-    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{sw}
+    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{chooser_html(dev)}{sw}
   </div>
 
   <section id="parts">
