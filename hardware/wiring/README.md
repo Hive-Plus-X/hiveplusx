@@ -24,7 +24,7 @@
 図は `gen_pcb.py` (基板の図) と `gen_wiring.py` (HPX-Core の図) で作っています。`python3 gen_pcb.py <出力フォルダ>` で SVG を作り直せます。
 
 ## まだ確かめていないこと
-
+、SIM7080G の UART を 921600bps にできるか (AT+IPR)
 - HPX-Core ＋LTE-M＆ソーラー: DFR0559 の EN の向き (High で ON か) と初期状態、M5Stamp CatM の信号電圧 (3.3V で使えるか) とピンの並び・電源を入れたら自動で起動するか、Olimex の BAT コネクタの＋−の向き、DFR0559 の GND が SOLAR−・BAT− と共通か、ケース OB10-17-5W の中の深さ (2段で約 55mm が入るか)、DFR0559 と 18650 ホルダーの実寸
 - ロードセル SC601 の線の色の割り当て (図は一般的な 赤=E+ 黒=E- 白=A- 緑=A+)
 - HPX-F の CdS セルで警報器の点滅を数えられるか (CdS は反応が遅め)
