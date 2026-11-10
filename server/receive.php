@@ -291,7 +291,7 @@ $state = [
     'vpv' => $vpv,    // ソーラーパネル電圧
     'vb_low' => $vbLow,
     'rssi' => isset($d['rssi']) ? (int)$d['rssi'] : null,
-    'net' => (isset($d['net']) && $d['net'] === 'lan') ? 'lan' : 'wifi',   // HPX-Core v1.20 から。有線LANなら 'lan'
+    'net' => (isset($d['net']) && in_array($d['net'], ['lan', 'lte'], true)) ? $d['net'] : 'wifi',   // HPX-Core v1.20 から 'lan'、v1.24 から 'lte' (LTE-M)
     // 管理画面の場所 (HPX-Core v1.21 から)。センサページの「管理画面を開く」ボタンに使う
     'ip' => (isset($d['ip']) && filter_var($d['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && $d['ip'] !== '0.0.0.0') ? (string)$d['ip'] : null,
     'host' => (isset($d['host']) && is_string($d['host']) && preg_match('/^[a-z0-9-]{1,63}$/', $d['host'])) ? $d['host'] : null,

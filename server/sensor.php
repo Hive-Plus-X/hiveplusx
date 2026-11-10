@@ -79,6 +79,14 @@ function rssi_text(?int $rssi): string
     return h($rssi . ' dBm') . ' <span class="' . $lv[0] . '">' . $lv[1] . '</span>';
 }
 
+// LTE-M の電波の強さ (HPX-Core v1.24〜、AT+CSQ から出した dBm)。Wi-Fi より弱い値でもつながる
+function lte_rssi_text(?int $rssi): string
+{
+    if ($rssi === null || $rssi === 0) return '';
+    $lv = $rssi >= -75 ? ['ok', '強い'] : ($rssi >= -90 ? ['ok', 'ふつう'] : ($rssi >= -100 ? ['warn', '弱い'] : ['ng', 'とても弱い']));
+    return '、電波 ' . h($rssi . ' dBm') . ' <span class="' . $lv[0] . '">' . $lv[1] . '</span>';
+}
+
 // ble.csv から $since 以降の記録を、種類ごと・センサーごとに古い順で返す
 //   th: mac => [[epoch, 温度, 湿度, 電池%, 電池V, HPX-TH本体温度], ...]
 //       温度は HPX-TH ならサーミスターの温度 (無いときは SHT40)。本体温度 (SHT40) はサーミスターがあるときだけ。電池V は HPX-TH だけ
@@ -632,7 +640,13 @@ if (isset($st['vb']) && is_numeric($st['vb'])) {
         . '<br><small class="muted">昼は充電中なので電圧が高く出ます。残りの目安は、充電していない夜明け前の電圧から出しています (鉛バッテリーの場合)。</small></dd>'
         . ($vpvNow !== null ? '<dt>パネル電圧</dt><dd>' . h(number_format($vpvNow, 2)) . ' V'
             . ($vpvNow < 1 ? ' <span class="muted">(発電していません。夜・日かげ、または線が外れています)</span>' : ' <span class="muted">(日が当たっています)</span>') . '</dd>' : '');
+} elseif (isset($st['vpv']) && is_numeric($st['vpv'])) {
+    // ＋LTE-M＆ソーラー版 (HPX-Core v1.24〜): 電池は 18650 (上の「電池電圧」)、パネルは 5V パネル
+    $vpvNow = (float)$st['vpv'];
+    $vbRow = '<dt>パネル電圧</dt><dd>' . h(number_format($vpvNow, 2)) . ' V'
+        . ($vpvNow < 1 ? ' <span class="muted">(発電していません。夜・日かげ、または線が外れています)</span>' : ' <span class="muted">(日が当たっています)</span>') . '</dd>';
 }
+$isLte = ($st['net'] ?? '') === 'lte';
 $fw = trim((string)($st['fw'] ?? '') . ((int)($st['build'] ?? 0) ? ' (build ' . (int)$st['build'] . ')' : ''));
 // HPX-Core の管理画面 (HPX-Core v1.21 から ip・host が届く)。家の中のネットワークのアドレスなので、同じネットワークにつながっている端末からしか開けない
 $admIp = (string)($st['ip'] ?? '');
@@ -651,6 +665,11 @@ if ($admIp !== '' || $admHost !== '') {
         . (($st['pm'] ?? '') === 'sleep' ? 'ディープスリープ (電池) で動かしているときは、HPX-Core の RESET ボタンを押してから約10分間だけ開けます。' : '')
         . 'アドレスは最後にデータが届いたときのものです。ルーターの都合で変わることがあります。名前で開くボタンは iPhone・Mac・Windows 向けで、Android では開けないことがあります。'
         . '</small>';
+} elseif ($isLte) {
+    // LTE-M の IP アドレスは携帯の回線の中のものなので、管理画面には使えない
+    $adm = '<small class="muted">LTE-M でつないでいるので、外からは開けません。'
+        . ($admLanAp !== '' ? '蜂場で、HPX-Core が出している Wi-Fi「' . h($admLanAp) . '」につないで http://192.168.4.1/ を開いてください。' : '')
+        . 'ディープスリープ (電池) で動かしているときは、HPX-Core の RESET ボタンを押してから約10分間だけ開けます。</small>';
 } else {
     $adm = '<span class="muted">HPX-Core のファームウェアを v1.21 以降にすると、ここに管理画面を開くボタンが出ます。</span>';
 }
@@ -664,7 +683,8 @@ echo '<div class="card"><dl class="info">'
     . $vbRow
     . ((($st['net'] ?? '') === 'lan')
         ? '<dt>通信</dt><dd>有線LAN</dd>'
-        : '<dt>Wi-Fiの電波</dt><dd>' . rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>')
+        : ($isLte ? '<dt>通信</dt><dd>LTE-M' . lte_rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>'
+        : '<dt>Wi-Fiの電波</dt><dd>' . rssi_text(isset($st['rssi']) && is_numeric($st['rssi']) ? (int)$st['rssi'] : null) . '</dd>'))
     . '<dt>管理画面</dt><dd>' . $adm . '</dd>'
     . '</dl></div>';
 
