@@ -2,9 +2,9 @@
 // HPX_Core_v1_24.ino   Hive Plus X  (ESP32 養蜂IoT コア)
 //
 // v1.24 の変更
-//   * 「＋LTE-M＆ソーラー版」に対応した。LTE ルーターなしで、LTE-M 通信モジュール M5Stamp CatM (SIMCom SIM7080G) から
+//   * 「＋LTE-M」版 (電源は HPX-Solar) に対応した。LTE ルーターなしで、LTE-M 通信モジュール M5Stamp CatM (SIMCom SIM7080G) から
 //     直接サーバーへ送る。接続方法に「LTE-M」を足した(初回設定の画面か「動作設定」で選ぶ。Wi-Fi・有線LAN はこれまでどおり)。
-//       - 配線: CatM の TX → GPIO16(D16)、CatM の RX ← GPIO17(D17)、DFR0559 の EN ← GPIO25(D25)
+//       - 配線: CatM の TX → GPIO16(D16)、CatM の RX ← GPIO17(D17)、HPX-Solar の DFR0559 の EN ← GPIO25(D25)
 //         (hardware/wiring/HPX-Core_LTE_wiring.png・HPX-Core_LTE_pcb.png。Olimex ESP32-DevKit-LiPo を使う)
 //       - 送るときだけ D25 で DFR0559 の 5V を入れて CatM を動かし、送り終わったら AT+CPOWD=1 で止めて 5V を切る。
 //         眠っている間は D25 をその値のまま固定する(gpio_hold)

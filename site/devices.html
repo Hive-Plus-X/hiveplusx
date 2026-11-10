@@ -5,7 +5,7 @@
 <script>document.documentElement.classList.add("js");</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>機器をつくる | Hive Plus X</title>
-<meta name="description" content="Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-F・HPX-B・HPX-Camera) の作り方と部品表です。">
+<meta name="description" content="Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-F・HPX-B・HPX-Camera・HPX-Solar) の作り方と部品表です。">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
 
@@ -155,14 +155,14 @@
   .chooser .opts button[aria-pressed="true"] { border-color:var(--forest); background:var(--forest); color:#fff; }
   .chooser .ans { margin-top:18px; padding:14px 18px; border-radius:12px; background:var(--honey-soft); font-size:15px; }
   .chooser .ans b { font-size:16px; }
-  .chooser .ans button { font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
+  .chooser .ans button, .chooser .ans a.btn { display:inline-block; text-decoration:none; margin-right:8px; font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
   .chooser details { margin-top:18px; font-size:14px; }
   .chooser summary { cursor:pointer; color:var(--forest); font-weight:700; }
   .ctab { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
   .ctab th, .ctab td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
   .ctab thead th { background:rgba(47,93,69,.07); }
   .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
-  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
+  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -209,7 +209,7 @@
     <div class="reveal wrap">
       <div class="devs">
       <a class="dev" id="core" href="device-core.html"><span class="tag">ハブ</span><h3>HPX-Core</h3>
-        <p>センサの記録を Bluetooth で集め、Wi-Fi・有線LAN・LTE のどれかでサーバーへ送る中心的な機器です。</p><p class="vars">基本モデル・＋有線LAN・＋有線LAN＆ソーラーシステムチェック・＋防水・＋防水＆電池駆動・＋LTE-M＆ソーラー</p></a>
+        <p>センサの記録を Bluetooth で集め、Wi-Fi・有線LAN・LTE のどれかでサーバーへ送る中心的な機器です。</p><p class="vars">基本モデル・＋有線LAN・＋有線LAN＆ソーラーシステムチェック・＋防水・＋防水＆電池駆動・＋LTE-M</p></a>
       <a class="dev" id="w" href="device-w.html"><span class="tag">重量</span><h3>HPX-W</h3>
         <p>巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。</p><p class="vars">CR123A 版・単三リチウム電池版</p></a>
       <a class="dev" id="th" href="device-th.html"><span class="tag">温湿度</span><h3>HPX-TH</h3>
@@ -220,6 +220,8 @@
         <p>ソーラーパネルで充電する 12V バッテリーとパネルの電圧を測り、Bluetooth で発信します。電源はそのバッテリーから取ります。</p></a>
       <a class="dev" id="cam" href="device-camera.html"><span class="tag">巣門カメラ</span><h3>HPX-Camera</h3>
         <p>巣門の前で決まった時間ごとに写真を撮り、Wi-Fi でサーバーへ送ります。スズメバチの襲来や蜂の出入りの様子を記録します。</p></a>
+      <a class="dev" id="solar" href="device-solar.html"><span class="tag">電源</span><h3>HPX-Solar</h3>
+        <p>小型ソーラーパネルで 18650 電池2本を充電し、HPX-Core「＋LTE-M」などへ電気を送る電源です。</p></a>
       <div class="dev soon" id="other"><span class="tag">その他センサー</span><h3>HPXシリーズ</h3>
         <p>各種センサを nRF52840 と組み合わせることで、様々な拡張が可能です。開発中です。</p></div>
       </div>
