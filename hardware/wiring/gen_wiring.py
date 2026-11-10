@@ -532,7 +532,7 @@ print("ok LAN")
 # Olimex ESP32-DEVKIT-LIPO ＋ M5Stamp CatM (SIM7080G) ＋ DFRobot DFR0559 (ソーラー充電・5V 昇圧) ＋ 18650×2 並列。
 # ESP32 は電池から Olimex の BAT コネクタで動かし、LTE モジュールは DFR0559 の 5V 出力 (EN を GPIO25 で入り切り) から。
 # 送るときだけ 5V を入れるので、眠っている間 LTE モジュールは電気を使わない。図は線の対応だけ (基板の穴の図は部品が届いてから)。
-s = S(1280, 1810)
+s = S(1280, 1940)
 title(s, "HPX-Core（親機）＋LTE-M＆ソーラーの部品表と配線図", "試作中 ／ 実機未確認 ／ ファーム準備中")
 def board_box(x, y, w, h, fill, stroke, name, sub):
     s.rect(x, y, w, h, fill, stroke, 10, 3)
@@ -637,7 +637,7 @@ LTE_WIRES = [
     ["orange", "DFR0559 5V（ピン）", "M5Stamp CatM 5V", "LTE モジュールの電源"],
     ["black", "DFR0559 GND（ピン）", "M5Stamp CatM GND", ""],
     ["purple", "DFR0559 EN", "Olimex D25（GPIO25）", "送るときだけ 5V を入れる"],
-    ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "115200bps"],
+    ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "初めは 115200bps、ファームで 921600bps に"],
     ["green", "M5Stamp CatM RX", "Olimex D17（GPIO17、送信）", ""],
     ["blue", "パネル＋ → 100kΩ", "Olimex D36（GPIO36）", "20kΩ と 0.1µF で GND へ（パネル電圧）"],
     ["white", "電池＋ → 100kΩ", "Olimex D34（GPIO34）", "100kΩ と 0.1µF で GND へ（電池電圧）"],
@@ -660,6 +660,9 @@ LTE_NOTES = [
     "・DFR0559 の EN が High で ON か、何もつながないとき ON か OFF かは未確認。届いたらテスターで確かめる。",
     "・ESP32 は眠る前に D25 を Low にして固定し、LTE モジュールの電源を切る（ファームで行う）。",
     "・M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。",
+    "・線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。",
+    "  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。",
+    "・HPX-Camera の画像: Olimex が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。",
     "・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする。",
     "・JST PH ケーブルは＋−の向きが製品で逆のことがある。Olimex の基板の印字で確かめる。",
     "・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。",
