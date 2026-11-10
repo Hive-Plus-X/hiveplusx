@@ -17,7 +17,7 @@ CORE_POWER = [('home', '家庭用電源（USB）'), ('car', 'ソーラーパネ�
 CORE_NET = [('lan', '有線ルーター（LAN ケーブル）'), ('wifi', 'Wi-Fi ルーター'), ('lte', 'LTE-M（ルーターなし）')]
 CORE_CHOOSER = {
     ('home', 'lan'): ('◎', 'core', '「＋有線LAN」を作ります。USB 電源で動かします。'),
-    ('home', 'wifi'): ('◎', 'core_wp', '基本モデル（Wi-Fi＋USB給電）です。屋外に置くときは「＋防水」を作ります。屋内なら防水ケースでなくてもかまいません。'),
+    ('home', 'wifi'): ('◎', 'core_basic', '「基本モデル」を作ります。Wi-Fi でルーターにつなぎ、USB 電源で動かします。雨のかかる屋外に置くときは「＋防水」を作ります。'),
     ('home', 'lte'): ('○', 'core_lte', '「＋LTE-M＆ソーラー」を作り、ソーラーパネルの代わりに USB 充電器（5V）を USB-C メス基板に差します。'),
     ('car', 'lan'): ('◎', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。'),
     ('car', 'wifi'): ('○', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。'),
@@ -39,12 +39,14 @@ DEVICES = [
          # TARO 2026-11-08: 有線LAN＋電圧チェック版 (core_lanv) を追加 (12V バッテリーとソーラーパネルの電圧を測る)
          # TARO 2026-11-09: ＋LTE-M＆ソーラー版 (core_lte) を追加 (M5Stamp CatM で LTE-M、DFR0559＋18650×2＋5V パネル、ルーター不要)
          # TARO 2026-11-08: 版の名前を ＋有線LAN / ＋有線LAN＆ソーラーシステムチェック / ＋防水 / ＋防水＆電池駆動 に (基本モデル=Wi-Fi＋USB給電にオプションを足す考え方)
-        variants=[('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M＆ソーラー')],
+        # TARO 2026-11-10: 基本モデル (core_basic) = ＋有線LAN から W5500 を外したもの (Wi-Fi＋USB給電)
+        variants=[('core_basic', '基本モデル'), ('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M＆ソーラー')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          # TARO 2026-11-10: 通信モジュール (チップボードの次) と その他 (最後) を追加
          cats=['チップボード', '通信モジュール', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル', 'その他'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
-         wiring=[('HPX-Core_LAN_pcb.png', '＋有線LANの配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
+         wiring=[('HPX-Core_BASIC_pcb.png', '基本モデルの配線図', 'ESP32 を 6×8cm のユニバーサル基板にピンソケットで差すだけの図です (線はありません)。「＋有線LAN」と同じ基板・同じ位置なので、あとから W5500 を足して「＋有線LAN」にできます。ルーターへは Wi-Fi でつなぎ、USB-C から電気をもらいます。', 'core_basic'),
+                ('HPX-Core_LAN_pcb.png', '＋有線LANの配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
                 ('HPX-Core_LANV_pcb.png', '＋有線LAN＆ソーラーシステムチェックの配線図', '「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。ESP32 は USB ではなくバッテリーから動かします。ファームウェアは v1.22 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。', 'core_lanv'),
                 ('HPX-Core_wiring.png', '＋防水の配線図', 'ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。', 'core_wp'),
                 ('HPX-Core_BAT_pcb.png', '＋防水＆電池駆動の配線図', 'ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。', 'core_bat'),
@@ -495,7 +497,7 @@ def chooser_html(dev):
         return ''
     names = dict(dev['variants'])
     def vname(k):
-        return '基本モデル（＋防水）' if k == 'core_wp' else names.get(k, '')
+        return names.get(k, '')
     data = {f'{p}|{n}': [m, k or '', vname(k) if k else '', d] for (p, n), (m, k, d) in ch.items()}
     btn = lambda grp, opts: ''.join(f'<button type="button" data-{grp}="{k}" aria-pressed="false">{esc(v)}</button>' for k, v in opts)
     head = ''.join(f'<th>{esc(v.split("（")[0])}</th>' for _, v in CORE_NET)   # 表は短い名前で (スマートフォンでも読めるように)

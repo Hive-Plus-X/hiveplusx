@@ -212,12 +212,12 @@
       <p class="q">2. 通信方法は？</p><div class="opts"><button type="button" data-n="lan" aria-pressed="false">有線ルーター（LAN ケーブル）</button><button type="button" data-n="wifi" aria-pressed="false">Wi-Fi ルーター</button><button type="button" data-n="lte" aria-pressed="false">LTE-M（ルーターなし）</button></div>
       <div class="ans" id="chooser-ans" hidden></div>
       <details><summary>組み合わせの一覧を見る</summary>
-        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th><th>有線ルーター</th><th>Wi-Fi ルーター</th><th>LTE-M</th></tr></thead><tbody><tr><th>家庭用電源（USB）</th><td><span class="m">◎</span>＋有線LAN</td><td><span class="m">◎</span>基本モデル（＋防水）</td><td><span class="m">○</span>＋LTE-M＆ソーラー</td></tr><tr><th>ソーラーパネル＋チャージャー＋カーバッテリー</th><td><span class="m">◎</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">✕</span>版なし</td></tr><tr><th>単三リチウム電池</th><td><span class="m">✕</span>版なし</td><td><span class="m">◎</span>＋防水＆電池駆動</td><td><span class="m">✕</span>版なし</td></tr><tr><th>小型ソーラーパネル＋18650</th><td><span class="m">✕</span>版なし</td><td><span class="m">○</span>＋LTE-M＆ソーラー</td><td><span class="m">◎</span>＋LTE-M＆ソーラー</td></tr></tbody></table>
+        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th><th>有線ルーター</th><th>Wi-Fi ルーター</th><th>LTE-M</th></tr></thead><tbody><tr><th>家庭用電源（USB）</th><td><span class="m">◎</span>＋有線LAN</td><td><span class="m">◎</span>基本モデル</td><td><span class="m">○</span>＋LTE-M＆ソーラー</td></tr><tr><th>ソーラーパネル＋チャージャー＋カーバッテリー</th><td><span class="m">◎</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">✕</span>版なし</td></tr><tr><th>単三リチウム電池</th><td><span class="m">✕</span>版なし</td><td><span class="m">◎</span>＋防水＆電池駆動</td><td><span class="m">✕</span>版なし</td></tr><tr><th>小型ソーラーパネル＋18650</th><td><span class="m">✕</span>版なし</td><td><span class="m">○</span>＋LTE-M＆ソーラー</td><td><span class="m">◎</span>＋LTE-M＆ソーラー</td></tr></tbody></table>
         <p class="note">◎ ぴったりの版があります　○ 近い版を少し変えて作ります　✕ 今は版がありません</p>
       </details>
       <script>
       (function () {
-        var D = {"home|lan": ["◎", "core", "＋有線LAN", "「＋有線LAN」を作ります。USB 電源で動かします。"], "home|wifi": ["◎", "core_wp", "基本モデル（＋防水）", "基本モデル（Wi-Fi＋USB給電）です。屋外に置くときは「＋防水」を作ります。屋内なら防水ケースでなくてもかまいません。"], "home|lte": ["○", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作り、ソーラーパネルの代わりに USB 充電器（5V）を USB-C メス基板に差します。"], "car|lan": ["◎", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。"], "car|wifi": ["○", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。"], "car|lte": ["✕", "", "", "今はこの組み合わせの版はありません。LTE-M を使うときは「＋LTE-M＆ソーラー」（小型ソーラーパネル＋18650）を作ってください。"], "aa|lan": ["✕", "", "", "有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。"], "aa|wifi": ["◎", "core_bat", "＋防水＆電池駆動", "「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。"], "aa|lte": ["✕", "", "", "LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M＆ソーラー」を作ってください。"], "li|lan": ["✕", "", "", "有線LANモジュール（W5500）は電気を多く使うので、小型ソーラーパネル＋18650 には向きません。"], "li|wifi": ["○", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作り、LTE-M 通信モジュール（M5Stamp CatM）と SIM を付けずに、接続方法を Wi-Fi にします。"], "li|lte": ["◎", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作ります。ルーターがいらず、ソーラーパネルで 18650 を充電して動かします。"]};
+        var D = {"home|lan": ["◎", "core", "＋有線LAN", "「＋有線LAN」を作ります。USB 電源で動かします。"], "home|wifi": ["◎", "core_basic", "基本モデル", "「基本モデル」を作ります。Wi-Fi でルーターにつなぎ、USB 電源で動かします。雨のかかる屋外に置くときは「＋防水」を作ります。"], "home|lte": ["○", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作り、ソーラーパネルの代わりに USB 充電器（5V）を USB-C メス基板に差します。"], "car|lan": ["◎", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。"], "car|wifi": ["○", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。"], "car|lte": ["✕", "", "", "今はこの組み合わせの版はありません。LTE-M を使うときは「＋LTE-M＆ソーラー」（小型ソーラーパネル＋18650）を作ってください。"], "aa|lan": ["✕", "", "", "有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。"], "aa|wifi": ["◎", "core_bat", "＋防水＆電池駆動", "「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。"], "aa|lte": ["✕", "", "", "LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M＆ソーラー」を作ってください。"], "li|lan": ["✕", "", "", "有線LANモジュール（W5500）は電気を多く使うので、小型ソーラーパネル＋18650 には向きません。"], "li|wifi": ["○", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作り、LTE-M 通信モジュール（M5Stamp CatM）と SIM を付けずに、接続方法を Wi-Fi にします。"], "li|lte": ["◎", "core_lte", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作ります。ルーターがいらず、ソーラーパネルで 18650 を充電して動かします。"]};
         var p = null, n = null, ans = document.getElementById('chooser-ans');
         function pick(attr, v) {
           document.querySelectorAll('.chooser [data-' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-' + attr) === v ? 'true' : 'false'); });
@@ -249,13 +249,32 @@
       })();
       </script>
     </div>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core" aria-pressed="false">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
   </div>
 
   <section id="parts">
     <div class="reveal wrap">
       <span class="tag">ハブ</span>
       <h2>部品表</h2>
+      <div data-variant="core_basic">
+      <p class="note">基本モデルに必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FT2SJH3H" target="_blank" rel="noopener">ESP32-WROOM-32</a></b><span>ELEGOO ESP-32 開発ボード USB-C CP2102チップ</span><span class="price">1,935円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">15PIN×2</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 2,084円</td></tr></tfoot>
+      </table>
+      </div>
       <div data-variant="core">
       <p class="note">＋有線LANに必要な部品と数です。</p>
       <table class="parts">
@@ -395,6 +414,17 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
     <div class="reveal wrap">
       <h2>作り方</h2>
       <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring" data-variant="core_basic">
+        <figcaption><b>基本モデルの配線図</b>ESP32 を 6×8cm のユニバーサル基板にピンソケットで差すだけの図です (線はありません)。「＋有線LAN」と同じ基板・同じ位置なので、あとから W5500 を足して「＋有線LAN」にできます。ルーターへは Wi-Fi でつなぎ、USB-C から電気をもらいます。</figcaption>
+        <a href="img/wiring/HPX-Core_BASIC_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BASIC_pcb.png" alt="HPX-Core 基本モデルの配線図" loading="lazy"></a>
+      </figure>
+      <div data-variant="core_basic">
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）</td><td>1</td><td>B14〜B28・L14〜L28。USB-C を下に向ける</td></tr><tr><td>ピンソケット（メス）15ピン</td><td>2</td><td>B14〜B28、L14〜L28 にはんだ付けして ESP-32 を差す</td></tr><tr><td>ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）</td><td>1</td><td>縦に置く。ケース PFF10-4-10W に AST2.5-5B で留める</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>基本モデルは、ルーターへ Wi-Fi でつなぎ、ESP-32 の USB-C から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。</li><li>「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_pcb.png）。</li><li>ファームウェアは HPX_Core v1.20 以降を使い、初回設定で接続方法を「Wi-Fi」にします。</li><li>ESP-32 の左右のピン列は10穴離れているとして描いた（写真から）。差す前に実物で確かめる。</li><li>雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。</li></ul></div>
+      </div>
       <figure class="wiring" data-variant="core">
         <figcaption><b>＋有線LANの配線図</b>ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。</figcaption>
         <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core ＋有線LANの配線図" loading="lazy"></a>

@@ -738,6 +738,42 @@ finish(s, y, [
     "・W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。",
 ], "HPX-Core_LAN_pcb.svg")
 
+# ================================================================== HPX-Core 基本モデル（＋有線LAN から W5500 を外したもの）
+# TARO 2026-11-10: 基本モデル (Wi-Fi＋USB給電) は「＋有線LAN」の基板から W5500 とその線を外して作る。ESP-32 の位置は同じ。
+OX, OY = 260, 200
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）基本モデル 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ ELEGOO ESP-32 ／ Wi-Fi ＋ USB 給電")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（「＋有線LAN」と同じ基板・同じ位置。W5500 は付けない）")
+x1, y1, x2, y2 = module(1 - 0.47, 11 + 0.47, R(14) - 2.3, R(28) + 4.6, "#212121", "#000", "ESP-32")
+s.top.append(f'<rect x="{(x1+x2)/2-60}" y="{y1+30}" width="120" height="150" rx="4" fill="#b0bec5" fill-opacity="0.8" stroke="#78909c"/>')
+s.text((x1 + x2) / 2, y1 + 100, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 120, "WROOM-32", 15, "middle", "bold", "#263238", layer=s.top)
+s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y2-20}" width="68" height="44" rx="8" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+s.text((x1 + x2) / 2, y2 + 46, "USB-C（下向き）", 13, "middle", "bold", "#333", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 230, "ELEGOO ESP-32", 16, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 252, "ピンソケット 15ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+pins(1, 14, EL, "L", set())
+pins(11, 14, ER, "R", set())
+# W5500 を付けない場所 (将来 ＋有線LAN にするときはここに差す)
+_x1, _y1 = OX + (13 - 0.53) * P, OY + (R(24) - 0.5) * P
+s.top.append(f'<rect x="{_x1}" y="{_y1}" width="{9.06*P}" height="{9.84*P}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2.5" stroke-dasharray="10 7"/>')
+s.text(_x1 + 4.53 * P, _y1 + 4.4 * P, "空き（＋有線LAN では", 13, "middle", "bold", "#757575", layer=s.top)
+s.text(_x1 + 4.53 * P, _y1 + 5.2 * P, "ここに W5500 を差す）", 13, "middle", "bold", "#757575", layer=s.top)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_BASIC_pcb.svg")
+y = table(s, 60, yb + 40, [
+    ["部品", "数", "置き場所・メモ"],
+    ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）", "1", "B14〜B28・L14〜L28。USB-C を下に向ける"],
+    ["ピンソケット（メス）15ピン", "2", "B14〜B28、L14〜L28 にはんだ付けして ESP-32 を差す"],
+    ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）", "1", "縦に置く。ケース PFF10-4-10W に AST2.5-5B で留める"],
+], [620, 60, 520], "部品表")
+finish(s, y, [
+    "・基本モデルは、ルーターへ Wi-Fi でつなぎ、ESP-32 の USB-C から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。",
+    "・「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_pcb.png）。",
+    "・ファームウェアは HPX_Core v1.20 以降を使い、初回設定で接続方法を「Wi-Fi」にします。",
+    "・ESP-32 の左右のピン列は10穴離れているとして描いた（写真から）。差す前に実物で確かめる。",
+    "・雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。",
+], "HPX-Core_BASIC_pcb.svg")
+
 # ================================================================== HPX-Core ＋防水＆電池駆動（タカチ PCB36-47）
 # TARO 2026-11-08: PCB36-47 に Olimex ESP32-DEVKIT-LIPO を載せ、単三リチウム3本（ケース WH145-25-M3 の電池ボックス）から 5V 端子へ。
 # Olimex のピンの並びは公式資料（GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D、ESP32-DevKitC と同じ）。左右のピン列は 25.4mm（10穴）離れている。
