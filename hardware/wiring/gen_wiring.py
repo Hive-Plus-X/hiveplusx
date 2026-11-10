@@ -527,3 +527,291 @@ notes(s, 60, y + 20, [
 ])
 s.save("HPX-Core_LAN_wiring.svg")
 print("ok LAN")
+
+# ------------------------------------------------------------------ HPX-Core ＋LTE-M＆ソーラー (TARO 2026-11-09)
+# Olimex ESP32-DEVKIT-LIPO ＋ M5Stamp CatM (SIM7080G) ＋ DFRobot DFR0559 (ソーラー充電・5V 昇圧) ＋ 18650×2 並列。
+# ESP32 は電池から Olimex の BAT コネクタで動かし、LTE モジュールは DFR0559 の 5V 出力 (EN を GPIO25 で入り切り) から。
+# 送るときだけ 5V を入れるので、眠っている間 LTE モジュールは電気を使わない。図は線の対応だけ (基板の穴の図は部品が届いてから)。
+s = S(1280, 1810)
+title(s, "HPX-Core（親機）＋LTE-M＆ソーラーの部品表と配線図", "試作中 ／ 実機未確認 ／ ファーム準備中")
+def board_box(x, y, w, h, fill, stroke, name, sub):
+    s.rect(x, y, w, h, fill, stroke, 10, 3)
+    s.text(x + w / 2, y + h / 2 - 4, name, 16, "middle", "bold", "#fff")
+    s.text(x + w / 2, y + h / 2 + 18, sub, 12, "middle", fill="#eee")
+# ソーラーパネル (USB-C のケーブルを切らずに、USB-C メス基板で受ける)
+s.rect(60, 115, 170, 110, "#0d47a1", "#06244f", 6, 3)
+for i in range(1, 3):
+    s.add(f'<line x1="{60+i*57}" y1="115" x2="{60+i*57}" y2="225" stroke="#90caf9" stroke-width="1"/>')
+s.text(145, 250, "ソーラーパネル 10W/5V", 15, "middle", "bold")
+s.text(145, 270, "（USB-C 出力）", 12, "middle", fill="#666")
+s.add('<path d="M230,175 L272,175" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+s.rect(272, 160, 22, 30, "#b0b0b0", "#777", 4)
+s.rect(294, 125, 66, 100, "#37474f", "#222", 6, 2)
+s.text(327, 245, "USB-C", 12, "middle", "bold")
+s.text(327, 261, "メス基板", 12, "middle", "bold")
+s.pad(360, 150, "＋", "R"); s.pad(360, 200, "−", "R")
+# DFR0559
+s.rect(440, 110, 300, 240, "#1565c0", "#0d3c7a", 10, 3)
+s.text(590, 215, "DFR0559", 17, "middle", "bold", "#fff")
+s.text(590, 237, "ソーラーパワーマネージャー 5V", 12, "middle", fill="#e3f2fd")
+dfr = {}
+for n, y in (("SOLAR＋", 150), ("SOLAR−", 200), ("BAT＋", 290), ("BAT−", 330)):
+    s.pad(440, y, n, "L"); dfr[n] = (440, y)
+s.pad(740, 300, "EN", "R"); dfr["EN"] = (740, 300)
+for n, x in (("5V", 600), ("GND", 660)):
+    s.add(f'<circle cx="{x}" cy="350" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, 336, n, 14, "middle", "bold", "#fff"); dfr[n] = (x, 350)
+s.text(588, 395, "USB でなくピンの 5V →", 12, "end", fill="#666")
+# 18650 ×2 並列
+s.rect(60, 420, 280, 150, "#455a64", "#263238", 10, 3)
+for i in range(2):
+    s.rect(80, 440 + i * 60, 240, 44, "#2e7d32", "#1b5e20", 20, 2)
+    s.text(200, 468 + i * 60, "18650（保護回路付き）", 14, "middle", "bold", "#fff")
+s.pad(340, 450, "＋", "R"); s.pad(340, 520, "−", "R")
+s.text(60, 408, "18650 ×2（並列 約3.7V）", 15, weight="bold"); s.text(250, 408, "＋どうし・−どうしをつなぐ", 12, fill="#666")
+# M5Stamp CatM
+s.rect(540, 440, 240, 140, "#eceff1", "#90a4ae", 10, 3)
+s.text(660, 505, "M5Stamp CatM", 16, "middle", "bold", "#263238")
+s.text(660, 527, "SIM7080G（LTE-M）・microSIM", 12, "middle", fill="#455a64")
+st = {}
+for n, x in (("5V", 600), ("GND", 660)):
+    s.add(f'<circle cx="{x}" cy="440" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, 466, n, 14, "middle", "bold", "#333"); st[n] = (x, 440)
+for n, y in (("TX", 490), ("RX", 530)):
+    s.add(f'<circle cx="780" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(766, y + 5, n, 14, "end", "bold", "#333"); st[n] = (780, y)
+# アンテナ (付属の IPEX-SMA ケーブル → ケースの壁 → 付属アンテナ)
+s.add('<path d="M560,580 L560,610 L470,610" stroke="#616161" stroke-width="3" fill="none" stroke-dasharray="6 5"/>')
+s.add('<rect x="452" y="600" width="18" height="20" fill="#bdbdbd" stroke="#616161"/>')
+s.add('<path d="M461,600 L461,560" stroke="#212121" stroke-width="6" stroke-linecap="round"/>')
+s.text(480, 645, "付属アンテナ（ケースの外へ、SMA）", 12, fill="#666")
+# Olimex
+s.rect(900, 120, 240, 400, "#c62828", "#7f0000", 10, 3)
+s.rect(956, 106, 120, 40, "#212121", "#111", 4, 2)
+s.text(1016, 132, "アンテナ", 12, "middle", "bold", "#eee")
+s.text(1020, 330, "Olimex", 16, "middle", "bold", "#fff")
+s.text(1020, 352, "ESP32-DevKit-LiPo", 13, "middle", "bold", "#fff")
+ol = {}
+for n, y in (("D25", 300), ("D16", 380), ("D17", 420)):
+    s.pad(900, y, n, "L"); ol[n] = (900, y)
+for n, y in (("D36", 220), ("D34", 260)):
+    s.pad(1140, y, n, "R"); ol[n] = (1140, y)
+s.rect(940, 470, 90, 40, "#fafafa", "#9e9e9e", 4)
+s.text(985, 495, "BAT", 13, "middle", "bold", "#333")
+ol["BAT−"], ol["BAT＋"] = (960, 520), (1000, 520)
+s.text(1060, 545, "BAT（JST PH 2ピン）", 12, "start", "bold", "#333")
+s.text(1030, 600, "micro USB は書き込みのときだけ", 12, fill="#666")
+# 分圧の抵抗 (下の抵抗と 0.1µF は GND へ)
+def divider(x, y, top, bot):
+    s.rect(x, y, 90, 90, "#fff8e1", "#c9a227", 8, 2)
+    s.text(x + 45, y + 24, top, 13, "middle", "bold")
+    s.text(x + 45, y + 44, "↓", 13, "middle")
+    s.text(x + 45, y + 62, bot, 13, "middle", "bold")
+    s.text(x + 45, y + 80, "＋0.1µF→GND", 10, "middle", fill="#666")
+divider(1180, 120, "100kΩ", "20kΩ")
+divider(1180, 330, "100kΩ", "100kΩ")
+# 線
+s.wire([(360, 150), (440, 150)], "red")
+s.wire([(360, 200), (440, 200)], "black")
+s.wire([(340, 450), (380, 450), (380, 290), (440, 290)], "red")
+s.wire([(340, 520), (400, 520), (400, 330), (440, 330)], "black")
+s.wire([(200, 570), (200, 710), (1000, 710), (1000, 520)], "red")
+s.wire([(260, 570), (260, 680), (960, 680), (960, 520)], "black")
+s.wire([dfr["5V"], st["5V"]], "orange")
+s.wire([dfr["GND"], st["GND"]], "black")
+s.wire([dfr["EN"], ol["D25"]], "purple")
+s.wire([st["TX"], (840, 490), (840, 380), ol["D16"]], "yellow")
+s.wire([st["RX"], (870, 530), (870, 420), ol["D17"]], "green")
+s.wire([(405, 150), (405, 90), (1225, 90), (1225, 120)], "blue")
+s.wire([(1200, 210), (1200, 220), ol["D36"]], "blue")
+s.wire([(1000, 710), (1240, 710), (1240, 420)], "white")
+s.wire([(1220, 330), (1220, 260), ol["D34"]], "white")
+s.dot(405, 150, "red"); s.dot(1000, 710, "red")
+s.text(640, 760, "センサ（HPX-W・HPX-TH・HPX-F）は、これまでどおり電波（BLE）で受け取ります。ルーターは使いません。", 15, "middle", "bold", "#1565c0")
+LTE_WIRES = [
+    ["線の色（例）", "どこから", "どこへ", "メモ"],
+    ["red", "USB-C メス基板の VBUS（＋）", "DFR0559 SOLAR＋", "パネルの USB-C を差す"],
+    ["black", "USB-C メス基板の GND（−）", "DFR0559 SOLAR−", ""],
+    ["red", "18650 の＋（2本並列）", "DFR0559 BAT＋ と Olimex BAT＋", "Olimex へは JST PH ケーブル"],
+    ["black", "18650 の−（2本並列）", "DFR0559 BAT− と Olimex BAT−", "ここで GND が共通になる"],
+    ["orange", "DFR0559 5V（ピン）", "M5Stamp CatM 5V", "LTE モジュールの電源"],
+    ["black", "DFR0559 GND（ピン）", "M5Stamp CatM GND", ""],
+    ["purple", "DFR0559 EN", "Olimex D25（GPIO25）", "送るときだけ 5V を入れる"],
+    ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "115200bps"],
+    ["green", "M5Stamp CatM RX", "Olimex D17（GPIO17、送信）", ""],
+    ["blue", "パネル＋ → 100kΩ", "Olimex D36（GPIO36）", "20kΩ と 0.1µF で GND へ（パネル電圧）"],
+    ["white", "電池＋ → 100kΩ", "Olimex D34（GPIO34）", "100kΩ と 0.1µF で GND へ（電池電圧）"],
+]
+y = table(s, 60, 830, LTE_WIRES, [150, 300, 330, 380], "つなぐ線")
+LTE_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO", "1", "本体（親機）。電池から BAT コネクタで動かす"],
+    ["M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル", "1", "LTE-M でサーバーへ送る。付属アンテナを使う（技適）"],
+    ["LTE-M 対応 SIM（microSIM）", "1", "例: SORACOM plan-D（LTE-M 対応）"],
+    ["DFRobot DFR0559 ソーラーパワーマネージャー 5V", "1", "電池の充電と、LTE モジュール用の 5V"],
+    ["ソーラーパネル 10W/5V（USB-C 出力）", "1", "ケーブルは切らずに USB-C で差す"],
+    ["USB-C メス基板（電源用、5.1kΩ 付き）", "1", "パネルの USB-C を受けて＋−の線に分ける"],
+    ["18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用", "各2", "並列につなぐ"],
+    ["抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2", "1式", "電池とパネルの電圧を測る"],
+]
+y = table(s, 60, y + 60, LTE_ROWS, [560, 50, 550], "部品の使いどころ")
+LTE_NOTES = [
+    "・試作中の図です。実機では確かめていません。LTE 用のファームウェアは準備中です。",
+    "・DFR0559 の EN が High で ON か、何もつながないとき ON か OFF かは未確認。届いたらテスターで確かめる。",
+    "・ESP32 は眠る前に D25 を Low にして固定し、LTE モジュールの電源を切る（ファームで行う）。",
+    "・M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。",
+    "・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする。",
+    "・JST PH ケーブルは＋−の向きが製品で逆のことがある。Olimex の基板の印字で確かめる。",
+    "・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。",
+    "・USB-C メス基板は CC に 5.1kΩ が付いた電源用を使う。付いていないと、パネルが 5V を出さないことがある。",
+    "・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。",
+    "・動作モードはディープスリープ（30分ごと）。基板に組む図は HPX-Core_LTE_pcb.png（PCB72-95、ケース OB10-17-5W）。",
+]
+notes(s, 60, y + 20, LTE_NOTES)
+s.save("HPX-Core_LTE_wiring.svg")
+_full = open(os.path.join(OUT, "HPX-Core_LTE_wiring.svg"), encoding="utf-8").read()
+_cut = 790
+open(os.path.join(OUT, "HPX-Core_LTE_wiring_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+json.dump({"tables": [{"head": "つなぐ線", "rows": LTE_WIRES}, {"head": "部品の使いどころ", "rows": LTE_ROWS}],
+           "notes": [n.lstrip("・") for n in LTE_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_LTE_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok LTE")
+
+# ------------------------------------------------------------------ HPX-Core ＋LTE-M＆ソーラー 2段の組み方 (TARO 2026-11-10)
+# 下の段 = PCB72-95 (Olimex・M5Stamp CatM・USB-C メス基板・抵抗)、上の段 = 2枚目の PCB72-95 (DFR0559・18650 ホルダー×2)。
+# 上の段は M3 オスメス スペーサー 25mm で下の段の取付穴に立て、M3 ねじ 6mm で留める。左の図は上の段を上から見たところ (mm で描く)。
+s = S(1280, 1780)
+title(s, "HPX-Core（親機）＋LTE-M＆ソーラー 2段の組み方", "試作中 ／ 実機未確認")
+K = 5.6                      # 1mm = 5.6px
+BX, BY = 110, 150            # 上の段の左上
+def mm(x, y): return BX + x * K, BY + y * K
+s.text(BX, BY - 30, "上の段（2枚目の PCB72-95）を上から見たところ", 17, weight="bold")
+s.rect(BX, BY, 72 * K, 95 * K, "#e8d5a8", "#b08a4a", 4, 3)
+for gx in range(27):
+    for gy in range(36):
+        x, y = mm(2.0 + gx * 2.54 + 1.0, 2.0 + gy * 2.54 + 1.0)
+        s.add(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.2" fill="#c9a865"/>')
+for hx, hy in ((5, 5), (67, 5), (5, 90), (67, 90)):
+    x, y = mm(hx, hy)
+    s.add(f'<circle cx="{x}" cy="{y}" r="{1.6*K}" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>')
+    s.add(f'<circle cx="{x}" cy="{y}" r="{2.8*K}" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3"/>')
+# アンテナの上は空ける
+x1, y1 = mm(3, 0.5); s.add(f'<rect x="{x1}" y="{y1}" width="{27*K}" height="{17.5*K}" fill="#ffffff" fill-opacity="0.75" stroke="#e53935" stroke-width="2" stroke-dasharray="7 4"/>')
+s.text(x1 + 13.5 * K, y1 + 7 * K, "ここは空ける", 14, "middle", "bold", "#c62828")
+s.text(x1 + 13.5 * K, y1 + 10.5 * K, "（下の Olimex の", 12, "middle", fill="#c62828")
+s.text(x1 + 13.5 * K, y1 + 13.5 * K, "アンテナの上）", 12, "middle", fill="#c62828")
+# 18650 ホルダー ×2 (縦向き)
+for i in range(2):
+    x, y = mm(30.5 + i * 20.8, 9)
+    s.rect(x, y, 20.2 * K, 77 * K, "#37474f", "#212121", 8, 2)
+    s.rect(x + 2.2 * K, y + 5 * K, 15.8 * K, 67 * K, "#2e7d32", "#1b5e20", 40, 2)
+    s.text(x + 10.1 * K, y + 38 * K, "18650", 14, "middle", "bold", "#fff")
+    s.text(x + 10.1 * K, y + 41.5 * K, "ホルダー", 12, "middle", fill="#fff")
+    s.text(x + 10.1 * K, y + 9.5 * K, "＋", 18, "middle", "bold", "#ffcdd2")
+    s.text(x + 10.1 * K, y + 70 * K, "−", 20, "middle", "bold", "#bbdefb")
+# DFR0559 (左、少し板の外へはみ出す)
+x, y = mm(-3, 22)
+s.rect(x, y, 32 * K, 63 * K, "#1565c0", "#0d3c7a", 8, 3)
+s.text(x + 16 * K, y + 27 * K, "DFR0559", 16, "middle", "bold", "#fff")
+s.text(x + 16 * K, y + 31 * K, "ソーラー", 12, "middle", fill="#e3f2fd")
+s.text(x + 16 * K, y + 34.5 * K, "パワーマネージャー", 12, "middle", fill="#e3f2fd")
+s.text(x + 16 * K, y + 41 * K, "両面テープか", 11, "middle", fill="#e3f2fd")
+s.text(x + 16 * K, y + 44 * K, "M3 ねじで留める", 11, "middle", fill="#e3f2fd")
+s.text(x + 16 * K, y + 5 * K, "SOLAR・BAT", 11, "middle", "bold", "#fff")
+s.text(x + 16 * K, y + 60 * K, "5V・GND・EN", 11, "middle", "bold", "#fff")
+# 寸法
+s.add(f'<line x1="{BX}" y1="{BY+95*K+22}" x2="{BX+72*K}" y2="{BY+95*K+22}" stroke="#555" stroke-width="1.5"/>')
+s.text(BX + 36 * K, BY + 95 * K + 42, "72mm", 13, "middle", fill="#555")
+s.add(f'<line x1="{BX+72*K+18}" y1="{BY}" x2="{BX+72*K+18}" y2="{BY+95*K}" stroke="#555" stroke-width="1.5"/>')
+s.text(BX + 72 * K + 26, BY + 47 * K, "95mm", 13, fill="#555")
+s.text(BX, BY + 95 * K + 70, "点線の丸 = M3 スペーサーの太さ（ここに部品を置かない）", 12, fill="#555")
+s.text(BX, BY + 95 * K + 90, "向きは下の段の図（HPX-Core_LTE_pcb.png）と同じ（アンテナが上）", 12, fill="#555")
+
+# 横から見た図
+SX, SY = 790, 150
+s.text(SX, SY - 30, "横から見たところ（高さは目安）", 17, weight="bold")
+Z = 6.0          # 1mm = 6px (高さ)
+W = 72 * 5.0
+base_y = SY + 470
+def zy(z): return base_y - z * Z
+s.rect(SX - 20, zy(0), W + 40, 3 * Z, "#9e9e9e", "#616161", 2, 2)
+s.text(SX + W / 2, zy(0) + 3 * Z + 20, "取り付けベース OBP10-17", 13, "middle", "bold")
+def spacer(x, z0, z1, color, label=None):
+    s.rect(x - 9, zy(z1), 18, (z1 - z0) * Z, color, "#555", 2, 1.5)
+for x in (SX + 25, SX + W - 25):
+    spacer(x, 0, 6, "#eeeeee")
+    spacer(x, 7.6, 32.6, "#cfd8dc")
+    s.rect(x - 6, zy(36.2), 12, 2 * Z, "#9e9e9e", "#555", 2, 1)    # ねじ頭
+# 下の段
+s.rect(SX, zy(7.6), W, 1.6 * Z, "#d9b86c", "#8a6d1d", 1, 1.5)
+s.rect(SX + 40, zy(7.6 + 8.5), 70, 8.5 * Z, "#263238", "#000", 2, 1)  # ソケット
+s.rect(SX + 30, zy(7.6 + 8.5 + 1.6 + 3), 90, 4.6 * Z, "#c62828", "#7f0000", 2, 1)
+s.text(SX + 75, zy(7.6 + 8.5 + 1.6 + 3) - 6, "Olimex", 12, "middle", "bold", "#c62828")
+s.rect(SX + 240, zy(7.6 + 5), 100, 5 * Z, "#eceff1", "#90a4ae", 2, 1)
+s.text(SX + 290, zy(7.6 + 5) - 6, "CatM", 12, "middle", "bold", "#455a64")
+# 上の段
+s.rect(SX, zy(32.6), W, 1.6 * Z, "#d9b86c", "#8a6d1d", 1, 1.5)
+s.rect(SX + 160, zy(34.2 + 21), W - 180, 21 * Z, "#37474f", "#212121", 4, 1.5)
+s.text(SX + 160 + (W - 180) / 2, zy(34.2 + 11), "18650 ホルダー（約21mm）", 12, "middle", "bold", "#fff")
+s.rect(SX + 10, zy(34.2 + 9), 140, 9 * Z, "#1565c0", "#0d3c7a", 2, 1)
+s.text(SX + 80, zy(34.2 + 9) - 6, "DFR0559", 12, "middle", "bold", "#1565c0")
+# 高さのものさし
+RX = SX + W + 40
+for z, t in ((0, "0"), (6, "6"), (7.6, ""), (32.6, "32.6"), (34.2, ""), (55.2, "約55")):
+    s.add(f'<line x1="{RX-6}" y1="{zy(z)}" x2="{RX+6}" y2="{zy(z)}" stroke="#555" stroke-width="1.5"/>')
+    if t: s.text(RX + 12, zy(z) + 5, t + "mm", 12, fill="#555")
+s.add(f'<line x1="{RX}" y1="{zy(0)}" x2="{RX}" y2="{zy(55.2)}" stroke="#555" stroke-width="1.5"/>')
+lab = [(3, "AST3-6B（6mm）"), (20, "M3 オスメス スペーサー 25mm"), (36.5, "M3 ねじ 6mm")]
+for z, t in lab:
+    s.text(SX - 30, zy(z) + 4, t, 12, "end", fill="#333")
+s.text(SX - 30, zy(8.4) + 4, "下の段 PCB72-95", 12, "end", "bold")
+s.text(SX - 30, zy(33.4) + 4, "上の段 PCB72-95", 12, "end", "bold")
+s.text(SX + 100, zy(29), "すき間 約 10mm", 12, "middle", fill="#2e7d32")
+s.text(SX + 100, zy(26.5), "（段の間の線を通す）", 12, "middle", fill="#2e7d32")
+# 段の間の線 (見本)
+for i, c in enumerate(("red", "black", "orange", "purple")):
+    xx = SX + 170 + i * 14
+    s.add(f'<path d="M{xx},{zy(32.6)} C{xx},{zy(26)} {xx+10},{zy(22)} {xx+10},{zy(9.2)}" fill="none" stroke="{COL[c]}" stroke-width="3"/>')
+
+STACK_WIRES = [
+    ["線の色（例）", "上の段", "下の段（または基板の外）", "メモ"],
+    ["red", "DFR0559 SOLAR＋", "USB-C メス基板の VBUS（X25 の線）", "パネルの電気を上へ"],
+    ["black", "DFR0559 SOLAR−", "USB-C メス基板の GND（Y20 の線）", ""],
+    ["red", "18650 の＋（2本並列）→ DFR0559 BAT＋", "O26（電池の電圧を測る）・Olimex BAT＋", "Olimex へは JST PH ケーブル"],
+    ["black", "18650 の−（2本並列）→ DFR0559 BAT−", "Olimex BAT−", "JST PH ケーブルの−"],
+    ["orange", "DFR0559 5V（ピン）", "M5Stamp CatM 5V", "LTE モジュールの電源"],
+    ["black", "DFR0559 GND（ピン）", "M5Stamp CatM GND", ""],
+    ["purple", "DFR0559 EN", "B26（Olimex D25 の線）", "送るときだけ 5V を入れる"],
+]
+y = table(s, 60, 840, STACK_WIRES, [150, 360, 380, 330], "上の段と下の段をつなぐ線")
+STACK_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["ユニバーサル基板 タカチ PCB72-95", "2", "下の段（Olimex など）と上の段（DFR0559・電池）"],
+    ["基板スペーサー AST3-6B", "4", "取り付けベースと下の段のあいだ"],
+    ["M3 オスメス スペーサー 25mm", "4", "下の段の取付穴に立てて、上の段を支える"],
+    ["M3 なべ小ねじ 6mm", "4", "上の段をスペーサーに留める"],
+    ["18650 電池ホルダー 1本用", "2", "上の段の右に縦に2つ並べて貼る（両面テープか M3 ねじ）"],
+    ["DFRobot DFR0559", "1", "上の段の左下。端子が板の左へ少しはみ出してもよい"],
+    ["両面テープ（屋外用）", "適宜", "M5Stamp CatM・USB-C メス基板・ホルダー・DFR0559 を貼る"],
+]
+y = table(s, 60, y + 60, STACK_ROWS, [460, 60, 700], "2段にするための部品")
+STACK_NOTES = [
+    "・試作中の図です。部品の大きさは資料からの目安で、届いたら実物で確かめてから置き場所を決めます。",
+    "・ケース OB10-17-5W の中の深さは不明です。ベースから約 55mm の高さが入るか、届いたら測ってください。",
+    "  入らないときは、スペーサーを 20mm にする（下の段の Olimex とのすき間が約 5mm になる）か、ホルダーを薄いものにする。",
+    "・上の段の左上（下の Olimex のアンテナの上）は空けておく。電池や金属を置くと Wi-Fi・BLE の電波が弱くなる。",
+    "・M5Stamp CatM のアンテナ（IPEX→SMA のケーブル）は、上の段の右上の横を通してケースの穴へ出す。",
+    "・段の間の線は少し長めにして、上の段を外して下の段を点検できるようにする。",
+    "・電池を入れたまま上の段をはずすときは、＋と−の線がほかの金属に触れないようにする。",
+]
+notes(s, 60, y + 20, STACK_NOTES)
+s.save("HPX-Core_LTE_stack.svg")
+_full = open(os.path.join(OUT, "HPX-Core_LTE_stack.svg"), encoding="utf-8").read()
+_cut = 790
+open(os.path.join(OUT, "HPX-Core_LTE_stack_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+json.dump({"tables": [{"head": "上の段と下の段をつなぐ線", "rows": STACK_WIRES}, {"head": "2段にするための部品", "rows": STACK_ROWS}],
+           "notes": [n.lstrip("・") for n in STACK_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_LTE_stack.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok LTE stack")
