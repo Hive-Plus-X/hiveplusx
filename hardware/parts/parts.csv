@@ -67,14 +67,14 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,ケーブル,電線 0.3〜0.5mm²,サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/dp/B0HJGDW3TT,1,セット,980,,,,,,,,,,適宜,適宜,
 ,電子部品,抵抗 15kΩ,小型 金属皮膜抵抗 1/4W15kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108552/,100,本,300,,,,,,,,,,,1,
 ,電子部品,抵抗 8.2kΩ,小型 金属皮膜抵抗 1/2WS 8.2kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g116644/,100,本,300,,,,,,,,,,,1,
-,電子部品,LTE-M 通信モジュール,"M5Stamp CatM（SIM7080G、M5STACK-S003）
+,通信モジュール,LTE-M 通信モジュール,"M5Stamp CatM（SIM7080G、M5STACK-S003）
 SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う",スイッチサイエンス,https://www.switch-science.com/search?q=M5Stamp%20CatM,1,個,7282,,,,,,,,,,,,1
-,電源,ソーラーパワーマネージャー 5V,DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=DFR0559,1,個,1940,,,,,,,,,,,,1
+,電子部品,ソーラーパワーマネージャー 5V,DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=DFR0559,1,個,1940,,,,,,,,,,,,1
 ,電源,ソーラーパネル 10W/5V,USB-C 出力・ケーブル約3m付き（防犯カメラ用）。ケーブルは切らずに USB-C メス基板へ差す,amazon,https://www.amazon.co.jp/dp/B0FD8ZVH6V,1,枚,2990,,,,,,,,,,,,1
 ,電源,18650 リチウムイオン電池（保護回路付き）,3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に,amazon,https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D,2,本,,,,,,,,,,,,,2
-,電源,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,2
-,ケーブル,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,1
-,部材,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,1
+,電子部品,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,2
+,電子部品,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,1
+,その他,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,1
 ,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,1
 ,ケース,低価格型屋外通信ボックス OBシリーズ,タカチ　OB10-17-5W,モノタロウ,https://www.monotaro.com/g/05994042/,1,個,899,,,,,,,,,,,,1
 ,部材,ケース用取り付けベース,タカチ　OBP10-17（DFR0559・18650 ホルダーを貼る）,モノタロウ,https://www.monotaro.com/g/05994043/,1,個,699,,,,,,,,,,,,1
