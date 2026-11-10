@@ -2,7 +2,7 @@ id,category,name,detail,shop,url,pack,unit,price,alt_of,core,core_wp,core_bat,w_
 ,電子部品,有線LANモジュール W5500,ACEIRMC W5500 イーサネットネットワークモジュール,amazon,https://www.amazon.co.jp/dp/B09NFF41YH,3,個,2999,,1,,,,,,,,,1,
 ,ケース,壁付ネットワークケース PFFシリーズ,タカチ　PFF10-4-10W,モノタロウ,https://www.monotaro.com/p/5512/8535/,1,個,639,,1,,,,,,,,1,1,
 ,ケース用基板,ユニバーサル基板 6×8cm,,amazon,https://www.amazon.co.jp/dp/B0CX1RGYFG,5,枚,695,,1,,,,,,,,1,1,
-,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST2.5-5B,モノタロウ,https://www.monotaro.com/p/7082/4977/,1,セット,219,,1,1,1,,,,,,1,1,1
+,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST2.5-5B,モノタロウ,https://www.monotaro.com/p/7082/4977/,1,セット,219,,1,1,1,,,,,,1,1,
 ,ケース,小型 汎用プラスチックケース TWシリーズ,タカチ　TW5-3-9B,秋月電子通商,https://akizukidenshi.com/catalog/g/g117042/,1,個,220,,,,,1,,,,,,,
 ,ケース,TW5-3-9用基板,タカチ TNF39-70,,https://www.monotaro.com/g/00965857/,1,枚,289,,,,,1,,,,,,,
 ,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,359,,,,,,1,,,,,,
@@ -41,7 +41,7 @@ angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm
 ,ケーブル,シールド線 AWG28,Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック),amazon,https://www.amazon.co.jp/dp/B0933M5MTL,1,m,680,,,,,,,,,1 m,,,
 ,部材,熱収縮チューブ φ1.5mm,オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000007/,2,m,275,,,,,,,,,5 cm,,,
 ,部材,熱収縮チューブ φ4mm,オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000001/,2,m,319,,,,,,,,,5 cm,,,
-,電子部品,ユニバーサル基板 5×7,両面スルーホールユニバーサル基板 5*7,秋月電子通商,https://akizukidenshi.com/catalog/g/g112977/,1,枚,60,,,,,,,,,1,,,1
+,電子部品,ユニバーサル基板 5×7,両面スルーホールユニバーサル基板 5*7,秋月電子通商,https://akizukidenshi.com/catalog/g/g112977/,1,枚,60,,,,,,,,,1,,,
 ,代わり,アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105002/,1,個,20,c100,,,,,,,,,,,
 ,代わり,電解コンデンサー 100μF16V 105℃ ルビコン PX,,秋月電子通商,https://akizukidenshi.com/catalog/g/g110271/,1,個,50,c100,,,,,,,,,,,
 ,代わり,HX711使用 ロードセル用ADコンバーター モジュール基板,,秋月電子通商,https://akizukidenshi.com/catalog/g/g112370/,1,個,350,hx711,,,,,,,,,,,
@@ -76,5 +76,7 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
 ,ケーブル,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,1
 ,部材,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,1
 ,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,1
-,ケース,低価格型屋外通信ボックス OBシリーズ,タカチ　OB8-14-4W,モノタロウ,https://www.monotaro.com/s/?q=OB8-14-4W,1,個,729,,,,,,,,,,,,1
-,部材,ケース用取り付けベース,タカチ　OBP8-14（DFR0559・M5Stamp CatM・18650 ホルダーを貼る）,モノタロウ,https://www.monotaro.com/p/5102/3850/,1,個,579,,,,,,,,,,,,1
+,ケース,低価格型屋外通信ボックス OBシリーズ,タカチ　OB10-17-5W,モノタロウ,https://www.monotaro.com/g/05994042/,1,個,899,,,,,,,,,,,,1
+,部材,ケース用取り付けベース,タカチ　OBP10-17（DFR0559・18650 ホルダーを貼る）,モノタロウ,https://www.monotaro.com/g/05994043/,1,個,699,,,,,,,,,,,,1
+,ケース用基板,低価格ユニバーサル基板 PCBシリーズ,タカチ　PCB72-95（穴 27×36）,モノタロウ,https://www.monotaro.com/p/7417/6008/,1,枚,409,,,,,,,,,,,,1
+,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST3-6B,モノタロウ,https://www.monotaro.com/p/7082/4995/,1,セット,239,,,,,,,,,,,,1

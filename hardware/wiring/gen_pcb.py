@@ -1127,113 +1127,140 @@ finish(s, y, [
 ], "HPX-Core_LANV_pcb.svg")
 
 
-# ================================================================== HPX-Core ＋LTE＆ソーラー（5×7cm 基板、ケース タカチ OB8-14-4W）
-# TARO 2026-11-10: 5×7cm のユニバーサル基板（穴 A〜X × 1〜18、横置き）に Olimex を横向きに差し、電圧を測る抵抗を載せる。
-# DFR0559・M5Stamp CatM・18650 ホルダーは基板の外（ケースの取り付けベース OBP8-14 に貼る）で、線を基板の赤丸の穴へはんだ付け。
-# Olimex は右へ90度回した向き（アンテナが右、micro USB が左）。上の列＝左の列（EXT1）が 7 行、下の列＝右の列（EXT2）が 17 行。
-OX, OY = 260, 330
-s = S(1500, 3000)
-title(s, "HPX-Core（親機）＋LTE＆ソーラー 基板の配線図", "ユニバーサル基板 5×7cm（穴 A〜X × 1〜18）横置き ／ Olimex ESP32-DEVKIT-LIPO ／ ケース タカチ OB8-14-4W")
-board(s, 24, 18, "ユニバーサル基板 5×7cm を横に置いたところ（穴 A〜X × 1〜18）")
-x1, y1, x2, y2 = module(2.4, 21.5, R(7) - 0.55, R(17) + 0.55, "#c62828", "#7f0000", "Olimex")
-s.top.append(f'<rect x="{x2-70}" y="{(y1+y2)/2-80}" width="56" height="160" rx="4" fill="#212121" fill-opacity="0.85"/>')
-s.text(x2 - 42, (y1 + y2) / 2 + 5, "アンテナ", 12, "middle", "bold", "#eee", layer=s.top)
-s.top.append(f'<rect x="{(x1+x2)/2-20}" y="{(y1+y2)/2-75}" width="170" height="150" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
-s.text((x1 + x2) / 2 + 65, (y1 + y2) / 2 - 5, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
-s.text((x1 + x2) / 2 + 65, (y1 + y2) / 2 + 15, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
-s.text((x1 + x2) / 2 - 150, (y1 + y2) / 2 - 20, "Olimex ESP32-DEVKIT-LIPO", 15, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2 - 150, (y1 + y2) / 2 + 2, "ピンソケット 19ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
-s.top.append(f'<rect x="{x1-14}" y="{(y1+y2)/2-30}" width="40" height="60" rx="6" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
-s.text(OX - 48, (y1 + y2) / 2 + 5, "micro USB →", 12, "end", "bold", "#333", layer=s.top)
-s.top.append(f'<rect x="{x1+20}" y="{y2-120}" width="40" height="52" rx="4" fill="#fafafa" stroke="#9e9e9e" stroke-width="2"/>')
-s.text(x1 + 40, y2 - 90, "BAT", 11, "middle", "bold", "#333", layer=s.top)
-s.text(x1 + 40, y2 - 76, "JST", 10, "middle", fill="#333", layer=s.top)
+# ================================================================== HPX-Core ＋LTE-M＆ソーラー（タカチ PCB72-95、ケース タカチ OB10-17-5W）
+# TARO 2026-11-10: 基板を PCB72-95（72×95mm）に。穴は TARO の寸法図から: 横 27（66.04mm）× 縦 36（88.9mm）。
+# 上の 3行と下の 3行は四隅の取付穴（φ3.2、62×85mm）のため D〜X の 21穴だけ。列は A〜Z・AA。縦に置く。
+# Olimex は縦向き（アンテナが上、micro USB が下）。左の列（EXT1）を E 列、右の列（EXT2）を O 列、ピン1 を 5 行に置く。
+# DFR0559・M5Stamp CatM・18650 ホルダー・USB-C メス基板は基板の外（取り付けベース OBP10-17 に貼る）で、線を赤丸の穴へ。
+import re as _re2
+COLS = [chr(65 + i) for i in range(26)] + ["AA"]
+def hole(h):
+    m = _re2.match(r"([A-Z]+)(\d+)$", h)
+    return (COLS.index(m.group(1)), R(int(m.group(2))))
+def w(color, *holes):
+    wireh(s, [hole(h) for h in holes], color)
+OX, OY = 200, 300
+s = S(1500, 4400)
+title(s, "HPX-Core（親機）＋LTE-M＆ソーラー 基板の配線図", "タカチ PCB72-95（穴 A〜AA × 1〜36）縦置き ／ Olimex ESP32-DEVKIT-LIPO ／ ケース タカチ OB10-17-5W")
+board(s, 27, 36, "タカチ PCB72-95 を縦に置いたところ（穴 A〜AA × 1〜36。上下 3行は D〜X だけ）")
+_i0 = len(s.items)
+for r in (0, 1, 2, 33, 34, 35):
+    for c in (0, 1, 2, 24, 25, 26):
+        x, y = H(c, r)
+        s.add(f'<circle cx="{x}" cy="{y}" r="9" fill="#e8d3a8"/>')
+for c, r in ((0.9, 0.9), (25.1, 0.9), (0.9, 34.1), (25.1, 34.1)):   # 取付穴 φ3.2
+    x, y = OX + c * P, OY + r * P
+    s.add(f'<circle cx="{x}" cy="{y}" r="26" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+REC["board"] = REC["board"] + s.items[_i0:]
 OLL = ["3V3", "EN", "IO36", "IO39", "IO34", "IO35", "IO32", "IO33", "IO25", "IO26", "IO27", "IO14", "IO12", "GND", "IO13", "IO9", "IO10", "IO11", "5V"]
 ORR = ["GND", "IO23", "IO22", "IO1", "IO3", "IO21", "GND", "IO19", "IO18", "IO5", "IO17", "IO16", "IO4", "IO0", "IO2", "IO15", "IO8", "IO7", "IO6"]
-def lpins(names, row, used, up):
+x1, y1, x2, y2 = module(4 - 0.55, 14 + 0.55, R(5) - 1.2, R(23) + 0.5, "#c62828", "#7f0000", "Olimex")
+cx_ = (x1 + x2) / 2
+s.top.append(f'<rect x="{cx_-80}" y="{y1+6}" width="160" height="54" rx="4" fill="#212121" fill-opacity="0.85"/>')
+s.text(cx_, y1 + 38, "アンテナ（上）", 12, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{cx_-70}" y="{y1+70}" width="140" height="160" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
+s.text(cx_, y1 + 145, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+s.text(cx_, y1 + 165, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
+s.text(cx_, y1 + 300, "Olimex", 16, "middle", "bold", "#fff", layer=s.top)
+s.text(cx_, y1 + 322, "ESP32-DEVKIT-LIPO", 14, "middle", "bold", "#fff", layer=s.top)
+s.text(cx_, y1 + 344, "ピンソケット 19ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{cx_-30}" y="{y2-26}" width="60" height="40" rx="6" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+s.text(cx_, y2 + 34, "micro USB（下）", 12, "middle", "bold", "#333", layer=s.top)
+s.top.append(f'<rect x="{x2-80}" y="{y2-60}" width="52" height="40" rx="4" fill="#fafafa" stroke="#9e9e9e" stroke-width="2"/>')
+s.text(x2 - 54, y2 - 36, "BAT", 12, "middle", "bold", "#333", layer=s.top)
+def vpins(names, col, used, left):
     for i, n in enumerate(names):
-        c = Lc("V") - i
-        x, y = H(c, R(row))
+        x, y = H(col, R(5 + i))
         rec_pin(x, y, n)
         on = (n, i) in used
         s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
-        yy = y + 24 if up else y - 14
-        s.top.append(f'<text transform="rotate(-90 {x+4} {yy})" x="{x+4}" y="{yy}" font-size="11" text-anchor="{"end" if up else "start"}" font-weight="bold" fill="{"#fff" if on else "#eee"}" font-family="{FONT}">{n}</text>')
-lpins(OLL, 7, {("IO36", 2), ("IO34", 4), ("IO25", 8), ("GND", 13)}, True)
-lpins(ORR, 17, {("IO17", 10), ("IO16", 11)}, False)
+        s.text(x + (14 if left else -14), y + 5, n, 12, "start" if left else "end", "bold", "#fff" if on else "#eee", layer=s.top)
+vpins(OLL, 4, {("IO36", 2), ("IO34", 4), ("IO25", 8)}, True)
+vpins(ORR, 14, {("GND", 0), ("IO17", 10), ("IO16", 11)}, False)
 B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
 B20 = ["#e53935", "#212121", "#fb8c00", "#c9a227"]
-def res_v(a, b, label, bands, lpos, anchor="start"):
-    res_flat(a, b, label, bands, lpos, anchor)
 OFF = (-2000, -2000)   # 部品の名前は図の右の一覧に書く
-res_v("T1", "T5", "20kΩ", B20, OFF)
-res_v("W2", "W6", "100kΩ", B100, OFF)
-res_v("R1", "R5", "100kΩ", B100, OFF)
-res_flat("K3", "O3", "100kΩ", B100, OFF)
-cap_flat(s, hole("U1"), hole("U3"), "0.1µF")
-cap_flat(s, hole("Q1"), hole("Q3"), "0.1µF")
-lx = OX + 23 * P + 70
-s.text(lx, OY + 2, "基板の上の部品", 14, weight="bold")
-for i, (a_, b_) in enumerate([("K3〜O3", "100kΩ（電池）"), ("R1〜R5", "100kΩ（電池・GND 側）"), ("Q1・Q3", "0.1µF（電池）"),
-                             ("W2〜W6", "100kΩ（パネル）"), ("T1〜T5", "20kΩ（パネル・GND 側）"), ("U1・U3", "0.1µF（パネル）")]):
-    s.text(lx, OY + 32 + i * 46, a_, 13, weight="bold", fill="#5d4520")
-    s.text(lx, OY + 50 + i * 46, b_, 12, fill="#333")
-for h in ("W1", "K2", "N2", "K18", "L18"):
+res_flat("D28", "H28", "100kΩ", B100, OFF)    # パネル＋ → 測る点
+res_flat("B29", "B33", "20kΩ", B20, OFF)      # 測る点 → GND
+cap_flat(s, hole("C29"), hole("C31"), "0.1µF")
+res_flat("J26", "N26", "100kΩ", B100, OFF)    # 電池＋ → 測る点
+res_flat("J28", "J32", "100kΩ", B100, OFF)    # 測る点 → GND
+cap_flat(s, hole("L28"), hole("L30"), "0.1µF")
+lx = OX + 26 * P + 70
+s.text(lx, OY + 22 * P, "基板の上の部品", 14, weight="bold")
+for i, (a_, b_) in enumerate([("J26〜N26", "100kΩ（電池）"), ("J28〜J32", "100kΩ（電池・GND 側）"), ("L28・L30", "0.1µF（電池）"),
+                             ("D28〜H28", "100kΩ（パネル）"), ("B29〜B33", "20kΩ（パネル・GND 側）"), ("C29・C31", "0.1µF（パネル）")]):
+    s.text(lx, OY + 22 * P + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, OY + 22 * P + 48 + i * 46, b_, 12, fill="#333")
+# M5Stamp CatM（30×20mm）は Olimex の右（P〜AA 列、5〜12 行）に両面テープで貼る。ピンの位置は届いてから確かめるので、TX・RX は短い線で R15・R16 へ
+mx1, my1 = OX + 15 * P - 14, OY + R(5) * P - 10
+mx2, my2 = OX + 26 * P + 14, OY + R(12) * P + 10
+s.top.append(f'<rect x="{mx1}" y="{my1}" width="{mx2-mx1}" height="{my2-my1}" rx="8" fill="#eceff1" fill-opacity="0.9" stroke="#90a4ae" stroke-width="3"/>')
+rec_part(mx1, my1, mx2 - mx1, my2 - my1, "CatM")
+s.text((mx1 + mx2) / 2, my1 + 90, "M5Stamp CatM", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 112, "SIM7080G・microSIM", 12, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 140, "両面テープで貼る", 12, "middle", "bold", "#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 158, "TX・RX は短い線で R15・R16 へ", 11, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 176, "5V・GND は DFR0559 の 5V ピンへ", 11, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 194, "アンテナ（IPEX）は上へ", 11, "middle", fill="#455a64", layer=s.top)
+LAND = [("D25", "DFR0559 EN", "start"), ("I28", "パネル＋（USB-C メス基板の VBUS）", "start"), ("O26", "電池＋（DFR0559 BAT＋）", "start"),
+        ("R15", "M5Stamp CatM RX", "start"), ("R16", "M5Stamp CatM TX", "start")]
+for h, txt, an in LAND:
     solder_mark(s, *hole(h))
-# 基板の外から来る線（赤丸の穴に直接はんだ付け）
-def ext(h, text, dx, dy, anchor="start"):
     x, y = H(*hole(h))
-    s.add(f'<path d="M{x},{y} L{x},{y+dy}" fill="none" stroke="#9e9e9e" stroke-width="4"/>')
-    s.text(x + dx, y + dy + (-6 if dy < 0 else 18), text, 13, anchor, "bold", "#c62828")
-ext("W1", "パネル＋（USB-C メス基板の VBUS）", -10, -110, "end")
-ext("K2", "電池＋（DFR0559 BAT＋）", -10, -150, "end")
-ext("N2", "DFR0559 EN", 10, -150)
-ext("K18", "M5Stamp CatM TX", -10, 60, "end")
-ext("L18", "M5Stamp CatM RX", 10, 60)
-w("black", "I7", "I1", "Q1", "R1", "T1", "U1")      # GND（Olimex の GND）→ 上の端（1行）→ 20kΩ・100kΩ・0.1µF
-w("blue", "W1", "W2")                             # パネル＋ → 100kΩ
-w("blue", "W6", "T6")                             # 100kΩ → 測る点
-w("blue", "T5", "T6", "T7")                       # 20kΩ → IO36
-w("blue", "U3", "U5", "T5")                       # 0.1µF → 測る点
-w("white", "K2", "K3")                            # 電池＋ → 100kΩ
-w("white", "O3", "O6", "R6")                      # 100kΩ → 測る点
-w("white", "R5", "R6", "R7")                      # 100kΩ（GND 側）→ IO34
-w("white", "Q3", "Q5", "R5")                      # 0.1µF → 測る点
-w("purple", "N7", "N2")                           # IO25 → EN
-w("yellow", "K17", "K18")                         # IO16（受信）← CatM TX
-w("green", "L17", "L18")                          # IO17（送信）→ CatM RX
+    tag(x + 16, y - 14, txt, 12, an, "#c62828")
+w("purple", "E13", "D13", "D25")                  # IO25 → EN
+w("white", "E9", "C9", "C26", "J26")              # IO34 → 測る点（100kΩ）
+w("white", "J26", "J28")                          # 測る点 → 100kΩ（GND 側）
+w("white", "L28", "L27", "J27")                   # 0.1µF → 測る点
+w("white", "N26", "O26")                          # 100kΩ → 電池＋の線
+w("blue", "E7", "B7", "B28", "B29")               # IO36 → 測る点（20kΩ）
+w("blue", "C29", "C28", "D28")                    # 0.1µF・100kΩ → 測る点
+w("blue", "C28", "B28")
+w("blue", "H28", "I28")                           # 100kΩ → パネル＋の線
+w("black", "O5", "O4", "Z4", "Z33", "L33", "J33", "C33", "B33")   # GND（右の列のピン1）→ 右の端 → 下の GND の行
+w("black", "J32", "J33")
+w("black", "L30", "L33")
+w("black", "C31", "C33")
+
+w("yellow", "O16", "R16")                         # IO16（受信）← CatM TX
+w("green", "O15", "R15")                          # IO17（送信）→ CatM RX
 yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTE_pcb.svg")
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
-    ["black", "Olimex GND（上の列 I7）", "I7 → I1 → Q1 → R1 → T1 → U1", "0.1µF（Q1）・100kΩ（R1）・20kΩ（T1）・0.1µF（U1）"],
-    ["blue", "パネル＋の線（W1 にはんだ付け）", "W1 → W2", "100kΩ（W2〜W6）"],
-    ["blue", "100kΩ（W6）", "W6 → T6 → T7（T5 から 20kΩ、U3 → U5 → T5 で 0.1µF も）", "IO36（T7）"],
-    ["white", "電池＋の線（K2 にはんだ付け）", "K2 → K3", "100kΩ（K3〜O3）"],
-    ["white", "100kΩ（O3）", "O3 → O6 → R6 → R7（R5 から 100kΩ、Q3 → Q5 → R5 で 0.1µF も）", "IO34（R7）"],
-    ["purple", "DFR0559 EN の線（N2 にはんだ付け）", "N2 → N7", "IO25（N7）"],
-    ["yellow", "M5Stamp CatM TX の線（K18 にはんだ付け）", "K18 → K17", "IO16（K17、受信）"],
-    ["green", "M5Stamp CatM RX の線（L18 にはんだ付け）", "L18 → L17", "IO17（L17、送信）"],
-], [100, 380, 480, 420], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    ["black", "Olimex GND（右の列のいちばん上 O5）", "O5 → O4 → Z4 → Z33 → B33（L33・J33・C33 も）", "0.1µF（L30・C31）・100kΩ（J32）・20kΩ（B33）"],
+    ["blue", "IO36（E7）", "E7 → B7 → B29（B28 → C28 → C29・D28 も）", "20kΩ（B29）・0.1µF（C29）・100kΩ（D28）"],
+    ["blue", "100kΩ（H28）", "H28 → I28", "パネル＋の線（I28 にはんだ付け）"],
+    ["white", "IO34（E9）", "E9 → C9 → C26 → J26（J26 → J28、L28 → L27 → J27 も）", "100kΩ（J26・J28）・0.1µF（L28）"],
+    ["white", "100kΩ（N26）", "N26 → O26", "電池＋の線（O26 にはんだ付け）"],
+    ["purple", "IO25（E13）", "E13 → D13 → D25", "DFR0559 EN の線（D25 にはんだ付け）"],
+    ["yellow", "IO16（O16、受信）", "O16 → R16", "M5Stamp CatM TX の線（R16 にはんだ付け）"],
+    ["green", "IO17（O15、送信）", "O15 → R15", "M5Stamp CatM RX の線（R15 にはんだ付け）"],
+], [100, 380, 520, 420], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["Olimex ESP32-DEVKIT-LIPO ＋ ピンソケット 19ピン×2（20ピンを切る）", "1", "D7〜V7・D17〜V17。アンテナを右、micro USB を左に向ける"],
-    ["金属皮膜抵抗 100kΩ", "3", "W2〜W6（パネル、縦）・R1〜R5（電池の GND 側、縦）・K3〜O3（電池、横）。寝かせて付ける"],
-    ["金属皮膜抵抗 20kΩ", "1", "T1〜T5（パネルの GND 側、縦）"],
-    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "U1・U3（パネル）、Q1・Q3（電池）"],
-    ["ユニバーサル基板 5×7cm（穴 24×18）・すずめっき線", "1", "横に置く。線はすべて裏"],
-    ["基板の外: DFR0559・M5Stamp CatM・18650 ホルダー×2・USB-C メス基板", "各1", "ケースの取り付けベース OBP8-14 に貼り付け、線でつなぐ（線の対応は HPX-Core_LTE_wiring.png）"],
-    ["ケース OB8-14-4W ＋ 取り付けベース OBP8-14 ＋ 基板スペーサー AST2.5-5B", "1", "基板は四隅をスペーサーで取り付けベースに留める"],
-], [640, 60, 600], "部品表")
+    ["Olimex ESP32-DEVKIT-LIPO ＋ ピンソケット 19ピン×2（20ピンを切る）", "1", "E5〜E23・O5〜O23。アンテナを上、micro USB を下に向ける"],
+    ["金属皮膜抵抗 100kΩ", "3", "D28〜H28（パネル、横）・J26〜N26（電池、横）・J28〜J32（電池の GND 側、縦）。寝かせて付ける"],
+    ["金属皮膜抵抗 20kΩ", "1", "B29〜B33（パネルの GND 側、縦）"],
+    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "C29・C31（パネル）、L28・L30（電池）"],
+    ["ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+    ["M5Stamp CatM（SIM7080G）", "1", "P5〜AA12 の上に両面テープで貼る。TX・RX を R15・R16 へ短い線で"],
+    ["基板の外: DFR0559・18650 ホルダー×2・USB-C メス基板", "各1", "ケースの取り付けベース OBP10-17 に貼り付け、線でつなぐ（線の対応は HPX-Core_LTE_wiring.png）"],
+    ["ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B", "1", "基板は四隅の取付穴（φ3.2）をスペーサーで取り付けベースに留める"],
+], [640, 60, 620], "部品表")
 finish(s, y, [
     "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
     "・赤丸の穴は、基板の外からの線（パネル＋・電池＋・DFR0559 EN・M5Stamp CatM の TX と RX）を直接はんだ付けするところ。",
-    "・基板の外でつなぐ線: DFR0559 の 5V と GND → M5Stamp CatM の 5V と GND、18650 の＋と− → DFR0559 BAT と Olimex の BAT コネクタ（JST PH 2ピン）、USB-C メス基板 → DFR0559 SOLAR。",
+    "・基板の外でつなぐ線: DFR0559 の 5V と GND → M5Stamp CatM の 5V と GND、18650 の＋と− → DFR0559 BAT と Olimex の BAT コネクタ（JST PH 2ピン）、",
+    "  USB-C メス基板 → DFR0559 SOLAR。",
     "・GND は Olimex の BAT コネクタの−で電池の−とそろう（DFR0559 の GND も電池の−と同じとみて描いた。テスターで確かめる）。",
     "・電池は 100kΩ と 100kΩ で半分に（4.2V で 2.1V）、パネルは 100kΩ と 20kΩ で 1/6 に（6V で 1.0V）下げて IO34・IO36 で読む。",
-    "・抵抗 K3〜O3 は裏の線（紫 N2〜N7）の上を、表でまたいで付ける（表と裏なので触れない）。",
-    "・Olimex のピンの並びは公式資料（ESP32-DevKit-LiPo、ESP32-DevKitC と同じ）から。左右のピン列は 10穴離れている。差す前に実物で確かめる。",
-    "・ケース OB8-14-4W の内側に、基板（50×70mm）・DFR0559（33×63mm）・18650 ホルダー 2個が並ぶかは未確認。",
+    "・抵抗 J26〜N26 は裏の白い線（C26 → J26）の端に、D28〜H28 は裏の線の上を表でまたいで付ける（表と裏なので触れない）。",
+    "・穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。Olimex のピンの並びは公式資料から。差す前に実物で確かめる。",
+    "・M5Stamp CatM は基板に貼るだけで、穴には差さない（ピンの位置を実物で確かめてから、ピンヘッダで差す形にもできる）。",
+    "・DFR0559（63×33mm）は、下の空き（24〜36 行）に置くと四隅の取付穴のねじと重なるので、基板の外（取り付けベース）に貼る。",
     "・アンテナのケーブル（SMA）とパネルの USB-C ケーブルは、ケースの穴から防水して通す。穴あけの位置は部品が届いてから決める。",
 ], "HPX-Core_LTE_pcb.svg")
+COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 
 print("ok")

@@ -13,7 +13,7 @@
 | HPX-Core ＋有線LAN | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図)・[HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) (線の対応) | ELEGOO ESP-32 + W5500 (ACEIRMC): SCK=D18, MI=D4, MO=D23, CS=D5, INT=TX2(GPIO17), RST=RX2(GPIO16), V=3V3, G=GND (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
 | HPX-Core ＋有線LAN＆ソーラーシステムチェック | [HPX-Core_LANV_pcb.png](HPX-Core_LANV_pcb.png) (6×8cm 基板、ケース PFF10-4-10W) | 「＋有線LAN」と同じ ESP-32・W5500 に、パネル＋ → 100kΩ/8.2kΩ → D34、バッテリー＋ → 100kΩ/15kΩ → D35、BP5293-50 (バッテリー → 5V → VIN)、端子台 3極 (マイナス・バッテリー＋・パネル＋) を足す。USB ではなくバッテリーで動かす (HPX_Core v1.22 以降、動作設定で「バッテリー・パネルの電圧を測る」) |
 | HPX-Core ＋防水＆電池駆動 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | Olimex ESP32-DEVKIT-LIPO の 5V (左の列のピン19) ← 単三リチウム×3 の＋、GND (左の列のピン14) ← −。BAT コネクタは使わない。動作モードはディープスリープ |
-| HPX-Core ＋LTE＆ソーラー (試作中) | [HPX-Core_LTE_pcb.png](HPX-Core_LTE_pcb.png) (5×7cm 基板に組む図、ケース タカチ OB8-14-4W)・[HPX-Core_LTE_wiring.png](HPX-Core_LTE_wiring.png) (線の対応) | Olimex ESP32-DEVKIT-LIPO + M5Stamp CatM (SIM7080G、TX→D16・RX←D17、5V/GND は DFR0559 の 5V ピン) + DFRobot DFR0559 (EN←D25、送るときだけ ON) + 18650×2 並列 (DFR0559 BAT と Olimex BAT へ) + 10W/5V パネル (USB-C のまま USB-C メス基板 (5.1kΩ 付き) で受けて DFR0559 SOLAR へ)。電池＋ → 100kΩ/100kΩ → D34、パネル＋ → 100kΩ/20kΩ → D36。ファームはまだ無い |
+| HPX-Core ＋LTE-M＆ソーラー (試作中) | [HPX-Core_LTE_pcb.png](HPX-Core_LTE_pcb.png) (タカチ PCB72-95 に組む図、M5Stamp CatM も基板に貼る、ケース タカチ OB10-17-5W)・[HPX-Core_LTE_wiring.png](HPX-Core_LTE_wiring.png) (線の対応) | Olimex ESP32-DEVKIT-LIPO + M5Stamp CatM (SIM7080G、TX→D16・RX←D17、5V/GND は DFR0559 の 5V ピン) + DFRobot DFR0559 (EN←D25、送るときだけ ON) + 18650×2 並列 (DFR0559 BAT と Olimex BAT へ) + 10W/5V パネル (USB-C のまま USB-C メス基板 (5.1kΩ 付き) で受けて DFR0559 SOLAR へ)。電池＋ → 100kΩ/100kΩ → D34、パネル＋ → 100kΩ/20kΩ → D36。ファームはまだ無い |
 | HPX-B (バッテリー電圧、試作中) | [HPX-B_pcb.png](HPX-B_pcb.png) (6×8cm 基板、ケース タカチ PFF10-4-10W) | バッテリー＋ → 100kΩ/20kΩ → D1(A1)、パネル＋ → 100kΩ/10kΩ → D0(A0)、三端子 DCDC レギュレーター BP5293-50 (ROHM、入力 7〜26V) → 5V、入力側 10µF。端子台 3極 (パネル＋・マイナス・バッテリー＋)、ヒューズ 1A×2 は線の途中。ファームはまだ無い |
 
 部品表は [部品表.md](部品表.md) にあります。
@@ -24,7 +24,7 @@
 
 ## まだ確かめていないこと
 
-- HPX-Core ＋LTE＆ソーラー: DFR0559 の EN の向き (High で ON か) と初期状態、M5Stamp CatM の信号電圧 (3.3V で使えるか) とピンの並び・電源を入れたら自動で起動するか、Olimex の BAT コネクタの＋−の向き、DFR0559 の GND が SOLAR−・BAT− と共通か
+- HPX-Core ＋LTE-M＆ソーラー: DFR0559 の EN の向き (High で ON か) と初期状態、M5Stamp CatM の信号電圧 (3.3V で使えるか) とピンの並び・電源を入れたら自動で起動するか、Olimex の BAT コネクタの＋−の向き、DFR0559 の GND が SOLAR−・BAT− と共通か
 - ロードセル SC601 の線の色の割り当て (図は一般的な 赤=E+ 黒=E- 白=A- 緑=A+)
 - HPX-F の CdS セルで警報器の点滅を数えられるか (CdS は反応が遅め)
 - SHT40 モジュール・HX711 モジュールのピンの並び (基板の印字で確認)
