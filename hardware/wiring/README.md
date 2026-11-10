@@ -15,6 +15,7 @@
 | HPX-Core ＋防水＆電池駆動 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | Olimex ESP32-DEVKIT-LIPO の 5V (左の列のピン19) ← 単三リチウム×3 の＋、GND (左の列のピン14) ← −。BAT コネクタは使わない。動作モードはディープスリープ |
 | HPX-Core ＋LTE-M＆ソーラー (試作中) | [HPX-Core_LTE_pcb.png](HPX-Core_LTE_pcb.png) (下の段: タカチ PCB72-95 に Olimex・M5Stamp CatM・USB-C メス基板・抵抗、ケース タカチ OB10-17-5W)・[HPX-Core_LTE_stack.png](HPX-Core_LTE_stack.png) (上の段: 2枚目の PCB72-95 に DFR0559・18650 ホルダー×2、M3 スペーサー 25mm で2段に)・[HPX-Core_LTE_wiring.png](HPX-Core_LTE_wiring.png) (線の対応) | Olimex ESP32-DEVKIT-LIPO + M5Stamp CatM (SIM7080G、TX→D16・RX←D17、5V/GND は DFR0559 の 5V ピン) + DFRobot DFR0559 (EN←D25、送るときだけ ON) + 18650×2 並列 (DFR0559 BAT と Olimex BAT へ) + 10W/5V パネル (USB-C のまま USB-C メス基板 (5.1kΩ 付き) で受けて DFR0559 SOLAR へ)。電池＋ → 100kΩ/100kΩ → D34、パネル＋ → 100kΩ/20kΩ → D36。ファームはまだ無い |
 | HPX-B (バッテリー電圧、試作中) | [HPX-B_pcb.png](HPX-B_pcb.png) (6×8cm 基板、ケース タカチ PFF10-4-10W) | バッテリー＋ → 100kΩ/20kΩ → D1(A1)、パネル＋ → 100kΩ/10kΩ → D0(A0)、三端子 DCDC レギュレーター BP5293-50 (ROHM、入力 7〜26V) → 5V、入力側 10µF。端子台 3極 (パネル＋・マイナス・バッテリー＋)、ヒューズ 1A×2 は線の途中。ファームはまだ無い |
+| HPX-Camera (巣門カメラ、試作中・仮の名前) | [HPX-Camera_pcb.png](HPX-Camera_pcb.png) (穴 12×11 の基板、ケース タカチ BCAP091207T) | XIAO ESP32S3 Sense (カメラ・microSD は Sense 基板)。単三リチウム×3 の＋ → ショットキーダイオード 1N5819 → 5V、−→GND。電池の電圧は ダイオードの前で 100kΩ/100kΩ (1/2) → D0(A0)、0.1µF。100µF を 5V–GND に。D8〜D10 は microSD が使う。ファームはまだ無い |
 
 部品表は [部品表.md](部品表.md) にあります。
 
@@ -31,6 +32,7 @@
 - 基板の図は実際に組んで確かめていません
 - HPX-B: BP5293-50 の足の並び (データシートで確認)、PFF10-4-10W の内側の寸法と基板の留め方、使うソーラーコントローラーが共通マイナスか (違うとパネル電圧は測れない) は未確認
 - HPX-Core の有線LAN (W5500) は実機で確かめていません (ファーム v1.20 はコンパイルだけ確認)。ESP-32 の左右のピン列 10穴・W5500 の左右のピン列 8穴は計算で、実物では未確認。W5500 のピンがモジュールの上下のどこにあるかも未確認
+- HPX-Camera: XIAO ESP32S3 Sense の眠り中の電流、1N5819 を入れたときの Wi-Fi 送信中の電圧、カメラがケースのふたに届く高さ (電池ボックスの上に重ねる案) は未確認
 - HPX-Core 電池版: PCB36-47 の穴の数 (13×17) は見込み。ケースの深さに収まるか、Olimex の 5V 端子の先の HX6211 の入力上限 (販売店の資料で 6V) は未確認
 
 ケースに合わせたタカチ基板 (TNF39-70・TNF34-124・TNF44-69) の図は [case/](case/) にあります。

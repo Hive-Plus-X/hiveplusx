@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPX-Camera の作り方 | Hive Plus X</title>
+<meta name="description" content="HPX-Camera を作るのに必要な部品の一覧です。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ページの見出し */
+  .hero { padding:200px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:140px 20px 0; } }
+  .hero h1 { font-size:clamp(26px, 4.4vw, 38px); margin-top:6px; line-height:1.4; }
+  .hero p.lead { margin:14px auto 0; }
+  .entry { display:flex; justify-content:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px;
+    text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest);
+  }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+  .hex { width:9px; height:10px; background:currentColor; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+  .jump { display:flex; justify-content:center; gap:8px; margin-top:28px; flex-wrap:wrap; list-style:none; }
+  .jump a { display:block; padding:5px 16px; border-radius:999px; border:1px solid var(--line); background:var(--panel); text-decoration:none; font-size:14px; }
+  .jump a:hover { border-color:var(--honey); }
+
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  section { margin-top:200px; scroll-margin-top:80px; }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { section { margin-top:140px; } main { padding-bottom:200px; } }
+  .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
+  @media (prefers-color-scheme: dark) { .tag { color:var(--honey); } }
+  h2 { font-size:clamp(22px, 3vw, 28px); margin-top:6px; line-height:1.4; }
+  .note { color:var(--sub); margin-top:8px; }
+
+  /* 機器の一覧 (devices.html) */
+  .devs { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; margin-top:56px; }
+  @media (max-width:760px) { .devs { grid-template-columns:1fr; } }
+  .dev { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; text-decoration:none; display:block; scroll-margin-top:80px; }
+  a.dev:hover { border-color:var(--honey); }
+  .dev h3 { font-size:20px; margin-top:8px; }
+  .dev p { font-size:14px; color:var(--sub); margin-top:4px; }
+  .dev .vars { font-size:13px; margin-top:10px; color:var(--text); }
+  .dev.soon { border-style:dashed; }
+
+  /* 部品表 */
+  .parts { width:100%; border-collapse:collapse; margin-top:24px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; }
+  .parts th, .parts td { padding:10px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .parts thead th { border-top:0; font-size:13px; color:var(--sub); font-weight:700; white-space:nowrap; }
+  .parts .cat th { background:rgba(47,93,69,.07); color:var(--forest); font-size:13px; padding:6px 14px; }
+  @media (prefers-color-scheme: dark) { .parts .cat th { background:rgba(0,0,0,.18); color:var(--honey); } }
+  .parts td.n { text-align:center; white-space:nowrap; font-weight:700; width:96px; }
+  .parts td.n.none { color:var(--sub); font-weight:400; }
+  .parts .part b { display:block; font-weight:600; }
+  .parts .part a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .parts .part a { color:var(--honey); } }
+  .parts .part span { display:block; color:var(--sub); font-size:13px; white-space:pre-line; }
+  .parts .part .price { margin-top:2px; }
+  .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
+  .parts .part .alt a { font-weight:400; }
+  .parts td.shop { color:var(--sub); white-space:nowrap; }
+  .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
+  .parts tfoot td.n { width:auto; }
+  .parts tr.diff td { background:var(--honey-soft); }
+  .legend { font-size:13px; color:var(--sub); margin-top:10px; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--honey-soft); border:1px solid var(--line); vertical-align:-1px; margin-right:6px; }
+  /* スマホ: 1部品ずつのかたまりにする */
+  @media (max-width:760px) {
+    .parts, .parts tbody, .parts tr, .parts td, .parts th { display:block; width:auto; }
+    .parts thead { display:none; }
+    .parts tr { border-top:1px solid var(--line); padding:10px 14px; }
+    .parts .cat { padding:0; }
+    .parts td { border:0; padding:0; }
+    .parts tr.diff { background:var(--honey-soft); }
+    .parts tr.diff td { background:none; }
+    .parts td.shop { margin-top:2px; font-size:13px; }
+    .parts td.n { display:inline-block; text-align:left; width:auto; margin:4px 14px 0 0; font-size:13px; }
+    .parts td.n::before { content:attr(data-v) " "; color:var(--sub); font-weight:400; }
+    .parts tfoot tr { border-top:2px solid var(--line); }
+    .parts tfoot td { border:0; }
+  }
+  /* 配線図 */
+  .wiring { margin-top:28px; background:#fffdf5; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .wiring figcaption { padding:12px 18px; font-size:14px; color:var(--sub); background:var(--panel); border-bottom:1px solid var(--line); }
+  .wiring figcaption b { display:block; color:var(--text); font-size:15px; }
+  /* 配線図の下の表 (つなぐ線・部品の置き場所) と注意。hardware/wiring の JSON から作る */
+  .wtab { margin-top:22px; }
+  .wtab h3 { font-size:16px; margin-bottom:8px; }
+  .wtab .scroll { overflow-x:auto; }
+  .wtab table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); font-size:14px; }
+  .wtab th, .wtab td { padding:8px 12px; text-align:left; vertical-align:top; border-top:1px solid var(--line); }
+  .wtab thead th { border-top:0; font-size:13px; color:var(--sub); white-space:nowrap; }
+  .wtab td.wc { white-space:nowrap; }
+  .wtab .sw { display:inline-block; width:26px; height:10px; border-radius:3px; border:1px solid #555; margin-right:8px; }
+  .wnote { margin-top:22px; padding:16px 22px; background:#fff3cd; border:1px solid #e0b84a; border-radius:12px; font-size:14px; color:#4a3a00; }
+  .wnote h3 { font-size:16px; margin-bottom:6px; color:#7a5a00; }
+  .wnote ul { margin:0; padding-left:1.2em; }
+  .wnote li { margin-top:4px; }
+  @media (prefers-color-scheme: dark) { .wnote { background:rgba(242,169,0,.12); color:var(--text); } .wnote h3 { color:var(--honey); } }
+  .extra { margin-top:28px; padding:18px 22px; background:var(--panel); border:1px solid var(--line); border-radius:14px; font-size:14px; }
+  .extra h3 { font-size:16px; margin-bottom:6px; }
+  .extra .ex { margin-top:6px; color:var(--sub); }
+  .extra a { color:var(--forest); text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:3px; }
+  @media (prefers-color-scheme: dark) { .extra a { color:var(--honey); } }
+  /* 版の切り替えボタン */
+  .vsw { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .vsw button { font:inherit; font-size:15px; font-weight:700; padding:10px 24px; border-radius:999px; border:2px solid var(--forest); background:transparent; color:var(--forest); cursor:pointer; }
+  .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
+  .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
+  .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
+  .back-top { margin-top:0; margin-bottom:18px; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <a class="back back-top" href="devices.html">← 機器の一覧へ戻る</a>
+    <p class="eyebrow">Devices</p>
+    <h1>HPX-Camera</h1>
+    <p class="lead">巣門の前で決まった時間ごとに写真を撮り、Wi-Fi でサーバーへ送ります。スズメバチの襲来や蜂の出入りの様子を記録します。</p>
+    
+  </div>
+
+  <section id="parts">
+    <div class="reveal wrap">
+      <span class="tag">巣門カメラ</span>
+      <h2>部品表</h2>
+      <p class="note">必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g118079/" target="_blank" rel="noopener">XIAO ESP32S3 Sense</a></b><span>Seeed Studio XIAO ESP32S3 Sense (カメラ OV3660・microSD 枠・マイク・外付けアンテナ付き)</span><span class="price">2,660円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117244/" target="_blank" rel="noopener">ショットキーバリアダイオード</a></b><span>ショットキーバリアダイオード 40V1A 1N5819</span><span class="price">100円 / 10本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">コンデンサー0.1μF</a></b><span>積層セラミックコンデンサー 0.1μF50V C0G 5mm</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">コンデンサー100μF</a></b><span>絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</span><span class="price">280円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FKQBGM4X" target="_blank" rel="noopener">microSDカード</a></b><span>LAZOS microSD メモリーカード 8GB</span><span class="price">780円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ピンヘッダー（オス）</a></b><span>ロープロファイルピンヘッダー(低オス) 7.7mm</span><span class="price">40円 / 40PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112977/" target="_blank" rel="noopener">ユニバーサル基板 5×7</a></b><span>両面スルーホールユニバーサル基板 5*7</span><span class="price">60円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr class="cat"><th colspan="3">電源</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">単三リチウム電池</a></b><span>エナジャイザー リチウム乾電池 単3形 4本入り</span><span class="price">1,283円 / 4本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">3</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102666/" target="_blank" rel="noopener">電池ボックス 単3×3本</a></b><span>電池ボックス 単3×3本 リード線・フタ・スイッチ付</span><span class="price">160円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/8821/7184/" target="_blank" rel="noopener">防水・防塵開閉式プラボックス BCAPシリーズ</a></b><span>タカチ　BCAP091207T (透明ふた)</span><span class="price">1,398円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R" target="_blank" rel="noopener">強力両面テープ</a></b><span>3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m)</span><span class="price">536円 / 150cm</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/8835/9293/" target="_blank" rel="noopener">ポール取付金具 SSKシリーズ</a></b><span>タカチ　SSK-S1</span><span class="price">558円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/8822/1795/" target="_blank" rel="noopener">屋外用ルーフ BRFシリーズ</a></b><span>タカチ　BRF-90G</span><span class="price">539円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>乾燥剤</b><span>乾燥剤 (小袋、くもり止め)</span></td><td class="shop">—</td><td class="n" data-v="数">適宜</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 7,256円</td></tr></tfoot>
+      </table>
+      <div class="extra"><h3>その他</h3><p>※試作中です。ファームウェアは準備中です。写真を送るには、蜂場に Wi-Fi の親機 (ルーターやアクセスポイント) が必要です。近い巣門にピントを合わせたいときは、別売の OV5640 カメラ (自動ピント) に付け替えられます。</p></div>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="reveal wrap">
+      <h2>作り方</h2>
+      <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring">
+        <figcaption><b>配線図</b>小さなユニバーサル基板 (穴 12×11) に XIAO ESP32S3 Sense・ダイオード・抵抗・コンデンサーを載せる図です (表と裏、線はすべて裏)。単三リチウム3本の電気をダイオードを通して XIAO の 5V 端子へ入れ、電池の電圧を D0 で読みます。ケースは透明ふたの BCAP091207T で、基板を電池ボックスの上に重ねてカメラをふたのすぐ下に置きます。</figcaption>
+        <a href="img/wiring/HPX-Camera_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Camera_pcb.png" alt="HPX-Camera 配線図" loading="lazy"></a>
+      </figure>
+      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
+        <thead><tr><th>線</th><th>どこから（穴）</th><th>どこへ（穴）</th><th>役目</th></tr></thead>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>電池ボックスの＋（A2 に直接はんだ付け）</td><td>A2 → A1 → E1（ダイオードのアノード）</td><td>電池＋。A2 は 100kΩ の上の足も</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>ダイオードのカソード（I1）</td><td>I1 → I2 → I3（XIAO 5V）、I2 → J2（100µF）</td><td>ダイオードを通った電池を 5V 端子へ</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>100kΩ と 100kΩ の間（A6）</td><td>A6 → B6 → B3 → C3（XIAO D0）、B6 → B8（0.1µF）</td><td>電池の電圧を半分にして読む点</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>下の 100kΩ（A10）</td><td>A10 → B10（0.1µF）→ B11 → L11</td><td>電池の−（L11 に直接はんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>XIAO GND（I4）</td><td>I4 → L4、L11 → L4 → L2（100µF）</td><td>−の列</td></tr></tbody>
+      </table></div></div>
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>Seeed Studio XIAO ESP32S3 Sense（カメラ OV3660・microSD 枠付き。付属の外付けアンテナを付ける。秋月電子 2,660円）</td><td>1</td><td>C3〜I9 のソケットに差す。USB-C を上に向ける</td></tr><tr><td>ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）</td><td>1組</td><td>C3〜C9・I3〜I9</td></tr><tr><td>（交換用・任意）OV5640 カメラ（XIAO ESP32S3 Sense 用、自動ピント）</td><td>1</td><td>近い巣門にピントを合わせたいとき。カメラの差し込み口で付け替える</td></tr><tr><td>microSD カード 32GB 以下（FAT32。例: LAZOS 8GB）</td><td>1</td><td>Sense 基板の枠に差す。写真をためる</td></tr><tr><td>ショットキーバリアダイオード 40V1A 1N5819（秋月電子 100円/10本）</td><td>1</td><td>E1（アノード）〜I1（カソード、帯の側）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>A2〜A6、A6〜A10（縦に寝かせて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V C0G 5mm</td><td>1</td><td>B8・B10（測る点のノイズよけ）</td></tr><tr><td>絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm</td><td>1</td><td>J2・L2（Wi-Fi で送る瞬間の電圧の下がりよけ）</td></tr><tr><td>単3×3 電池ボックス（リード線・フタ・スイッチ付、秋月電子 160円）／ 単三リチウム電池</td><td>1／3</td><td>＋の線を A2、−の線を L11 にはんだ付け</td></tr><tr><td>ユニバーサル基板（穴 12×11 以上）・すずめっき線</td><td>1</td><td>大きい基板を切って使ってもよい</td></tr><tr><td>ケース タカチ BCAP091207T（透明ふた、内寸 66×96×56.6mm。モノタロウ 1,398円）</td><td>1</td><td>基板は電池ボックスの上に両面テープで重ね、カメラをふたに近づける</td></tr><tr><td>ポール取付金具 タカチ SSK-S1（モノタロウ 558円）</td><td>1</td><td>ケースを杭やポールに留める</td></tr><tr><td>屋外用ルーフ タカチ BRF-90G（モノタロウ 539円）</td><td>1</td><td>ケースの上に付ける雨・日よけ（中が熱くなりにくい）</td></tr><tr><td>乾燥剤（小袋）・両面テープ（厚手）</td><td>少し</td><td>くもり止め・固定</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>下の「裏から見た図」が実際に配線する向き（左右が逆）。裏の線どうしは交わらない。</li><li>電池は ダイオード 1N5819 を通して XIAO の「5V」端子へ入れる（USB をつないだとき、USB の 5V が電池へ流れ込まないように）。</li><li>XIAO 裏の「BAT」パッドは充電式リチウムイオン電池用。乾電池は絶対につながない。</li><li>電池の電圧は ダイオードの前で 100kΩ・100kΩ で半分にして D0(A0) で読む（新品 5.4V で 2.7V）。この抵抗には いつも約27µA 流れる（1日 約0.65mAh）。</li><li>D8・D9・D10 は Sense 基板の microSD が使うので、ほかの部品につながない。</li><li>USB で書き込むときは、電池ボックスのスイッチを切る（ダイオードがあるので切り忘れても壊れにくいが、念のため）。</li><li>付属の Wi-Fi アンテナ（シール状）は XIAO の U.FL に差し、ケースの壁（金属のそば以外）に貼る。</li><li>ケースの中で、基板は電池ボックスの上に厚手の両面テープで重ね、カメラ（Sense 基板）をふたのすぐ下に来るようにする（ふたの反射よけ）。</li><li>電池のもち（10分おきに撮影・未実測）: 24時間で 約3週間〜1か月半、昼12時間だけで 約1〜3か月。眠り中の電流しだい。</li><li>まだ組んで確かめていない。XIAO ESP32S3 Sense の眠り中の電流、1N5819 を入れたときの Wi-Fi 送信中の電圧は実物で測る。</li></ul></div>
+      <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
+      <a class="back" href="devices.html">機器の一覧へ戻る</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
