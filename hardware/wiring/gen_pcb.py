@@ -7,7 +7,7 @@ os.makedirs(OUT, exist_ok=True)
 FONT = "'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"
 COL = {
     "red": "#e53935", "black": "#212121", "yellow": "#fdd835", "blue": "#1e88e5",
-    "white": "#fafafa", "green": "#43a047", "orange": "#fb8c00", "purple": "#8e24aa",
+    "white": "#fafafa", "green": "#43a047", "orange": "#fb8c00", "purple": "#8e24aa", "gray": "#9e9e9e",
 }
 
 class S:
@@ -114,7 +114,7 @@ def table(s, x, y, rows, widths, head):
         for c, cell in enumerate(row):
             if r and c == 0 and cell in COL:
                 s.add(f'<rect x="{xx+10}" y="{yy+9}" width="34" height="12" rx="3" fill="{COL[cell]}" stroke="#555" stroke-width="1"/>')
-                cell = {"red": "赤", "black": "黒", "yellow": "黄", "blue": "青", "white": "白", "green": "緑", "orange": "橙", "purple": "紫"}[cell]
+                cell = {"red": "赤", "black": "黒", "yellow": "黄", "blue": "青", "white": "白", "green": "緑", "orange": "橙", "purple": "紫", "gray": "灰"}[cell]
                 s.text(xx + 52, yy + 21, cell, 14, fill="#333")
             else:
                 s.text(xx + 10, yy + 21, cell, 14, weight="bold" if r == 0 else "normal", fill="#fff" if r == 0 else "#333")
@@ -358,7 +358,7 @@ def xiao_pcb(s, c0, r0, sub="nRF52840"):
 def res_stand(s, a, b, label, bands, lx, ly, anchor="end"):
     """抵抗を立てて付ける。本体は a の穴の上、もう一方の足を b へ折り返す"""
     (x1, y1), (x2, y2) = H(*a), H(*b)
-    rec_pin(x1, y1, "10kΩ"); rec_pin(x2, y2, "10kΩ")
+    rec_pin(x1, y1, label); rec_pin(x2, y2, label)
     s.top.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#888" stroke-width="3"/>')
     s.top.append(f'<circle cx="{x1}" cy="{y1}" r="13" fill="#e8c88f" stroke="#a07c3c" stroke-width="2"/>')
     for i, c in enumerate(bands[:3]):
@@ -1164,7 +1164,8 @@ finish(s, y, [
 
 
 # ================================================================== HPX-Core ＋LTE-M（タカチ PCB72-95、ケース タカチ OB10-17-5W）
-# TARO 2026-11-10: 電源（ソーラーパネル・DFR0559・18650）は HPX-Solar として別の機器にした。この基板には HPX-Solar からの線（6本: BAT＋・BAT−・5V・GND・EN・PV）をつなぐ。
+# TARO 2026-11-10: 電源（ソーラーパネル・DFR0559・18650）は HPX-Solar として別の機器にした。HPX-Solar とは USB-C ケーブル1本でつなぐ（案2）。
+# 5V で Olimex を動かし、CatM の 5V は基板の P-MOSFET で入り切りする（IO4）。D+・D− で HPX-Solar の電池とパネルの電圧を受ける（IO34・IO36）。
 # TARO 2026-11-10: 基板を PCB72-95（72×95mm）に。穴は TARO の寸法図から: 横 27（66.04mm）× 縦 36（88.9mm）。
 # 上の 3行と下の 3行は四隅の取付穴（φ3.2、62×85mm）のため D〜X の 21穴だけ。列は A〜Z・AA。縦に置く。
 # Olimex は縦向き（アンテナが上、micro USB が下）で左端に寄せる。左の列（EXT1）を A 列、右の列（EXT2）を K 列、ピン1 を 5 行に置く。
@@ -1213,17 +1214,33 @@ def vpins(names, col, used, left):
         on = (n, i) in used
         s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
         s.text(x + (14 if left else -14), y + 5, n, 12, "start" if left else "end", "bold", "#fff" if on else "#eee", layer=s.top)
-vpins(OLL, 0, {("IO36", 2), ("IO34", 4), ("IO25", 8)}, True)
-vpins(ORR, 10, {("GND", 0), ("IO17", 10), ("IO16", 11)}, False)
+vpins(OLL, 0, {("IO36", 2), ("IO34", 4), ("5V", 18)}, True)
+vpins(ORR, 10, {("GND", 0), ("IO17", 10), ("IO16", 11), ("IO4", 12)}, False)
 B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
-B20 = ["#e53935", "#212121", "#fb8c00", "#c9a227"]
+B10 = ["#795548", "#212121", "#fb8c00", "#c9a227"]
 OFF = (-2000, -2000)   # 部品の名前は図の右の一覧に書く
-res_flat("J26", "N26", "100kΩ", B100, OFF)    # 電池＋ → 測る点
-res_flat("J28", "J32", "100kΩ", B100, OFF)    # 測る点 → GND
-cap_flat(s, hole("L28"), hole("L30"), "0.1µF")
-res_flat("S25", "W25", "100kΩ", B100, OFF)    # パネル＋ → 測る点
-res_flat("R28", "R32", "20kΩ", B20, OFF)      # 測る点 → GND
-cap_flat(s, hole("T28"), hole("T30"), "0.1µF")
+def tr3(hs, names, label, fill):
+    """3本足の部品（トランジスタ・MOSFET）。hs は横に並んだ 3つの穴"""
+    pts = [H(*hole(h)) for h in hs]
+    x1, x2, y = pts[0][0], pts[-1][0], pts[0][1]
+    s.top.append(f'<rect x="{x1-16}" y="{y-34}" width="{x2-x1+32}" height="30" rx="6" fill="{fill}" stroke="#222" stroke-width="2"/>')
+    s.text((x1 + x2) / 2, y - 14, label, 11, "middle", "bold", "#fff", layer=s.top)
+    for (x, yy), n in zip(pts, names):
+        rec_pin(x, yy, n)
+        s.top.append(f'<circle cx="{x}" cy="{yy}" r="7" fill="#9e9e9e" stroke="#333" stroke-width="1.5"/>')
+        s.text(x, yy + 22, n, 11, "middle", "bold", "#5d4520", layer=s.top)
+# CatM の 5V のスイッチ（D4 が High で ON）: IO4 → 10kΩ → NPN のベース（100kΩ で GND へ）、NPN のコレクタ → P-MOSFET のゲート（100kΩ で 5V へ）
+res_flat("L17", "P17", "10kΩ", B10, OFF)        # IO4 → ベース
+tr3(["Q17", "R17", "S17"], ["B", "C", "E"], "NPN", "#455a64")
+res_stand(s, hole("Q14"), hole("R14"), "100kΩ", B100, -2000, -2000)   # ベース → GND（立てて付ける）
+tr3(["V18", "W18", "X18"], ["D", "G", "S"], "P-MOSFET", "#37474f")
+res_flat("W19", "W23", "100kΩ", B100, OFF)      # ゲート → 5V
+lx = OX + 26 * P + 70
+s.text(lx, OY + 15 * P, "基板の上の部品", 14, weight="bold")
+for i, (a_, b_) in enumerate([("L17〜P17", "10kΩ（IO4 → ベース）"), ("Q14・R14", "100kΩ（ベース → GND、立てる）"), ("Q17・R17・S17", "NPN トランジスタ（B・C・E）"),
+                             ("V18・W18・X18", "P-MOSFET（D・G・S）"), ("W19〜W23", "100kΩ（ゲート → 5V）")]):
+    s.text(lx, OY + 15 * P + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, OY + 15 * P + 48 + i * 46, b_, 12, fill="#333")
 # M5Stamp CatM（30×20mm）は Olimex の右上（P〜AA 列、5〜12 行）に両面テープで貼る
 mx1, my1 = OX + 15 * P - 14, OY + R(5) * P - 10
 mx2, my2 = OX + 26 * P + 14, OY + R(12) * P + 10
@@ -1232,75 +1249,74 @@ rec_part(mx1, my1, mx2 - mx1, my2 - my1, "CatM")
 s.text((mx1 + mx2) / 2, my1 + 90, "M5Stamp CatM", 15, "middle", "bold", "#263238", layer=s.top)
 s.text((mx1 + mx2) / 2, my1 + 112, "SIM7080G・microSIM", 12, "middle", fill="#455a64", layer=s.top)
 s.text((mx1 + mx2) / 2, my1 + 140, "両面テープで貼る", 12, "middle", "bold", "#455a64", layer=s.top)
-s.text((mx1 + mx2) / 2, my1 + 158, "TX・RX は短い線で M16・M15 へ", 11, "middle", fill="#455a64", layer=s.top)
-s.text((mx1 + mx2) / 2, my1 + 176, "5V・GND は HPX-Solar から", 11, "middle", fill="#455a64", layer=s.top)
-s.text((mx1 + mx2) / 2, my1 + 194, "アンテナ（IPEX）は上へ", 11, "middle", fill="#455a64", layer=s.top)
-lx = OX + 26 * P + 70
-s.text(lx, OY + 27 * P, "基板の上の部品", 14, weight="bold")
-for i, (a_, b_) in enumerate([("J26〜N26", "100kΩ（電池）"), ("J28〜J32", "100kΩ（電池・GND 側）"), ("L28・L30", "0.1µF（電池）"),
-                             ("S25〜W25", "100kΩ（パネル）"), ("R28〜R32", "20kΩ（パネル・GND 側）"), ("T28・T30", "0.1µF（パネル）")]):
-    s.text(lx, OY + 27 * P + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
-    s.text(lx, OY + 27 * P + 48 + i * 46, b_, 12, fill="#333")
-LAND = [("B26", "HPX-Solar EN", "start"), ("X25", "HPX-Solar PV（パネル＋）", "start"), ("Y20", "HPX-Solar GND", "start"), ("O26", "HPX-Solar BAT＋（電池＋）", "start"),
-        ("M15", "M5Stamp CatM RX", "start"), ("M16", "M5Stamp CatM TX", "start")]
+s.text((mx1 + mx2) / 2, my1 + 158, "TX・RX は M16・M15、5V は V16、GND は Y14 へ", 11, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 176, "アンテナ（IPEX）は上へ", 11, "middle", fill="#455a64", layer=s.top)
+# USB-C メス基板（データ対応）はケースの壁に付け、4本の線を赤丸の穴へ
+ux, uy = OX + 2 * P, OY + R(33) * P + 30
+LAND = [("P27", "USB-C D+", "end"), ("Q27", "USB-C D−", "start"), ("X30", "USB-C VBUS（5V）", "end"), ("Y30", "USB-C GND", "start"),
+        ("M15", "CatM RX", "start"), ("M16", "CatM TX", "start"), ("V16", "CatM 5V", "end"), ("Y14", "CatM GND", "start")]
 for h, txt, an in LAND:
     solder_mark(s, *hole(h))
     x, y = H(*hole(h))
-    tag(x + 16, y - 14, txt, 12, an, "#c62828")
-w("purple", "A13", "B13", "B26")                  # IO25 → EN（Olimex の下を通る）
-w("white", "A9", "C9", "C25", "J25", "J26")       # IO34 → 測る点（Olimex の下を通る）
-w("white", "J26", "J28")                          # 測る点 → 100kΩ（GND 側）
-w("white", "L28", "L27", "J27")                   # 0.1µF → 測る点
-w("white", "N26", "O26")                          # 100kΩ → 電池＋の線
-w("blue", "A7", "D7", "D24", "R24", "R28")        # IO36 → 測る点（Olimex の下を通る）
-w("blue", "S25", "R25")                           # 100kΩ → 測る点
-w("blue", "T28", "T27", "R27")                    # 0.1µF → 測る点
-w("blue", "W25", "X25")                           # 100kΩ → パネル＋の線
-w("black", "K5", "K4", "Z4", "Z33", "T33", "R33", "L33", "J33")   # GND（右の列のピン1）→ 右の端 → 下の GND の行
-w("black", "J32", "J33")
-w("black", "Y20", "Z20")                          # HPX-Solar の GND
-w("black", "L30", "L33")
-w("black", "R32", "R33")
-w("black", "T30", "T33")
+    tag(x + (16 if an == "start" else -16), y - 14, txt, 12, an, "#c62828")
+w("black", "K5", "K4", "Z4", "Z30")               # GND（右の列のピン1）→ 右の端
+w("black", "Y30", "Z30")                          # USB-C GND
+w("black", "S17", "S14", "Y14")                   # NPN のエミッタ → CatM GND の穴
+w("black", "Y14", "Z14")                          # → 右の端の GND
+w("black", "R14", "S14")                          # 100kΩ（ベース側の下）→ GND
+w("red", "X30", "X18")                            # USB-C VBUS → P-MOSFET の S
+w("red", "X30", "X31", "A31", "A23")              # USB-C VBUS → Olimex 5V（左の列のいちばん下）
+w("red", "W23", "X23")                            # 100kΩ → 5V
+w("orange", "V18", "V16")                         # P-MOSFET の D → CatM 5V
+w("purple", "K17", "L17")                         # IO4 → 10kΩ
+w("purple", "P17", "Q17")                         # 10kΩ → ベース
+w("purple", "Q17", "Q14")                         # ベース → 100kΩ
+w("gray", "R17", "R19", "W19")                    # コレクタ → ゲート
+w("gray", "W18", "W19")                           # ゲート
+w("white", "A9", "C9", "C25", "P25", "P27")       # IO34 ← USB-C D+（電池の電圧）
+w("blue", "A7", "D7", "D24", "Q24", "Q27")        # IO36 ← USB-C D−（パネルの電圧）
 w("yellow", "K16", "M16")                         # IO16（受信）← CatM TX
 w("green", "K15", "M15")                          # IO17（送信）→ CatM RX
 yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTE_pcb.svg")
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
-    ["black", "Olimex GND（右の列のいちばん上 K5）", "K5 → K4 → Z4 → Z33 → J33（T33・R33・L33 も）", "0.1µF（T30・L30）・20kΩ（R32）・100kΩ（J32）"],
-    ["blue", "IO36（A7）", "A7 → D7 → D24 → R24 → R28（Olimex の下を通る。S25 → R25、T28 → T27 → R27 も）", "20kΩ（R28）・100kΩ（S25）・0.1µF（T28）"],
-    ["blue", "100kΩ（W25）", "W25 → X25", "HPX-Solar の PV（パネル＋）の線（X25 にはんだ付け）"],
-    ["black", "HPX-Solar の GND の線（Y20 にはんだ付け）", "Y20 → Z20", "GND（右の端の線）"],
-    ["white", "IO34（A9）", "A9 → C9 → C25 → J25 → J26（Olimex の下を通る。J26 → J28、L28 → L27 → J27 も）", "100kΩ（J26・J28）・0.1µF（L28）"],
-    ["white", "100kΩ（N26）", "N26 → O26", "HPX-Solar の BAT＋の線（O26 にはんだ付け）"],
-    ["purple", "IO25（A13）", "A13 → B13 → B26（Olimex の下を通る）", "HPX-Solar の EN の線（B26 にはんだ付け）"],
+    ["black", "Olimex GND（右の列のいちばん上 K5）", "K5 → K4 → Z4 → Z30（右の端）", "USB-C GND（Y30）・CatM GND（Y14 → Z14）"],
+    ["black", "NPN の E（S17）", "S17 → S14 → Y14（R14 も）", "CatM GND の穴（Y14）・100kΩ（R14）"],
+    ["red", "USB-C VBUS の線（X30 にはんだ付け）", "X30 → X18（W23 → X23 も）", "P-MOSFET の S（X18）・100kΩ（W23）"],
+    ["red", "USB-C VBUS（X30）", "X30 → X31 → A31 → A23", "Olimex 5V（左の列のいちばん下 A23）"],
+    ["orange", "P-MOSFET の D（V18）", "V18 → V16", "CatM 5V の線（V16 にはんだ付け）"],
+    ["purple", "IO4（K17）", "K17 → L17、P17 → Q17 → Q14", "10kΩ（L17〜P17）・NPN の B（Q17）・100kΩ（Q14）"],
+    ["gray", "NPN の C（R17）", "R17 → R19 → W19、W18 → W19", "P-MOSFET の G（W18）・100kΩ（W19）"],
+    ["white", "IO34（A9）", "A9 → C9 → C25 → P25 → P27（Olimex の下を通る）", "USB-C D+ の線（P27 にはんだ付け、電池の電圧）"],
+    ["blue", "IO36（A7）", "A7 → D7 → D24 → Q24 → Q27（Olimex の下を通る）", "USB-C D− の線（Q27 にはんだ付け、パネルの電圧）"],
     ["yellow", "IO16（K16、受信）", "K16 → M16", "M5Stamp CatM TX の線（M16 にはんだ付け）"],
     ["green", "IO17（K15、送信）", "K15 → M15", "M5Stamp CatM RX の線（M15 にはんだ付け）"],
-], [100, 340, 610, 370], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+], [100, 340, 560, 420], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
     ["Olimex ESP32-DEVKIT-LIPO ＋ ピンソケット 19ピン×2（20ピンを切る）", "1", "A5〜A23・K5〜K23（左端に寄せる）。アンテナを上、micro USB を下に向ける"],
-    ["金属皮膜抵抗 100kΩ", "3", "S25〜W25（パネル、横）・J26〜N26（電池、横）・J28〜J32（電池の GND 側、縦）。寝かせて付ける"],
-    ["金属皮膜抵抗 20kΩ", "1", "R28〜R32（パネルの GND 側、縦）"],
-    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "T28・T30（パネル）、L28・L30（電池）"],
+    ["M5Stamp CatM（SIM7080G）", "1", "P5〜AA12 の上に両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で"],
+    ["USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）", "1", "ケースの壁に付け、4本の線を X30・Y30・P27・Q27 へ"],
+    ["P-MOSFET（ロジックレベル、1A 以上）", "1", "V18・W18・X18（D・G・S）。足の並びは部品の資料で確かめて合わせる"],
+    ["NPN トランジスタ（2SC1815 など）", "1", "Q17・R17・S17（B・C・E）。足の並びは部品の資料で確かめて合わせる"],
+    ["金属皮膜抵抗 100kΩ", "2", "W19〜W23（ゲート → 5V、縦）・Q14〜R14（ベース → GND、立てる）"],
+    ["金属皮膜抵抗 10kΩ", "1", "L17〜P17（IO4 → ベース、横）"],
     ["ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線", "1", "縦に置く。線はすべて裏"],
-    ["M5Stamp CatM（SIM7080G）", "1", "P5〜AA12 の上に両面テープで貼る。TX・RX を M16・M15 へ短い線で"],
-    ["JST PH 2ピン ケーブル", "1", "HPX-Solar の BAT＋・BAT− を Olimex の BAT コネクタへ"],
     ["ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B", "1", "四隅の取付穴（φ3.2）を AST3-6B に留める"],
-    ["電源: HPX-Solar（別の機器）", "1", "6本の線（BAT＋・BAT−・5V・GND・EN・PV）でつなぐ（HPX-Solar_pcb.png）"],
+    ["電源: HPX-Solar（別の機器）と USB-C ケーブル（データ対応）", "1", "USB-C ケーブル1本でつなぐ（HPX-Solar_pcb.png）。家では USB 充電器でもよい"],
 ], [640, 60, 620], "部品表")
 finish(s, y, [
     "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
-    "・赤丸の穴は、ほかの部品からの線（HPX-Solar の PV・GND・BAT＋・EN、M5Stamp CatM の TX と RX）を直接はんだ付けするところ。",
-    "・基板の外でつなぐ線: HPX-Solar の 5V と GND → M5Stamp CatM の 5V と GND、HPX-Solar の BAT＋と BAT− → Olimex の BAT コネクタ（JST PH 2ピン）。",
-    "・電源は HPX-Solar（ソーラーパネル・DFR0559・18650 ×2）から6本の線（BAT＋・BAT−・5V・GND・EN・PV）でもらう。",
-    "  線の対応は HPX-Core_LTE_wiring.png、HPX-Solar 側は HPX-Solar_pcb.png。",
-    "・GND は Olimex の BAT コネクタの−で電池の−とそろう（HPX-Solar の DFR0559 の GND も電池の−と同じとみて描いた。テスターで確かめる）。",
-    "・電池は 100kΩ と 100kΩ で半分に（4.2V で 2.1V）、パネルは 100kΩ と 20kΩ で 1/6 に（6V で 1.0V）下げて IO34・IO36 で読む。",
-    "・IO36・IO34・IO25 の線は、Olimex の下（B〜D 列、裏）を通して下の部品へつなぐ。Olimex はピンソケットで浮いているので触れない。",
+    "・赤丸の穴は、ほかの部品からの線（USB-C メス基板の 4本、M5Stamp CatM の TX・RX・5V・GND）を直接はんだ付けするところ。",
+    "・電源は USB-C から（HPX-Solar か USB 充電器）。Olimex は 5V ピンから、CatM は P-MOSFET を通した 5V から動かす。Olimex の BAT コネクタは使わない。",
+    "・CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。眠っている間と起動のときは 100kΩ で切れたまま。",
+    "・HPX-Solar のときは、D+ に電池の電圧（1/2）、D− にパネルの電圧（1/6）が来る（分圧の抵抗とコンデンサーは HPX-Solar の中）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。",
+    "・USB 充電器につなぐときは「測らない」にする（充電器は D+・D− に独自の電圧を出すことがある）。",
+    "・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。",
+    "・IO36・IO34 の線は、Olimex の下（C〜D 列、裏）を通して下へつなぐ。Olimex はピンソケットで浮いているので触れない。",
     "・穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。Olimex のピンの並びは公式資料から。差す前に実物で確かめる。",
     "・M5Stamp CatM は基板に貼るだけで、穴には差さない（ピンの位置を実物で確かめてから、ピンヘッダで差す形にもできる）。",
-    "・アンテナのケーブル（SMA）と HPX-Solar からの線は、ケースの穴から防水して通す。穴あけの位置は部品が届いてから決める。",
+    "・アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。穴あけの位置は部品が届いてから決める。",
 ], "HPX-Core_LTE_pcb.svg")
 COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 # ================================================================== HPX-Camera（巣門カメラ、試作）TARO 2026-11-09

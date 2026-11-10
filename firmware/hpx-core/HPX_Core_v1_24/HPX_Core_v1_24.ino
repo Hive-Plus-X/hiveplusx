@@ -4,17 +4,21 @@
 // v1.24 の変更
 //   * 「＋LTE-M」版 (電源は HPX-Solar) に対応した。LTE ルーターなしで、LTE-M 通信モジュール M5Stamp CatM (SIMCom SIM7080G) から
 //     直接サーバーへ送る。接続方法に「LTE-M」を足した(初回設定の画面か「動作設定」で選ぶ。Wi-Fi・有線LAN はこれまでどおり)。
-//       - 配線: CatM の TX → GPIO16(D16)、CatM の RX ← GPIO17(D17)、HPX-Solar の DFR0559 の EN ← GPIO25(D25)
+//       - 配線: CatM の TX → GPIO16(D16)、CatM の RX ← GPIO17(D17)、CatM の 5V のスイッチ(P-MOSFET)← GPIO4(D4)
 //         (hardware/wiring/HPX-Core_LTE_wiring.png・HPX-Core_LTE_pcb.png。Olimex ESP32-DevKit-LiPo を使う)
-//       - 送るときだけ D25 で DFR0559 の 5V を入れて CatM を動かし、送り終わったら AT+CPOWD=1 で止めて 5V を切る。
-//         眠っている間は D25 をその値のまま固定する(gpio_hold)
+//       - 送るときだけ D4 で CatM の 5V を入れて動かし、送り終わったら AT+CPOWD=1 で止めて 5V を切る。
+//         眠っている間は D4 をその値のまま固定する(gpio_hold)
 //       - 線(UART)は 115200bps で話し始め、AT+IPR で 921600bps に上げる。通じなければ 115200bps のまま使う
 //       - HTTPS は CatM の中の TLS を使う(AT+CAOPEN など)。ESP32 側の暗号の処理は使わない。HTTP のリダイレクトと
 //         chunked(長さを書かない返事)には対応していない(送信先とファーム更新のURLは、転送しない本当の場所を書く)
 //       - 時刻は CatM の NTP (AT+CNTP) で合わせる
 //       - APN は動作設定で変えられる。初期値は SORACOM (soracom.io / sora / sora)
-//       - 18650 の電圧を GPIO34(100kΩ/100kΩ、1/2)、パネルの電圧を GPIO36(100kΩ/20kΩ、1/6)で測る。
-//         サーバーへは "vbat"(電池)と "vpv"(パネル)、"net":"lte" と電波の強さ "rssi"(dBm)を送る
+//       - サーバーへ "net":"lte" と電波の強さ "rssi"(dBm)を送る
+//   * HPX-Solar(小型ソーラー電源)の電池とパネルの電圧を測れるようにした(動作設定「電圧の測り方」で選ぶ。TARO 2026-11-10)。
+//     HPX-Solar とは USB-C ケーブル1本でつなぎ、5V の線で電気をもらい、D+ で電池の電圧(HPX-Solar の中で 1/2)、
+//     D− でパネルの電圧(HPX-Solar の中で 1/6)を受け取る。D+ → GPIO34、D− → GPIO36(＋LTE-M・＋防水 の USB-C 口)。
+//     サーバーへは "vbat"(電池)と "vpv"(パネル)を送る。HPX-Solar 以外(USB 充電器など)をつなぐときは「測らない」にする
+//     (充電器は D+・D− に独自の電圧を出すことがあり、でたらめな値になるため)
 //       - LTE-M のときも、管理画面を開くための Wi-Fi「HPX-Setup-xxxx」を出す(有線LANと同じ。動作設定で止められる)
 //   * 見直し(シェイプアップ): postJson() の http と https で同じだった処理を1つにまとめた
 //   ★ 実機では確かめていない(M5Stamp CatM の AT コマンドの返事の形は SIM7080G の資料から書いた)
@@ -215,7 +219,7 @@
 #include <esp_sleep.h>
 #include <esp_system.h>
 #include <esp_sntp.h>
-#include <driver/gpio.h>     // 眠っている間 D25 を固定する(LTE-M)
+#include <driver/gpio.h>     // 眠っている間 D4 を固定する(LTE-M)
 #include <NimBLEDevice.h>   // ライブラリ「NimBLE-Arduino」(2.x)
 #include <LittleFS.h>        // 記録の保存先(パーティション「spiffs」)
 #include <strings.h>
@@ -253,8 +257,8 @@ constexpr uint8_t NET_LTE = 2;     // v1.24: LTE-M(M5Stamp CatM)
 // LTE-M(M5Stamp CatM = SIM7080G)のピンと時間。基板の配線図(HPX-Core_LTE_pcb)に合わせてある
 constexpr int LTE_RX_PIN = 16;                  // D16 ← CatM の TX
 constexpr int LTE_TX_PIN = 17;                  // D17 → CatM の RX
-constexpr int LTE_PWR_PIN = 25;                 // D25 → DFR0559 の EN(CatM の 5V を入り切りする)
-constexpr uint8_t LTE_PWR_ON_LEVEL = HIGH;      // ★DFR0559 の EN が High で ON かは未確認。逆なら LOW にする
+constexpr int LTE_PWR_PIN = 4;                  // D4 → 10kΩ → NPN → P-MOSFET(CatM の 5V を入り切りする。HPX-Core_LTE_pcb。有線LAN の MISO と同じピンだが LTE の基板に W5500 はない)
+constexpr uint8_t LTE_PWR_ON_LEVEL = HIGH;      // High で ON(基板のスイッチの組み方。眠っている間と起動直後は 100kΩ で OFF)
 constexpr uint32_t LTE_BAUD_DEFAULT = 115200;   // SIM7080G が電源を入れたときの速さ
 constexpr uint32_t LTE_BAUD_FAST = 921600;      // AT+IPR で上げる速さ(0 にすると上げない。取りこぼすなら 460800)
 constexpr uint32_t LTE_POWER_SETTLE_MS = 500;   // 5V を入れてから話しかけるまで
@@ -262,10 +266,12 @@ constexpr uint32_t LTE_BOOT_MS = 20000;         // AT が通じるまでの待�
 constexpr uint32_t LTE_CONNECT_TIMEOUT_MS = 120000;  // 電源を入れてから回線につながるまで(初回は長くかかる)
 constexpr uint16_t LTE_CHUNK = 1024;            // 1回に送る・受け取る大きさ(CASEND は 1460 まで)
 constexpr uint32_t LTE_HTTP_IDLE_MS = 20000;    // 返事が来なくなってから諦めるまで
-constexpr uint8_t LTE_BATT_PIN = 34;            // 18650 ＋ → 100kΩ → GPIO34 → 100kΩ → GND
-constexpr float LTE_BATT_RATIO = 2.0f;
-constexpr uint8_t LTE_PV_PIN = 36;              // パネル＋ → 100kΩ → GPIO36(VP) → 20kΩ → GND
-constexpr float LTE_PV_RATIO = (100.0f + 20.0f) / 20.0f;   // 6.0(6V で 1.0V)
+// HPX-Solar の電圧(USB-C の D+・D−。分圧の抵抗は HPX-Solar の中にある。HPX-Solar_pcb)
+constexpr uint8_t SOLAR_BATT_PIN = 34;          // D+ ← 18650 ＋ → 100kΩ → D+ → 100kΩ → GND
+constexpr float SOLAR_BATT_RATIO = 2.0f;
+constexpr uint8_t SOLAR_PV_PIN = 36;            // D− ← パネル＋ → 100kΩ → D− → 20kΩ → GND
+constexpr float SOLAR_PV_RATIO = (100.0f + 20.0f) / 20.0f;   // 6.0(6V で 1.0V)
+constexpr float SOLAR_BATT_MIN_V = 2.5f;        // これ未満は「HPX-Solar がつながっていない」とみる(18650 の保護回路が切る電圧)
 
 // 有線LAN(W5500 SPIモジュール)のピン。基板の配線図(HPX-Core_LAN_pcb)に合わせてある
 constexpr int ETH_SCK_PIN = 18;    // D18
@@ -384,6 +390,7 @@ String lteUser = "sora";
 String ltePassw = "sora";
 bool lanApOn = true;          // 有線LANのとき、管理用の Wi-Fi(HPX-Setup-xxxx)を出す
 bool vchkOn = false;          // 12V バッテリー・パネルの電圧を測る(v1.22、有線LAN＋電圧チェック版)
+bool vsolOn = false;          // HPX-Solar の電池・パネルの電圧を USB-C の D+・D− で測る(v1.24)
 float vchkCalB = 1.0f;        // バッテリー電圧の補正の倍率(テスターの値 ÷ 測った値)
 float vchkCalP = 1.0f;        // パネル電圧の補正の倍率
 
@@ -695,6 +702,7 @@ void loadConfig()
   lteUser = preferences.getString("apnu", "sora");
   ltePassw = preferences.getString("apnp", "sora");
   vchkOn = preferences.getBool("vchk", false);
+  vsolOn = preferences.getBool("vsol", false) && !vchkOn;   // GPIO34 を両方で使うので、どちらか1つだけ
   vchkCalB = preferences.getFloat("vcalb", 1.0f);
   vchkCalP = preferences.getFloat("vcalp", 1.0f);
   bleSensLoad(preferences);   // 登録済みの温湿度計(旧版の blemac は1台目として引き継ぐ)
@@ -894,7 +902,11 @@ float vchkReadRaw(uint8_t pin, float ratio);
 
 float readBatteryV()
 {
-  if (netType == NET_LTE) return vchkReadRaw(LTE_BATT_PIN, LTE_BATT_RATIO);   // v1.24: 18650 の電圧
+  if (vsolOn)   // v1.24: HPX-Solar の 18650 の電圧。つながっていないときは NAN(電池切れの判定に使わない)
+  {
+    const float v = vchkReadRaw(SOLAR_BATT_PIN, SOLAR_BATT_RATIO);
+    return v < SOLAR_BATT_MIN_V ? NAN : v;
+  }
   if (BATT_ADC_PIN < 0) return NAN;
   uint32_t sum = 0;
   for (int i = 0; i < 8; i++)
@@ -2817,7 +2829,7 @@ bool sendReport(float vbat, const String& sensorsJson)
   j += ",\"pm\":\"" + String(powerMode == MODE_ALWAYS_ON ? "always" : "sleep") + "\"";
   if (lanApStarted) j += ",\"lanap\":\"HPX-Setup-" + deviceUid.substring(8) + "\"";
   if (!isnan(vbat)) j += ",\"vbat\":" + String(vbat, 2);
-  if (useLte()) j += ",\"vpv\":" + String(vchkReadRaw(LTE_PV_PIN, LTE_PV_RATIO), 2);   // v1.24: パネルの電圧
+  if (vsolOn) { if (!isnan(vbat)) j += ",\"vpv\":" + String(vchkReadRaw(SOLAR_PV_PIN, SOLAR_PV_RATIO), 2); }   // v1.24: HPX-Solar のパネル
   else if (vchkOn)   // v1.22: 12V バッテリー・パネルの電圧
   {
     j += ",\"vb\":" + String(vchkBattV(), 2);
@@ -3501,7 +3513,7 @@ void handleMainPage()
   {
     h += "<p>LTE-M: " + String(lteUp ? "つながっています" : "つながっていません");
     if (lteRssi != 0) h += "、電波の強さ " + String(lteRssi) + " dBm";
-    h += "、電池 " + String(readBatteryV(), 2) + " V、パネル " + String(vchkReadRaw(LTE_PV_PIN, LTE_PV_RATIO), 2) + " V</p>";
+    h += "</p>";
   }
 
   if (powerMode == MODE_DEEPSLEEP)
@@ -3533,7 +3545,12 @@ void handleMainPage()
   }
 
   float v = readBatteryV();
-  if (!isnan(v)) h += "<p>電池電圧: " + String(v, 2) + " V</p>";
+  if (vsolOn)
+  {
+    if (isnan(v)) h += "<p>HPX-Solar: つながっていません（USB-C の線を確かめてください）</p>";
+    else h += "<p>HPX-Solar: 電池 " + String(v, 2) + " V ／ パネル " + String(vchkReadRaw(SOLAR_PV_PIN, SOLAR_PV_RATIO), 2) + " V</p>";
+  }
+  else if (!isnan(v)) h += "<p>電池電圧: " + String(v, 2) + " V</p>";
   if (vchkOn)
   {
     h += "<p>バッテリー電圧: " + String(vchkBattV(), 2) + " V ／ パネル電圧: " + String(vchkPvV(), 2) + " V";
@@ -3644,11 +3661,11 @@ void handleSettingsPage()
   h += "<p>登録済みのセンサ: " + String((int)bleSensCount()) + " / " + String((int)BLE_MAX_SENSORS) + " 台 ";
   h += "<a href='/blesensors'>センサの登録・名前の変更</a></p>";
   h += "<small>記録は時計の区切り(15分なら毎時00・15・30・45分、30分なら毎時00分・30分)に取り、そのつどサーバーへ送ります。送れなかった記録は溜めておき、次に送ります。電柵アラート(HPX-F)の電圧低下も、この間隔でサーバーに届きます。</small><br><br>";
-  h += "<hr><h3>バッテリー・パネルの電圧（有線LAN＋電圧チェック版）</h3>";
-  h += "<label><input type='checkbox' name='vchk' value='1'";
-  if (vchkOn) h += " checked";
-  h += "> バッテリー・パネルの電圧を測る（GPIO35＝バッテリー、GPIO34＝パネル）</label><br>";
-  h += "<small>電圧チェック用の抵抗をつないだ基板のときだけチェックしてください。つないでいないと 0V や でたらめな値になります。</small><br>";
+  h += "<hr><h3>電圧の測り方</h3>";
+  h += "<label><input type='radio' name='vmode' value='0'" + String(!vchkOn && !vsolOn ? " checked" : "") + "> 測らない</label><br>";
+  h += "<label><input type='radio' name='vmode' value='1'" + String(vchkOn ? " checked" : "") + "> 12V バッテリー・パネル（＋有線LAN＆ソーラーシステムチェック。GPIO35＝バッテリー、GPIO34＝パネル）</label><br>";
+  h += "<label><input type='radio' name='vmode' value='2'" + String(vsolOn ? " checked" : "") + "> HPX-Solar の電池・パネル（USB-C の D+＝GPIO34、D−＝GPIO36）</label><br>";
+  h += "<small>電圧を測る線をつないだときだけ選んでください。つないでいないと 0V や でたらめな値になります。HPX-Solar の代わりに USB 充電器などをつなぐときは「測らない」にします。</small><br>";
   if (vchkOn)
   {
     h += "<p>今の値: バッテリー " + String(vchkBattV(), 2) + " V ／ パネル " + String(vchkPvV(), 2) + " V</p>";
@@ -3718,7 +3735,9 @@ void handleSettingsSave()
     return;
   }
   const bool lanap = server.hasArg("lanap");
-  const bool vchk = server.hasArg("vchk");
+  const int vmode = server.arg("vmode").toInt();   // v1.24: 0=測らない、1=12V バッテリー、2=HPX-Solar
+  const bool vchk = (vmode == 1);
+  const bool vsol = (vmode == 2);
   // テスターの値から補正の倍率を出す(今の補正なしの値で割る)。0.5〜2倍の範囲のときだけ使う
   float calB = vchkCalB, calP = vchkCalP;
   if (server.hasArg("vcreset")) { calB = 1.0f; calP = 1.0f; }
@@ -3749,6 +3768,7 @@ void handleSettingsSave()
   preferences.putString("apnu", apnu);
   preferences.putString("apnp", apnp);
   preferences.putBool("vchk", vchk);
+  preferences.putBool("vsol", vsol);
   preferences.putFloat("vcalb", calB);
   preferences.putFloat("vcalp", calP);
   if (preferences.isKey("bleon")) preferences.remove("bleon");   // v1.16 までの設定(使わない)
@@ -4780,7 +4800,7 @@ void setup()
   if (powerOnBoot) checkBootFactoryReset();
 
   loadConfig();
-  if (useLte())   // 眠る前に固定した D25 を放す(5V は切ったまま)
+  if (useLte())   // 眠る前に固定した D4 を放す(5V は切ったまま)
   {
     pinMode(LTE_PWR_PIN, OUTPUT);
     digitalWrite(LTE_PWR_PIN, LTE_PWR_ON_LEVEL == HIGH ? LOW : HIGH);
