@@ -1,93 +1,95 @@
-id,category,name,detail,shop,url,pack,unit,price,alt_of,core,core_wp,core_bat,w_cr,w_aa,th_cr,th_aa,f,b,core_lanv,core_lte,cam
-,電子部品,有線LANモジュール W5500,ACEIRMC W5500 イーサネットネットワークモジュール,amazon,https://www.amazon.co.jp/dp/B09NFF41YH,3,個,2999,,1,,,,,,,,,1,,
-,ケース,壁付ネットワークケース PFFシリーズ,タカチ　PFF10-4-10W,モノタロウ,https://www.monotaro.com/p/5512/8535/,1,個,639,,1,,,,,,,,1,1,,
-,ケース用基板,ユニバーサル基板 6×8cm,,amazon,https://www.amazon.co.jp/dp/B0CX1RGYFG,5,枚,695,,1,,,,,,,,1,1,,
-,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST2.5-5B,モノタロウ,https://www.monotaro.com/p/7082/4977/,1,セット,219,,1,1,1,,,,,,1,1,,
-,ケース,小型 汎用プラスチックケース TWシリーズ,タカチ　TW5-3-9B,秋月電子通商,https://akizukidenshi.com/catalog/g/g117042/,1,個,220,,,,,1,,,,,,,,
-,ケース,TW5-3-9用基板,タカチ TNF39-70,,https://www.monotaro.com/g/00965857/,1,枚,289,,,,,1,,,,,,,,
-,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,359,,,,,,1,,,,,,,
-,ケース,SW-130用基板,タカチ TNF34-124,モノタロウ,https://www.monotaro.com/g/00965857/,1,枚,349,,,,,,1,,,,,,,
-,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-75B,秋月電子通商,https://akizukidenshi.com/catalog/g/g116162/,1,個,210,,,,,,,1,,,,,,
-,ケース,SW-75用基板,タカチ　TNF44-69 (44×69mm、穴 16×25),モノタロウ,https://www.monotaro.com/p/8821/2835/,1,枚,259,,,,,,,1,,,,,,
+id,category,name,detail,shop,url,pack,unit,price,alt_of,core_basic,core,core_wp,core_bat,w_cr,w_aa,th_cr,th_aa,f,b,core_lanv,core_lte,cam,solar
+,電子部品,有線LANモジュール W5500,ACEIRMC W5500 イーサネットネットワークモジュール,amazon,https://www.amazon.co.jp/dp/B09NFF41YH,3,個,2999,,,1,,,,,,,,,1,,,
+,ケース,壁付ネットワークケース PFFシリーズ,タカチ　PFF10-4-10W,モノタロウ,https://www.monotaro.com/p/5512/8535/,1,個,639,,1,1,,,,,,,,1,1,,,
+,ケース用基板,ユニバーサル基板 6×8cm,,amazon,https://www.amazon.co.jp/dp/B0CX1RGYFG,5,枚,695,,1,1,,,,,,,,1,1,,,
+,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST2.5-5B,モノタロウ,https://www.monotaro.com/p/7082/4977/,1,セット,219,,1,1,1,1,,,,,,1,1,,,
+,ケース,小型 汎用プラスチックケース TWシリーズ,タカチ　TW5-3-9B,秋月電子通商,https://akizukidenshi.com/catalog/g/g117042/,1,個,220,,,,,,1,,,,,,,,,
+,ケース,TW5-3-9用基板,タカチ TNF39-70,,https://www.monotaro.com/g/00965857/,1,枚,289,,,,,,1,,,,,,,,,
+,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-130B,モノタロウ,https://www.monotaro.com/p/8821/0595/,1,個,359,,,,,,,1,,,,,,,,
+,ケース,SW-130用基板,タカチ TNF34-124,モノタロウ,https://www.monotaro.com/g/00965857/,1,枚,349,,,,,,,1,,,,,,,,
+,ケース,プラスチックケース 小型・低価格型 SWシリーズ,タカチ　SW-75B,秋月電子通商,https://akizukidenshi.com/catalog/g/g116162/,1,個,210,,,,,,,,1,,,,,,,
+,ケース,SW-75用基板,タカチ　TNF44-69 (44×69mm、穴 16×25),モノタロウ,https://www.monotaro.com/p/8821/2835/,1,枚,259,,,,,,,,1,,,,,,,
 lc115,ケース,"ハンドタイプ プラスチックケース LCシリーズ
-単3×2電池ボックス",タカチ　LC115H-M2-D,,https://www.takachi-el.co.jp/products/LC,1,個,451,,,,,,,,1,,,,,
-wh145,ケース,IP67防水ハンドヘルドケース,タカチ　WH145-25-M2-,amazon,https://www.takachi-el.co.jp/products/WH,1,個,1754,,,,,,,,,1,,,,
-c100,電子部品,絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm,コンデンサー100μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g102243/,10,個,280,,,,,1,1,1,1,1,,,,1
-,電子部品,コンデンサー0.1μF,積層セラミックコンデンサー 0.1μF50V C0G 5mm,秋月電子通商,https://akizukidenshi.com/catalog/g/g117059/,10,個,250,,,,,1,1,1,1,1,2,2,2,1
-hx711,電子部品,HX711,Hailege HX711 ADコンバーター モジュール 3個セット,amazon,https://www.amazon.co.jp/s?k=Hailege%20HX711%203%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88,3,個,660,,,,,1,1,,,,,,,
-,電子部品,サーミスター,サーミスター 10kΩ (平行線タイプ),秋月電子通商,https://akizukidenshi.com/catalog/g/g107257/,1,個,200,,,,,,,1,1,,,,,
+単3×2電池ボックス",タカチ　LC115H-M2-D,,https://www.takachi-el.co.jp/products/LC,1,個,451,,,,,,,,,1,,,,,,
+wh145,ケース,IP67防水ハンドヘルドケース,タカチ　WH145-25-M2-,amazon,https://www.takachi-el.co.jp/products/WH,1,個,1754,,,,,,,,,,1,,,,,
+c100,電子部品,絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm,コンデンサー100μF,秋月電子通商,https://akizukidenshi.com/catalog/g/g102243/,10,個,280,,,,,,1,1,1,1,1,,,,1,
+,電子部品,コンデンサー0.1μF,積層セラミックコンデンサー 0.1μF50V C0G 5mm,秋月電子通商,https://akizukidenshi.com/catalog/g/g117059/,10,個,250,,,,,,1,1,1,1,1,2,2,,1,2
+hx711,電子部品,HX711,Hailege HX711 ADコンバーター モジュール 3個セット,amazon,https://www.amazon.co.jp/s?k=Hailege%20HX711%203%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88,3,個,660,,,,,,1,1,,,,,,,,
+,電子部品,サーミスター,サーミスター 10kΩ (平行線タイプ),秋月電子通商,https://akizukidenshi.com/catalog/g/g107257/,1,個,200,,,,,,,,1,1,,,,,,
 ,電子部品,SHT40,"SHT40 温湿度センサ モジュール 5個入り
-SHT31・SHT41 なども使えます",amazon,https://www.amazon.co.jp/s?k=GY-SHT30-D%20SHT40%20temperature%20Humidity%20Sensor%20modules%205Pcs,5,個,2100,,,,,,,1,1,,,,,
-cds,電子部品,CDSセル,Moechando φ5mm CdS セル 5506 (10個入り),amazon,https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506,10,個,395,,,,,,,,,1,,,,
-,電子部品,抵抗 10kΩ,小型 金属皮膜抵抗 1/4W 10kΩ (100本入り),秋月電子通商,https://akizukidenshi.com/catalog/g/g108550/,100,本,300,,,,,,,1,1,1,1,,,
-,チップボード,nRF52840,Seeed XIAO BLE nRF52840,秋月電子通商,https://akizukidenshi.com/catalog/g/g117341/,1,個,1780,,,,,1,1,1,1,1,1,,,
-,電源,電池ボックス 単3×2本,電池ボックス 単3×2本 リード線,秋月電子通商,https://akizukidenshi.com/catalog/g/g117271/,1,個,50,,,,,,1,,,,,,,
-,電源,単三リチウム電池,エナジャイザー リチウム乾電池 単3形 4本入り,amazon,https://www.amazon.co.jp/dp/B006QVALTM,4,本,1283,,,,3,,2,,2,2,,,,3
-,電源,CR123A電池,EEMB CR123A 3V リチウム電池 1700mAh 4個入り,amazon,https://www.amazon.co.jp/s?k=EEMB%20CR123A%201700mAh%204%E5%80%8B,4,個,999,,,,,1,,1,,,,,,
-,電源,CR123A 電池ケース,CR123A用電池ケース,秋月電子通商,https://akizukidenshi.com/catalog/g/g110192/,1,個,50,,,,,1,,1,,,,,,
-,電子部品,QIコネクタハウジング,コネクター用ハウジング 1P,秋月電子通商,https://akizukidenshi.com/catalog/g/g112150/,1,個,5,,,,,2,2,,,,,,,
-,電子部品,ケーブル用コネクター,QIハウジング用,秋月電子通商,https://akizukidenshi.com/catalog/g/g112160/,10,個,50,,,,,2,2,,,,,,,
-,電子部品,ピンソケット（メス）,シングルピンソケット (低メス),秋月電子通商,https://akizukidenshi.com/catalog/g/g103138/,20,PIN,80,,15PIN×2・6PIN×2,,16PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,,19PIN×2,7PIN×2
-,電子部品,ピンソケット（メス）,分割ロングピンソケット 1×42 (42P),秋月電子通商,,42,PIN,80,,,,,,,,,,,15PIN×2・6PIN×2,,
-,電子部品,ピンヘッダー（オス）,ロープロファイルピンヘッダー(低オス) 7.7mm,秋月電子通商,https://akizukidenshi.com/catalog/g/g102900/,40,PIN,40,,,,,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,,,7PIN×2
-,電子部品,ジャンパー線,スズメッキ軟銅線 TCW 0.5mm 10m,amazon,https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m,10,m,670,,適宜,,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜
-,電子部品,ジャンパー線,ジャンパーワイヤー 840個セット (14サイズ),amazon,https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D,840,本,935,,,,,8,8,,,8,,,,
-,電子部品,シングルポイントロードセル,ロードセル シングルポイント(ビーム型) SC601 120kg,秋月電子通商,https://akizukidenshi.com/catalog/g/g112035/,1,個,1850,,,,,1,1,,,,,,,
-angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm厚さ3mm 100cm,モノタロウ,https://www.monotaro.com/g/06244669/,100,cm,2998,,,,,33 cm,33 cm,,,,,,,
-,部材,六角穴付き皿ボルト,304ステンレス 六角穴付き皿ボルト M6×25 (27本入り),amazon,https://www.amazon.co.jp/s?k=304%E3%82%B9%E3%83%86%E3%83%B3%E3%83%AC%E3%82%B9%20%E5%85%AD%E8%A7%92%E7%A9%B4%E4%BB%98%E3%81%8D%E7%9A%BF%E3%83%9C%E3%83%AB%E3%83%88%20M6%2A25%2027%E6%9C%AC%E5%85%A5%20DIN7991,27,本,990,,,,,4,4,,,,,,,
-,部材,スペーサー,ダイドーハント ピッタリサポート F35N ニッケル 3×55×35mm,山新,,1,個,268,,,,,2,2,,,,,,,
-,部材,ゴムクッション,iteck　KGR-40　40×3mm,山新,,4,個,238,,,,,,,,,1,,,,
-,部材,強力両面テープ,3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m),amazon,https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R,150,cm,536,,,,,20 cm,20 cm,,,,,,20 cm,適宜
-,部材,基板固定用タッピングビス EMシリーズ,M2.5ビス　EM-2.3-8,モノタロウ,https://www.monotaro.com/p/7383/0253/,50,本,249,,,,,4,4,,,4,,,,
-,ケーブル,シールド線 AWG28,Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック),amazon,https://www.amazon.co.jp/dp/B0933M5MTL,1,m,680,,,,,,,,,1 m,,,,
-,部材,熱収縮チューブ φ1.5mm,オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000007/,2,m,275,,,,,,,,,5 cm,,,,
-,部材,熱収縮チューブ φ4mm,オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000001/,2,m,319,,,,,,,,,5 cm,,,,
-,電子部品,ユニバーサル基板 5×7,両面スルーホールユニバーサル基板 5*7,秋月電子通商,https://akizukidenshi.com/catalog/g/g112977/,1,枚,60,,,,,,,,,1,,,,1
-,代わり,アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105002/,1,個,20,c100,,,,,,,,,,,,
-,代わり,電解コンデンサー 100μF16V 105℃ ルビコン PX,,秋月電子通商,https://akizukidenshi.com/catalog/g/g110271/,1,個,50,c100,,,,,,,,,,,,
-,代わり,HX711使用 ロードセル用ADコンバーター モジュール基板,,秋月電子通商,https://akizukidenshi.com/catalog/g/g112370/,1,個,350,hx711,,,,,,,,,,,,
-,代わり,CdSセル (1MΩ) GL5528,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105886/,4,個,100,cds,,,,,,,,,,,,
-,代わり,アルミ不等辺アングル t3.0 25×50×300,,山新,,30,cm,648,angle,,,,,,,,,,,,
-,代わり,タカチ LCS115H-M2-DR (シリコンカバー付き),,,https://www.takachi-el.co.jp/products/LCS,1,個,1098,lc115,,,,,,,,,,,,
-,チップボード,ESP32-WROOM-32,ELEGOO ESP-32 開発ボード USB-C CP2102チップ,amazon,https://www.amazon.co.jp/dp/B0FT2SJH3H,2,個,1935,,1,,,,,,,,,1,,
-,チップボード,ESP32-WROOM-32,Olimex ESP32-DEVKIT-LIPO,マルツオンライン,https://www.marutsu.co.jp/pc/i/46418664/,1,個,1692,,,1,1,,,,,,,,1,
-,ケース,IP67 防水ボックス WPシリーズ,タカチ　WP8-10-4G,モノタロウ,https://www.monotaro.com/p/5513/0662/,1,個,1198,,,1,,,,,,,,,,
-,ケース,IP67防水ハンドヘルドケース 単3×3電池ボックス付き,タカチ　WH145-25-M3-BR,amazon,https://www.amazon.co.jp/dp/B09GFVLC7B,1,個,2205,,,,1,,,,,,,,,
-,ケース用基板,ユニバーサル基板 43×66mm,タカチ　TNF43-66,モノタロウ,https://www.monotaro.com/p/8821/2914/,1,枚,249,,,,,,,,,,,,,
-,ケース用基板,WH145-25-M3用基板,タカチ　PCB36-47,モノタロウ,https://www.monotaro.com/p/6881/1490/,1,枚,139,,,,1,,,,,,,,,
-,部材,基板スペーサー クイックロック貼付スペーサー ULCKシリーズ,タカチ　ULCK-6.4,モノタロウ,https://www.monotaro.com/g/06277754/,4,個,119,,,,,,,,,,,,,
-,部材,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,1,,,,,,,,,,
-,部材,USBケーブル,USB-C to MicroUSB ケーブル 15cm,amazon,https://www.amazon.co.jp/dp/B0H14RX1M1,2,本,559,,,1,,,,,,,,,,
-,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,240,,,,,,,,,,1,1,,
-,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF50V X7S 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/g/g108155/,1,個,60,,,,,,,,,,1,1,,
-,電子部品,抵抗 100kΩ,小型 金属皮膜抵抗 1/4W100kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108563/,100,本,300,,,,,,,,,,2,2,3,2
-,電子部品,抵抗 20kΩ,小型 金属皮膜抵抗 1/4W20kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108554/,100,本,250,,,,,,,,,,1,,1,
-,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦,秋月電子通商,https://akizukidenshi.com/catalog/g/g101310/,1,個,40,,,,,,,,,,1,1,,
-,ケーブル,ミニ平型ヒューズホルダー,エーモン ミニ平型ヒューズホルダー (線の途中に入れる),amazon,https://www.amazon.co.jp/dp/B09FL4Q7B8,1,個,415,,,,,,,,,,2,2,,
-,ケーブル,ミニ平型ヒューズ 1A,ミニ平型ヒューズ 1A (ARISELIFT),amazon,https://www.amazon.co.jp/dp/B0FRR6FTGF,5,個,567,,,,,,,,,,2,2,,
-,ケーブル,電線 0.3〜0.5mm²,サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/dp/B0HJGDW3TT,1,セット,980,,,,,,,,,,適宜,適宜,,
-,電子部品,抵抗 15kΩ,小型 金属皮膜抵抗 1/4W15kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108552/,100,本,300,,,,,,,,,,,1,,
-,電子部品,抵抗 8.2kΩ,小型 金属皮膜抵抗 1/2WS 8.2kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g116644/,100,本,300,,,,,,,,,,,1,,
+SHT31・SHT41 なども使えます",amazon,https://www.amazon.co.jp/s?k=GY-SHT30-D%20SHT40%20temperature%20Humidity%20Sensor%20modules%205Pcs,5,個,2100,,,,,,,,1,1,,,,,,
+cds,電子部品,CDSセル,Moechando φ5mm CdS セル 5506 (10個入り),amazon,https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506,10,個,395,,,,,,,,,,1,,,,,
+,電子部品,抵抗 10kΩ,小型 金属皮膜抵抗 1/4W 10kΩ (100本入り),秋月電子通商,https://akizukidenshi.com/catalog/g/g108550/,100,本,300,,,,,,,,1,1,1,1,,1,,
+,チップボード,nRF52840,Seeed XIAO BLE nRF52840,秋月電子通商,https://akizukidenshi.com/catalog/g/g117341/,1,個,1780,,,,,,1,1,1,1,1,1,,,,
+,電源,電池ボックス 単3×2本,電池ボックス 単3×2本 リード線,秋月電子通商,https://akizukidenshi.com/catalog/g/g117271/,1,個,50,,,,,,,1,,,,,,,,
+,電源,単三リチウム電池,エナジャイザー リチウム乾電池 単3形 4本入り,amazon,https://www.amazon.co.jp/dp/B006QVALTM,4,本,1283,,,,,3,,2,,2,2,,,,3,
+,電源,CR123A電池,EEMB CR123A 3V リチウム電池 1700mAh 4個入り,amazon,https://www.amazon.co.jp/s?k=EEMB%20CR123A%201700mAh%204%E5%80%8B,4,個,999,,,,,,1,,1,,,,,,,
+,電源,CR123A 電池ケース,CR123A用電池ケース,秋月電子通商,https://akizukidenshi.com/catalog/g/g110192/,1,個,50,,,,,,1,,1,,,,,,,
+,電子部品,QIコネクタハウジング,コネクター用ハウジング 1P,秋月電子通商,https://akizukidenshi.com/catalog/g/g112150/,1,個,5,,,,,,2,2,,,,,,,,
+,電子部品,ケーブル用コネクター,QIハウジング用,秋月電子通商,https://akizukidenshi.com/catalog/g/g112160/,10,個,50,,,,,,2,2,,,,,,,,
+,電子部品,ピンソケット（メス）,シングルピンソケット (低メス),秋月電子通商,https://akizukidenshi.com/catalog/g/g103138/,20,PIN,80,,15PIN×2,15PIN×2・6PIN×2,,16PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,,19PIN×2,7PIN×2,
+,電子部品,ピンソケット（メス）,分割ロングピンソケット 1×42 (42P),秋月電子通商,,42,PIN,80,,,,,,,,,,,,15PIN×2・6PIN×2,,,
+,電子部品,ピンヘッダー（オス）,ロープロファイルピンヘッダー(低オス) 7.7mm,秋月電子通商,https://akizukidenshi.com/catalog/g/g102900/,40,PIN,40,,,,,,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,7PIN×2,,,7PIN×2,
+,電子部品,ジャンパー線,スズメッキ軟銅線 TCW 0.5mm 10m,amazon,https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m,10,m,670,,,適宜,,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜,適宜
+,電子部品,ジャンパー線,ジャンパーワイヤー 840個セット (14サイズ),amazon,https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D,840,本,935,,,,,,8,8,,,8,,,,,
+,電子部品,シングルポイントロードセル,ロードセル シングルポイント(ビーム型) SC601 120kg,秋月電子通商,https://akizukidenshi.com/catalog/g/g112035/,1,個,1850,,,,,,1,1,,,,,,,,
+angle,部材,アルミ不等辺アングル,泰豊トレーディング 25×50mm厚さ3mm 100cm,モノタロウ,https://www.monotaro.com/g/06244669/,100,cm,2998,,,,,,33 cm,33 cm,,,,,,,,
+,部材,六角穴付き皿ボルト,304ステンレス 六角穴付き皿ボルト M6×25 (27本入り),amazon,https://www.amazon.co.jp/s?k=304%E3%82%B9%E3%83%86%E3%83%B3%E3%83%AC%E3%82%B9%20%E5%85%AD%E8%A7%92%E7%A9%B4%E4%BB%98%E3%81%8D%E7%9A%BF%E3%83%9C%E3%83%AB%E3%83%88%20M6%2A25%2027%E6%9C%AC%E5%85%A5%20DIN7991,27,本,990,,,,,,4,4,,,,,,,,
+,部材,スペーサー,ダイドーハント ピッタリサポート F35N ニッケル 3×55×35mm,山新,,1,個,268,,,,,,2,2,,,,,,,,
+,部材,ゴムクッション,iteck　KGR-40　40×3mm,山新,,4,個,238,,,,,,,,,,1,,,,,
+,部材,強力両面テープ,3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m),amazon,https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R,150,cm,536,,,,,,20 cm,20 cm,,,,,,20 cm,適宜,20 cm
+,部材,基板固定用タッピングビス EMシリーズ,M2.5ビス　EM-2.3-8,モノタロウ,https://www.monotaro.com/p/7383/0253/,50,本,249,,,,,,4,4,,,4,,,,,
+,ケーブル,シールド線 AWG28,Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック),amazon,https://www.amazon.co.jp/dp/B0933M5MTL,1,m,680,,,,,,,,,,1 m,,,,,
+,部材,熱収縮チューブ φ1.5mm,オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000007/,2,m,275,,,,,,,,,,5 cm,,,,,
+,部材,熱収縮チューブ φ4mm,オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K,オーム電機,https://www.ohm-direct.com/shopdetail/018027000001/,2,m,319,,,,,,,,,,5 cm,,,,,
+,電子部品,ユニバーサル基板 5×7,両面スルーホールユニバーサル基板 5*7,秋月電子通商,https://akizukidenshi.com/catalog/g/g112977/,1,枚,60,,,,,,,,,,1,,,,1,
+,代わり,アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105002/,1,個,20,c100,,,,,,,,,,,,,,
+,代わり,電解コンデンサー 100μF16V 105℃ ルビコン PX,,秋月電子通商,https://akizukidenshi.com/catalog/g/g110271/,1,個,50,c100,,,,,,,,,,,,,,
+,代わり,HX711使用 ロードセル用ADコンバーター モジュール基板,,秋月電子通商,https://akizukidenshi.com/catalog/g/g112370/,1,個,350,hx711,,,,,,,,,,,,,,
+,代わり,CdSセル (1MΩ) GL5528,,秋月電子通商,https://akizukidenshi.com/catalog/g/g105886/,4,個,100,cds,,,,,,,,,,,,,,
+,代わり,アルミ不等辺アングル t3.0 25×50×300,,山新,,30,cm,648,angle,,,,,,,,,,,,,,
+,代わり,タカチ LCS115H-M2-DR (シリコンカバー付き),,,https://www.takachi-el.co.jp/products/LCS,1,個,1098,lc115,,,,,,,,,,,,,,
+,チップボード,ESP32-WROOM-32,ELEGOO ESP-32 開発ボード USB-C CP2102チップ,amazon,https://www.amazon.co.jp/dp/B0FT2SJH3H,2,個,1935,,1,1,,,,,,,,,1,,,
+,チップボード,ESP32-WROOM-32,Olimex ESP32-DEVKIT-LIPO,マルツオンライン,https://www.marutsu.co.jp/pc/i/46418664/,1,個,1692,,,,1,1,,,,,,,,1,,
+,ケース,IP67 防水ボックス WPシリーズ,タカチ　WP8-10-4G,モノタロウ,https://www.monotaro.com/p/5513/0662/,1,個,1198,,,,1,,,,,,,,,,,
+,ケース,IP67防水ハンドヘルドケース 単3×3電池ボックス付き,タカチ　WH145-25-M3-BR,amazon,https://www.amazon.co.jp/dp/B09GFVLC7B,1,個,2205,,,,,1,,,,,,,,,,
+,ケース用基板,ユニバーサル基板 43×66mm,タカチ　TNF43-66,モノタロウ,https://www.monotaro.com/p/8821/2914/,1,枚,249,,,,,,,,,,,,,,,
+,ケース用基板,WH145-25-M3用基板,タカチ　PCB36-47,モノタロウ,https://www.monotaro.com/p/6881/1490/,1,枚,139,,,,,1,,,,,,,,,,
+,部材,基板スペーサー クイックロック貼付スペーサー ULCKシリーズ,タカチ　ULCK-6.4,モノタロウ,https://www.monotaro.com/g/06277754/,4,個,119,,,,,,,,,,,,,,,
+,部材,防水USBカプラー,USB Type-C メス-メス,amazon,https://www.amazon.co.jp/dp/B0FRMNK3CV,1,個,1070,,,,1,,,,,,,,,,,
+,部材,USBケーブル,USB-C to MicroUSB ケーブル 15cm,amazon,https://www.amazon.co.jp/dp/B0H14RX1M1,2,本,559,,,,1,,,,,,,,,,,
+,電源,三端子DCDCレギュレーター 5V,ROHM BP5293-50 (入力 7〜26V、出力 5V 1A),秋月電子通商,https://akizukidenshi.com/catalog/g/g111188/,1,個,240,,,,,,,,,,,1,1,,,
+,電子部品,コンデンサー 10μF,積層セラミックコンデンサー 10μF50V X7S 5mm (BP5293-50 の入力側),秋月電子通商,https://akizukidenshi.com/catalog/g/g108155/,1,個,60,,,,,,,,,,,1,1,,,
+,電子部品,抵抗 100kΩ,小型 金属皮膜抵抗 1/4W100kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108563/,100,本,300,,,,,,,,,,,2,2,2,2,3
+,電子部品,抵抗 20kΩ,小型 金属皮膜抵抗 1/4W20kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108554/,100,本,250,,,,,,,,,,,1,,,,1
+,電子部品,端子台 3極,基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦,秋月電子通商,https://akizukidenshi.com/catalog/g/g101310/,1,個,40,,,,,,,,,,,1,1,,,
+,ケーブル,ミニ平型ヒューズホルダー,エーモン ミニ平型ヒューズホルダー (線の途中に入れる),amazon,https://www.amazon.co.jp/dp/B09FL4Q7B8,1,個,415,,,,,,,,,,,2,2,,,
+,ケーブル,ミニ平型ヒューズ 1A,ミニ平型ヒューズ 1A (ARISELIFT),amazon,https://www.amazon.co.jp/dp/B0FRR6FTGF,5,個,567,,,,,,,,,,,2,2,,,
+,ケーブル,電線 0.3〜0.5mm²,サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで),amazon,https://www.amazon.co.jp/dp/B0HJGDW3TT,1,セット,980,,,,,,,,,,,適宜,適宜,,,
+,電子部品,抵抗 15kΩ,小型 金属皮膜抵抗 1/4W15kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g108552/,100,本,300,,,,,,,,,,,,1,,,
+,電子部品,抵抗 8.2kΩ,小型 金属皮膜抵抗 1/2WS 8.2kΩ,秋月電子通商,https://akizukidenshi.com/catalog/g/g116644/,100,本,300,,,,,,,,,,,,1,,,
 ,通信モジュール,LTE-M 通信モジュール,"M5Stamp CatM（SIM7080G、M5STACK-S003）
-SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う",スイッチサイエンス,https://www.switch-science.com/search?q=M5Stamp%20CatM,1,個,7282,,,,,,,,,,,,1,
-,電子部品,ソーラーパワーマネージャー 5V,DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=DFR0559,1,個,1940,,,,,,,,,,,,1,
-,電源,ソーラーパネル 10W/5V,USB-C 出力・ケーブル約3m付き（防犯カメラ用）。ケーブルは切らずに USB-C メス基板へ差す,amazon,https://www.amazon.co.jp/dp/B0FD8ZVH6V,1,枚,2990,,,,,,,,,,,,1,
-,電源,18650 リチウムイオン電池（保護回路付き）,3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に,amazon,https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D,2,本,,,,,,,,,,,,,2,
-,電子部品,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,2,
-,電子部品,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,1,
-,その他,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,1,
-,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,1,
-,ケース,低価格型屋外通信ボックス OBシリーズ,タカチ　OB10-17-5W,モノタロウ,https://www.monotaro.com/g/05994042/,1,個,899,,,,,,,,,,,,1,
-,部材,ケース用取り付けベース,タカチ　OBP10-17（下の段の基板を AST3-6B で留める）,モノタロウ,https://www.monotaro.com/g/05994043/,1,個,699,,,,,,,,,,,,1,
-,部材,M3 オスメス スペーサー 25mm,上の段の基板を支える（下の段の取付穴に立てる）,モノタロウ,https://www.monotaro.com/s/?c=&q=M3%20%E3%82%AA%E3%82%B9%E3%83%A1%E3%82%B9%20%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC%2025mm,1,個,,,,,,,,,,,,,4,
-,部材,M3 なべ小ねじ 6mm,上の段の基板をスペーサーに留める,モノタロウ,https://www.monotaro.com/s/?c=&q=M3%20%E3%81%AA%E3%81%B9%E5%B0%8F%E3%81%AD%E3%81%98%206mm,1,個,,,,,,,,,,,,,4,
-,ケース用基板,低価格ユニバーサル基板 PCBシリーズ,タカチ　PCB72-95（穴 27×36、下の段と上の段で2枚）,モノタロウ,https://www.monotaro.com/p/7417/6008/,1,枚,409,,,,,,,,,,,,2,
-,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST3-6B,モノタロウ,https://www.monotaro.com/p/7082/4995/,1,セット,239,,,,,,,,,,,,1,
-,チップボード,XIAO ESP32S3 Sense,Seeed Studio XIAO ESP32S3 Sense (カメラ OV3660・microSD 枠・マイク・外付けアンテナ付き),秋月電子通商,https://akizukidenshi.com/catalog/g/g118079/,1,個,2660,,,,,,,,,,,,,1
-,電子部品,ショットキーバリアダイオード,ショットキーバリアダイオード 40V1A 1N5819,秋月電子通商,https://akizukidenshi.com/catalog/g/g117244/,10,本,100,,,,,,,,,,,,,1
-,電子部品,microSDカード,LAZOS microSD メモリーカード 8GB,amazon,https://www.amazon.co.jp/dp/B0FKQBGM4X,1,枚,780,,,,,,,,,,,,,1
-,電源,電池ボックス 単3×3本,電池ボックス 単3×3本 リード線・フタ・スイッチ付,秋月電子通商,https://akizukidenshi.com/catalog/g/g102666/,1,個,160,,,,,,,,,,,,,1
-,ケース,防水・防塵開閉式プラボックス BCAPシリーズ,タカチ　BCAP091207T (透明ふた),モノタロウ,https://www.monotaro.com/p/8821/7184/,1,個,1398,,,,,,,,,,,,,1
-,部材,ポール取付金具 SSKシリーズ,タカチ　SSK-S1,モノタロウ,https://www.monotaro.com/p/8835/9293/,1,個,558,,,,,,,,,,,,,1
-,部材,屋外用ルーフ BRFシリーズ,タカチ　BRF-90G,モノタロウ,https://www.monotaro.com/p/8822/1795/,1,個,539,,,,,,,,,,,,,1
-,部材,乾燥剤,乾燥剤 (小袋、くもり止め),,,1,個,,,,,,,,,,,,,,適宜
+SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う",スイッチサイエンス,https://www.switch-science.com/search?q=M5Stamp%20CatM,1,個,7282,,,,,,,,,,,,,1,,
+,電子部品,ソーラーパワーマネージャー 5V,DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）,秋月電子通商,https://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=DFR0559,1,個,1940,,,,,,,,,,,,,,,1
+,電源,ソーラーパネル 10W/5V,USB-C 出力・ケーブル約3m付き（防犯カメラ用）。ケーブルは切らずに USB-C メス基板へ差す,amazon,https://www.amazon.co.jp/dp/B0FD8ZVH6V,1,枚,2990,,,,,,,,,,,,,,,1
+,電源,18650 リチウムイオン電池（保護回路付き）,3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に,amazon,https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D,2,本,,,,,,,,,,,,,,,,2
+,電子部品,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,,,,2
+,電子部品,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,,,,
+,その他,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,,1,,
+,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,,,,1
+,電子部品,USB-C メス基板（データ対応）,USB Type-C メス コネクター 変換基板（VBUS・GND・D+・D− を取り出せるもの）。HPX-Solar と HPX-Core のつなぎ口,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%20D%2B%20D-,1,個,,,,,,,,,,,,,,1,,1
+,ケーブル,USB-C ケーブル（データ対応）,USB-C オス-オス、データ通信対応のもの（充電専用は D+・D− がないので使えない）。HPX-Solar と HPX-Core をつなぐ,amazon,https://www.amazon.co.jp/s?k=USB-C%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%20%E3%83%87%E3%83%BC%E3%82%BF%E9%80%9A%E4%BF%A1%E5%AF%BE%E5%BF%9C,1,本,,,,,,,,,,,,,,,,1
+,電子部品,P-MOSFET（ロジックレベル）,CatM の 5V の入り切り用。リード付き、ゲート 4.5V 以下で ON、1A 以上（型番は未定、部品を決めるとき確認）,amazon,https://www.amazon.co.jp/s?k=P%E3%83%81%E3%83%A3%E3%83%8D%E3%83%AB%20MOSFET%20%E3%83%AD%E3%82%B8%E3%83%83%E3%82%AF%E3%83%AC%E3%83%99%E3%83%AB%20TO-220,1,個,,,,,,,,,,,,,,1,,
+,電子部品,NPN トランジスタ,2SC1815 など（小信号用）。P-MOSFET のゲートを引く,amazon,https://www.amazon.co.jp/s?k=2SC1815,1,個,,,,,,,,,,,,,,1,,
+,ケース,低価格型屋外通信ボックス OBシリーズ,タカチ　OB10-17-5W,モノタロウ,https://www.monotaro.com/g/05994042/,1,個,899,,,,,,,,,,,,,1,,1
+,部材,ケース用取り付けベース,タカチ　OBP10-17,モノタロウ,https://www.monotaro.com/g/05994043/,1,個,699,,,,,,,,,,,,,1,,1
+,ケース用基板,低価格ユニバーサル基板 PCBシリーズ,タカチ　PCB72-95（穴 27×36）,モノタロウ,https://www.monotaro.com/p/7417/6008/,1,枚,409,,,,,,,,,,,,,1,,1
+,部材,基板スペーサー ナット入り貼付スペーサー ASTシリーズ,タカチ　AST3-6B,モノタロウ,https://www.monotaro.com/p/7082/4995/,1,セット,239,,,,,,,,,,,,,1,,1
+,チップボード,XIAO ESP32S3 Sense,Seeed Studio XIAO ESP32S3 Sense (カメラ OV3660・microSD 枠・マイク・外付けアンテナ付き),秋月電子通商,https://akizukidenshi.com/catalog/g/g118079/,1,個,2660,,,,,,,,,,,,,,1,
+,電子部品,ショットキーバリアダイオード,ショットキーバリアダイオード 40V1A 1N5819,秋月電子通商,https://akizukidenshi.com/catalog/g/g117244/,10,本,100,,,,,,,,,,,,,,1,
+,電子部品,microSDカード,LAZOS microSD メモリーカード 8GB,amazon,https://www.amazon.co.jp/dp/B0FKQBGM4X,1,枚,780,,,,,,,,,,,,,,1,
+,電源,電池ボックス 単3×3本,電池ボックス 単3×3本 リード線・フタ・スイッチ付,秋月電子通商,https://akizukidenshi.com/catalog/g/g102666/,1,個,160,,,,,,,,,,,,,,1,
+,ケース,防水・防塵開閉式プラボックス BCAPシリーズ,タカチ　BCAP091207T (透明ふた),モノタロウ,https://www.monotaro.com/p/8821/7184/,1,個,1398,,,,,,,,,,,,,,1,
+,部材,ポール取付金具 SSKシリーズ,タカチ　SSK-S1,モノタロウ,https://www.monotaro.com/p/8835/9293/,1,個,558,,,,,,,,,,,,,,1,
+,部材,屋外用ルーフ BRFシリーズ,タカチ　BRF-90G,モノタロウ,https://www.monotaro.com/p/8822/1795/,1,個,539,,,,,,,,,,,,,,1,
+,部材,乾燥剤,乾燥剤 (小袋、くもり止め),,,1,個,,,,,,,,,,,,,,,適宜,

@@ -147,6 +147,22 @@
   .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
   @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
   .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .chooser { margin:36px auto 0; max-width:880px; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .chooser h2 { font-size:20px; margin:0 0 4px; }
+  .chooser .q { margin-top:16px; font-weight:700; font-size:15px; }
+  .chooser .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .chooser .opts button { font:inherit; font-size:14px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--line); background:transparent; color:var(--text); cursor:pointer; }
+  .chooser .opts button[aria-pressed="true"] { border-color:var(--forest); background:var(--forest); color:#fff; }
+  .chooser .ans { margin-top:18px; padding:14px 18px; border-radius:12px; background:var(--honey-soft); font-size:15px; }
+  .chooser .ans b { font-size:16px; }
+  .chooser .ans button, .chooser .ans a.btn { display:inline-block; text-decoration:none; margin-right:8px; font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
+  .chooser details { margin-top:18px; font-size:14px; }
+  .chooser summary { cursor:pointer; color:var(--forest); font-weight:700; }
+  .ctab { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  .ctab th, .ctab td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
+  .ctab thead th { background:rgba(47,93,69,.07); }
+  .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
+  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }

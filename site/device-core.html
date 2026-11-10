@@ -147,6 +147,22 @@
   .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
   @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
   .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .chooser { margin:36px auto 0; max-width:880px; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .chooser h2 { font-size:20px; margin:0 0 4px; }
+  .chooser .q { margin-top:16px; font-weight:700; font-size:15px; }
+  .chooser .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .chooser .opts button { font:inherit; font-size:14px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--line); background:transparent; color:var(--text); cursor:pointer; }
+  .chooser .opts button[aria-pressed="true"] { border-color:var(--forest); background:var(--forest); color:#fff; }
+  .chooser .ans { margin-top:18px; padding:14px 18px; border-radius:12px; background:var(--honey-soft); font-size:15px; }
+  .chooser .ans b { font-size:16px; }
+  .chooser .ans button, .chooser .ans a.btn { display:inline-block; text-decoration:none; margin-right:8px; font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
+  .chooser details { margin-top:18px; font-size:14px; }
+  .chooser summary { cursor:pointer; color:var(--forest); font-weight:700; }
+  .ctab { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  .ctab th, .ctab td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
+  .ctab thead th { background:rgba(47,93,69,.07); }
+  .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
+  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -188,14 +204,84 @@
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
     <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi・有線LAN・LTE のどれかでサーバーへ送る中心的な機器です。</p>
-    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。</p>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core" aria-pressed="true">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
+    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使います。</p>
+    <div class="chooser" id="chooser">
+      <h2>どれを作ればいい？</h2>
+      <p class="note">電源と通信方法を選ぶと、作る版が分かります。</p>
+      <p class="q">1. 電源は？</p><div class="opts"><button type="button" data-p="home" aria-pressed="false">家庭用電源（USB）</button><button type="button" data-p="car" aria-pressed="false">ソーラーパネル＋チャージャー＋カーバッテリー</button><button type="button" data-p="aa" aria-pressed="false">単三リチウム電池</button><button type="button" data-p="li" aria-pressed="false">HPX-Solar（小型ソーラーパネル＋18650）</button></div>
+      <p class="q">2. 通信方法は？</p><div class="opts"><button type="button" data-n="lan" aria-pressed="false">有線ルーター（LAN ケーブル）</button><button type="button" data-n="wifi" aria-pressed="false">Wi-Fi ルーター</button><button type="button" data-n="lte" aria-pressed="false">LTE-M（ルーターなし）</button></div>
+      <div class="ans" id="chooser-ans" hidden></div>
+      <details><summary>組み合わせの一覧を見る</summary>
+        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th><th>有線ルーター</th><th>Wi-Fi ルーター</th><th>LTE-M</th></tr></thead><tbody><tr><th>家庭用電源（USB）</th><td><span class="m">◎</span>＋有線LAN</td><td><span class="m">◎</span>基本モデル</td><td><span class="m">◎</span>＋LTE-M</td></tr><tr><th>ソーラーパネル＋チャージャー＋カーバッテリー</th><td><span class="m">◎</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋LTE-M</td></tr><tr><th>単三リチウム電池</th><td><span class="m">✕</span>版なし</td><td><span class="m">◎</span>＋防水＆電池駆動</td><td><span class="m">✕</span>版なし</td></tr><tr><th>HPX-Solar（小型ソーラーパネル＋18650）</th><td><span class="m">✕</span>版なし</td><td><span class="m">○</span>＋防水＋HPX-Solar</td><td><span class="m">◎</span>＋LTE-M＋HPX-Solar</td></tr></tbody></table>
+        <p class="note">◎ ぴったりの版があります　○ 近い版を少し変えて作ります　✕ 今は版がありません</p>
+      </details>
+      <script>
+      (function () {
+        var D = {"home|lan": ["◎", "core", "＋有線LAN", "「＋有線LAN」を作ります。USB 電源で動かします。", 0], "home|wifi": ["◎", "core_basic", "基本モデル", "「基本モデル」を作ります。Wi-Fi でルーターにつなぎ、USB 電源で動かします。雨のかかる屋外に置くときは「＋防水」を作ります。", 0], "home|lte": ["◎", "core_lte", "＋LTE-M", "「＋LTE-M」を作り、USB 充電器（5V・1A 以上）を USB-C 口に差します。動作設定の「電圧の測り方」は「測らない」にします。", 0], "car|lan": ["◎", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。", 0], "car|wifi": ["○", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。", 0], "car|lte": ["○", "core_lte", "＋LTE-M", "「＋LTE-M」を作り、チャージャーの USB 口か 12V→USB アダプターの 5V を USB-C 口に差します。電圧は「測らない」にして、バッテリーとパネルの電圧は HPX-B で見守ります。", 0], "aa|lan": ["✕", "", "", "有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。", 0], "aa|wifi": ["◎", "core_bat", "＋防水＆電池駆動", "「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。電源のコードも LAN ケーブルもないので、Wi-Fi の届く所ならどこにでも置けます（電池の交換は 2〜3か月ごとの見込み）。", 0], "aa|lte": ["✕", "", "", "LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M」と電源の「HPX-Solar」を作ってください。", 0], "li|lan": ["✕", "", "", "有線LANモジュール（W5500）は電気を多く使うので、HPX-Solar（小型ソーラーパネル＋18650）には向きません。", 0], "li|wifi": ["○", "core_wp", "＋防水＋HPX-Solar", "「＋防水」と電源の「HPX-Solar」を作り、USB-C ケーブルで電気をもらいます。ケースの中を USB-C メス基板で 4本に分けると、電池とパネルの電圧も測れます。動作モードはディープスリープにします（ずっと動かすと冬に電気が足りない見込み）。", 1], "li|lte": ["◎", "core_lte", "＋LTE-M＋HPX-Solar", "「＋LTE-M」と電源の「HPX-Solar」を作り、USB-C ケーブル1本でつなぎます。ルーターがいらず、ソーラーパネルで 18650 を充電して動かし、電池とパネルの電圧も測れます。", 1]};
+        var p = null, n = null, ans = document.getElementById('chooser-ans');
+        function pick(attr, v) {
+          document.querySelectorAll('.chooser [data-' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-' + attr) === v ? 'true' : 'false'); });
+        }
+        function upd() {
+          if (!p || !n) return;
+          var r = D[p + '|' + n];
+          ans.hidden = false;
+          ans.textContent = '';
+          var b = document.createElement('b');
+          b.textContent = r[0] + ' ' + (r[2] || '今は版がありません');
+          var t = document.createElement('div');
+          t.textContent = r[3];
+          ans.appendChild(b); ans.appendChild(t);
+          if (r[1]) {
+            var go = document.createElement('button');
+            go.type = 'button';
+            go.textContent = 'この版の部品表を見る';
+            go.addEventListener('click', function () {
+              var v = document.querySelector('.vsw button[data-v="' + r[1] + '"]');
+              if (v) v.click();
+              document.getElementById('parts').scrollIntoView({behavior: 'smooth'});
+            });
+            ans.appendChild(go);
+          }
+          if (r[4]) {
+            var sl = document.createElement('a');
+            sl.href = 'device-solar.html';
+            sl.className = 'btn';
+            sl.textContent = 'HPX-Solar の作り方を見る';
+            ans.appendChild(sl);
+          }
+        }
+        document.querySelectorAll('.chooser [data-p]').forEach(function (b) { b.addEventListener('click', function () { p = b.getAttribute('data-p'); pick('p', p); upd(); }); });
+        document.querySelectorAll('.chooser [data-n]').forEach(function (b) { b.addEventListener('click', function () { n = b.getAttribute('data-n'); pick('n', n); upd(); }); });
+      })();
+      </script>
+    </div>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core" aria-pressed="false">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M</button></div>
   </div>
 
   <section id="parts">
     <div class="reveal wrap">
       <span class="tag">ハブ</span>
       <h2>部品表</h2>
+      <div data-variant="core_basic">
+      <p class="note">基本モデルに必要な部品と数です。</p>
+      <table class="parts">
+        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <tbody>
+        <tr class="cat"><th colspan="3">チップボード</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FT2SJH3H" target="_blank" rel="noopener">ESP32-WROOM-32</a></b><span>ELEGOO ESP-32 開発ボード USB-C CP2102チップ</span><span class="price">1,935円 / 2個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">電子部品</th></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">15PIN×2</td></tr>
+        <tr class="cat"><th colspan="3">ケース</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="3">部材</th></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
+        </tbody>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 2,084円</td></tr></tfoot>
+      </table>
+      </div>
       <div data-variant="core">
       <p class="note">＋有線LANに必要な部品と数です。</p>
       <table class="parts">
@@ -290,7 +376,7 @@
       </table>
       </div>
       <div data-variant="core_lte">
-      <p class="note">＋LTE-M＆ソーラーに必要な部品と数です。</p>
+      <p class="note">＋LTE-Mに必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -300,32 +386,25 @@
         <tr><td class="part"><b><a href="https://www.switch-science.com/search?q=M5Stamp%20CatM" target="_blank" rel="noopener">LTE-M 通信モジュール</a></b><span>M5Stamp CatM（SIM7080G、M5STACK-S003）
 SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う</span><span class="price">7,282円</span></td><td class="shop">スイッチサイエンス</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">コンデンサー0.1μF</a></b><span>積層セラミックコンデンサー 0.1μF50V C0G 5mm</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
         <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">19PIN×2</td></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">3</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108554/" target="_blank" rel="noopener">抵抗 20kΩ</a></b><span>小型 金属皮膜抵抗 1/4W20kΩ</span><span class="price">250円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/goods/search.aspx?search=x&amp;keyword=DFR0559" target="_blank" rel="noopener">ソーラーパワーマネージャー 5V</a></b><span>DFRobot DFR0559（CN3165、ソーラー入力 4.4〜6V、充電 最大900mA、5V/1A 出力）</span><span class="price">1,940円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A" target="_blank" rel="noopener">18650 電池ホルダー 1本用</a></b><span>リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB" target="_blank" rel="noopener">JST PH 2ピン ケーブル</a></b><span>Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k" target="_blank" rel="noopener">USB-C メス基板（電源用）</a></b><span>USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電源</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FD8ZVH6V" target="_blank" rel="noopener">ソーラーパネル 10W/5V</a></b><span>USB-C 出力・ケーブル約3m付き（防犯カメラ用）。ケーブルは切らずに USB-C メス基板へ差す</span><span class="price">2,990円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=18650%20%E4%BF%9D%E8%AD%B7%E5%9B%9E%E8%B7%AF%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">18650 リチウムイオン電池（保護回路付き）</a></b><span>3000〜3500mAh。2本は同じ銘柄・同じ残量で並列に</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%20D%2B%20D-" target="_blank" rel="noopener">USB-C メス基板（データ対応）</a></b><span>USB Type-C メス コネクター 変換基板（VBUS・GND・D+・D− を取り出せるもの）。HPX-Solar と HPX-Core のつなぎ口</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=P%E3%83%81%E3%83%A3%E3%83%8D%E3%83%AB%20MOSFET%20%E3%83%AD%E3%82%B8%E3%83%83%E3%82%AF%E3%83%AC%E3%83%99%E3%83%AB%20TO-220" target="_blank" rel="noopener">P-MOSFET（ロジックレベル）</a></b><span>CatM の 5V の入り切り用。リード付き、ゲート 4.5V 以下で ON、1A 以上（型番は未定、部品を決めるとき確認）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=2SC1815" target="_blank" rel="noopener">NPN トランジスタ</a></b><span>2SC1815 など（小信号用）。P-MOSFET のゲートを引く</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">ケース</th></tr>
         <tr><td class="part"><b><a href="https://www.monotaro.com/g/05994042/" target="_blank" rel="noopener">低価格型屋外通信ボックス OBシリーズ</a></b><span>タカチ　OB10-17-5W</span><span class="price">899円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">ケース用基板</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7417/6008/" target="_blank" rel="noopener">低価格ユニバーサル基板 PCBシリーズ</a></b><span>タカチ　PCB72-95（穴 27×36、下の段と上の段で2枚）</span><span class="price">409円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7417/6008/" target="_blank" rel="noopener">低価格ユニバーサル基板 PCBシリーズ</a></b><span>タカチ　PCB72-95（穴 27×36）</span><span class="price">409円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">部材</th></tr>
         <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R" target="_blank" rel="noopener">強力両面テープ</a></b><span>3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m)</span><span class="price">536円 / 150cm</span></td><td class="shop">amazon</td><td class="n" data-v="数">20 cm</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/g/05994043/" target="_blank" rel="noopener">ケース用取り付けベース</a></b><span>タカチ　OBP10-17（下の段の基板を AST3-6B で留める）</span><span class="price">699円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/s/?c=&amp;q=M3%20%E3%82%AA%E3%82%B9%E3%83%A1%E3%82%B9%20%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC%2025mm" target="_blank" rel="noopener">M3 オスメス スペーサー 25mm</a></b><span>上の段の基板を支える（下の段の取付穴に立てる）</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/s/?c=&amp;q=M3%20%E3%81%AA%E3%81%B9%E5%B0%8F%E3%81%AD%E3%81%98%206mm" target="_blank" rel="noopener">M3 なべ小ねじ 6mm</a></b><span>上の段の基板をスペーサーに留める</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
+        <tr><td class="part"><b><a href="https://www.monotaro.com/g/05994043/" target="_blank" rel="noopener">ケース用取り付けベース</a></b><span>タカチ　OBP10-17</span><span class="price">699円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
         <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4995/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST3-6B</span><span class="price">239円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
         <tr class="cat"><th colspan="3">その他</th></tr>
         <tr><td class="part"><b><a href="https://soracom.jp/services/air/japan_coverage/" target="_blank" rel="noopener">LTE-M 対応 SIM（microSIM）</a></b><span>例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認</span></td><td class="shop">SORACOM</td><td class="n" data-v="数">1</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 16,844円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 11,452円</td></tr></tfoot>
       </table>
       </div>
     </div>
@@ -335,6 +414,17 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
     <div class="reveal wrap">
       <h2>作り方</h2>
       <p class="note">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <figure class="wiring" data-variant="core_basic">
+        <figcaption><b>基本モデルの配線図</b>ESP32 を 6×8cm のユニバーサル基板にピンソケットで差すだけの図です (線はありません)。「＋有線LAN」と同じ基板・同じ位置なので、あとから W5500 を足して「＋有線LAN」にできます。ルーターへは Wi-Fi でつなぎ、USB-C から電気をもらいます。</figcaption>
+        <a href="img/wiring/HPX-Core_BASIC_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BASIC_pcb.png" alt="HPX-Core 基本モデルの配線図" loading="lazy"></a>
+      </figure>
+      <div data-variant="core_basic">
+      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
+        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
+        <tbody><tr><td>ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）</td><td>1</td><td>B14〜B28・L14〜L28。USB-C を下に向ける</td></tr><tr><td>ピンソケット（メス）15ピン</td><td>2</td><td>B14〜B28、L14〜L28 にはんだ付けして ESP-32 を差す</td></tr><tr><td>ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）</td><td>1</td><td>縦に置く。ケース PFF10-4-10W に AST2.5-5B で留める</td></tr></tbody>
+      </table></div></div>
+      <div class="wnote"><h3>注意</h3><ul><li>基本モデルは、ルーターへ Wi-Fi でつなぎ、ESP-32 の USB-C から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。</li><li>「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_pcb.png）。</li><li>ファームウェアは HPX_Core v1.20 以降を使い、初回設定で接続方法を「Wi-Fi」にします。</li><li>ESP-32 の左右のピン列は10穴離れているとして描いた（写真から）。差す前に実物で確かめる。</li><li>雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。</li></ul></div>
+      </div>
       <figure class="wiring" data-variant="core">
         <figcaption><b>＋有線LANの配線図</b>ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。</figcaption>
         <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core ＋有線LANの配線図" loading="lazy"></a>
@@ -366,15 +456,15 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>ESP-32・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。</li><li>ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる（マイナスをバッテリーとそろえるため）。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（VIN の 5V と USB の 5V がぶつからないように）。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）下げて読む。</li><li>100kΩ（F5〜F9）は裏の線（緑・橙）を、15kΩ・8.2kΩ・0.1µF は裏の線（青・緑・黄）をまたいで付ける（表と裏なので触れない）。</li><li>ファーム v1.22 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。</li><li>BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_wp">
-        <figcaption><b>＋防水の配線図</b>ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。</figcaption>
+        <figcaption><b>＋防水の配線図</b>ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。HPX-Solar から電気をもらって電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分けます (試作中)。</figcaption>
         <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core ＋防水の配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_wp">
       <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
-        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。差し込み口は micro USB</td></tr><tr><td>USB-C to MicroUSB ケーブル 15cm</td><td>1</td><td>ケースの中で、防水USBカプラーと Olimex をつなぐ</td></tr><tr><td>防水USBカプラー（USB Type-C メス-メス）</td><td>1</td><td>ケースの壁に取り付ける。外から USB 電源をつなぐ</td></tr></tbody>
+        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。差し込み口は micro USB</td></tr><tr><td>USB-C to MicroUSB ケーブル 15cm</td><td>1</td><td>ケースの中で、防水USBカプラーと Olimex をつなぐ</td></tr><tr><td>防水USBカプラー（USB Type-C メス-メス）</td><td>1</td><td>ケースの壁に取り付ける。外から USB 電源をつなぐ</td></tr><tr><td>（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル 15cm</td><td>各1</td><td>USB-C to MicroUSB ケーブルの代わり。カプラーから受けて 4本に分ける</td></tr><tr><td>（HPX-Solar のとき）ジャンパー線・ピンヘッダー</td><td>4本</td><td>VBUS → 5V、GND → GND、D+ → IO34、D− → IO36</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</li><li>基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。</li><li>管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</li><li>Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</li><li>HPX-Solar（小型ソーラー電源）から電気をもらい、電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分ける（試作中・実機未確認）。</li><li>  そのときは Olimex を 5V ピンから動かし、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。</li><li>基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。</li><li>USB 電源のときは、管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</li><li>Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_bat">
         <figcaption><b>＋防水＆電池駆動の配線図</b>ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
@@ -392,49 +482,34 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>電池は Olimex の「5V」端子（左の列のいちばん下）と「GND」へつなぐ。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池は絶対につながない。</li><li>電池を入れたまま micro USB をつながない（書き込みは電池を外してから）。USB の 5V と電池がぶつかるおそれがある。</li><li>新品の単三リチウム3本は約5.4V。5V 端子の先は、ダイオード（約0.3V 下がる）を通って 3.3V を作る部品（HX6211、入力の上限 6V と販売店の資料）へ行く。上限の内側だが余裕は少ない。</li><li>Olimex は長さ 48mm で基板（47mm）より長く、ピンは19本ある。ピン1〜3（3V3・EN・IO36 と GND・IO23・IO22）は基板の上の端からはみ出す。</li><li>PCB36-47 の穴の数（13×17）は見込み。四隅の取付穴に近い B1・L1 の穴がなければ、ソケットを15ピンにして B2〜B16・L2〜L16 にする。</li><li>ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋Olimex が収まるか未確認。足りないときは、ソケットを使わずに Olimex のピンを基板へ直接はんだ付けする。</li><li>管理画面の動作モードは「ディープスリープ」にする。電池のもちは保存間隔30分で 2〜4か月の見込み（未実測）。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_lte">
-        <figcaption><b>＋LTE-M＆ソーラーの基板の配線図（下の段）</b>ユニバーサル基板 タカチ PCB72-95 を2枚使って2段に組みます。これは下の段の図で、Olimex ESP32-DEVKIT-LIPO をピンソケットで左端に差し、右上に M5Stamp CatM、その下に USB-C メス基板を貼り、下に電池とパネルの電圧を測る抵抗を載せます (表と裏、線はすべて裏)。上の段の部品からの線は赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です。</figcaption>
-        <a href="img/wiring/HPX-Core_LTE_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_pcb.png" alt="HPX-Core ＋LTE-M＆ソーラーの基板の配線図（下の段）" loading="lazy"></a>
+        <figcaption><b>＋LTE-M の基板の配線図</b>ユニバーサル基板 タカチ PCB72-95 の左端に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、右上に M5Stamp CatM を貼り、その下に CatM の 5V を入り切りするスイッチ (P-MOSFET・NPN トランジスタ・抵抗) を載せる図です (表と裏、線はすべて裏)。電源はケースの壁の USB-C メス基板から (HPX-Solar か USB 充電器)、その 4本の線を赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。</figcaption>
+        <a href="img/wiring/HPX-Core_LTE_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_pcb.png" alt="HPX-Core ＋LTE-M の基板の配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_lte">
       <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
         <thead><tr><th>線</th><th>どこから（穴）</th><th>通る穴</th><th>どこへ（穴）</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>Olimex GND（右の列のいちばん上 K5）</td><td>K5 → K4 → Z4 → Z33 → J33（T33・R33・L33 も）</td><td>0.1µF（T30・L30）・20kΩ（R32）・100kΩ（J32）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>IO36（A7）</td><td>A7 → D7 → D24 → R24 → R28（Olimex の下を通る。S25 → R25、T28 → T27 → R27 も）</td><td>20kΩ（R28）・100kΩ（S25）・0.1µF（T28）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>100kΩ（W25）</td><td>W25 → X25</td><td>USB-C メス基板の VBUS の線（X25 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>USB-C メス基板の GND の線（Y20 にはんだ付け）</td><td>Y20 → Z20</td><td>GND（右の端の線）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>IO34（A9）</td><td>A9 → C9 → C25 → J25 → J26（Olimex の下を通る。J26 → J28、L28 → L27 → J27 も）</td><td>100kΩ（J26・J28）・0.1µF（L28）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>100kΩ（N26）</td><td>N26 → O26</td><td>電池＋の線（O26 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>IO25（A13）</td><td>A13 → B13 → B26（Olimex の下を通る）</td><td>DFR0559 EN の線（B26 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO16（K16、受信）</td><td>K16 → M16</td><td>M5Stamp CatM TX の線（M16 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO17（K15、送信）</td><td>K15 → M15</td><td>M5Stamp CatM RX の線（M15 にはんだ付け）</td></tr></tbody>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>Olimex GND（右の列のいちばん上 K5）</td><td>K5 → K4 → Z4 → Z30（右の端）</td><td>USB-C GND（Y30）・CatM GND（Y14 → Z14）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>NPN の E（S17）</td><td>S17 → S14 → Y14（R14 も）</td><td>CatM GND の穴（Y14）・100kΩ（R14）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>USB-C VBUS の線（X30 にはんだ付け）</td><td>X30 → X18（W23 → X23 も）</td><td>P-MOSFET の S（X18）・100kΩ（W23）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>USB-C VBUS（X30）</td><td>X30 → X31 → A31 → A23</td><td>Olimex 5V（左の列のいちばん下 A23）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>P-MOSFET の D（V18）</td><td>V18 → V16</td><td>CatM 5V の線（V16 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>IO4（K17）</td><td>K17 → L17、P17 → Q17 → Q14</td><td>10kΩ（L17〜P17）・NPN の B（Q17）・100kΩ（Q14）</td></tr><tr><td>gray</td><td>NPN の C（R17）</td><td>R17 → R19 → W19、W18 → W19</td><td>P-MOSFET の G（W18）・100kΩ（W19）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>IO34（A9）</td><td>A9 → C9 → C25 → P25 → P27（Olimex の下を通る）</td><td>USB-C D+ の線（P27 にはんだ付け、電池の電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>IO36（A7）</td><td>A7 → D7 → D24 → Q24 → Q27（Olimex の下を通る）</td><td>USB-C D− の線（Q27 にはんだ付け、パネルの電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO16（K16、受信）</td><td>K16 → M16</td><td>M5Stamp CatM TX の線（M16 にはんだ付け）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO17（K15、送信）</td><td>K15 → M15</td><td>M5Stamp CatM RX の線（M15 にはんだ付け）</td></tr></tbody>
       </table></div></div>
       <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
-        <tbody><tr><td>Olimex ESP32-DEVKIT-LIPO ＋ ピンソケット 19ピン×2（20ピンを切る）</td><td>1</td><td>A5〜A23・K5〜K23（左端に寄せる）。アンテナを上、micro USB を下に向ける</td></tr><tr><td>金属皮膜抵抗 100kΩ</td><td>3</td><td>S25〜W25（パネル、横）・J26〜N26（電池、横）・J28〜J32（電池の GND 側、縦）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 20kΩ</td><td>1</td><td>R28〜R32（パネルの GND 側、縦）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>T28・T30（パネル）、L28・L30（電池）</td></tr><tr><td>ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr><tr><td>M5Stamp CatM（SIM7080G）</td><td>1</td><td>P5〜AA12 の上に両面テープで貼る。TX・RX を M16・M15 へ短い線で</td></tr><tr><td>USB-C メス基板（電源用）</td><td>1</td><td>S17〜X22 の上に両面テープで貼る。VBUS を X25、GND を Y20 へ短い線で</td></tr><tr><td>上の段: DFR0559・18650 ホルダー×2（2枚目の PCB72-95 に貼る）</td><td>各1</td><td>置き場所は HPX-Core_LTE_stack.png。下の段とは線でつなぐ（線の対応は HPX-Core_LTE_wiring.png）</td></tr><tr><td>ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B ＋ M3 スペーサー 25mm ×4</td><td>1</td><td>下の段は四隅の取付穴（φ3.2）を AST3-6B に、上の段は M3 スペーサー 25mm で下の段の上に留める</td></tr></tbody>
+        <tbody><tr><td>Olimex ESP32-DEVKIT-LIPO ＋ ピンソケット 19ピン×2（20ピンを切る）</td><td>1</td><td>A5〜A23・K5〜K23（左端に寄せる）。アンテナを上、micro USB を下に向ける</td></tr><tr><td>M5Stamp CatM（SIM7080G）</td><td>1</td><td>P5〜AA12 の上に両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で</td></tr><tr><td>USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）</td><td>1</td><td>ケースの壁に付け、4本の線を X30・Y30・P27・Q27 へ</td></tr><tr><td>P-MOSFET（ロジックレベル、1A 以上）</td><td>1</td><td>V18・W18・X18（D・G・S）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>NPN トランジスタ（2SC1815 など）</td><td>1</td><td>Q17・R17・S17（B・C・E）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>金属皮膜抵抗 100kΩ</td><td>2</td><td>W19〜W23（ゲート → 5V、縦）・Q14〜R14（ベース → GND、立てる）</td></tr><tr><td>金属皮膜抵抗 10kΩ</td><td>1</td><td>L17〜P17（IO4 → ベース、横）</td></tr><tr><td>ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr><tr><td>ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B</td><td>1</td><td>四隅の取付穴（φ3.2）を AST3-6B に留める</td></tr><tr><td>電源: HPX-Solar（別の機器）と USB-C ケーブル（データ対応）</td><td>1</td><td>USB-C ケーブル1本でつなぐ（HPX-Solar_pcb.png）。家では USB 充電器でもよい</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>赤丸の穴は、ほかの部品からの線（USB-C の VBUS と GND・電池＋・DFR0559 EN・M5Stamp CatM の TX と RX）を直接はんだ付けするところ。</li><li>基板の外でつなぐ線: DFR0559 の 5V と GND → M5Stamp CatM の 5V と GND、18650 の＋と− → DFR0559 BAT と Olimex の BAT コネクタ（JST PH 2ピン）、</li><li>  USB-C メス基板 → DFR0559 SOLAR（上の段へ）。</li><li>GND は Olimex の BAT コネクタの−で電池の−とそろう（DFR0559 の GND も電池の−と同じとみて描いた。テスターで確かめる）。</li><li>電池は 100kΩ と 100kΩ で半分に（4.2V で 2.1V）、パネルは 100kΩ と 20kΩ で 1/6 に（6V で 1.0V）下げて IO34・IO36 で読む。</li><li>IO36・IO34・IO25 の線は、Olimex の下（B〜D 列、裏）を通して下の部品へつなぐ。Olimex はピンソケットで浮いているので触れない。</li><li>穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。Olimex のピンの並びは公式資料から。差す前に実物で確かめる。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない（ピンの位置を実物で確かめてから、ピンヘッダで差す形にもできる）。</li><li>2段にする: この基板が下の段。DFR0559 と 18650 ホルダー2個は上の段（2枚目の PCB72-95）に載せる（HPX-Core_LTE_stack.png）。</li><li>アンテナのケーブル（SMA）とパネルの USB-C ケーブルは、ケースの穴から防水して通す。穴あけの位置は部品が届いてから決める。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>赤丸の穴は、ほかの部品からの線（USB-C メス基板の 4本、M5Stamp CatM の TX・RX・5V・GND）を直接はんだ付けするところ。</li><li>電源は USB-C から（HPX-Solar か USB 充電器）。Olimex は 5V ピンから、CatM は P-MOSFET を通した 5V から動かす。Olimex の BAT コネクタは使わない。</li><li>CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。眠っている間と起動のときは 100kΩ で切れたまま。</li><li>HPX-Solar のときは、D+ に電池の電圧（1/2）、D− にパネルの電圧（1/6）が来る（分圧の抵抗とコンデンサーは HPX-Solar の中）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>USB 充電器につなぐときは「測らない」にする（充電器は D+・D− に独自の電圧を出すことがある）。</li><li>USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。</li><li>IO36・IO34 の線は、Olimex の下（C〜D 列、裏）を通して下へつなぐ。Olimex はピンソケットで浮いているので触れない。</li><li>穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。Olimex のピンの並びは公式資料から。差す前に実物で確かめる。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない（ピンの位置を実物で確かめてから、ピンヘッダで差す形にもできる）。</li><li>アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。穴あけの位置は部品が届いてから決める。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_lte">
-        <figcaption><b>＋LTE-M＆ソーラーの2段の組み方（上の段）</b>上の段 (2枚目の PCB72-95) に DFR0559 と 18650 電池ホルダー2個を載せ、M3 オスメス スペーサー 25mm で下の段の上に留めます。下の Olimex のアンテナの上は空けておきます。高さはベースから約 55mm の見込みで、ケースに入るかは届いてから確かめます。</figcaption>
-        <a href="img/wiring/HPX-Core_LTE_stack.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_stack.png" alt="HPX-Core ＋LTE-M＆ソーラーの2段の組み方（上の段）" loading="lazy"></a>
-      </figure>
-      <div data-variant="core_lte">
-      <div class="wtab"><h3>上の段と下の段をつなぐ線</h3><div class="scroll"><table>
-        <thead><tr><th>線の色（例）</th><th>上の段</th><th>下の段（または基板の外）</th><th>メモ</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>DFR0559 SOLAR＋</td><td>USB-C メス基板の VBUS（X25 の線）</td><td>パネルの電気を上へ</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>DFR0559 SOLAR−</td><td>USB-C メス基板の GND（Y20 の線）</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>18650 の＋（2本並列）→ DFR0559 BAT＋</td><td>O26（電池の電圧を測る）・Olimex BAT＋</td><td>Olimex へは JST PH ケーブル</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>18650 の−（2本並列）→ DFR0559 BAT−</td><td>Olimex BAT−</td><td>JST PH ケーブルの−</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>DFR0559 5V（ピン）</td><td>M5Stamp CatM 5V</td><td>LTE モジュールの電源</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>DFR0559 GND（ピン）</td><td>M5Stamp CatM GND</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>DFR0559 EN</td><td>B26（Olimex D25 の線）</td><td>送るときだけ 5V を入れる</td></tr></tbody>
-      </table></div></div>
-      <div class="wtab"><h3>2段にするための部品</h3><div class="scroll"><table>
-        <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
-        <tbody><tr><td>ユニバーサル基板 タカチ PCB72-95</td><td>2</td><td>下の段（Olimex など）と上の段（DFR0559・電池）</td></tr><tr><td>基板スペーサー AST3-6B</td><td>4</td><td>取り付けベースと下の段のあいだ</td></tr><tr><td>M3 オスメス スペーサー 25mm</td><td>4</td><td>下の段の取付穴に立てて、上の段を支える</td></tr><tr><td>M3 なべ小ねじ 6mm</td><td>4</td><td>上の段をスペーサーに留める</td></tr><tr><td>18650 電池ホルダー 1本用</td><td>2</td><td>上の段の右に縦に2つ並べて貼る（両面テープか M3 ねじ）</td></tr><tr><td>DFRobot DFR0559</td><td>1</td><td>上の段の左下。端子が板の左へ少しはみ出してもよい</td></tr><tr><td>両面テープ（屋外用）</td><td>適宜</td><td>M5Stamp CatM・USB-C メス基板・ホルダー・DFR0559 を貼る</td></tr></tbody>
-      </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。部品の大きさは資料からの目安で、届いたら実物で確かめてから置き場所を決めます。</li><li>ケース OB10-17-5W の中の深さは不明です。ベースから約 55mm の高さが入るか、届いたら測ってください。</li><li>  入らないときは、スペーサーを 20mm にする（下の段の Olimex とのすき間が約 5mm になる）か、ホルダーを薄いものにする。</li><li>上の段の左上（下の Olimex のアンテナの上）は空けておく。電池や金属を置くと Wi-Fi・BLE の電波が弱くなる。</li><li>M5Stamp CatM のアンテナ（IPEX→SMA のケーブル）は、上の段の右上の横を通してケースの穴へ出す。</li><li>段の間の線は少し長めにして、上の段を外して下の段を点検できるようにする。</li><li>電池を入れたまま上の段をはずすときは、＋と−の線がほかの金属に触れないようにする。</li></ul></div>
-      </div>
-      <figure class="wiring" data-variant="core_lte">
-        <figcaption><b>＋LTE-M＆ソーラーの線の対応図</b>LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。ソーラーパネルで 18650 電池2本 (並列) を DFR0559 で充電し、ESP32 は電池から、LTE モジュールは DFR0559 の 5V から動かします (送るときだけ ON)。電池とパネルの電圧も測ります。試作中の線の対応図です (基板に組むときは上の図)。ファームウェアは準備中です。</figcaption>
-        <a href="img/wiring/HPX-Core_LTE_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_wiring.png" alt="HPX-Core ＋LTE-M＆ソーラーの線の対応図" loading="lazy"></a>
+        <figcaption><b>＋LTE-M の線の対応図</b>LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。電源は USB-C ケーブル1本で HPX-Solar か USB 充電器から。Olimex は 5V ピンから、CatM は送るときだけスイッチを通した 5V で動かします。HPX-Solar のときは D+・D− で電池とパネルの電圧も受け取ります。ファームウェアは HPX-Core v1.24 です。</figcaption>
+        <a href="img/wiring/HPX-Core_LTE_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_wiring.png" alt="HPX-Core ＋LTE-M の線の対応図" loading="lazy"></a>
       </figure>
       <div data-variant="core_lte">
       <div class="wtab"><h3>つなぐ線</h3><div class="scroll"><table>
         <thead><tr><th>線の色（例）</th><th>どこから</th><th>どこへ</th><th>メモ</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>USB-C メス基板の VBUS（＋）</td><td>DFR0559 SOLAR＋</td><td>パネルの USB-C を差す</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>USB-C メス基板の GND（−）</td><td>DFR0559 SOLAR−</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>18650 の＋（2本並列）</td><td>DFR0559 BAT＋ と Olimex BAT＋</td><td>Olimex へは JST PH ケーブル</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>18650 の−（2本並列）</td><td>DFR0559 BAT− と Olimex BAT−</td><td>ここで GND が共通になる</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>DFR0559 5V（ピン）</td><td>M5Stamp CatM 5V</td><td>LTE モジュールの電源</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>DFR0559 GND（ピン）</td><td>M5Stamp CatM GND</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>DFR0559 EN</td><td>Olimex D25（GPIO25）</td><td>送るときだけ 5V を入れる</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>M5Stamp CatM TX</td><td>Olimex D16（GPIO16、受信）</td><td>初めは 115200bps、ファームで 921600bps に</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>M5Stamp CatM RX</td><td>Olimex D17（GPIO17、送信）</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>パネル＋ → 100kΩ</td><td>Olimex D36（GPIO36）</td><td>20kΩ と 0.1µF で GND へ（パネル電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>電池＋ → 100kΩ</td><td>Olimex D34（GPIO34）</td><td>100kΩ と 0.1µF で GND へ（電池電圧）</td></tr></tbody>
+        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>USB-C の VBUS（5V）</td><td>Olimex 5V と CatM の 5V スイッチ</td><td>HPX-Solar か USB 充電器から</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>USB-C の GND</td><td>Olimex GND・CatM GND・スイッチの GND</td><td>GND は全部共通（図の GND の印）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>5V スイッチの出口（P-MOSFET の D）</td><td>M5Stamp CatM 5V</td><td>送るときだけ 5V を入れる</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>Olimex D4（GPIO4）</td><td>5V スイッチ（10kΩ → NPN のベース）</td><td>High で ON</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>USB-C の D+</td><td>Olimex D34（GPIO34）</td><td>HPX-Solar の電池の電圧（1/2）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>USB-C の D−</td><td>Olimex D36（GPIO36）</td><td>HPX-Solar のパネルの電圧（1/6）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>M5Stamp CatM TX</td><td>Olimex D16（GPIO16、受信）</td><td>初めは 115200bps、ファームで 921600bps に</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>M5Stamp CatM RX</td><td>Olimex D17（GPIO17、送信）</td><td></td></tr></tbody>
       </table></div></div>
       <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
-        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。電池から BAT コネクタで動かす</td></tr><tr><td>M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル</td><td>1</td><td>LTE-M でサーバーへ送る。付属アンテナを使う（技適）</td></tr><tr><td>LTE-M 対応 SIM（microSIM）</td><td>1</td><td>例: SORACOM plan-D（LTE-M 対応）</td></tr><tr><td>DFRobot DFR0559 ソーラーパワーマネージャー 5V</td><td>1</td><td>電池の充電と、LTE モジュール用の 5V</td></tr><tr><td>ソーラーパネル 10W/5V（USB-C 出力）</td><td>1</td><td>ケーブルは切らずに USB-C で差す</td></tr><tr><td>USB-C メス基板（電源用、5.1kΩ 付き）</td><td>1</td><td>パネルの USB-C を受けて＋−の線に分ける</td></tr><tr><td>18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用</td><td>各2</td><td>並列につなぐ</td></tr><tr><td>抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2</td><td>1式</td><td>電池とパネルの電圧を測る</td></tr></tbody>
+        <tbody><tr><td>ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</td><td>1</td><td>本体（親機）。5V ピンから動かす</td></tr><tr><td>M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル</td><td>1</td><td>LTE-M でサーバーへ送る。付属アンテナを使う（技適）</td></tr><tr><td>LTE-M 対応 SIM（microSIM）</td><td>1</td><td>例: SORACOM plan-D（LTE-M 対応）</td></tr><tr><td>USB-C メス基板（データ対応）</td><td>1</td><td>ケースの壁に付ける。HPX-Solar から USB-C ケーブルで</td></tr><tr><td>P-MOSFET・NPN トランジスタ・抵抗 100kΩ ×2・10kΩ ×1</td><td>1式</td><td>CatM の 5V スイッチ</td></tr><tr><td>電源: HPX-Solar（別の機器）または USB 充電器（5V・1A 以上）</td><td>1</td><td>HPX-Solar のときは電池とパネルの電圧も測れる</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。LTE 用のファームウェアは準備中です。</li><li>DFR0559 の EN が High で ON か、何もつながないとき ON か OFF かは未確認。届いたらテスターで確かめる。</li><li>ESP32 は眠る前に D25 を Low にして固定し、LTE モジュールの電源を切る（ファームで行う）。</li><li>M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。</li><li>線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。</li><li>  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。</li><li>HPX-Camera の画像: Olimex が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。</li><li>18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする。</li><li>JST PH ケーブルは＋−の向きが製品で逆のことがある。Olimex の基板の印字で確かめる。</li><li>リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。</li><li>USB-C メス基板は CC に 5.1kΩ が付いた電源用を使う。付いていないと、パネルが 5V を出さないことがある。</li><li>アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</li><li>動作モードはディープスリープ（30分ごと）。基板に組む図は HPX-Core_LTE_pcb.png（PCB72-95、ケース OB10-17-5W）。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.24（Wi-Fi・有線LAN の版と同じファイル）。</li><li>動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。</li><li>USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。</li><li>USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。</li><li>ESP32 は眠る前に D4 を Low にして固定し、CatM の 5V を切る（ファームで行う）。起動のときも 100kΩ で切れたまま。</li><li>M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。</li><li>線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。</li><li>  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。</li><li>HPX-Camera の画像: Olimex が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。</li><li>アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</li><li>動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。</li></ul></div>
       </div>
       <div class="soonbox">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>

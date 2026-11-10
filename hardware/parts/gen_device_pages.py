@@ -10,6 +10,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / 'site'
 
+# HPX-Core の選択チャート (TARO 2026-11-10)。電源 × 通信方法 → (印, 版の列名 または None, 説明)
+#   印: ◎ = ぴったりの版がある、○ = 近い版を少し変えて作る、✕ = 今は版がない
+CORE_POWER = [('home', '家庭用電源（USB）'), ('car', 'ソーラーパネル＋チャージャー＋カーバッテリー'),
+              ('aa', '単三リチウム電池'), ('li', 'HPX-Solar（小型ソーラーパネル＋18650）')]
+CORE_NET = [('lan', '有線ルーター（LAN ケーブル）'), ('wifi', 'Wi-Fi ルーター'), ('lte', 'LTE-M（ルーターなし）')]
+#   4つめに True があるものは HPX-Solar (別の機器、TARO 2026-11-10) もいっしょに作る
+CORE_CHOOSER = {
+    ('home', 'lan'): ('◎', 'core', '「＋有線LAN」を作ります。USB 電源で動かします。'),
+    ('home', 'wifi'): ('◎', 'core_basic', '「基本モデル」を作ります。Wi-Fi でルーターにつなぎ、USB 電源で動かします。雨のかかる屋外に置くときは「＋防水」を作ります。'),
+    ('home', 'lte'): ('◎', 'core_lte', '「＋LTE-M」を作り、USB 充電器（5V・1A 以上）を USB-C 口に差します。動作設定の「電圧の測り方」は「測らない」にします。'),
+    ('car', 'lan'): ('◎', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。'),
+    ('car', 'wifi'): ('○', 'core_lanv', '「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。'),
+    ('car', 'lte'): ('○', 'core_lte', '「＋LTE-M」を作り、チャージャーの USB 口か 12V→USB アダプターの 5V を USB-C 口に差します。電圧は「測らない」にして、バッテリーとパネルの電圧は HPX-B で見守ります。'),
+    ('aa', 'lan'): ('✕', None, '有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。'),
+    ('aa', 'wifi'): ('◎', 'core_bat', '「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。電源のコードも LAN ケーブルもないので、Wi-Fi の届く所ならどこにでも置けます（電池の交換は 2〜3か月ごとの見込み）。'),
+    ('aa', 'lte'): ('✕', None, 'LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M」と電源の「HPX-Solar」を作ってください。'),
+    ('li', 'lan'): ('✕', None, '有線LANモジュール（W5500）は電気を多く使うので、HPX-Solar（小型ソーラーパネル＋18650）には向きません。'),
+    ('li', 'wifi'): ('○', 'core_wp', '「＋防水」と電源の「HPX-Solar」を作り、USB-C ケーブルで電気をもらいます。ケースの中を USB-C メス基板で 4本に分けると、電池とパネルの電圧も測れます。動作モードはディープスリープにします（ずっと動かすと冬に電気が足りない見込み）。', True),
+    ('li', 'lte'): ('◎', 'core_lte', '「＋LTE-M」と電源の「HPX-Solar」を作り、USB-C ケーブル1本でつなぎます。ルーターがいらず、ソーラーパネルで 18650 を充電して動かし、電池とパネルの電圧も測れます。', True),
+}
+
 # 機器ごとの版 (parts.csv の数の列名, 画面に出す名前)
 DEVICES = [
     dict(key='core', file='device-core.html', tag='ハブ', name='HPX-Core',
@@ -18,20 +39,24 @@ DEVICES = [
          # TARO 2026-11-08: 防水Wi-Fi版を USB給電版 (core_wp、基板を Olimex に) と電池版 (core_bat) の2つに分けた
          # TARO 2026-11-08: 有線LAN＋電圧チェック版 (core_lanv) を追加 (12V バッテリーとソーラーパネルの電圧を測る)
          # TARO 2026-11-09: ＋LTE-M＆ソーラー版 (core_lte) を追加 (M5Stamp CatM で LTE-M、DFR0559＋18650×2＋5V パネル、ルーター不要)
+         # TARO 2026-11-10: 電源の部分を HPX-Solar (別の機器) に分け、版の名前を ＋LTE-M に
          # TARO 2026-11-08: 版の名前を ＋有線LAN / ＋有線LAN＆ソーラーシステムチェック / ＋防水 / ＋防水＆電池駆動 に (基本モデル=Wi-Fi＋USB給電にオプションを足す考え方)
-        variants=[('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M＆ソーラー')],
+        # TARO 2026-11-10: 基本モデル (core_basic) = ＋有線LAN から W5500 を外したもの (Wi-Fi＋USB給電)
+        variants=[('core_basic', '基本モデル'), ('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M')],
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          # TARO 2026-11-10: 通信モジュール (チップボードの次) と その他 (最後) を追加
          cats=['チップボード', '通信モジュール', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル', 'その他'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
-         wiring=[('HPX-Core_LAN_pcb.png', '＋有線LANの配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
+         wiring=[('HPX-Core_BASIC_pcb.png', '基本モデルの配線図', 'ESP32 を 6×8cm のユニバーサル基板にピンソケットで差すだけの図です (線はありません)。「＋有線LAN」と同じ基板・同じ位置なので、あとから W5500 を足して「＋有線LAN」にできます。ルーターへは Wi-Fi でつなぎ、USB-C から電気をもらいます。', 'core_basic'),
+                ('HPX-Core_LAN_pcb.png', '＋有線LANの配線図', 'ESP32 と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.20 以降を使います。', 'core'),
                 ('HPX-Core_LANV_pcb.png', '＋有線LAN＆ソーラーシステムチェックの配線図', '「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。ESP32 は USB ではなくバッテリーから動かします。ファームウェアは v1.22 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。', 'core_lanv'),
-                ('HPX-Core_wiring.png', '＋防水の配線図', 'ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。', 'core_wp'),
+                ('HPX-Core_wiring.png', '＋防水の配線図', 'ケースの中で Olimex ESP32-DEVKIT-LIPO の micro USB と防水USBカプラーを USB-C to MicroUSB ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。HPX-Solar から電気をもらって電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分けます (試作中)。', 'core_wp'),
                 ('HPX-Core_BAT_pcb.png', '＋防水＆電池駆動の配線図', 'ケース用基板 PCB36-47 に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を Olimex の 5V 端子と GND へつなぎます (表と裏、線は裏の2本だけ)。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。管理画面の動作モードは「ディープスリープ」にします。', 'core_bat'),
-                ('HPX-Core_LTE_pcb.png', '＋LTE-M＆ソーラーの基板の配線図（下の段）', 'ユニバーサル基板 タカチ PCB72-95 を2枚使って2段に組みます。これは下の段の図で、Olimex ESP32-DEVKIT-LIPO をピンソケットで左端に差し、右上に M5Stamp CatM、その下に USB-C メス基板を貼り、下に電池とパネルの電圧を測る抵抗を載せます (表と裏、線はすべて裏)。上の段の部品からの線は赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です。', 'core_lte'),
-                ('HPX-Core_LTE_stack.png', '＋LTE-M＆ソーラーの2段の組み方（上の段）', '上の段 (2枚目の PCB72-95) に DFR0559 と 18650 電池ホルダー2個を載せ、M3 オスメス スペーサー 25mm で下の段の上に留めます。下の Olimex のアンテナの上は空けておきます。高さはベースから約 55mm の見込みで、ケースに入るかは届いてから確かめます。', 'core_lte'),
-                ('HPX-Core_LTE_wiring.png', '＋LTE-M＆ソーラーの線の対応図', 'LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。ソーラーパネルで 18650 電池2本 (並列) を DFR0559 で充電し、ESP32 は電池から、LTE モジュールは DFR0559 の 5V から動かします (送るときだけ ON)。電池とパネルの電圧も測ります。試作中の線の対応図です (基板に組むときは上の図)。ファームウェアは準備中です。', 'core_lte')],
-         note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。'),
+                ('HPX-Core_LTE_pcb.png', '＋LTE-M の基板の配線図', 'ユニバーサル基板 タカチ PCB72-95 の左端に Olimex ESP32-DEVKIT-LIPO をピンソケットで差し、右上に M5Stamp CatM を貼り、その下に CatM の 5V を入り切りするスイッチ (P-MOSFET・NPN トランジスタ・抵抗) を載せる図です (表と裏、線はすべて裏)。電源はケースの壁の USB-C メス基板から (HPX-Solar か USB 充電器)、その 4本の線を赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。', 'core_lte'),
+                ('HPX-Core_LTE_wiring.png', '＋LTE-M の線の対応図', 'LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。電源は USB-C ケーブル1本で HPX-Solar か USB 充電器から。Olimex は 5V ピンから、CatM は送るときだけスイッチを通した 5V で動かします。HPX-Solar のときは D+・D− で電池とパネルの電圧も受け取ります。ファームウェアは HPX-Core v1.24 です。', 'core_lte')],
+         # TARO 2026-11-10: どの版を作ればよいかの選択チャート (電源 × 通信方法)
+         chooser=CORE_CHOOSER,
+         note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使います。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
@@ -86,6 +111,15 @@ DEVICES = [
                 'ピンソケット（メス）', 'ピンヘッダー（オス）', 'ユニバーサル基板 5×7', 'ジャンパー線'],
          wiring=[('HPX-Camera_pcb.png', '配線図', '小さなユニバーサル基板 (穴 12×11) に XIAO ESP32S3 Sense・ダイオード・抵抗・コンデンサーを載せる図です (表と裏、線はすべて裏)。単三リチウム3本の電気をダイオードを通して XIAO の 5V 端子へ入れ、電池の電圧を D0 で読みます。ケースは透明ふたの BCAP091207T で、基板を電池ボックスの上に重ねてカメラをふたのすぐ下に置きます。')],
          extra=('※試作中です。ファームウェアは準備中です。写真を送るには、蜂場に Wi-Fi の親機 (ルーターやアクセスポイント) が必要です。近い巣門にピントを合わせたいときは、別売の OV5640 カメラ (自動ピント) に付け替えられます。',
+                [])),
+    # HPX-Solar (TARO 2026-11-10): ＋LTE-M＆ソーラー版の電源の部分を別の機器にした (小型ソーラーパネル＋DFR0559＋18650×2)
+    dict(key='solar', file='device-solar.html', tag='電源', name='HPX-Solar',
+         lead='小型ソーラーパネルで 18650 電池2本を充電し、HPX-Core「＋LTE-M」などへ電気を送る電源です。',
+         variants=[('solar', '数')], note='',
+         cats=['電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル'],
+         no_cost_note=True,
+         wiring=[('HPX-Solar_pcb.png', '配線図', 'ユニバーサル基板 タカチ PCB72-95 に、入力の USB-C メス基板・DFR0559 ソーラーパワーマネージャー・18650 電池ホルダー2個・電圧を測る抵抗を載せる図です。ソーラーパネルの USB-C を差し、18650 2本 (並列) を充電します。HPX-Core へは、ケースの壁の出力 USB-C から USB-C ケーブル (データ対応) 1本でつなぎます (5V・GND と、D+ に電池の電圧、D− にパネルの電圧)。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。')],
+         extra=('※試作中です。実機では確かめていません。電池とパネルの電圧を測れるのは、HPX-Core「＋LTE-M」と「＋防水」(USB-C メス基板で 4本に分けたとき) です。ほかの機器 (HPX-Core 基本モデル・HPX-Camera など) には 5V の電源として使えます (眠りながら動く機器向け)。出力の USB-C はパソコンなど普通の USB 機器には差さないでください。ずっと動かす機器 (＋有線LAN・LTE ルーター) には向きません。',
                 [])),
 ]
 # 表に出す分類の順
@@ -208,6 +242,22 @@ CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
   .vsw button[aria-pressed="true"] { background:var(--forest); color:#fff; }
   @media (prefers-color-scheme: dark) { .vsw button { border-color:var(--honey); color:var(--honey); } .vsw button[aria-pressed="true"] { background:var(--honey); color:#1d1d1b; } }
   .vname { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; color:var(--sub); }
+  .chooser { margin:36px auto 0; max-width:880px; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .chooser h2 { font-size:20px; margin:0 0 4px; }
+  .chooser .q { margin-top:16px; font-weight:700; font-size:15px; }
+  .chooser .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .chooser .opts button { font:inherit; font-size:14px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--line); background:transparent; color:var(--text); cursor:pointer; }
+  .chooser .opts button[aria-pressed="true"] { border-color:var(--forest); background:var(--forest); color:#fff; }
+  .chooser .ans { margin-top:18px; padding:14px 18px; border-radius:12px; background:var(--honey-soft); font-size:15px; }
+  .chooser .ans b { font-size:16px; }
+  .chooser .ans button, .chooser .ans a.btn { display:inline-block; text-decoration:none; margin-right:8px; font:inherit; font-size:14px; font-weight:700; margin-top:10px; padding:8px 18px; border-radius:999px; border:0; background:var(--forest); color:#fff; cursor:pointer; }
+  .chooser details { margin-top:18px; font-size:14px; }
+  .chooser summary { cursor:pointer; color:var(--forest); font-weight:700; }
+  .ctab { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  .ctab th, .ctab td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
+  .ctab thead th { background:rgba(47,93,69,.07); }
+  .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
+  @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -450,6 +500,80 @@ SWITCH_JS = '''<script>
 </script>'''
 
 
+def chooser_html(dev):
+    """電源と通信方法を選ぶと、作る版を教えるチャート (JS なしでも下の表で分かる)"""
+    ch = dev.get('chooser')
+    if not ch:
+        return ''
+    names = dict(dev['variants'])
+    def vname(k):
+        return names.get(k, '')
+    def vname2(v):   # 表と答えに出す名前 (HPX-Solar もいっしょに作るときは足す)
+        return (vname(v[1]) + ('＋HPX-Solar' if len(v) > 3 and v[3] else '')) if v[1] else ''
+    data = {f'{p}|{n}': [v[0], v[1] or '', vname2(v), v[2], 1 if len(v) > 3 and v[3] else 0] for (p, n), v in ch.items()}
+    btn = lambda grp, opts: ''.join(f'<button type="button" data-{grp}="{k}" aria-pressed="false">{esc(v)}</button>' for k, v in opts)
+    head = ''.join(f'<th>{esc(v.split("（")[0])}</th>' for _, v in CORE_NET)   # 表は短い名前で (スマートフォンでも読めるように)
+    body = ''
+    for pk, pv in CORE_POWER:
+        tds = ''
+        for nk, _ in CORE_NET:
+            v = ch[(pk, nk)]
+            tds += f'<td><span class="m">{v[0]}</span>{esc(vname2(v)) if v[1] else "版なし"}</td>'
+        body += f'<tr><th>{esc(pv)}</th>{tds}</tr>'
+    return f'''
+    <div class="chooser" id="chooser">
+      <h2>どれを作ればいい？</h2>
+      <p class="note">電源と通信方法を選ぶと、作る版が分かります。</p>
+      <p class="q">1. 電源は？</p><div class="opts">{btn("p", CORE_POWER)}</div>
+      <p class="q">2. 通信方法は？</p><div class="opts">{btn("n", CORE_NET)}</div>
+      <div class="ans" id="chooser-ans" hidden></div>
+      <details><summary>組み合わせの一覧を見る</summary>
+        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th>{head}</tr></thead><tbody>{body}</tbody></table>
+        <p class="note">◎ ぴったりの版があります　○ 近い版を少し変えて作ります　✕ 今は版がありません</p>
+      </details>
+      <script>
+      (function () {{
+        var D = {json.dumps(data, ensure_ascii=False)};
+        var p = null, n = null, ans = document.getElementById('chooser-ans');
+        function pick(attr, v) {{
+          document.querySelectorAll('.chooser [data-' + attr + ']').forEach(function (b) {{ b.setAttribute('aria-pressed', b.getAttribute('data-' + attr) === v ? 'true' : 'false'); }});
+        }}
+        function upd() {{
+          if (!p || !n) return;
+          var r = D[p + '|' + n];
+          ans.hidden = false;
+          ans.textContent = '';
+          var b = document.createElement('b');
+          b.textContent = r[0] + ' ' + (r[2] || '今は版がありません');
+          var t = document.createElement('div');
+          t.textContent = r[3];
+          ans.appendChild(b); ans.appendChild(t);
+          if (r[1]) {{
+            var go = document.createElement('button');
+            go.type = 'button';
+            go.textContent = 'この版の部品表を見る';
+            go.addEventListener('click', function () {{
+              var v = document.querySelector('.vsw button[data-v="' + r[1] + '"]');
+              if (v) v.click();
+              document.getElementById('parts').scrollIntoView({{behavior: 'smooth'}});
+            }});
+            ans.appendChild(go);
+          }}
+          if (r[4]) {{
+            var sl = document.createElement('a');
+            sl.href = 'device-solar.html';
+            sl.className = 'btn';
+            sl.textContent = 'HPX-Solar の作り方を見る';
+            ans.appendChild(sl);
+          }}
+        }}
+        document.querySelectorAll('.chooser [data-p]').forEach(function (b) {{ b.addEventListener('click', function () {{ p = b.getAttribute('data-p'); pick('p', p); upd(); }}); }});
+        document.querySelectorAll('.chooser [data-n]').forEach(function (b) {{ b.addEventListener('click', function () {{ n = b.getAttribute('data-n'); pick('n', n); upd(); }}); }});
+      }})();
+      </script>
+    </div>'''
+
+
 def device_page(dev, rows, parts):
     multi = len(dev['variants']) > 1
     sw = ('\n    <div class="vsw" role="group" aria-label="版を選ぶ">' +
@@ -460,7 +584,7 @@ def device_page(dev, rows, parts):
     <p class="eyebrow">Devices</p>
     <h1>{esc(dev["name"])}</h1>
     <p class="lead">{esc(dev["lead"])}</p>
-    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{sw}
+    {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{chooser_html(dev)}{sw}
   </div>
 
   <section id="parts">
@@ -504,7 +628,7 @@ def index_page(parts):
       </div>
     </div>
   </section>'''
-    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-F・HPX-B・HPX-Camera) の作り方と部品表です。', body, parts)
+    return doc('機器をつくる', 'Hive Plus X の機器 (HPX-Core・HPX-W・HPX-TH・HPX-F・HPX-B・HPX-Camera・HPX-Solar) の作り方と部品表です。', body, parts)
 
 
 def main():
