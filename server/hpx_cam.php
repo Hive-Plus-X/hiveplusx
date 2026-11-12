@@ -118,43 +118,64 @@ function cams_visible(): array
     return $out;
 }
 
-// デモ用アカウントの見本の写真: img/demo_cam/d1〜d3/<HHMMSS>.jpg を、3日前・2日前・きのうの写真として見本のカメラに入れる。
-//   日付が変わったら入れ直す (いつも「直近の3日分」が見える)。写真が無い・$HPX_DEMO_DUMMY = false なら何もしない
-const DEMO_CAM_ID = 'DE000000CA01';
+// デモ用アカウントの見本の写真: img/demo_cam/ の写真 (何枚でも) を順に使い、3日前・2日前・きのうの 5:00〜18:50 に10分ごとの写真として
+//   見本のカメラに入れる (朝夕は少し暗く、日ごとに少しずつ明るさを変える)。日付が変わったら入れ直す (いつも直近の3日分)。
+//   写真が無い・GD が無い・$HPX_DEMO_DUMMY = false なら何もしない
+//   img/demo_cam/<番号>/ ごとに1台 (DEMO_CAMS の名前、ID は DE000000CA<番号2けた>)
+const DEMO_CAMS = [1 => '山の巣箱１', 2 => '山の巣箱２', 3 => '山の巣箱３'];
 function demo_cam_fill(): void
 {
-    $src = __DIR__ . '/img/demo_cam';
     $uid = demo_uid();
-    if ($uid === '' || !demo_dummy_on() || !is_dir($src)) return;
-    $dir = cam_dir($uid, DEMO_CAM_ID);
-    $now = time();
-    $today = date('Ymd', $now);
+    if ($uid === '' || !demo_dummy_on() || !function_exists('imagecreatefromjpeg')) return;
+    foreach (DEMO_CAMS as $no => $name) {
+        $srcs = glob(__DIR__ . '/img/demo_cam/' . $no . '/*.jpg') ?: [];
+        if ($srcs) demo_cam_fill_one(sprintf('DE000000CA%02d', $no), $name, $srcs);
+    }
+}
+function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
+{
+    $uid = demo_uid();
+    sort($srcs);
+    $dir = cam_dir($uid, $camId);
+    $today = date('Ymd');
     $flag = $dir . '/.demo_day';
     if ((string)@file_get_contents($flag) === $today) return;
     @mkdir($dir, 0700, true);
     $lock = fopen($dir . '/.lock', 'c');
     if (!$lock || !flock($lock, LOCK_EX)) return;
     if ((string)@file_get_contents($flag) !== $today) {
+        @set_time_limit(120);
         foreach (cam_days($dir) as $d) dir_remove($dir . '/' . $d);
-        $shot = 0; $n = 0;
-        for ($k = 1; $k <= 3; $k++) {
-            $day = date('Ymd', strtotime('-' . (4 - $k) . ' day', strtotime($today)));
-            foreach (glob($src . '/d' . $k . '/*.jpg') ?: [] as $p) {
-                if (!preg_match('/^(\d{6})\.jpg$/', basename($p), $m)) continue;
-                $to = $dir . '/' . $day . '/' . $m[1] . '.jpg';
-                @mkdir(dirname($to), 0700, true);
-                if (!@copy($p, $to)) continue;
-                cam_thumb($to, substr($to, 0, -4) . '_t.jpg');
-                $shot = max($shot, (int)strtotime($day . ' ' . $m[1]));
-                $n++;
+        $ims = array_values(array_filter(array_map(fn($p) => @imagecreatefromjpeg($p), $srcs)));
+        $shot = 0; $n = 0; $i = 0;
+        for ($k = 3; $k >= 1 && $ims; $k--) {
+            $day = date('Ymd', strtotime('-' . $k . ' day', strtotime($today)));
+            @mkdir($dir . '/' . $day, 0700, true);
+            for ($m = 5 * 60; $m < 19 * 60; $m += 10) {
+                $f = sprintf('%02d%02d00', intdiv($m, 60), $m % 60);
+                $src = $ims[intdiv($i++, 3) % count($ims)];   // 3枚ずつ同じ写真
+                $im = imagecreatetruecolor(imagesx($src), imagesy($src));
+                imagecopy($im, $src, 0, 0, 0, 0, imagesx($src), imagesy($src));
+                // 明るさ: 12時がいちばん明るく、朝夕は暗い。日ごとにも少し変える
+                $b = (int)round(-70 * (abs($m - 720) / 420) ** 2 + ($k - 2) * 8 + (crc32($day . $f) % 7) - 3);
+                if ($b !== 0) imagefilter($im, IMG_FILTER_BRIGHTNESS, $b);
+                $to = $dir . '/' . $day . '/' . $f . '.jpg';
+                if (imagejpeg($im, $to, 80)) {
+                    cam_thumb($to, substr($to, 0, -4) . '_t.jpg');
+                    $shot = max($shot, (int)strtotime($day . ' ' . $f));
+                    $n++;
+                }
+                imagedestroy($im);
             }
         }
+        foreach ($ims as $im) imagedestroy($im);
         // 置いている蜂場は、デモ用アカウントの最初の蜂場 (ページの設定で変えていなければ)
         $aps = json_load(account_site_dir($uid) . '/site.json')['apiaries'] ?? [];
-        cam_update($uid, DEMO_CAM_ID, function (array $x) use ($shot, $n, $aps) {
-            $x['name'] = (string)($x['name'] ?? '') !== '' ? $x['name'] : '巣門カメラ (見本)';
-            if (!isset($aps[(string)($x['apiary'] ?? '')])) $x['apiary'] = is_array($aps) && $aps ? (string)array_key_first($aps) : '';
+        cam_update($uid, $camId, function (array $x) use ($shot, $n, $aps, $camName) {
+            $x['name'] = (string)($x['name'] ?? '') !== '' ? $x['name'] : $camName;
+            if (!is_array($aps) || !isset($aps[(string)($x['apiary'] ?? '')])) $x['apiary'] = is_array($aps) && $aps ? (string)array_key_first($aps) : '';
             $x['last'] = time(); $x['shot'] = $shot; $x['n'] = $n; $x['via'] = ''; $x['bv'] = 4.62; $x['rssi'] = -64;
+            $x['w'] = 640; $x['h'] = 480; $x['iv'] = 10; $x['h0'] = 5; $x['h1'] = 19;
             $x['created'] = $x['created'] ?? time();
             return $x;
         });

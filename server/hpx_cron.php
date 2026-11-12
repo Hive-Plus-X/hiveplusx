@@ -11,6 +11,7 @@
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 require __DIR__ . '/hpx_hive_alert.php';
+require __DIR__ . '/hpx_cam.php';
 if (PHP_SAPI !== 'cli') {
     // URL から呼ぶときは、機器用とは別のトークンで確かめる(定期実行サービスにURLを預けるため)
     $cronTok = (string)($HPX_CRON_TOKEN ?? '');
@@ -24,6 +25,7 @@ $now = time();
 $today = date('Y-m-d', $now);
 
 demo_sensor_fill(true);   // デモ用アカウントのセンサの見本の値を今の時刻まで作り直す
+demo_cam_fill();          // デモ用アカウントの見本のカメラの写真を直近の3日分にする (日付が変わったときだけ)
 
 // 見る場所: [HPX-Core のフォルダの親, 蜂場などのフォルダ, 通知先(null は config.php の $HPX_MAIL_TO), アカウントid(初期設定の前は '')]
 $places = [];
