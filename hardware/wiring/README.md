@@ -8,6 +8,7 @@
 |---|---|---|
 | HPX-W (重量) | [HPX-W_pcb.png](HPX-W_pcb.png) | HX711 DT=D0, SCK=D1 (HPX_WeightNode v1.01)。電源 CR123A |
 | HPX-TH (温湿度) | [HPX-TH_pcb.png](HPX-TH_pcb.png) | SHT40 (SDA=D4, SCL=D5、ピンは上から SDA・SCL・GND・VIN) + サーミスター (D3 → 10kΩ → A2、A2–GND)。電源 CR123A |
+| HPX-TH 単三版 (温湿度) | [HPX-TH_AA_pcb.png](HPX-TH_AA_pcb.png) (秋月 両面スルーホール基板 5×7cm を 5×6cm に切る、穴 A〜U × 1〜18、ケース LC115H-M2-D) | 回路とピンは HPX-TH と同じ。電源 単3リチウム×2 (ケースの電池室、＋→R14、−→T14) |
 | HPX-F (電柵アラート) | [HPX-F_pcb.png](HPX-F_pcb.png) | D1 → 10kΩ → D0(A0)、CdS セル D0–GND (HPX_F v1.04)。電源 単3リチウム×2 (ケース WH145-25-M2 の電池ボックス) |
 | HPX-Core ＋防水 | [HPX-Core_wiring.png](HPX-Core_wiring.png) | Olimex ESP32-DEVKIT-LIPO。外付けの配線なし。防水USBカプラー (USB-C) から USB-C to MicroUSB ケーブルで給電。HPX-Solar で電圧も測るときは、中を USB-C メス基板 (データ対応) にして VBUS→5V・GND・D+→IO34・D−→IO36 のジャンパー線4本に (試作中) |
 | HPX-Core ＋有線LAN | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図)・[HPX-Core_LAN_wiring.png](HPX-Core_LAN_wiring.png) (線の対応) | ELEGOO ESP-32 + W5500 (ACEIRMC): SCK=D18, MI=D4, MO=D23, CS=D5, INT=TX2(GPIO17), RST=RX2(GPIO16), V=3V3, G=GND (HPX_Core v1.20 以降、接続方法を「有線LAN」に)。USB 電源 |
