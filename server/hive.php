@@ -217,7 +217,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     echo '</div>' . qr_menu($site, $aid, $hid) . '</div>';
     // この巣箱に置いた HPX-CAM (カメラページの設定で巣箱を選んだもの)
     foreach (cams_visible() as $cmId => $cm) {
-        if ((string)($cm['c']['hive'] ?? '') === (string)$hid && $cm['o'] === ($hv['_o'] ?? '')) echo CAM_LINK_CSS . cam_link_html((string)$cmId, $cm);
+        if ((string)($cm['c']['hive'] ?? '') === (string)$hid && $cm['o'] === ($hv['_o'] ?? '')) echo CAM_LINK_CSS . cam_link_html((string)$cmId, $cm, (string)$hid);
     }
     // 群の詳細(グラフ・タスク・メモの後に出す)
     ob_start();

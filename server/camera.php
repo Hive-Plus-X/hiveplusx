@@ -93,11 +93,20 @@ $aid = (string)($c['apiary'] ?? '');
 $apName = (string)($site['apiaries'][$aid]['name'] ?? '');
 $hvName = (string)($site['hives'][(string)($c['hive'] ?? '')]['name'] ?? '');
 if ($hvName !== '') $apName .= ' / ' . $hvName;
-$self = fn(array $q) => 'camera.php?' . http_build_query(['c' => $cid] + $q);
+// 巣箱ページから来たとき (?h=<巣箱id>、そのカメラを置いた巣箱だけ): 「巣箱のページへ戻る」を出し、ほかのカメラへの切り替えは出さない
+$fromHive = (string)($_GET['h'] ?? '');
+if ($fromHive === '' || (string)($c['hive'] ?? '') !== $fromHive || !isset($site['hives'][$fromHive])) $fromHive = '';
+$keep = $fromHive !== '' ? ['h' => $fromHive] : [];
+$self = fn(array $q) => 'camera.php?' . http_build_query(['c' => $cid] + $keep + $q);
+$keepField = $fromHive !== '' ? '<input type="hidden" name="h" value="' . h($fromHive) . '">' : '';
 $img = fn(string $ymd, string $f, bool $t = false) => 'camera.php?' . http_build_query(array_filter(['c' => $cid, 'img' => $cid, 'd' => $ymd, 'f' => $f, 't' => $t ? 1 : 0]));
 
 // カメラの切り替え
-if (count($cams) > 1) {
+if ($fromHive !== '') {
+    $fh = $site['hives'][$fromHive];
+    echo '<p style="margin:.6em 0"><a class="admbtn" style="display:inline-block;padding:6px 14px;border-radius:6px;background:#2F5D45;color:#fff;text-decoration:none" href="'
+        . h('hive.php?' . http_build_query(['a' => (string)($fh['apiary'] ?? ''), 'h' => $fromHive]) . '#h-' . $fromHive) . '">← ' . h((string)($fh['name'] ?? '巣箱')) . ' のページへ戻る</a></p>';
+} elseif (count($cams) > 1) {
     echo '<div class="ctabs" style="margin-top:.6em">';
     foreach ($cams as $k => $x) echo '<a href="camera.php?c=' . h($k) . '"' . ($k === $cid ? ' class="on"' : '') . '>' . h(cam_name($x['c'], $k)) . '</a>';
     echo '</div>';
@@ -133,7 +142,7 @@ if ($dp !== '' && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dp, $mm) && checkda
         . '<span class="ttl">' . date('Y年n月j日', $ts) . '(' . $WD[(int)date('w', $ts)] . ')</span>'
         . '<a class="b' . ($next === '' ? ' off' : '') . '" href="' . h($next !== '' ? $self(['d' => $fmt($next)]) : '#') . '">次の日 ›</a>'
         . '<a class="b" href="' . h($self(['m' => substr($dp, 0, 7)])) . '">📅 ' . (int)substr($dp, 5, 2) . '月の一覧</a>'
-        . '<form method="get" action="camera.php"><input type="hidden" name="c" value="' . h($cid) . '"><input type="date" name="d" value="' . h($dp) . '" aria-label="日付"><button>移動</button></form>'
+        . '<form method="get" action="camera.php"><input type="hidden" name="c" value="' . h($cid) . '">' . $keepField . '<input type="date" name="d" value="' . h($dp) . '" aria-label="日付"><button>移動</button></form>'
         . '</div>';
     if (!$list) {
         echo '<div class="card">この日の写真はありません。</div>';
@@ -194,7 +203,7 @@ if ($dp !== '' && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dp, $mm) && checkda
         . '<span class="ttl">' . $y . '年' . $mo . '月</span>'
         . '<a class="b' . ($hasNext ? '' : ' off') . '" href="' . h($self(['m' => $nm])) . '">次の月 ›</a>'
         . ($days ? '<a class="b" href="' . h($self(['d' => date('Y-m-d', strtotime(end($days)))])) . '">いちばん新しい日</a>' : '')
-        . '<form method="get" action="camera.php"><input type="hidden" name="c" value="' . h($cid) . '"><input type="date" name="d" value="' . h(date('Y-m-d', $now)) . '" aria-label="日付"><button>日付へ移動</button></form>'
+        . '<form method="get" action="camera.php"><input type="hidden" name="c" value="' . h($cid) . '">' . $keepField . '<input type="date" name="d" value="' . h(date('Y-m-d', $now)) . '" aria-label="日付"><button>日付へ移動</button></form>'
         . '</div>';
     echo '<p class="muted" style="margin:0 0 .3em">各日の12時ごろの写真です。押すと、その日の写真をスライドバーやパラパラ再生で見られます。</p>';
     echo '<table class="ccal"><tr>';

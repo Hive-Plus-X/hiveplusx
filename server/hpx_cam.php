@@ -79,10 +79,11 @@ function cam_latest(string $dir): ?array
 }
 
 // 巣箱ページに出すカメラへのリンク (いちばん新しい写真の小さい版つき)
-function cam_link_html(string $id, array $cm): string
+//   $hid を渡すと、カメラページに「巣箱のページへ戻る」が出て、ほかのカメラへの切り替えは出ない
+function cam_link_html(string $id, array $cm, string $hid = ''): string
 {
     $lt = cam_latest($cm['dir']);
-    $url = 'camera.php?' . http_build_query(['c' => $id] + ($lt ? ['d' => date('Y-m-d', strtotime($lt[0])), 'f' => $lt[1]] : []));
+    $url = 'camera.php?' . http_build_query(['c' => $id] + ($hid !== '' ? ['h' => $hid] : []) + ($lt ? ['d' => date('Y-m-d', strtotime($lt[0])), 'f' => $lt[1]] : []));
     return '<a class="camlnk" href="' . h($url) . '">'
         . ($lt ? '<img src="' . h('camera.php?' . http_build_query(['c' => $id, 'img' => $id, 'd' => $lt[0], 'f' => $lt[1], 't' => 1])) . '" alt="" loading="lazy">' : '')
         . '<span>📷 ' . h(cam_name($cm['c'], $id)) . '<br><small>' . ($lt ? '最新 ' . h(date('n/j H:i', (int)strtotime($lt[0] . ' ' . $lt[1]))) : 'まだ写真がありません') . '</small></span></a>';
@@ -144,7 +145,7 @@ function cams_visible(): array
 //   見本のカメラに入れる (朝夕は少し暗く、日ごとに少しずつ明るさを変える)。日付が変わったら入れ直す (いつも直近の3日分)。
 //   写真が無い・GD が無い・$HPX_DEMO_DUMMY = false なら何もしない
 //   img/demo_cam/<番号>/ ごとに1台 (DEMO_CAMS の名前、ID は DE000000CA<番号2けた>)
-const DEMO_CAMS = [1 => '山の巣箱１', 2 => '山の巣箱２', 3 => '山の巣箱３'];
+const DEMO_CAMS = [1 => '山の巣箱１', 2 => '巣箱２', 3 => '巣箱３'];
 function demo_cam_fill(): void
 {
     $uid = demo_uid();
@@ -161,7 +162,7 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
     $dir = cam_dir($uid, $camId);
     $today = date('Ymd');
     $flag = $dir . '/.demo_day';
-    $mark = $today . '|v2';   // 作り方を変えたら v の数を上げる (その日のうちでも作り直す)
+    $mark = $today . '|v3';   // 作り方を変えたら v の数を上げる (その日のうちでも作り直す)
     if ((string)@file_get_contents($flag) === $mark) return;
     @mkdir($dir, 0700, true);
     $lock = fopen($dir . '/.lock', 'c');
@@ -192,7 +193,7 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
             }
         }
         foreach ($ims as $im) imagedestroy($im);
-        // 置き場所: 巣箱のあるいちばん上の蜂場。1台目は蜂場全体、2台目からはその蜂場の巣箱に順に (デモでは設定を変えられないので毎回決め直す)
+        // 置き場所: 巣箱のあるいちばん上の蜂場の巣箱。カメラと同じ名前の巣箱、無ければ n台目を n番目の巣箱に (デモでは設定を変えられないので毎回決め直す)
         $sj = json_load(account_site_dir($uid) . '/site.json');
         $aps = is_array($sj['apiaries'] ?? null) ? $sj['apiaries'] : [];
         $hv = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
@@ -206,10 +207,12 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
             if ($ids) { $apSel = $k; $hvIds = $ids; break; }
         }
         $camNo = (int)substr($camId, -2);
-        cam_update($uid, $camId, function (array $x) use ($shot, $n, $apSel, $hvIds, $camNo, $camName) {
+        $hvSel = (string)($hvIds[$camNo - 1] ?? '');
+        foreach ($hvIds as $k) if ((string)($hv[$k]['name'] ?? '') === $camName) $hvSel = $k;
+        cam_update($uid, $camId, function (array $x) use ($shot, $n, $apSel, $hvSel, $camName) {
             $x['name'] = $camName;
             $x['apiary'] = $apSel;
-            $x['hive'] = $camNo >= 2 ? (string)($hvIds[$camNo - 2] ?? '') : '';
+            $x['hive'] = $hvSel;
             $x['last'] = time(); $x['shot'] = $shot; $x['n'] = $n; $x['via'] = ''; $x['bv'] = 4.62; $x['rssi'] = -64;
             $x['w'] = 640; $x['h'] = 480; $x['iv'] = 10; $x['h0'] = 5; $x['h1'] = 19;
             $x['created'] = $x['created'] ?? time();
