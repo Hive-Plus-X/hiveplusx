@@ -383,3 +383,30 @@ PHP 8.3 で、3つのテストアカウント (持ち主・メンバー・メン
 - `<表示名>_<アカウントID>/hubs/<HPX-CoreのID>/`: センサの全期間の記録 (`ble.csv`)、較正 (`weight_cal.json`・`th_cal.json`)
 - パスワード・機器用トークンは入りません。写真は「写真も入れる」にしたときだけ
 
+
+## 12. お知らせを LINE でも受け取る — 2026-11-12 追加
+
+お知らせメール (電柵・HPX-Core が止まった・センサの電池・巣箱の警報・タスク) を、LINE を連携した人には LINE公式アカウントからも送ります。
+
+### 入れ替えるもの
+- 追加: `hpx_line.php` (LINE に送るしくみ)、`line_webhook.php` (LINE から連携コードを受け取るページ)
+- 変更: `hpx_alert.php` (メールを送るときに LINE にも送る)、`account.php` (マイアカウントに「LINE でお知らせを受け取る」)
+- `config.php` に3行を足す (`config.sample.php` の `$HPX_LINE_TOKEN`・`$HPX_LINE_SECRET`・`$HPX_LINE_ADD_URL`)。空のままなら、いままでどおりメールだけ
+
+### LINE 側の準備 (サーバー管理者が1回だけ)
+1. LINE Official Account Manager → 設定 → Messaging API →「Messaging API を利用する」(プロバイダーを作る。名前は Hive Plus X など)
+2. 同じ画面の Webhook URL に `https://<サーバー>/hpx/line_webhook.php` を入れて保存
+3. LINE Developers コンソールで、そのチャネルの「チャネルシークレット」(チャネル基本設定) と「チャネルアクセストークン (長期)」(Messaging API設定 → 発行) を `config.php` に入れる
+4. Official Account Manager → 設定 → 応答設定: 「Webhook」をオン。「チャット」はオンのままで OK (連携コード以外のメッセージには何もしないので、人が返事できる)
+
+### 使い方
+- マイアカウント →「LINE でお知らせを受け取る」→「連携コードを出す」。LINE公式アカウントを友だち追加して、トークに6けたのコードを送る (30分有効)。「連携しました」と返事が来たら完了
+- 受け取り方は「メールと LINE の両方」か「LINE だけ」。「お知らせメールのオン/オフ」で止めた種類は LINE にも送らない
+- 友だちをブロックすると、連携は自動で外れる
+
+### 注意
+- LINE の無料プラン (コミュニケーションプラン) で送れるのは、お知らせの一斉配信と合わせて **月200通まで** (1人に1通 = 1通)。上限を超えると LINE には届かず、「LINE だけ」の人にもメールで送る
+- 連携コードへの返事は通数に数えられない。「テストのメッセージを送る」は1通に数えられる
+- 送った結果はメールと同じ `mail.log` に `LINE sent` / `LINE FAILED` で残る
+- 保存先: アカウントの `account.json` の `line`、`data/line_users.json` (LINE の宛先 → アカウント)、`data/line_codes.json` (連携コード)。バックアップのファイルには LINE の連携は入らない
+- 1つの LINE公式アカウントの Webhook は1つのサーバーにしか向けられない。HPX-Server をほかで動かす人は、自分の LINE公式アカウントを作る
