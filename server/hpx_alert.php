@@ -17,7 +17,9 @@
 //   メールは Gmail のアカウントにログインして(SMTP認証、アプリパスワード)送る。さくらのサーバーからの直接送信(mb_send_mail)は
 //   届いたり届かなかったりしたので使わない。設定は config.php の $HPX_SMTP_*。
 //   送信の結果は データフォルダの mail.log に残る。
+//   LINE を連携した人には LINE にも送る (hpx_line.php)。
 declare(strict_types=1);
+require_once __DIR__ . '/hpx_line.php';
 
 $HPX_ALERT_QUEUE = [];
 
@@ -231,20 +233,27 @@ function hpx_alert_flush(string $logDir, ?string $to = null): void
     mb_internal_encoding('UTF-8');
     $toList = array_values(array_filter(array_map('trim', explode(',', $to)), fn($a) => filter_var($a, FILTER_VALIDATE_EMAIL)));
     $useSmtp = (string)($HPX_SMTP_HOST ?? '') !== '';
+    // LINE を連携した人には LINE にも送る。LINE だけにしている人のアドレスはメールの送り先から外す (hpx_line.php)
+    [$lineTo, $mailList, $lineOnly] = line_split($toList);
+    $log = fn(string $line) => @file_put_contents(rtrim($logDir, '/') . '/mail.log', date('Y-m-d H:i:s') . ' ' . $line . "\n", FILE_APPEND);
+    $send = function (array $list, string $subject, string $text) use ($from, $useSmtp, $to): array {
+        if (!$list || !filter_var($from, FILTER_VALIDATE_EMAIL) || $to === 'you@example.com') return [false, '送り先・送り元のアドレスが設定されていません'];
+        if (!$useSmtp) return [false, 'config.php の $HPX_SMTP_HOST などが設定されていません'];
+        return hpx_smtp_send($list, $from, $subject, $text);
+    };
     foreach ($HPX_ALERT_QUEUE as [$subject, $body]) {
-        $ok = false;
-        $detail = '';
         $text = $body . "\n-- \nHive Plus X\n";
-        if (!$toList || !filter_var($from, FILTER_VALIDATE_EMAIL) || $to === 'you@example.com') {
-            $detail = '送り先・送り元のアドレスが設定されていません';
-        } elseif (!$useSmtp) {
-            $detail = 'config.php の $HPX_SMTP_HOST などが設定されていません';
-        } else {
-            [$ok, $detail] = hpx_smtp_send($toList, $from, $subject, $text);
+        $fallback = [];   // LINE で送れなかった「LINE だけ」の人のアドレス
+        foreach ($lineTo as $lto => $luid) {
+            [$lok, , $lres] = line_push((string)$lto, line_text($subject, $body));
+            $log('LINE ' . ($lok ? 'sent' : 'FAILED') . ' ' . $subject . ' (' . user_name((string)$luid) . ')' . ($lok ? '' : ' | ' . mb_substr(trim(preg_replace('/\s+/', ' ', $lres) ?? ''), 0, 200)));
+            if (!$lok) foreach ($lineOnly[$luid] ?? [] as $e) $fallback[] = $e;
         }
+        $list = array_values(array_unique(array_merge($mailList, array_diff($fallback, $mailList))));
+        if (!$list && $lineTo) continue;   // 全員 LINE だけで、LINE で届いた
+        [$ok, $detail] = $send($list, $subject, $text);
         $detail = trim(preg_replace('/\s+/', ' ', $detail) ?? '');
-        @file_put_contents(rtrim($logDir, '/') . '/mail.log',
-            date('Y-m-d H:i:s') . ' ' . ($ok ? 'sent' : 'FAILED') . ' ' . $subject . ($detail !== '' ? ' | ' . mb_substr($detail, 0, 200) : '') . "\n", FILE_APPEND);
+        $log(($ok ? 'sent' : 'FAILED') . ' ' . $subject . ($detail !== '' ? ' | ' . mb_substr($detail, 0, 200) : ''));
     }
     $HPX_ALERT_QUEUE = [];
 }

@@ -1,6 +1,6 @@
 <?php
 // 設定ページ: ログインしている本人のアカウントの設定。
-//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、お知らせメールのオン/オフ、HPX-Core に入れる機器用トークン、
+//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、お知らせメールのオン/オフ、LINE の連携、HPX-Core に入れる機器用トークン、
 //   データ一括ダウンロード(export.php)、バックアップと復元(backup.php)。
 //   メールアドレスは、新しいアドレスに確認メールを送り、そのリンクを開いた時点で切り替える(打ち間違いでログインできなくなるのを防ぐ)。
 declare(strict_types=1);
@@ -47,6 +47,22 @@ if (is_post()) {
         account_update($UID, function (array $a) use ($off) { $a['mail_off'] = $off; return $a; });
         redirect('account.php#mail', $off === [] ? 'お知らせメールを、すべて受け取るようにしました。'
             : (count($off) === count(A_MAIL_KINDS) ? 'お知らせメールを、すべて止めました。' : '「' . implode('」「', array_map(fn($k) => A_MAIL_KINDS[$k][0], $off)) . '」のメールを止めました。'));
+    }
+    // LINE でお知らせを受け取る (hpx_line.php)
+    if (line_on() && str_starts_with($act, 'line_')) {
+        if (is_demo($ME)) redirect('account.php#line', 'デモ用アカウントでは LINE を連携できません。');
+        if ($act === 'line_code') { line_code_issue($UID); redirect('account.php#line', '連携コードを出しました。' . L_CODE_MIN . '分以内に LINE のトークへ送ってください。'); }
+        if ($act === 'line_mode' && line_link($UID)) {
+            $only = ($_POST['mode'] ?? '') === 'only';
+            account_update($UID, function (array $a) use ($only) { if (is_array($a['line'] ?? null)) $a['line']['only'] = $only; return $a; });
+            redirect('account.php#line', $only ? 'お知らせを LINE だけで受け取るようにしました (LINE で送れなかったときはメールで届きます)。' : 'お知らせをメールと LINE の両方で受け取るようにしました。');
+        }
+        if ($act === 'line_test' && ($l = line_link($UID))) {
+            [$ok, $code, $res] = line_push((string)$l['to'], "【HPX】LINE のテスト\n\nHPX-note から LINE にお知らせが届くことを確かめました。");
+            redirect('account.php#line', $ok ? 'LINE にテストのメッセージを送りました。届いたか確かめてください。' : 'LINE に送れませんでした (' . $code . ' ' . mb_substr($res, 0, 120) . ')。');
+        }
+        if ($act === 'line_off') { line_unlink($UID); redirect('account.php#line', 'LINE の連携を外しました。お知らせはメールだけで届きます。'); }
+        redirect('account.php#line');
     }
     if ($act === 'consent_save') {
         if (empty($_POST['consent'])) redirect('account.php#consent', '同意のチェックを入れてください。');
@@ -99,6 +115,38 @@ foreach (A_MAIL_KINDS as $k => [$label, $desc]) {
 }
 echo ($off !== [] && count($off) === count(A_MAIL_KINDS) ? '<p class="ng">いまは、お知らせメールがすべて止まっています。電柵の電圧低下にも気づけないので、ご注意ください。</p>' : '')
     . '<button type="submit">保存</button></form></div>';
+
+// LINE でお知らせを受け取る (config.php に $HPX_LINE_TOKEN・$HPX_LINE_SECRET があるときだけ出す)
+if (line_on()) {
+    $l = line_link($UID);
+    echo '<h2 id="line">LINE でお知らせを受け取る</h2><div class="card form">';
+    if ($l) {
+        echo '<p><span class="ok">連携しています</span> <span class="muted">(' . h(date('Y-m-d H:i', (int)($l['at'] ?? 0))) . ' から)</span></p>'
+            . '<p class="muted">上の「お知らせメールのオン/オフ」で止めた種類は、LINE にも届きません。</p>'
+            . '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="line_mode">'
+            . '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="radio" name="mode" value="both"' . (empty($l['only']) ? ' checked' : '') . '> メールと LINE の両方で受け取る</label></p>'
+            . '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="radio" name="mode" value="only"' . (!empty($l['only']) ? ' checked' : '') . '> LINE だけで受け取る</label>'
+            . ' <span class="muted">(LINE で送れなかったときは、メールで届きます)</span></p>'
+            . '<button type="submit">保存</button></form>'
+            . '<form method="post" style="display:inline-block;margin-top:10px">' . csrf_field() . '<input type="hidden" name="act" value="line_test"><button type="submit">テストのメッセージを送る</button></form> '
+            . '<form method="post" style="display:inline-block;margin-top:10px" onsubmit="return window.confirm(\'LINE の連携を外します。よろしいですか?\')">' . csrf_field()
+            . '<input type="hidden" name="act" value="line_off"><button type="submit">連携を外す</button></form>';
+    } else {
+        $code = '';
+        $exp = 0;
+        foreach (json_load(line_codes_path()) as $c => $v) if (is_array($v) && (string)($v[0] ?? '') === $UID && (int)($v[1] ?? 0) > time()) { $code = (string)$c; $exp = (int)$v[1]; }
+        $add = line_add_url();
+        echo '<p class="muted">電柵・巣箱・センサ・タスクのお知らせを、メールに加えて LINE でも受け取れます。</p>';
+        if ($code !== '') {
+            echo '<ol><li>' . ($add !== '' ? '<a href="' . h($add) . '" target="_blank" rel="noopener">Hive Plus X の LINE公式アカウント</a>' : 'Hive Plus X の LINE公式アカウント') . ' を友だちに追加します。</li>'
+                . '<li>そのトークに、次の連携コードを送ります。<p style="font-size:28px;font-weight:bold;letter-spacing:.15em;margin:6px 0">' . h($code) . '</p>'
+                . '<span class="muted">' . h(date('H:i', $exp)) . ' まで有効</span></li>'
+                . '<li>「連携しました」と返事が届いたら、このページを開き直してください。</li></ol>';
+        }
+        echo '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="line_code"><button type="submit">' . ($code !== '' ? '連携コードを出し直す' : '連携コードを出す') . '</button></form>';
+    }
+    echo '</div>';
+}
 
 $token = (string)($acct['token'] ?? '');
 // ファームウェア自動更新サーバーのURL: config の $HPX_OTA_URL、無ければこのサーバーの firmware/manifest.txt (置いてあるときだけ)

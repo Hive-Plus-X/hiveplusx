@@ -168,7 +168,7 @@ $tok = c_token($dir, time());
     <div class="box">送信しました。お問い合わせありがとうございます。<br>内容を確認して、返信先のメールアドレスにご連絡します。</div>
     <a class="back" href="./">トップへ戻る</a>
 <?php else: ?>
-    <p class="lead">質問、不具合の報告、機器の作り方の相談などをお送りください。GitHub をお使いの方は、<a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a>で質問すると、ほかの方の参考にもなります。</p>
+    <p class="lead">質問、不具合の報告、機器の作り方の相談などをお送りください。GitHub をお使いの方は、<a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a>で質問すると、ほかの方の参考にもなります。<a href="https://line.me/R/ti/p/@222xdxtk">LINE公式アカウント</a>のトークからも質問できます。</p>
 <?php if ($fail): ?>
     <div class="box err">申し訳ありません。いま送信できませんでした。内容は受け付けてありますが、念のため時間をおいてもう一度お試しください。</div>
 <?php elseif ($err): ?>
