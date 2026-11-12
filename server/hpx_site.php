@@ -11,6 +11,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/hpx_auth.php';
 require_once __DIR__ . '/hpx_hive_alert.php';
+require_once __DIR__ . '/hpx_cam.php';
 
 const S_TITLE = BRAND_NAME;
 const S_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
@@ -106,7 +107,7 @@ function flash_html(): string
 // 戻り先(自分のページだけ許す)
 function safe_back(string $back, string $default): string
 {
-    return preg_match('/^(apiary|hive|memo|task|work|sensor|team)\.php(\?[^\s<>"]*)?(#[A-Za-z0-9_-]*)?$/', $back) ? $back : $default;
+    return preg_match('/^(apiary|hive|memo|task|work|sensor|camera|team)\.php(\?[^\s<>"]*)?(#[A-Za-z0-9_-]*)?$/', $back) ? $back : $default;
 }
 
 // ====================================================================
@@ -731,6 +732,7 @@ function page_head(string $title, string $active): void
     // メニューと、期限切れ・今日の タスクの数
     [$over, $due] = todo_counts();
     $items = ['apiary.php' => '蜂場', 'hive.php' => '巣箱', 'memo.php' => 'メモ', 'task.php' => 'タスク', 'work.php' => '記録'];
+    if (cams_visible()) $items['camera.php'] = 'カメラ';   // HPX-CAM の写真が届いているときだけ
     echo '<nav>' . brand_nav_logo();
     foreach ($items as $f => $lb) {
         echo '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb)
