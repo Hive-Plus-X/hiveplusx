@@ -161,11 +161,12 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
     $dir = cam_dir($uid, $camId);
     $today = date('Ymd');
     $flag = $dir . '/.demo_day';
-    if ((string)@file_get_contents($flag) === $today) return;
+    $mark = $today . '|v2';   // 作り方を変えたら v の数を上げる (その日のうちでも作り直す)
+    if ((string)@file_get_contents($flag) === $mark) return;
     @mkdir($dir, 0700, true);
     $lock = fopen($dir . '/.lock', 'c');
     if (!$lock || !flock($lock, LOCK_EX)) return;
-    if ((string)@file_get_contents($flag) !== $today) {
+    if ((string)@file_get_contents($flag) !== $mark) {
         @set_time_limit(120);
         foreach (cam_days($dir) as $d) dir_remove($dir . '/' . $d);
         $ims = array_values(array_filter(array_map(fn($p) => @imagecreatefromjpeg($p), $srcs)));
@@ -191,25 +192,30 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
             }
         }
         foreach ($ims as $im) imagedestroy($im);
-        // 置いている蜂場は、デモ用アカウントの最初の蜂場 (ページの設定で変えていなければ)
+        // 置き場所: 巣箱のあるいちばん上の蜂場。1台目は蜂場全体、2台目からはその蜂場の巣箱に順に (デモでは設定を変えられないので毎回決め直す)
         $sj = json_load(account_site_dir($uid) . '/site.json');
-        $aps = $sj['apiaries'] ?? [];
+        $aps = is_array($sj['apiaries'] ?? null) ? $sj['apiaries'] : [];
         $hv = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
+        $byOrder = fn($a, $b) => ((int)($a['order'] ?? 0) <=> (int)($b['order'] ?? 0)) ?: strcmp((string)($a['name'] ?? ''), (string)($b['name'] ?? ''));
+        uasort($aps, $byOrder); uasort($hv, $byOrder);
+        $ord = is_array($sj['apiary_order'] ?? null) ? array_map('strval', $sj['apiary_order']) : [];
+        $apIds = array_values(array_unique(array_merge(array_values(array_filter($ord, fn($k) => isset($aps[$k]))), array_map('strval', array_keys($aps)))));
+        $apSel = $apIds[0] ?? ''; $hvIds = [];
+        foreach ($apIds as $k) {
+            $ids = array_map('strval', array_keys(array_filter($hv, fn($h) => is_array($h) && (string)($h['apiary'] ?? '') === $k)));
+            if ($ids) { $apSel = $k; $hvIds = $ids; break; }
+        }
         $camNo = (int)substr($camId, -2);
-        cam_update($uid, $camId, function (array $x) use ($shot, $n, $aps, $hv, $camNo, $camName) {
-            $x['name'] = (string)($x['name'] ?? '') !== '' ? $x['name'] : $camName;
-            if (!is_array($aps) || !isset($aps[(string)($x['apiary'] ?? '')])) $x['apiary'] = is_array($aps) && $aps ? (string)array_key_first($aps) : '';
-            // 2台目からは、その蜂場の巣箱に順に置く (ページの設定で変えていなければ)
-            if ($hv && !isset($hv[(string)($x['hive'] ?? '')])) {
-                $mine = array_keys(array_filter($hv, fn($h) => is_array($h) && (string)($h['apiary'] ?? '') === $x['apiary']));
-                $x['hive'] = $camNo >= 2 ? (string)($mine[$camNo - 2] ?? '') : '';
-            }
+        cam_update($uid, $camId, function (array $x) use ($shot, $n, $apSel, $hvIds, $camNo, $camName) {
+            $x['name'] = $camName;
+            $x['apiary'] = $apSel;
+            $x['hive'] = $camNo >= 2 ? (string)($hvIds[$camNo - 2] ?? '') : '';
             $x['last'] = time(); $x['shot'] = $shot; $x['n'] = $n; $x['via'] = ''; $x['bv'] = 4.62; $x['rssi'] = -64;
             $x['w'] = 640; $x['h'] = 480; $x['iv'] = 10; $x['h0'] = 5; $x['h1'] = 19;
             $x['created'] = $x['created'] ?? time();
             return $x;
         });
-        file_put_contents($flag, $today);
+        file_put_contents($flag, $mark);
     }
     flock($lock, LOCK_UN);
     fclose($lock);
