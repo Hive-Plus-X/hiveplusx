@@ -581,13 +581,6 @@ foreach ($tiles as $aid => $a) {
     $ll = apiary_latlng($a);
     echo $ll ? weather_html(weather_get($aid, $ll[0], $ll[1], site_dir_of($a['_o'])))
         : '<div class="wx"><div class="none" style="grid-column:1/-1">地図の場所に緯度,経度を入れると天気予報が出ます</div></div>';
-    // この蜂場に置いた HPX-CAM (カメラページの設定で蜂場を選んだもの)。押すとカメラページ
-    foreach (cams_visible() as $cmId => $cm) {
-        if ((string)($cm['c']['apiary'] ?? '') !== (string)$aid || $cm['o'] !== $a['_o']) continue;
-        $cmLast = (int)($cm['c']['shot'] ?? 0);
-        echo '<p style="margin:.2em 0 .4em"><a href="camera.php?' . h(http_build_query(['c' => $cmId])) . '">📷 ' . h(cam_name($cm['c'], $cmId)) . '</a>'
-            . ' <span class="muted">' . ($cmLast ? '最新の写真 ' . h(date('n/j H:i', $cmLast)) : 'まだ写真がありません') . '</span></p>';
-    }
 
     // HPX-Core と電柵(詳細の中に入れる。異常のときだけ上にも出す)
     $hubTxt = []; $warn = [];

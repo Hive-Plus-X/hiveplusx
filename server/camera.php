@@ -34,15 +34,19 @@ if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
     if ($act === 'save') {
         $own = site_of_owner(site_load(), $UID)['apiaries'];
+        $ownH = site_of_owner(site_load(), $UID)['hives'];
         $aid = (string)($_POST['apiary'] ?? '');
-        if (!isset($own[$aid])) $aid = '';
+        $hvid = (string)($_POST['hive'] ?? '');
+        if (isset($ownH[$hvid])) $aid = (string)($ownH[$hvid]['apiary'] ?? '');   // 巣箱を選んだら、蜂場はその巣箱の蜂場
+        else $hvid = '';
+        if (!isset($own[$aid])) { $aid = ''; $hvid = ''; }
         $iv = (int)($_POST['iv'] ?? CAM_IV_DEFAULT);
         $h0 = max(0, min(23, (int)($_POST['h0'] ?? CAM_H0_DEFAULT)));
         $h1 = max(1, min(24, (int)($_POST['h1'] ?? CAM_H1_DEFAULT)));
         if ($h1 <= $h0) redirect('camera.php?c=' . $cid . '#set', '撮影する時間帯は「から」より「まで」を後にしてください。');
         $name = mb_substr(trim(preg_replace('/[\x00-\x1F\x7F]/u', '', (string)($_POST['name'] ?? '')) ?? ''), 0, 30);
-        cam_update($UID, $cid, function (array $x) use ($aid, $iv, $h0, $h1, $name) {
-            $x['name'] = $name; $x['apiary'] = $aid;
+        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name) {
+            $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid;
             $x['iv'] = in_array($iv, CAM_IVS, true) ? $iv : CAM_IV_DEFAULT; $x['h0'] = $h0; $x['h1'] = $h1;
             return $x;
         });
@@ -87,6 +91,8 @@ $camName = cam_name($c, $cid);
 $site = site_load();
 $aid = (string)($c['apiary'] ?? '');
 $apName = (string)($site['apiaries'][$aid]['name'] ?? '');
+$hvName = (string)($site['hives'][(string)($c['hive'] ?? '')]['name'] ?? '');
+if ($hvName !== '') $apName .= ' / ' . $hvName;
 $self = fn(array $q) => 'camera.php?' . http_build_query(['c' => $cid] + $q);
 $img = fn(string $ymd, string $f, bool $t = false) => 'camera.php?' . http_build_query(array_filter(['c' => $cid, 'img' => $cid, 'd' => $ymd, 'f' => $f, 't' => $t ? 1 : 0]));
 
@@ -222,6 +228,12 @@ if ($cam['own']) {
         . '<p><label>名前</label><input type="text" name="name" value="' . h((string)($c['name'] ?? '')) . '" maxlength="30" placeholder="' . h('HPX-CAM ' . substr($cid, -4)) . '"></p>'
         . '<p><label>置いている蜂場 (チームで共有した蜂場なら、メンバーも写真を見られます)</label><select name="apiary"><option value="">(選ばない)</option>';
     foreach ($own as $k => $a) echo '<option value="' . h((string)$k) . '"' . ((string)$k === $aid ? ' selected' : '') . '>' . h((string)$a['name']) . '</option>';
+    echo '</select></p><p><label>撮っている巣箱 (選ぶと巣箱のページにもリンクが出ます。蜂場全体を撮るときは選ばない)</label><select name="hive"><option value="">(選ばない)</option>';
+    $hvSel = (string)($c['hive'] ?? '');
+    foreach (site_of_owner($site, $UID)['hives'] as $k => $x) {
+        if (!isset($own[(string)($x['apiary'] ?? '')])) continue;
+        echo '<option value="' . h((string)$k) . '"' . ((string)$k === $hvSel ? ' selected' : '') . '>' . h($own[(string)$x['apiary']]['name'] . ' / ' . (string)($x['name'] ?? '')) . '</option>';
+    }
     echo '</select></p><p><label>撮影の間隔</label><select name="iv">';
     foreach (CAM_IVS as $v) echo $opt($v, $iv, $v . '分ごと');
     echo '</select></p><p><label>撮影する時間帯 (夜は暗くて写らないので、昼だけにすると電池と通信量が節約できます)</label><select name="h0">';

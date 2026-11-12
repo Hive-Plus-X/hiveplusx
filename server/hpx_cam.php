@@ -67,6 +67,28 @@ function cam_noon(string $dir, string $ymd): string
     return $best;
 }
 
+// いちばん新しい写真 [YYYYMMDD, HHMMSS]。無ければ null
+function cam_latest(string $dir): ?array
+{
+    $days = cam_days($dir);
+    for ($i = count($days) - 1; $i >= 0; $i--) {
+        $l = cam_day_list($dir, $days[$i]);
+        if ($l) return [$days[$i], end($l)];
+    }
+    return null;
+}
+
+// 巣箱ページに出すカメラへのリンク (いちばん新しい写真の小さい版つき)
+function cam_link_html(string $id, array $cm): string
+{
+    $lt = cam_latest($cm['dir']);
+    $url = 'camera.php?' . http_build_query(['c' => $id] + ($lt ? ['d' => date('Y-m-d', strtotime($lt[0])), 'f' => $lt[1]] : []));
+    return '<a class="camlnk" href="' . h($url) . '">'
+        . ($lt ? '<img src="' . h('camera.php?' . http_build_query(['c' => $id, 'img' => $id, 'd' => $lt[0], 'f' => $lt[1], 't' => 1])) . '" alt="" loading="lazy">' : '')
+        . '<span>📷 ' . h(cam_name($cm['c'], $id)) . '<br><small>' . ($lt ? '最新 ' . h(date('n/j H:i', (int)strtotime($lt[0] . ' ' . $lt[1]))) : 'まだ写真がありません') . '</small></span></a>';
+}
+const CAM_LINK_CSS = '<style>.camlnk{display:inline-flex;align-items:center;gap:8px;margin:.3em 8px .4em 0;padding:4px 10px 4px 4px;border:1px solid #cfd6cf;border-radius:6px;background:#fff;color:#1F2328;text-decoration:none;vertical-align:top}.camlnk:hover{background:#f4f8f4}.camlnk img{width:80px;height:60px;object-fit:cover;border-radius:4px;display:block}.camlnk small{color:#666}</style>';
+
 // 小さい版を作る (GD)。作れなければ false (そのときは元の写真を出す)
 function cam_thumb(string $src, string $dst): bool
 {
@@ -170,10 +192,18 @@ function demo_cam_fill_one(string $camId, string $camName, array $srcs): void
         }
         foreach ($ims as $im) imagedestroy($im);
         // 置いている蜂場は、デモ用アカウントの最初の蜂場 (ページの設定で変えていなければ)
-        $aps = json_load(account_site_dir($uid) . '/site.json')['apiaries'] ?? [];
-        cam_update($uid, $camId, function (array $x) use ($shot, $n, $aps, $camName) {
+        $sj = json_load(account_site_dir($uid) . '/site.json');
+        $aps = $sj['apiaries'] ?? [];
+        $hv = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
+        $camNo = (int)substr($camId, -2);
+        cam_update($uid, $camId, function (array $x) use ($shot, $n, $aps, $hv, $camNo, $camName) {
             $x['name'] = (string)($x['name'] ?? '') !== '' ? $x['name'] : $camName;
             if (!is_array($aps) || !isset($aps[(string)($x['apiary'] ?? '')])) $x['apiary'] = is_array($aps) && $aps ? (string)array_key_first($aps) : '';
+            // 2台目からは、その蜂場の巣箱に順に置く (ページの設定で変えていなければ)
+            if ($hv && !isset($hv[(string)($x['hive'] ?? '')])) {
+                $mine = array_keys(array_filter($hv, fn($h) => is_array($h) && (string)($h['apiary'] ?? '') === $x['apiary']));
+                $x['hive'] = $camNo >= 2 ? (string)($mine[$camNo - 2] ?? '') : '';
+            }
             $x['last'] = time(); $x['shot'] = $shot; $x['n'] = $n; $x['via'] = ''; $x['bv'] = 4.62; $x['rssi'] = -64;
             $x['w'] = 640; $x['h'] = 480; $x['iv'] = 10; $x['h0'] = 5; $x['h1'] = 19;
             $x['created'] = $x['created'] ?? time();
