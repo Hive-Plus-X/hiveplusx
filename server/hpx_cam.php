@@ -102,6 +102,7 @@ function cams_visible(): array
     static $out = null;
     if ($out !== null) return $out;
     $out = [];
+    if ($UID === demo_uid()) demo_cam_fill();
     $aps = site_load()['apiaries'];
     foreach (array_merge([$UID], shared_owners($UID)) as $o) {
         foreach (glob(cams_dir((string)$o) . '/*/cam.json') ?: [] as $p) {
@@ -115,4 +116,50 @@ function cams_visible(): array
     }
     uasort($out, fn($a, $b) => strcmp(cam_name($a['c'], ''), cam_name($b['c'], '')));
     return $out;
+}
+
+// デモ用アカウントの見本の写真: img/demo_cam/d1〜d3/<HHMMSS>.jpg を、3日前・2日前・きのうの写真として見本のカメラに入れる。
+//   日付が変わったら入れ直す (いつも「直近の3日分」が見える)。写真が無い・$HPX_DEMO_DUMMY = false なら何もしない
+const DEMO_CAM_ID = 'DE000000CA01';
+function demo_cam_fill(): void
+{
+    $src = __DIR__ . '/img/demo_cam';
+    $uid = demo_uid();
+    if ($uid === '' || !demo_dummy_on() || !is_dir($src)) return;
+    $dir = cam_dir($uid, DEMO_CAM_ID);
+    $now = time();
+    $today = date('Ymd', $now);
+    $flag = $dir . '/.demo_day';
+    if ((string)@file_get_contents($flag) === $today) return;
+    @mkdir($dir, 0700, true);
+    $lock = fopen($dir . '/.lock', 'c');
+    if (!$lock || !flock($lock, LOCK_EX)) return;
+    if ((string)@file_get_contents($flag) !== $today) {
+        foreach (cam_days($dir) as $d) dir_remove($dir . '/' . $d);
+        $shot = 0; $n = 0;
+        for ($k = 1; $k <= 3; $k++) {
+            $day = date('Ymd', strtotime('-' . (4 - $k) . ' day', strtotime($today)));
+            foreach (glob($src . '/d' . $k . '/*.jpg') ?: [] as $p) {
+                if (!preg_match('/^(\d{6})\.jpg$/', basename($p), $m)) continue;
+                $to = $dir . '/' . $day . '/' . $m[1] . '.jpg';
+                @mkdir(dirname($to), 0700, true);
+                if (!@copy($p, $to)) continue;
+                cam_thumb($to, substr($to, 0, -4) . '_t.jpg');
+                $shot = max($shot, (int)strtotime($day . ' ' . $m[1]));
+                $n++;
+            }
+        }
+        // 置いている蜂場は、デモ用アカウントの最初の蜂場 (ページの設定で変えていなければ)
+        $aps = json_load(account_site_dir($uid) . '/site.json')['apiaries'] ?? [];
+        cam_update($uid, DEMO_CAM_ID, function (array $x) use ($shot, $n, $aps) {
+            $x['name'] = (string)($x['name'] ?? '') !== '' ? $x['name'] : '巣門カメラ (見本)';
+            if (!isset($aps[(string)($x['apiary'] ?? '')])) $x['apiary'] = is_array($aps) && $aps ? (string)array_key_first($aps) : '';
+            $x['last'] = time(); $x['shot'] = $shot; $x['n'] = $n; $x['via'] = ''; $x['bv'] = 4.62; $x['rssi'] = -64;
+            $x['created'] = $x['created'] ?? time();
+            return $x;
+        });
+        file_put_contents($flag, $today);
+    }
+    flock($lock, LOCK_UN);
+    fclose($lock);
 }

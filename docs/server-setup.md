@@ -445,3 +445,9 @@ Content-Type: image/jpeg
 
 - HPX-CAM のファームウェア (XIAO ESP32S3 Sense): 撮影 → microSD に保存 → 送る。送れなかった写真は microSD に残し、次に送る
 - HPX-Core (＋LTE-M) の中継: 30分ごとに起きたとき、数分だけ Wi-Fi 親機になって HPX-CAM からたまった写真を受け、CatM で cam_upload.php へ送る
+
+### デモ用アカウントの見本の写真 (2026-11-12 TARO さん依頼)
+
+- `server/img/demo_cam/d1/`・`d2/`・`d3/` に `<HHMMSS>.jpg` (撮った時刻の名前) で置いた写真を、デモ用アカウントの見本のカメラ「巣門カメラ (見本)」の 3日前・2日前・きのうの写真として入れます
+- 日付が変わって最初にデモ用アカウントでページを開いたときに入れ直すので、いつも直近の3日分が見えます
+- `$HPX_DEMO_DUMMY = false` にすると入れません
