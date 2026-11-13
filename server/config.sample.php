@@ -72,6 +72,7 @@ $HPX_LINE_ADD_URL = '';         // 友だち追加の URL (例 'https://line.me/
 //   Claude Console (https://console.anthropic.com/) で作った API キー。利用料は送った回数に応じてかかる
 $HPX_AI_KEY = '';
 $HPX_AI_MODEL = 'claude-opus-5-5';   // 読み取りに使うモデル。'claude-haiku-5-5' にすると利用料はずっと安い (読み取りの正確さは少し下がるかもしれない)
+$HPX_AI_TERMS = [];            // 養蜂の用語集に足す言葉 (正しい言葉 => 音声入力で化けやすい書き方)。例 ['待ち箱' => ['町箱'], 'キンリョウヘン' => ['金陵辺']]。よく使う用語は hpx_line_note.php の LN_TERMS に入っている
 $HPX_AI_DAY_MAX = 50;          // 1人が1日に LINE で記録できる回数 (使いすぎ・料金の上がりすぎを防ぐ)
 
 // デモ用アカウント: このメールアドレスのアカウントはパスワードを公開して誰でも試せる (空ならデモなし)。
