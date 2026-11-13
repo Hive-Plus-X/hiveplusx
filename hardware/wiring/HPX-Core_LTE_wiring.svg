@@ -2,7 +2,7 @@
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）＋LTE-M の線の対応図</text>
-<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">試作中 ／ 実機未確認 ／ ファーム v1.24</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">試作中 ／ 実機未確認 ／ FireBeetle 2 ESP32-E ／ ファーム v1.25</text>
 <rect x="50" y="110" width="230" height="170" rx="10" fill="#fff3e0" stroke="#e65100" stroke-width="3"/>
 <text x="165" y="150" font-size="18" text-anchor="middle" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar</text>
 <text x="165" y="174" font-size="12" text-anchor="middle" font-weight="normal" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（別の機器・別のケース）</text>
@@ -41,9 +41,9 @@
 <text x="690" y="512" font-size="13" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">CatM の 5V スイッチ（基板の上）</text>
 <text x="690" y="532" font-size="11" text-anchor="middle" font-weight="normal" fill="#37474f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">P-MOSFET: S＝5V、D＝CatM 5V</text>
 <text x="690" y="549" font-size="11" text-anchor="middle" font-weight="normal" fill="#37474f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ゲート → 100kΩ → 5V</text>
-<text x="690" y="566" font-size="11" text-anchor="middle" font-weight="normal" fill="#37474f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">NPN: B ← 10kΩ ← D4（100kΩ → GND）</text>
+<text x="690" y="566" font-size="11" text-anchor="middle" font-weight="normal" fill="#37474f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">NPN: B ← 10kΩ ← IO4（100kΩ → GND）</text>
 <text x="690" y="583" font-size="11" text-anchor="middle" font-weight="normal" fill="#37474f" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">C → ゲート、E → GND</text>
-<text x="690" y="605" font-size="12" text-anchor="middle" font-weight="bold" fill="#c62828" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D4 が High で ON</text>
+<text x="690" y="605" font-size="12" text-anchor="middle" font-weight="bold" fill="#c62828" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO4 が High で ON</text>
 <circle cx="620" cy="480" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="700" cy="480" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="760" cy="480" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
@@ -51,33 +51,33 @@
 <circle cx="690" cy="620" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <path d="M690,628 L690,642 M678,642 L702,642 M683,648 L697,648 M687,654 L693,654" stroke="#212121" stroke-width="3" fill="none"/>
 <text x="706" y="650" font-size="11" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<rect x="940" y="120" width="240" height="640" rx="10" fill="#c62828" stroke="#7f0000" stroke-width="3"/>
-<rect x="996" y="106" width="120" height="40" rx="4" fill="#212121" stroke="#111" stroke-width="2"/>
-<text x="1056" y="132" font-size="12" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">アンテナ</text>
-<text x="1060" y="450" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex</text>
-<text x="1060" y="472" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32-DevKit-LiPo</text>
+<rect x="940" y="120" width="240" height="640" rx="10" fill="#37474f" stroke="#102027" stroke-width="3"/>
+<rect x="1016" y="106" width="80" height="40" rx="8" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
+<text x="1056" y="132" font-size="12" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C</text>
+<text x="1060" y="450" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle 2</text>
+<text x="1060" y="472" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32-E</text>
 <circle cx="940" cy="180" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="180" r="3" fill="#5a4a14"/>
-<text x="954" y="185" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D34</text>
+<text x="954" y="185" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO39</text>
 <circle cx="940" cy="230" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="230" r="3" fill="#5a4a14"/>
-<text x="954" y="235" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D36</text>
+<text x="954" y="235" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO36</text>
 <circle cx="940" cy="330" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="330" r="3" fill="#5a4a14"/>
-<text x="954" y="335" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D16</text>
+<text x="954" y="335" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO16</text>
 <circle cx="940" cy="370" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="370" r="3" fill="#5a4a14"/>
-<text x="954" y="375" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D17</text>
+<text x="954" y="375" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO17</text>
 <circle cx="940" cy="560" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="560" r="3" fill="#5a4a14"/>
-<text x="954" y="565" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D4</text>
+<text x="954" y="565" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">IO4</text>
 <circle cx="940" cy="680" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="680" r="3" fill="#5a4a14"/>
-<text x="954" y="685" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V</text>
+<text x="954" y="685" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VCC</text>
 <circle cx="940" cy="720" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
 <circle cx="940" cy="720" r="3" fill="#5a4a14"/>
 <text x="954" y="725" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<text x="1060" y="782" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">micro USB は書き込みのときだけ。BAT は使わない</text>
+<text x="1060" y="782" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C は書き込みのときだけ。電池コネクタは使わない</text>
 <path d="M470,180 L940,180" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M470,180 L940,180" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M470,180 L940,180" fill="none" stroke="#fafafa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -119,13 +119,13 @@
 <rect x="70" y="929" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
 <text x="210" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の VBUS（5V）</text>
-<text x="540" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex 5V と CatM の 5V スイッチ</text>
+<text x="540" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle VCC と CatM の 5V スイッチ</text>
 <text x="880" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar か USB 充電器から</text>
 <rect x="60" y="950" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="959" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
 <text x="210" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の GND</text>
-<text x="540" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex GND・CatM GND・スイッチの GND</text>
+<text x="540" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle GND・CatM GND・スイッチの GND</text>
 <text x="880" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND は全部共通（図の GND の印）</text>
 <rect x="60" y="980" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="989" width="34" height="12" rx="3" fill="#fb8c00" stroke="#555" stroke-width="1"/>
@@ -136,32 +136,32 @@
 <rect x="60" y="1010" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1019" width="34" height="12" rx="3" fill="#8e24aa" stroke="#555" stroke-width="1"/>
 <text x="112" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">紫</text>
-<text x="210" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex D4（GPIO4）</text>
+<text x="210" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle IO4（GPIO4）</text>
 <text x="540" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V スイッチ（10kΩ → NPN のベース）</text>
 <text x="880" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">High で ON</text>
 <rect x="60" y="1040" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1049" width="34" height="12" rx="3" fill="#fafafa" stroke="#555" stroke-width="1"/>
 <text x="112" y="1061" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">白</text>
 <text x="210" y="1061" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の D+</text>
-<text x="540" y="1061" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex D34（GPIO34）</text>
+<text x="540" y="1061" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle IO39（GPIO39、v1.25）</text>
 <text x="880" y="1061" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar の電池の電圧（1/2）</text>
 <rect x="60" y="1070" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1079" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
 <text x="112" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">青</text>
 <text x="210" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の D−</text>
-<text x="540" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex D36（GPIO36）</text>
+<text x="540" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle IO36（GPIO36）</text>
 <text x="880" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar のパネルの電圧（1/6）</text>
 <rect x="60" y="1100" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1109" width="34" height="12" rx="3" fill="#fdd835" stroke="#555" stroke-width="1"/>
 <text x="112" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黄</text>
 <text x="210" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">M5Stamp CatM TX</text>
-<text x="540" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex D16（GPIO16、受信）</text>
+<text x="540" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle IO16（GPIO16、受信）</text>
 <text x="880" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">初めは 115200bps、ファームで 921600bps に</text>
 <rect x="60" y="1130" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1139" width="34" height="12" rx="3" fill="#43a047" stroke="#555" stroke-width="1"/>
 <text x="112" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">緑</text>
 <text x="210" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">M5Stamp CatM RX</text>
-<text x="540" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Olimex D17（GPIO17、送信）</text>
+<text x="540" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">FireBeetle IO17（GPIO17、送信）</text>
 <text x="880" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
 <text x="60" y="1208" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品の使いどころ</text>
 <rect x="60" y="1220" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
@@ -169,9 +169,9 @@
 <text x="630" y="1241" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
 <text x="680" y="1241" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使うところ・メモ</text>
 <rect x="60" y="1250" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32 開発ボード Olimex ESP32-DEVKIT-LIPO</text>
+<text x="70" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFRobot FireBeetle 2 ESP32-E（DFR0654）</text>
 <text x="630" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="680" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">本体（親機）。5V ピンから動かす</text>
+<text x="680" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">本体（親機）。VCC ピンから動かす</text>
 <rect x="60" y="1280" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <text x="70" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル</text>
 <text x="630" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
@@ -192,19 +192,20 @@
 <text x="70" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電源: HPX-Solar（別の機器）または USB 充電器（5V・1A 以上）</text>
 <text x="630" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="680" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar のときは電池とパネルの電圧も測れる</text>
-<rect x="60" y="1450" width="1160" height="320" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<rect x="60" y="1450" width="1160" height="346" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
 <text x="78" y="1476" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
-<text x="78" y="1504" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.24（Wi-Fi・有線LAN の版と同じファイル）。</text>
+<text x="78" y="1504" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.25（Wi-Fi・有線LAN の版と同じファイル。HPX-Solar の電池の電圧を IO39 で読むのは v1.25 から）。</text>
 <text x="78" y="1530" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。</text>
 <text x="78" y="1556" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。</text>
 <text x="78" y="1582" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。</text>
-<text x="78" y="1608" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ESP32 は眠る前に D4 を Low にして固定し、CatM の 5V を切る（ファームで行う）。起動のときも 100kΩ で切れたまま。</text>
+<text x="78" y="1608" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ESP32 は眠る前に IO4 を Low にして固定し、CatM の 5V を切る（ファームで行う）。起動のときも 100kΩ で切れたまま。</text>
 <text x="78" y="1634" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。</text>
 <text x="78" y="1660" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。</text>
 <text x="78" y="1686" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。</text>
-<text x="78" y="1712" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・HPX-CAM の画像: Olimex が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。</text>
-<text x="78" y="1738" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</text>
-<text x="78" y="1764" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。</text>
+<text x="78" y="1712" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・HPX-CAM の画像: FireBeetle が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。</text>
+<text x="78" y="1738" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・FireBeetle の VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。電池コネクタには何もつながない。</text>
+<text x="78" y="1764" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</text>
+<text x="78" y="1790" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。</text>
 <circle cx="470" cy="180" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
 <circle cx="940" cy="180" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
 <circle cx="470" cy="230" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>

@@ -71,7 +71,7 @@
     [
      "VBUS",
      "DFR0559 の 5V",
-     "Olimex 5V（＋LTE-M は CatM の 5V スイッチへも）",
+     "HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）",
      "5V・1A まで"
     ],
     [
@@ -83,7 +83,7 @@
     [
      "D+",
      "電池の電圧（1/2）",
-     "GPIO34",
+     "GPIO39（v1.25。v1.24 までは GPIO34）",
      "動作設定「電圧の測り方」で HPX-Solar を選ぶ"
     ],
     [
