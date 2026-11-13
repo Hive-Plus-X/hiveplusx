@@ -78,6 +78,7 @@ const LN_TERMS = [
     '面布' => ['めんぷ', '綿布'],
     '待ち箱' => ['町箱', '待ちばこ'],
 ];
+const LN_TASK_TAGS_DEFAULT = ['内検', '採蜜', '給餌', 'ダニ検査', '薬剤処理（入出）'];   // work.php の W_TAGS_DEFAULT と同じ (タスクのタグ)
 const LN_MEMO_TAGS_DEFAULT = ['分蜂', '入居', '大量死', 'スズメバチ', 'クマ'];   // memo.php の M_TAGS_DEFAULT と同じ
 
 // ====================================================================
@@ -163,7 +164,9 @@ function ln_work_types(): array
     return $l ?: S_WORK_TYPES;
 }
 
-function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcodes): array
+function ln_task_tags(): array { return tag_list('work_tags', LN_TASK_TAGS_DEFAULT); }
+
+function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcodes, array $taskTags = []): array
 {
     $insp = [];
     foreach (M_INSPECT as $k => [, $opts, $multi]) {
@@ -172,7 +175,7 @@ function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcode
     }
     $obj = fn(array $p) => ['type' => 'object', 'properties' => $p, 'required' => array_keys($p), 'additionalProperties' => false];
     $rec = $obj([
-        'kind' => ['type' => 'string', 'enum' => ['memo', 'work']],
+        'kind' => ['type' => 'string', 'enum' => ['memo', 'work', 'task']],
         'target' => ['type' => 'string', 'enum' => array_merge([''], $codes)],
         'candidates' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => $codes ?: ['']]],
         'date' => ['type' => 'string'],
@@ -193,6 +196,9 @@ function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcode
         'workers' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => $pcodes ?: ['']]],
         'people' => ['type' => 'integer'],
         'honey_kg' => ['type' => 'number'],
+        'task_title' => ['type' => 'string'],
+        'task_due' => ['type' => 'string'],
+        'task_tags' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => $taskTags ?: ['']]],
     ]);
     return $obj(['records' => ['type' => 'array', 'items' => $rec], 'not_a_record' => ['type' => 'boolean'], 'note' => ['type' => 'string']]);
 }
@@ -207,6 +213,7 @@ function ln_system(): string
 - memo: 観察したこと・気づいたこと。内検 (巣箱を開けて中を見ること) の結果もここ。memo_type は 内検・ミツバチ (分蜂や入居など蜂の出来事)・トラブル (外敵・病気・盗難など)・開花植物・その他 から選ぶ。開花植物のときは flower_plant に植物名 (「アカシア」は「ニセアカシア」、「菜の花」は「ナタネ (菜の花)」のように、次の一覧にあればその書き方で: {$plants})、flower_stage に咲き具合、flower_visit にミツバチが花に来ている様子 (言っていなければ空)。
 - work: 作業した記録 (作業の種類と、かかった時間)。work_type は一覧から選ぶ。
 - 内検をして時間も言っていたら、memo (memo_type=内検) を1つだけ作り、minutes にその時間を入れる (作業記録はアプリが作る)。
+- task: これからやること・予定 (「来週の土曜に給餌する」「15日までに継箱を用意」「次の内検で王台を見る」など)。task_title にやることを短く、task_due に期限 (YYYY-MM-DD。「来週の土曜」「月末まで」などは今日から計算。言っていなければ空)、task_tags にタスクのタグ一覧から当てはまるもの、workers に担当する人 (言っていなければ空)、text に補足。date は今日でよい。済んだ作業 (過去形) は task にしない。
 - 内検以外の作業 (給餌・採蜜・移動など) をしたと言っていたら work を作る。作業についての気づきは work の text に書く。
 - 1つの文に別々の巣箱や別々の出来事があれば、記録を分ける。同じ巣箱の同じ内検は1つにまとめる。
 
@@ -264,6 +271,7 @@ function ln_parse(array $site, string $text): array
     $workTypes = ln_work_types();
     $memoTags = tag_list('memo_tags', LN_MEMO_TAGS_DEFAULT, S_MEMO_EVENTS);
     $people = ln_people($site);
+    $taskTags = ln_task_tags();
     $plist = '';
     foreach ($people as $c => [$u, $nm]) $plist .= $c . ': ' . $nm . ($u === $GLOBALS['UID'] ? ' (書いた本人)' : '') . "\n";
     $w = ['日', '月', '火', '水', '木', '金', '土'][(int)date('w')];
@@ -271,20 +279,20 @@ function ln_parse(array $site, string $text): array
     foreach ($targets as $c => $t) $list .= $c . ': ' . $t[2] . "\n";
     $user = "今日: " . date('Y-m-d') . " ({$w})\n\n対象の一覧:\n" . ($list ?: "(登録なし)\n")
         . "\n人の一覧:\n" . $plist
-        . "\n作業の種類: " . implode('・', $workTypes) . "\nメモのタグ: " . implode('・', $memoTags)
+        . "\n作業の種類: " . implode('・', $workTypes) . "\nメモのタグ: " . implode('・', $memoTags) . "\nタスクのタグ: " . implode('・', $taskTags)
         . "\n\n用語集 (正しい言葉: 化けやすい書き方):\n" . ln_terms_text()
         . (($ru = ln_rules_text($GLOBALS['UID'])) !== '' ? "\nこの人について覚えたこと (必ず守る):\n" . $ru : '')
         . (($ex = ln_learn_text($GLOBALS['UID'], $text)) !== '' ? "\nこの人の前の例 (今回の文と似ているもの):\n" . $ex : '')
         . "\n送られた文:\n" . mb_substr($text, 0, LN_TEXT_MAX);
-    [$j, $err] = ai_json(ln_system(), $user, ln_schema(array_keys($targets), $workTypes, $memoTags, array_keys($people)));
+    [$j, $err] = ai_json(ln_system(), $user, ln_schema(array_keys($targets), $workTypes, $memoTags, array_keys($people), $taskTags));
     if ($j === null) return [null, false, $err];
     $recs = [];
-    foreach ((array)($j['records'] ?? []) as $r) if (is_array($r)) $recs[] = ln_clean($r, $targets, $workTypes, $people);
+    foreach ((array)($j['records'] ?? []) as $r) if (is_array($r)) $recs[] = ln_clean($r, $targets, $workTypes, $people, $taskTags);
     return [$recs, !empty($j['not_a_record']), trim((string)($j['note'] ?? ''))];
 }
 
 // AI の答えを確かめて、記録の形にする (対象は蜂場id・巣箱id に戻す)
-function ln_clean(array $r, array $targets, array $workTypes, array $people = []): array
+function ln_clean(array $r, array $targets, array $workTypes, array $people = [], array $taskTags = []): array
 {
     $t = $targets[(string)($r['target'] ?? '')] ?? null;
     $cand = [];
@@ -299,8 +307,10 @@ function ln_clean(array $r, array $targets, array $workTypes, array $people = []
         $v = trim((string)$v);
         if ($opts ? in_array($v, $opts, true) : (is_numeric($v) && (float)$v >= 0 && (float)$v < 100)) $insp[$k] = $v;
     }
-    $kind = ($r['kind'] ?? '') === 'work' ? 'work' : 'memo';
-    $mtype = in_array((string)($r['memo_type'] ?? ''), S_MEMO_TYPES, true) ? (string)$r['memo_type'] : '';
+    $kind = in_array($r['kind'] ?? '', ['work', 'task'], true) ? (string)$r['kind'] : 'memo';
+    $due = (string)($r['task_due'] ?? '');
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $due) || strtotime($due) === false || $due < date('Y-m-d', time() - 30 * 86400) || $due > date('Y-m-d', time() + 800 * 86400)) $due = '';
+    $mtype = $kind === 'memo' && in_array((string)($r['memo_type'] ?? ''), S_MEMO_TYPES, true) ? (string)$r['memo_type'] : '';
     $mite = [];
     if ($mtype === '内検') {
         if (in_array((string)($r['mite_method'] ?? ''), M_MITE_METHODS, true)) $mite['method'] = (string)$r['mite_method'];
@@ -323,6 +333,8 @@ function ln_clean(array $r, array $targets, array $workTypes, array $people = []
             'stage' => in_array($r['flower_stage'] ?? '', S_FLOWER_STAGES, true) ? (string)$r['flower_stage'] : '',
             'visit' => in_array($r['flower_visit'] ?? '', S_FLOWER_VISITS, true) ? (string)$r['flower_visit'] : ''], fn($v) => $v !== '') : [],
         'wtype' => $kind === 'work' ? $wtype : '', 'start' => $start, 'end' => $end, 'min' => $min > 1440 ? 0 : $min,
+        'title' => $kind === 'task' ? mb_substr(trim((string)($r['task_title'] ?? '')), 0, 200) : '', 'due' => $kind === 'task' ? $due : '',
+        'ttags' => $kind === 'task' ? array_values(array_intersect($taskTags, array_map('strval', (array)($r['task_tags'] ?? [])))) : [],
         'workers' => array_values(array_unique($workers)), 'people' => max(0, min(99, (int)($r['people'] ?? 0))), 'honey' => $honey > 0 && $honey <= 100000 ? round($honey, 1) : null,
     ];
 }
@@ -346,6 +358,15 @@ function ln_save(array $site, array $recs, string $via = 'line'): array
         $workers = array_values(array_filter((array)($r['workers'] ?? []), fn($u) => isset($can[$u])));
         $people = max(1, count($workers), (int)$r['people']);
         $base = ['apiary' => $r['a'], 'hive' => $r['h'], 'date' => $r['date'], 'via' => $via, 'updated' => time(), 'updated_by' => $UID, 'created' => time(), 'by' => $UID];
+        if ($r['kind'] === 'task') {   // work.php の todo_save と同じ形。担当者 (assignees) は workers から、メールのお知らせは画面の初期と同じくオン
+            $id = new_id();
+            $row = ['id' => $id, 'apiary' => $r['a'], 'hive' => $r['h'], 'tags' => (array)($r['ttags'] ?? []), 'title' => (string)($r['title'] ?? ''), 'due' => (string)($r['due'] ?? ''),
+                'assignees' => $workers, 'assignee' => '', 'notify' => (bool)($r['notify'] ?? true), 'note' => $r['text'], 'via' => $via,
+                'updated' => time(), 'updated_by' => $UID, 'created' => time(), 'by' => $UID, 'done' => false];
+            site_update('works', function (array $w) use ($row) { $w['todos'] = is_array($w['todos'] ?? null) ? $w['todos'] : []; $w['todos'][] = $row; return $w; });
+            $done[] = [$owner, 'todos', $id];
+            continue;
+        }
         if ($r['kind'] === 'work') {
             $id = new_id();
             $row = ['id' => $id] + $base + ['type' => $r['wtype'], 'workers' => $workers, 'start' => $r['start'], 'end' => $r['end'], 'minutes' => $r['min'],
@@ -385,8 +406,9 @@ function ln_undo(array $done): int
                 return $m;
             });
         } else {
-            site_update_of((string)$owner, 'works', function (array $w) use ($id) {
-                $w['logs'] = array_values(array_filter(is_array($w['logs'] ?? null) ? $w['logs'] : [], fn($x) => ($x['id'] ?? '') !== $id));
+            $k = $kind === 'todos' ? 'todos' : 'logs';
+            site_update_of((string)$owner, 'works', function (array $w) use ($id, $k) {
+                $w[$k] = array_values(array_filter(is_array($w[$k] ?? null) ? $w[$k] : [], fn($x) => ($x['id'] ?? '') !== $id));
                 return $w;
             });
         }
@@ -415,6 +437,15 @@ function ln_rec_line(array $site, array $r, string $sent): string
     $o[] = '対象=' . ($r['a'] !== null ? target_label($site, (string)$r['a'], (string)$r['h']) : '(不明)');
     $dd = (int)round((strtotime($r['date']) - strtotime($sent)) / 86400);
     $o[] = '日付=' . ($dd === 0 ? '当日' : ($dd === -1 ? '前日' : ($dd < 0 ? (-$dd) . '日前' : $dd . '日後')));
+    if ($r['kind'] === 'task') {
+        $o[] = 'タスク=' . (string)($r['title'] ?? '');
+        $due = (string)($r['due'] ?? '');
+        if ($due !== '') { $dd2 = (int)round((strtotime($due) - strtotime($sent)) / 86400); $o[] = '期限=' . ($dd2 === 0 ? '当日' : ($dd2 > 0 ? $dd2 . '日後' : (-$dd2) . '日前')) . ' (' . ['日', '月', '火', '水', '木', '金', '土'][(int)date('w', strtotime($due))] . '曜)'; }
+        if (!empty($r['ttags'])) $o[] = 'タグ=' . implode('・', $r['ttags']);
+        if (!empty($r['workers'])) $o[] = '担当=' . implode('・', array_map('user_name', $r['workers']));
+        if ($r['text'] !== '') $o[] = '文=' . mb_strimwidth($r['text'], 0, 80, '…');
+        return implode(' / ', $o);
+    }
     if ($r['kind'] === 'work') {
         $o[] = '作業記録=' . $r['wtype'];
         if ($r['min'] > 0) $o[] = '時間=' . $r['min'] . '分';

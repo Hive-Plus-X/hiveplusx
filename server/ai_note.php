@@ -63,7 +63,13 @@ if (is_post()) {
             $r['text'] = mb_substr(trim(str_replace("\r\n", "\n", (string)($_POST['text'][$i] ?? ''))), 0, 2000);
             $min = trim((string)($_POST['min'][$i] ?? ''));
             $r['min'] = ctype_digit($min) && (int)$min <= 1440 ? (int)$min : 0;
-            if ($r['kind'] === 'memo') {
+            if ($r['kind'] === 'task') {
+                $r['title'] = mb_substr(trim((string)($_POST['title'][$i] ?? '')), 0, 200);
+                $d = (string)($_POST['due'][$i] ?? '');
+                $r['due'] = preg_match('/^\d{4}-\d{2}-\d{2}$/', $d) && strtotime($d) !== false ? $d : '';
+                $r['ttags'] = array_values(array_intersect(array_unique(array_merge(ln_task_tags(), (array)($r['ttags'] ?? []))), array_map('strval', (array)($_POST['ttags'][$i] ?? []))));
+                $r['notify'] = !empty($_POST['notify'][$i]);
+            } elseif ($r['kind'] === 'memo') {
                 $t = (string)($_POST['type'][$i] ?? '');
                 $r['type'] = in_array($t, S_MEMO_TYPES, true) ? $t : '';
                 if ($r['type'] !== '内検') { $r['inspect'] = []; $r['mite'] = []; }
@@ -84,6 +90,7 @@ if (is_post()) {
             if (!$use[$i]) continue;
             if ($r['a'] === null) redirect(AN_PAGE . '#r' . $i, (string)($i + 1) . '件目の対象 (蜂場・巣箱) を選んでください。');
             if ($r['kind'] === 'work' && $r['min'] <= 0) redirect(AN_PAGE . '#r' . $i, (string)($i + 1) . '件目の作業記録の、かかった時間を入れてください。');
+            if ($r['kind'] === 'task' && $r['title'] === '' && !$r['ttags']) redirect(AN_PAGE . '#r' . $i, (string)($i + 1) . '件目のタスクの、やることかタグを入れてください。');
             if ($r['kind'] === 'memo' && $r['text'] === '' && !$r['inspect'] && !$r['mite'] && !$r['tags']) redirect(AN_PAGE . '#r' . $i, (string)($i + 1) . '件目のメモの中身を入れてください。');
             $save[] = $r;
         }
@@ -97,8 +104,9 @@ if (is_post()) {
         }
         unset($_SESSION['ai_note'], $_SESSION['ai_note_text']);
         $nm = count(array_filter($save, fn($r) => $r['kind'] === 'memo'));
-        $nw = count($save) - $nm + count(array_filter($save, fn($r) => $r['kind'] === 'memo' && $r['type'] === '内検' && $r['min'] > 0));
-        redirect(AN_PAGE, '記録しました (メモ ' . $nm . '件・作業記録 ' . $nw . '件)。メモ・記録のページで見られます。' . ($newRules ? ' 直したところから、AI が「覚えたこと」を ' . $newRules . '件 足しました (このページの下で見られます)。' : ''));
+        $nt = count(array_filter($save, fn($r) => $r['kind'] === 'task'));
+        $nw = count(array_filter($save, fn($r) => $r['kind'] === 'work')) + count(array_filter($save, fn($r) => $r['kind'] === 'memo' && $r['type'] === '内検' && $r['min'] > 0));
+        redirect(AN_PAGE, '記録しました (' . implode('・', array_filter([$nm ? 'メモ ' . $nm . '件' : '', $nw ? '作業記録 ' . $nw . '件' : '', $nt ? 'タスク ' . $nt . '件' : ''])) . ')。メモ・記録・タスクのページで見られます。' . ($newRules ? ' 直したところから、AI が「覚えたこと」を ' . $newRules . '件 足しました (このページの下で見られます)。' : ''));
     }
     redirect(AN_PAGE);
 }
@@ -112,9 +120,9 @@ if (!ai_key_on()) {
 
 // 1. 文を書く
 $text = (string)($_SESSION['ai_note_text'] ?? '');
-echo '<p class="muted">話し言葉のままで書いてください (🎤 音声入力も使えます)。AI がどの蜂場・巣箱か、メモか作業記録か、作業の種類・時間・作業した人を読み取ります。記録する前に、ここで確かめて直せます。</p>'
+echo '<p class="muted">話し言葉のままで書いてください (🎤 音声入力も使えます)。AI がどの蜂場・巣箱か、メモか作業記録かタスク (これからやること) か、作業の種類・時間・作業した人、タスクの期限・担当者を読み取ります。記録する前に、ここで確かめて直せます。</p>'
     . '<form method="post" class="card form">' . csrf_field() . '<input type="hidden" name="act" value="parse">'
-    . '<p><textarea name="text" rows="5" data-voice placeholder="例: 山の蜂場の1番、女王いた、卵あり、王台なし。Aさんと2人で給餌、糖液を全部の巣箱に、1時間">' . h($text) . '</textarea></p>'
+    . '<p><textarea name="text" rows="5" data-voice placeholder="例: 山の蜂場の1番、女王いた、卵あり、王台なし。Aさんと2人で給餌、糖液を全部の巣箱に、1時間。来週の土曜までに継箱を用意、Bさん担当">' . h($text) . '</textarea></p>'
     . '<button type="submit">AI で読み取る</button> <span class="muted">(送った文は読み取りのため AI (Claude) に送られます。1日 ' . ai_day_max() . '回まで)</span></form>';
 
 // 2. 読み取った記録を確かめる
@@ -126,6 +134,7 @@ if ($draft) {
     echo '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="save">';
     foreach ($draft['recs'] as $i => $r) {
         $isWork = $r['kind'] === 'work';
+        $isTask = $r['kind'] === 'task';
         $cur = $r['a'] !== null ? $r['a'] . '|' . $r['h'] : '';
         $sel = '<select name="t[' . $i . ']" required>' . ($cur === '' ? '<option value="">(選んでください)</option>' : '');
         if ($cur === '' && $r['cand']) {
@@ -137,9 +146,24 @@ if ($draft) {
         $sel .= '</select>';
         echo '<div class="card form ' . ($isWork ? 'apiary' : 'hive') . '" id="r' . $i . '">'
             . '<p><label style="display:inline-flex;align-items:center;gap:6px;color:#222;font-weight:bold"><input type="checkbox" name="use[' . $i . ']" value="1" checked> '
-            . ($i + 1) . '. ' . ($isWork ? '作業記録' : 'メモ') . '</label></p><div class="grid2">'
-            . '<p><label>対象</label>' . $sel . '</p>'
-            . '<p><label>日付</label><input type="date" name="date[' . $i . ']" value="' . h($r['date']) . '" required></p>';
+            . ($i + 1) . '. ' . ($isTask ? 'タスク (これからやること)' : ($isWork ? '作業記録' : 'メモ')) . '</label></p><div class="grid2">'
+            . '<p><label>対象</label>' . $sel . '</p>';
+        if ($isTask) {
+            echo '<p><label>期限</label><input type="date" name="due[' . $i . ']" value="' . h((string)$r['due']) . '"></p>'
+                . '<p class="wide"><label>やること</label><input type="text" name="title[' . $i . ']" maxlength="200" value="' . h((string)$r['title']) . '"></p></div>';
+            echo '<p><label>タグ</label><span class="ichk">';
+            foreach (array_unique(array_merge(ln_task_tags(), (array)$r['ttags'])) as $t) echo '<label class="tagc"><input type="checkbox" name="ttags[' . $i . '][]" value="' . h($t) . '"' . (in_array($t, (array)$r['ttags'], true) ? ' checked' : '') . '><span>' . h($t) . '</span></label>';
+            echo '</span></p>';
+            if ($people) {
+                echo '<p><label>担当者 <span class="muted">(選ばなければ未定。その蜂場を見られる人だけ記録されます)</span></label><span class="ichk">';
+                foreach ($people as [$u, $nm]) echo '<label class="tagc"><input type="checkbox" name="workers[' . $i . '][]" value="' . h($u) . '"' . (in_array($u, $r['workers'], true) ? ' checked' : '') . '><span>' . h($nm) . '</span></label>';
+                echo '</span></p>';
+            }
+            echo '<p><label style="display:inline-flex;align-items:center;gap:6px;color:#222"><input type="checkbox" name="notify[' . $i . ']" value="1"' . (($r['notify'] ?? true) ? ' checked' : '') . '> 期限の前日と当日 (過ぎたら毎朝) にメールで知らせる</label></p>'
+                . '<p><label>メモ</label><textarea name="text[' . $i . ']" rows="2">' . h($r['text']) . '</textarea></p></div>';
+            continue;
+        }
+        echo '<p><label>日付</label><input type="date" name="date[' . $i . ']" value="' . h($r['date']) . '" required></p>';
         if ($isWork) {
             $opt = '';
             foreach (array_unique(array_merge($workTypes, [$r['wtype']])) as $t) $opt .= '<option' . ($t === $r['wtype'] ? ' selected' : '') . '>' . h($t) . '</option>';
