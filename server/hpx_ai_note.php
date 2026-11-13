@@ -180,6 +180,9 @@ function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcode
         'text' => ['type' => 'string'],
         'tags' => ['type' => 'array', 'items' => ['type' => 'string', 'enum' => $memoTags ?: ['']]],
         'inspect' => $obj($insp),
+        'flower_plant' => ['type' => 'string'],
+        'flower_stage' => ['type' => 'string', 'enum' => array_merge([''], S_FLOWER_STAGES)],
+        'flower_visit' => ['type' => 'string', 'enum' => array_merge([''], S_FLOWER_VISITS)],
         'mite_method' => ['type' => 'string', 'enum' => array_merge([''], M_MITE_METHODS)],
         'mite_bees' => ['type' => 'integer'],
         'mite_count' => ['type' => 'integer'],
@@ -196,11 +199,12 @@ function ln_schema(array $codes, array $workTypes, array $memoTags, array $pcode
 
 function ln_system(): string
 {
+    $plants = implode('、', S_FLOWER_PLANTS);
     return <<<TXT
 あなたは養蜂の記録アプリ HPX-note の入力係です。養蜂家が話し言葉で書いた・送った文 (音声入力の誤変換を含むことがある) を読み、記録に分けて JSON で返します。
 
 記録の種類 (kind):
-- memo: 観察したこと・気づいたこと。内検 (巣箱を開けて中を見ること) の結果もここ。memo_type は 内検・ミツバチ (分蜂や入居など蜂の出来事)・トラブル (外敵・病気・盗難など)・開花植物・その他 から選ぶ。
+- memo: 観察したこと・気づいたこと。内検 (巣箱を開けて中を見ること) の結果もここ。memo_type は 内検・ミツバチ (分蜂や入居など蜂の出来事)・トラブル (外敵・病気・盗難など)・開花植物・その他 から選ぶ。開花植物のときは flower_plant に植物名 (「アカシア」は「ニセアカシア」、「菜の花」は「ナタネ (菜の花)」のように、次の一覧にあればその書き方で: {$plants})、flower_stage に咲き具合、flower_visit にミツバチが花に来ている様子 (言っていなければ空)。
 - work: 作業した記録 (作業の種類と、かかった時間)。work_type は一覧から選ぶ。
 - 内検をして時間も言っていたら、memo (memo_type=内検) を1つだけ作り、minutes にその時間を入れる (作業記録はアプリが作る)。
 - 内検以外の作業 (給餌・採蜜・移動など) をしたと言っていたら work を作る。作業についての気づきは work の text に書く。
@@ -315,6 +319,9 @@ function ln_clean(array $r, array $targets, array $workTypes, array $people = []
         'type' => $kind === 'memo' ? $mtype : '', 'text' => mb_substr(trim((string)($r['text'] ?? '')), 0, 2000),
         'tags' => array_values(array_unique(array_map('strval', (array)($r['tags'] ?? [])))),
         'inspect' => $mtype === '内検' ? $insp : [], 'mite' => $mite,
+        'flower' => $mtype === '開花植物' ? array_filter(['plant' => mb_substr(trim((string)($r['flower_plant'] ?? '')), 0, 40),
+            'stage' => in_array($r['flower_stage'] ?? '', S_FLOWER_STAGES, true) ? (string)$r['flower_stage'] : '',
+            'visit' => in_array($r['flower_visit'] ?? '', S_FLOWER_VISITS, true) ? (string)$r['flower_visit'] : ''], fn($v) => $v !== '') : [],
         'wtype' => $kind === 'work' ? $wtype : '', 'start' => $start, 'end' => $end, 'min' => $min > 1440 ? 0 : $min,
         'workers' => array_values(array_unique($workers)), 'people' => max(0, min(99, (int)($r['people'] ?? 0))), 'honey' => $honey > 0 && $honey <= 100000 ? round($honey, 1) : null,
     ];
@@ -357,7 +364,7 @@ function ln_save(array $site, array $recs, string $via = 'line'): array
             site_update('works', function (array $w) use ($row) { $w['logs'] = is_array($w['logs'] ?? null) ? $w['logs'] : []; $w['logs'][] = $row; return $w; });
             $done[] = [$owner, 'logs', $workId];
         }
-        $row = ['id' => $id] + $base + ['time' => (string)($r['start'] ?? ''), 'type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'photos' => [], 'work' => $workId];
+        $row = ['id' => $id] + $base + ['time' => (string)($r['start'] ?? ''), 'type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'flower' => (array)($r['flower'] ?? []), 'photos' => [], 'work' => $workId];
         site_update('memos', function (array $m) use ($row) { $m[] = $row; return $m; });
         $done[] = [$owner, 'memos', $id];
     }

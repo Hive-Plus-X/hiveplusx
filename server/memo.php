@@ -62,6 +62,11 @@ if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
     $back = safe_back((string)($_POST['back'] ?? ''), 'memo.php');
     tag_post($act, 'memo_tags', M_TAGS_DEFAULT, S_MEMO_EVENTS);   // タグの一覧の変更(JSON を返して終わる)
+    if (isset($_POST['plant_del'])) {   // 開花の記録: 自分で足した植物を一覧から外す (書いたメモはそのまま)
+        $pd = (string)$_POST['plant_del'];
+        site_update('flower_plants', fn(array $v) => ['plants' => array_values(array_filter(array_map('strval', (array)($v['plants'] ?? [])), fn($x) => $x !== $pd))]);
+        redirect($back, '「' . $pd . '」を植物の一覧から外しました。');
+    }
     if ($act === 'memo_save') {
         $id = (string)($_POST['id'] ?? '');
         // 対象: 蜂場で「すべて」(*)を選んだら、どの蜂場にも付けないメモ(apiary が空)
@@ -85,6 +90,23 @@ if (is_post()) {
                 if ($opts ? in_array($v, $opts, true) : (is_numeric($v) && (float)$v >= 0 && (float)$v < 100)) $insp[$k] = $v;
             }
         }
+        $flower = [];
+        if ($type === '開花植物') {
+            $fp = trim((string)($_POST['f_plant'] ?? ''));
+            $fo = mb_substr(trim(preg_replace('/\s+/u', ' ', (string)($_POST['f_other'] ?? '')) ?? ''), 0, 40);
+            $plant = $fp !== '' && $fp !== '*' && (in_array($fp, S_FLOWER_PLANTS, true) || in_array($fp, flower_plants_custom(), true)) ? $fp : $fo;
+            if ($plant !== '') $flower['plant'] = $plant;
+            if (in_array($_POST['f_stage'] ?? '', S_FLOWER_STAGES, true)) $flower['stage'] = (string)$_POST['f_stage'];
+            if (in_array($_POST['f_visit'] ?? '', S_FLOWER_VISITS, true)) $flower['visit'] = (string)$_POST['f_visit'];
+            if ($plant === $fo && $fo !== '' && !empty($_POST['f_add']) && !in_array($fo, S_FLOWER_PLANTS, true)) {   // 自由に書いた植物を自分の一覧に足す
+                site_use($UID);
+                site_update('flower_plants', function (array $v) use ($fo) {
+                    $l = array_map('strval', (array)($v['plants'] ?? []));
+                    if (!in_array($fo, $l, true) && count($l) < 100) $l[] = $fo;
+                    return ['plants' => $l];
+                });
+            }
+        }
         $mite = [];
         if ($type === '内検') {
             $mm = (string)($_POST['mite_method'] ?? '');
@@ -94,7 +116,7 @@ if (is_post()) {
             if (ctype_digit($mc) && (int)$mc <= 100000) $mite['mites'] = (int)$mc;
         }
         $hasPhoto = !empty(array_filter((array)($_FILES['photos']['error'] ?? []), fn($e) => (int)$e !== UPLOAD_ERR_NO_FILE)) || ($id !== '' && !empty(record_find(memos_load(), $id)['photos'] ?? []));
-        if (!$tg || ($text === '' && !$insp && !$mite && !$tags && !$hasPhoto)) redirect($back, '対象とメモの中身を入れてください。');
+        if (!$tg || ($text === '' && !$insp && !$mite && !$flower && !$tags && !$hasPhoto)) redirect($back, '対象とメモの中身を入れてください。');
         // 書き先は蜂場の持ち主(「すべて」は自分)。前からあるメモは、同じ持ち主の蜂場の間でだけ対象を変えられる
         $ex = $id !== '' ? record_find(memos_load(), $id) : null;
         if ($id !== '' && !$ex) redirect($back);
@@ -160,9 +182,9 @@ if (is_post()) {
             if ($wantWork) $flash = 'メモを保存しました。かかった時間が無いので、作業記録には追加していません。';
         }
         if ($photoErr !== '') $flash .= ' ' . $photoErr;
-        site_update('memos', function (array $m) use ($newId, $tg, $text, $type, $insp, $mite, $tags, $date, $time, $workId, $photos) {
+        site_update('memos', function (array $m) use ($newId, $tg, $text, $type, $insp, $mite, $flower, $tags, $date, $time, $workId, $photos) {
             $row = ['id' => $newId, 'apiary' => $tg[0], 'hive' => $tg[1], 'date' => $date, 'time' => $time,
-                'type' => $type, 'tags' => $tags, 'text' => $text, 'inspect' => $insp, 'mite' => $mite, 'photos' => $photos, 'work' => $workId, 'updated' => time(), 'updated_by' => $GLOBALS['UID']];
+                'type' => $type, 'tags' => $tags, 'text' => $text, 'inspect' => $insp, 'mite' => $mite, 'flower' => $flower, 'photos' => $photos, 'work' => $workId, 'updated' => time(), 'updated_by' => $GLOBALS['UID']];
             foreach ($m as &$x) if (($x['id'] ?? '') === $newId) { $x = array_merge($x, $row); return $m; }
             unset($x);
             $row['created'] = time();
@@ -211,9 +233,9 @@ function memo_form(array $m, array $site, string $back): string
         . '<div class="grid2"><p><label>対象 (蜂場・巣箱)</label><span class="tsel">' . $sa . '</select>' . $sh . '</select></span></p>'
         . '<p><label>日付・時刻 (時刻は分かれば)</label><span style="display:flex;gap:6px"><input type="date" name="date" value="' . h((string)($m['date'] ?? date('Y-m-d'))) . '">'
         . '<input type="time" name="time" value="' . h((string)($m['time'] ?? '')) . '" aria-label="時刻" title="スズメバチや分蜂などを見た時刻。AI の学習に役立ちます"></span></p></div>'
-        . '<p><label>内容</label><select name="type" onchange="document.getElementById(\'' . $fid . 'i\').style.display=this.value===\'内検\'?\'\':\'none\'">';
+        . '<p><label>内容</label><select name="type" onchange="document.getElementById(\'' . $fid . 'i\').style.display=this.value===\'内検\'?\'\':\'none\';document.getElementById(\'' . $fid . 'f\').style.display=this.value===\'開花植物\'?\'\':\'none\'">';
     foreach ($types as $t) $o .= '<option' . ($t === $type ? ' selected' : '') . '>' . h($t) . '</option>';
-    $o .= '</select></p><div id="' . $fid . 'i" class="grid2 insp"' . ($type === '内検' ? '' : ' style="display:none"') . '>';
+    $o .= '</select></p>' . flower_field($m, $fid, $type === '開花植物') . '<div id="' . $fid . 'i" class="grid2 insp"' . ($type === '内検' ? '' : ' style="display:none"') . '>';
     $iv = (array)($m['inspect'] ?? []);
     foreach (M_INSPECT as $k => $it) {
         [$lb, $opts, $multi] = $it;
@@ -257,6 +279,36 @@ function memo_form(array $m, array $site, string $back): string
         . '<p><label>メモ</label><textarea name="text" rows="5" data-voice>' . h((string)($m['text'] ?? '')) . '</textarea></p>'
         . memo_photo_field($m)
         . '<p><button type="submit">保存</button></p></form>';
+}
+
+// 開花の記録の欄 (内容が「開花植物」のときだけ出す)。重要な蜜源は一覧から、無ければ自由に書いて「一覧に足す」
+function flower_field(array $m, string $fid, bool $show): string
+{
+    $f = (array)($m['flower'] ?? []);
+    $cur = (string)($f['plant'] ?? '');
+    $custom = flower_plants_custom();
+    $listed = $cur !== '' && (in_array($cur, S_FLOWER_PLANTS, true) || in_array($cur, $custom, true));
+    $o = '<div id="' . $fid . 'f" class="grid2"' . ($show ? '' : ' style="display:none"') . '><p><label>植物 (おもな蜜源)</label><select name="f_plant" onchange="this.form.querySelector(\'.fother\').style.display=this.value===\'*\'?\'\':\'none\'"><option value="">-</option>';
+    foreach (S_FLOWER_PLANTS as $p) $o .= '<option' . ($cur === $p ? ' selected' : '') . '>' . h($p) . '</option>';
+    if ($custom) {
+        $o .= '<optgroup label="自分で足した植物">';
+        foreach ($custom as $p) $o .= '<option' . ($cur === $p ? ' selected' : '') . '>' . h($p) . '</option>';
+        $o .= '</optgroup>';
+    }
+    $o .= '<option value="*"' . ($cur !== '' && !$listed ? ' selected' : '') . '>一覧に無い (書く)</option></select></p>'
+        . '<p><label>咲き具合</label><select name="f_stage"><option value="">-</option>';
+    foreach (S_FLOWER_STAGES as $p) $o .= '<option' . (($f['stage'] ?? '') === $p ? ' selected' : '') . '>' . h($p) . '</option>';
+    $o .= '</select></p><p class="wide fother"' . ($cur !== '' && !$listed ? '' : ' style="display:none"') . '><label>植物の名前</label><input type="text" name="f_other" maxlength="40" value="' . h($listed ? '' : $cur) . '">'
+        . '<label style="display:inline-flex;align-items:center;gap:4px;color:#1F2328"><input type="checkbox" name="f_add" value="1" checked> 次から一覧で選べるようにする</label></p>'
+        . '<p><label>ミツバチの訪花</label><select name="f_visit"><option value="">-</option>';
+    foreach (S_FLOWER_VISITS as $p) $o .= '<option' . (($f['visit'] ?? '') === $p ? ' selected' : '') . '>' . h($p) . '</option>';
+    $o .= '</select></p>';
+    if ($custom) {
+        $o .= '<details class="wide"><summary class="muted" style="font-size:.85em">自分で足した植物を一覧から外す</summary><span class="tags">';
+        foreach ($custom as $p) $o .= '<button type="submit" name="plant_del" value="' . h($p) . '" formnovalidate class="tagcz" onclick="return confirm(\'「' . h($p) . '」を一覧から外しますか? (書いているメモは保存されません)\')">' . h($p) . ' ×</button>';
+        $o .= '</span></details>';
+    }
+    return $o . '</div>';
 }
 
 // 写真の欄: 付いている写真(「外す」で消す)と、足す写真を選ぶボタン(合わせて M_PHOTO_MAX 枚まで)

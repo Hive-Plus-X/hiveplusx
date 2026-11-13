@@ -32,6 +32,25 @@ const S_MEMO_TYPES_OLD = ['給餌', '分蜂', '採蜜', '病害虫', '天候']; 
 // メモの「共通の出来事」タグ (2026-11-13、AI の教師データ用)。だれのメモでも同じ言葉になるように、カスタマイズで消せない。
 //   memo.php のタグの一覧と、AIメモ・記録 (hpx_ai_note.php) で、いつも先頭に出す。言葉を変えるときは S_TAG_RENAME で前の言葉も読めるようにする
 const S_MEMO_EVENTS = ['スズメバチ', '分蜂', '逃去', '盗蜂', '大量死', '入居', 'クマ'];
+// 開花の記録 (メモの内容「開花植物」、2026-11-13 TARO 案)。花の種類は多いので、重要な蜜源だけ一覧から選び、
+//   一覧に無い植物は自由に書く (「一覧に足す」でその人の一覧 site/flower_plants.json {"plants": [...]} に足す)。メモの flower に持つ:
+//   {plant: 植物名, stage: 咲き具合, visit: ミツバチの訪花}。開花予想・採蜜予測の教師データにする
+const S_FLOWER_PLANTS = ['ウメ', 'サクラ', 'ナタネ (菜の花)', 'レンゲ', 'タンポポ', 'リンゴ', 'ミカン', 'ニセアカシア', 'トチノキ', 'クローバー',
+    'ヘアリーベッチ', 'エゴノキ', 'クリ', 'ユリノキ', 'シナノキ', 'ネズミモチ・トウネズミモチ', 'カラスザンショウ', 'ハゼノキ', 'キハダ', 'ソバ', 'ヒマワリ', 'セイタカアワダチソウ'];
+const S_FLOWER_STAGES = ['つぼみ', '咲き始め', '満開', '終わり'];
+const S_FLOWER_VISITS = ['多い', 'ふつう', '少ない', '見ない'];
+function flower_plants_custom(): array
+{
+    $v = site_read('flower_plants');
+    return array_values(array_filter(array_map('strval', (array)($v['plants'] ?? [])), fn($x) => $x !== '' && !in_array($x, S_FLOWER_PLANTS, true)));
+}
+function flower_text(array $f): string
+{
+    $o = trim((string)($f['plant'] ?? ''));
+    if (($f['stage'] ?? '') !== '') $o .= ($o !== '' ? ' ' : '') . $f['stage'];
+    if (($f['visit'] ?? '') !== '') $o .= ($o !== '' ? ' ・ ' : '') . '訪花 ' . $f['visit'];
+    return $o;
+}
 const S_WORK_TYPES = ['準備', '内検', '給餌', '採蜜', '分蜂対応', '片付け', '移動', 'その他'];
 
 // 内検の項目: キー => [見出し, 選択肢(空なら数値), 複数選べるか, 見出しの横の注意書き(省略可)]
@@ -368,6 +387,7 @@ function memo_chips(array $m): array
     $o = [];
     foreach ((array)($m['inspect'] ?? []) as $v) if (is_array($v)) foreach ($v as $x) $o[] = (string)$x;
     foreach ((array)($m['tags'] ?? []) as $x) $o[] = (string)$x;
+    if (($t = flower_text((array)($m['flower'] ?? []))) !== '') $o[] = '開花: ' . $t;
     return array_values(array_unique($o));
 }
 

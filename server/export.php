@@ -76,11 +76,13 @@ foreach ($ms as $m) {
     $r[] = $mt['bees'] ?? '';
     $r[] = $mt['mites'] ?? '';
     $r[] = isset($mt['bees'], $mt['mites']) && $mt['bees'] > 0 ? number_format($mt['mites'] / $mt['bees'] * 100, 1, '.', '') : '';
+    $fl = (array)($m['flower'] ?? []);
+    array_push($r, $fl['plant'] ?? '', $fl['stage'] ?? '', $fl['visit'] ?? '');
     array_push($r, (array)($m['tags'] ?? []), $m['text'] ?? '', count((array)($m['photos'] ?? [])), $who($m['by'] ?? ''), $dt($m['created'] ?? 0), $dt($m['updated'] ?? 0), (string)($m['id'] ?? ''));
     $rows[] = $r;
 }
 csv_add($zip, 'メモ.csv', array_merge(['日付', '時刻', '蜂場', '巣箱', '内容'], array_map(fn($it) => $it[0], array_values(M_INSPECT)),
-    ['ダニ調査 方法', 'ダニ調査 検査ミツバチ数', 'ダニ調査 ダニ数', 'ダニ寄生率 (%)', 'タグ', 'メモ', '写真の枚数', '記入者', '作成', '更新', 'メモID']), $rows);
+    ['ダニ調査 方法', 'ダニ調査 検査ミツバチ数', 'ダニ調査 ダニ数', 'ダニ寄生率 (%)', '開花 植物', '開花 咲き具合', '開花 ミツバチの訪花', 'タグ', 'メモ', '写真の枚数', '記入者', '作成', '更新', 'メモID']), $rows);
 
 // ---- タスク ----
 $rows = [];
