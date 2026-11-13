@@ -559,9 +559,9 @@ foreach ((is_array($todo['todos'] ?? null) ? $todo['todos'] : []) as $t) {
     if ($t['due'] < date('Y-m-d', $now)) $over++;
     elseif ($t['due'] === date('Y-m-d', $now)) $due++;
 }
-echo '<nav>' . brand_nav_logo() . '<a href="apiary.php">蜂場</a><a href="hive.php">巣箱</a><a href="memo.php">メモ</a><a href="task.php">タスク'
+echo '<nav>' . brand_nav_logo() . '<span class="nl"><a href="apiary.php">蜂場</a><a href="hive.php">巣箱</a><a href="memo.php">メモ</a><a href="task.php">タスク'
     . ($over ? '<span class="badge" title="期限切れの タスク">' . $over . '</span>' : '')
-    . ($due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a><a href="work.php">記録</a>'
+    . ($due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a><a href="work.php">記録</a></span>'
     . auth_nav_right('sensor.php') . '</nav>';
 echo '<p class="muted" style="text-align:right;margin:0">' . h(date('Y-m-d H:i', $now)) . ' 現在 (5分ごとに自動で更新)</p>';
 if ($msg !== '') echo '<p class="ng">' . h($msg) . '</p>';
