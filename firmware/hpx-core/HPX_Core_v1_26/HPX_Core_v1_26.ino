@@ -8,6 +8,9 @@
 //     (眠っていても基板の電源ランプはつくので、動いていないように見える)。
 //     電池で長く動いている機器が電池切れ間際にブラウンアウト・クラッシュしたときは、これまでどおり保守モードにしない(電池を守るため)。
 //   * 管理画面のトップに「前回の起動のきっかけ」(電源オン・ブラウンアウト・タイマーなど)を出す。
+//   * 管理画面に「前回の起動で最後にしていたこと」(ネット接続・送信など)を出す。止まって再起動したとき、どこで止まったか分かる
+//   * https の最初のやりとり(TLS ハンドシェイク)の待ち時間を 120秒(初期値)→20秒にした。Wi-Fi が不安定なとき、
+//     ウォッチドッグ(60秒)より長く待って「task_wdt」で再起動していた可能性があるため(TARO 2026-11-14: 電源モジュールで RESET すると task_wdt)
 //   * ピンなど、ほかは v1.25 と同じ
 //
 // v1.25 の変更 (TARO 2026-11-13: 開発ボードを DFRobot FireBeetle 2 ESP32-E (DFR0654) に変えた)
@@ -328,6 +331,7 @@ constexpr uint32_t VALIDATE_STABLE_MS = 30UL * 1000;
 constexpr uint32_t VALIDATE_DEADLINE_MS = 5UL * 60 * 1000;
 
 constexpr uint32_t WDT_TIMEOUT_MS = 60UL * 1000;
+constexpr unsigned long TLS_HANDSHAKE_S = 20;   // v1.26: https の最初のやりとりの待ち時間(秒)。ウォッチドッグより短くする
 
 // BLEセンサ(Inkbird IBS-TH2 / TH2 PLUS)
 constexpr uint8_t BLE_MAX_SENSORS = 10;           // 登録できるBLEセンサの台数(16まで。BleMask が16ビット)(増やすときは BLE_LOG_HARD_MAX と128KBの保存領域も確認)
@@ -459,6 +463,28 @@ String bleStatusText = "未実行";
 constexpr uint32_t RTC_MAGIC = 0x48505803;  // レイアウトを変えたら値を変える
 RTC_DATA_ATTR uint32_t rtcMagic = 0;
 RTC_DATA_ATTR uint32_t rtcBootCount = 0;
+// v1.26: いま何をしているか(止まって再起動したとき、どこで止まったかを管理画面に出すため)。
+// RTC_NOINIT は RESET・クラッシュでは消えない(電源を切ると消える)
+RTC_NOINIT_ATTR uint32_t rtcStage;
+uint32_t lastStage = 0;   // 前回の起動で最後に通った場所
+inline void stage(uint32_t s) { rtcStage = 0x5A000000UL | s; }
+const char* stageText(uint32_t s)
+{
+  switch (s)
+  {
+    case 1: return "起動の始め";
+    case 2: return "工場出荷リセットのボタン待ち";
+    case 3: return "設定の読み込み";
+    case 4: return "ネットへの接続";
+    case 5: return "管理画面の開始";
+    case 6: return "時刻合わせ(NTP)";
+    case 7: return "BLEセンサの受信";
+    case 8: return "サーバーへの送信";
+    case 9: return "ファーム更新の確認";
+    case 10: return "ふだんの動作(管理画面の待ち受け)";
+    default: return "不明";
+  }
+}
 RTC_DATA_ATTR uint8_t rtcCrashCount = 0;
 RTC_DATA_ATTR uint8_t rtcFailStreak = 0;
 RTC_DATA_ATTR uint8_t rtcNtpFail = 0;
@@ -2816,6 +2842,7 @@ int postJson(const String& url, const String& body)
   {
     if (kServerCa != nullptr) sclient.setCACert(kServerCa);
     else sclient.setInsecure();
+    sclient.setHandshakeTimeout(TLS_HANDSHAKE_S);   // v1.26: 初期値 120秒はウォッチドッグ(60秒)より長い
   }
   HTTPClient http;
   http.setConnectTimeout(8000);
@@ -2908,6 +2935,7 @@ bool fetchManifest(int& build, String& binUrl)
   WiFiClientSecure client;
   if (kOtaCa != nullptr) client.setCACert(kOtaCa);
   else client.setInsecure();
+  client.setHandshakeTimeout(TLS_HANDSHAKE_S);   // v1.26
 
   HTTPClient http;
   http.setConnectTimeout(8000);
@@ -2990,6 +3018,7 @@ bool checkHttpsOta()
   WiFiClientSecure client;
   if (kOtaCa != nullptr) client.setCACert(kOtaCa);
   else client.setInsecure();
+  client.setHandshakeTimeout(TLS_HANDSHAKE_S);   // v1.26
   httpUpdate.rebootOnUpdate(true);
   httpUpdate.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
   t_httpUpdate_return ret = httpUpdate.update(client, binUrl);
@@ -3035,8 +3064,10 @@ bool runCycle(bool allowOta)
   }
   // 区切りに合わせて記録するときは、スリープ中の時計のずれを直すため、起きるたびにNTPで合わせる
   // (NTPが通らない回線では、これまで通り間引く)
+  stage(6);
   syncNtp(BLE_ALIGN_TO_CLOCK && powerMode == MODE_DEEPSLEEP && rtcNtpFail == 0);
   float vbat = readBatteryV();
+  stage(7);
   bleCollectIfDue(false);   // BLEセンサ(保存間隔に達していれば)。送信より前に行い、最新の記録も一緒に送る
   // 溜まった記録は BLE_UPLOAD_CHUNK 件ずつ分けて送り、送れた分から「送信済み」にする。
   // 失敗したらそこで止め、残りは次の起床で送る。
@@ -3045,6 +3076,7 @@ bool runCycle(bool allowOta)
   for (;;)
   {
     String sensors = collectSensorsJson();
+    stage(8);
     ok = sendReport(vbat, sensors);
     esp_task_wdt_reset();
     if (!ok || serverUrl.length() == 0) break;
@@ -3053,7 +3085,9 @@ bool runCycle(bool allowOta)
     if (!blePendingMore) break;
     if (millis() - upT0 > BLE_UPLOAD_MAX_MS) break;
   }
+  stage(9);
   if (allowOta) maybeCheckOta(vbat);
+  stage(10);
   return ok;
 }
 
@@ -3533,7 +3567,8 @@ void handleMainPage()
   h += "<p><b>機器ID : " + htmlEscape(deviceID) + "</b></p>";
   h += "<p>固有ID(MAC) : " + deviceUid + "</p>";
   h += "<p><b>Firmware Version: " + String(FW_VERSION) + "</b></p>";
-  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン、brownout=電圧が下がって再起動(電源が弱い)、panic=止まって再起動(電圧のゆれなど)、sw=ソフトの再起動、ext=RESETボタン</small></p>";
+  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン、brownout=電圧が下がって再起動(電源が弱い)、panic=止まって再起動(電圧のゆれなど)、task_wdt=どこかで60秒以上止まって再起動、sw=ソフトの再起動、ext=RESETボタン</small></p>";
+  if (lastStage != 0) h += "<p>前回の起動で最後にしていたこと: " + String(stageText(lastStage)) + "</p>";
   if (useLte())
   {
     h += "<p>LTE-M: " + String(lteUp ? "つながっています" : "つながっていません");
@@ -4806,6 +4841,8 @@ void wifiWatch(uint32_t now)
 void setup()
 {
   Serial.begin(115200);
+  lastStage = ((rtcStage & 0xFF000000UL) == 0x5A000000UL) ? (rtcStage & 0xFFUL) : 0;
+  stage(1);
 
   esp_reset_reason_t reason = esp_reset_reason();
   timerWake = (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_TIMER);
@@ -4830,8 +4867,10 @@ void setup()
   setupWdt();
 
   // RESET直後の3秒間だけ、BOOT長押しによる工場出荷リセットを受け付ける
+  stage(2);
   if (powerOnBoot) checkBootFactoryReset();
 
+  stage(3);
   loadConfig();
   if (useLte())   // 眠る前に固定した D4 を放す(5V は切ったまま)
   {
@@ -4875,6 +4914,7 @@ void setup()
 
   // 保守モード または 常時稼働
   Serial.println("Connecting (" + netName() + ")...");
+  stage(4);
   if (!connectNet(WIFI_CONNECT_TIMEOUT_MS))
   {
     startConfigAP(true);
@@ -4884,12 +4924,14 @@ void setup()
   Serial.print("IP = ");
   Serial.println(netLocalIP());
   startLanAp();   // 有線LANのときだけ、管理画面用の Wi-Fi を出す
+  stage(5);
   startNormalServer();
   lastActivityMs = millis();
 
   bool ok = runCycle(allowOtaNow());
   if (ok) rtcFailStreak = 0;
   nextCycleMs = millis() + secToNextCycle() * 1000UL;
+  stage(10);
 }
 
 void loop()
