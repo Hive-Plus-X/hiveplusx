@@ -481,10 +481,11 @@ else {
     echo '</table></div>';
 }
 // カレンダー(月ごと。期限の日にタスクを並べる。完了したものは薄く)。?cm=年-月 で月を変える
+//   日にちを押すと、その日を期限にしてタスクを書く窓が開く。タスクを押すと詳細の窓が開く(そこで完了・変更・削除もできる)
 $cm = (string)($_GET['cm'] ?? '');
 if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $cm)) $cm = date('Y-m', $now);
 $first = strtotime($cm . '-01');
-$byDay = [];
+$byDay = []; $calTodos = [];
 foreach ($works['todos'] as $t) {
     $due = (string)($t['due'] ?? '');
     if (substr($due, 0, 7) !== $cm || !($fa === '' || in_array($t['apiary'] ?? '', [$fa, ''], true))) continue;
@@ -505,16 +506,71 @@ for ($d = 1; $d <= $days; $d++) {
     $ymd = $cm . '-' . sprintf('%02d', $d);
     $wd = ($lead + $d - 1) % 7;
     if ($wd === 0 && $d > 1) echo '</tr><tr>';
-    echo '<td class="w' . $wd . ($ymd === $today ? ' today' : '') . '"><div class="d">' . $d . '</div>';
+    echo '<td class="w' . $wd . ($ymd === $today ? ' today' : '') . '" data-day="' . $ymd . '"><div class="d">' . $d
+        . '<button type="button" class="cadd" title="' . h(date('n月j日', strtotime($ymd))) . 'のタスクを書く" aria-label="' . h(date('n月j日', strtotime($ymd))) . 'のタスクを書く">＋</button></div>';
     foreach (todo_sort($byDay[$d] ?? []) as $t) {
         $cls = !empty($t['done']) ? 'done' : ($ymd < $today ? 'over' : '');
         $as = todo_assignees($t);
-        echo '<div class="ti ' . $cls . '" title="' . h(todo_title($t) . ' / ' . target_label($site, (string)$t['apiary'], (string)($t['hive'] ?? '')) . ($as ? ' / 担当: ' . implode('・', array_map('user_name', $as)) : '')) . '">' . h(todo_title($t)) . '</div>';
+        echo '<button type="button" class="ti ' . $cls . '" data-id="' . h((string)$t['id']) . '" title="' . h(todo_title($t) . ' / ' . target_label($site, (string)$t['apiary'], (string)($t['hive'] ?? '')) . ($as ? ' / 担当: ' . implode('・', array_map('user_name', $as)) : '')) . '">' . h(todo_title($t)) . '</button>';
+        $calTodos[] = $t;
     }
     echo '</td>';
 }
 for ($i = ($lead + $days) % 7; $i > 0 && $i < 7; $i++) echo '<td class="out"></td>';
-echo '</tr></table><p class="muted" style="font-size:.8em;margin:.2em 0 0">期限のあるタスクを期限の日に出します (赤 = 期限切れ、薄い字 = 完了)。</p></div>';
+echo '</tr></table><p class="muted" style="font-size:.8em;margin:.2em 0 0">期限のあるタスクを期限の日に出します (赤 = 期限切れ、薄い字 = 完了)。日にちを押すとその日のタスクを書けます。タスクを押すと詳しく見られます。</p></div>';
+// カレンダーの窓: 日にちから書く(期限はJSで入れる)・タスクの詳細(完了・戻す・変更・コピー・削除)
+$calBack = $selfUrl(['cm' => $cm === date('Y-m', $now) ? '' : $cm], 'tcal');
+echo '<dialog id="tcaldlg" class="tdlg" aria-labelledby="tcalh"><div class="tdlgh"><b id="tcalh"></b><button type="button" class="tdlgx" onclick="this.closest(\'dialog\').close()" aria-label="閉じる">×</button></div>'
+    . '<div class="tdet" data-for="new">' . todo_form(['apiary' => $fa], $site, $calBack) . '</div>';
+foreach ($calTodos as $t) {
+    $id = (string)$t['id'];
+    $as = todo_assignees($t);
+    $hidden = csrf_field() . '<input type="hidden" name="id" value="' . h($id) . '"><input type="hidden" name="back" value="' . h($calBack) . '">';
+    echo '<div class="tdet" data-for="' . h($id) . '" data-title="' . h(todo_title($t)) . '" hidden><table class="tdtbl">'
+        . '<tr><th>やること</th><td>' . tag_show((array)($t['tags'] ?? [])) . h((string)($t['title'] ?? '')) . '</td></tr>'
+        . '<tr><th>期限</th><td>' . (!empty($t['done']) ? h(date('n/j', strtotime((string)$t['due']))) : due_html((string)($t['due'] ?? ''))) . (!empty($t['notify']) ? ' <span title="メールで知らせる">✉ メールで知らせる</span>' : '') . '</td></tr>'
+        . '<tr><th>対象</th><td>' . h(target_label($site, (string)$t['apiary'], (string)($t['hive'] ?? ''))) . '</td></tr>'
+        . (team_on() ? '<tr><th>担当</th><td>' . h(implode('・', array_map('user_name', $as)) ?: '未定') . '</td></tr>' : '')
+        . '<tr><th>状態</th><td>' . (!empty($t['done']) ? '完了' . (!empty($t['done_at']) ? ' (' . h(date('n/j', (int)$t['done_at'])) . ')' : '') : '未完了') . '</td></tr>'
+        . (($t['note'] ?? '') !== '' ? '<tr><th>メモ</th><td>' . nl((string)$t['note']) . '</td></tr>' : '')
+        . (($t['by'] ?? '') !== '' ? '<tr><th>記入</th><td>' . h(user_name((string)$t['by'])) . '</td></tr>' : '')
+        . '</table><div class="tbtn" style="margin-top:8px">'
+        . (empty($t['done'])
+            ? '<form method="post" class="inl">' . $hidden . '<input type="hidden" name="act" value="todo_done"><button type="submit">完了</button></form>'
+            : '<form method="post" class="inl">' . $hidden . '<input type="hidden" name="act" value="todo_undo"><button type="submit">未完了に戻す</button></form>')
+        . '<button type="button" onclick="var e=this.closest(\'.tdet\').querySelector(\'.tdedit\');e.hidden=!e.hidden">変更</button>'
+        . '<a href="' . h($selfUrl(['copy' => $id], 'todo-copy')) . '"><button type="button">コピー</button></a>'
+        . '<form method="post" class="inl" onsubmit="return confirm(\'この タスクを削除しますか?\');">' . $hidden . '<input type="hidden" name="act" value="todo_delete"><button type="submit" class="del">削除</button></form>'
+        . '</div><div class="tdedit" hidden>' . todo_form($t, $site, $calBack) . '</div></div>';
+}
+echo '</dialog>';
+echo <<<'JS'
+<script>
+(function(){
+  var dlg = document.getElementById('tcaldlg'), cal = document.getElementById('tcal');
+  if (!dlg || !cal || typeof dlg.showModal !== 'function') return;   // 古いブラウザでは今までどおり見るだけ
+  cal.classList.add('tcalon');
+  function show(key, head){
+    dlg.querySelectorAll('.tdet').forEach(function(d){ d.hidden = d.getAttribute('data-for') !== key; });
+    dlg.querySelectorAll('.tdedit').forEach(function(e){ e.hidden = true; });
+    document.getElementById('tcalh').textContent = head;
+    dlg.showModal();
+  }
+  cal.addEventListener('click', function(e){
+    var ti = e.target.closest('.ti');
+    if (ti){ var d = dlg.querySelector('.tdet[data-for="' + ti.getAttribute('data-id') + '"]'); if (d) show(ti.getAttribute('data-id'), 'タスクの詳細'); return; }
+    var td = e.target.closest('td[data-day]'); if (!td) return;
+    var day = td.getAttribute('data-day'), p = day.split('-');
+    var f = dlg.querySelector('.tdet[data-for="new"] form');
+    f.elements['due'].value = day;
+    show('new', (+p[1]) + '月' + (+p[2]) + '日のタスクを書く');
+    var t = f.elements['title']; if (t && window.matchMedia('(hover: hover)').matches) t.focus();
+  });
+  // 窓の外(暗いところ)を押したら閉じる
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+})();
+</script>
+JS;
 
 $doneList = array_values(array_filter($works['todos'], fn($t) => !empty($t['done']) && ($fa === '' || in_array($t['apiary'] ?? '', [$fa, ''], true))));
 usort($doneList, fn($x, $y) => (int)($y['done_at'] ?? 0) <=> (int)($x['done_at'] ?? 0));
