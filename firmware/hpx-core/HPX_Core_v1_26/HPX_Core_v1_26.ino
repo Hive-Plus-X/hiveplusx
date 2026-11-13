@@ -2,11 +2,11 @@
 // HPX_Core_v1_26.ino   Hive Plus X  (ESP32 養蜂IoT コア)
 //
 // v1.26 の変更 (TARO 2026-11-14: USB 以外の電源 (ブレッドボード用電源モジュールなど) だと管理画面が開けない件)
-//   * 電源を入れた直後に電圧が一瞬下がって「ブラウンアウト(電圧低下)リセット」で始まったときも、
+//   * 電源を入れた直後に電圧が一瞬下がって「ブラウンアウト(電圧低下)リセット」や「panic(クラッシュ)」で始まったときも、
 //     電源を入れたときと同じように保守モード(管理画面を約10分出す)で始めるようにした。
 //     これまでは、ディープスリープの設定だと保守モードにならず、計測・送信だけしてすぐ眠っていた
 //     (眠っていても基板の電源ランプはつくので、動いていないように見える)。
-//     電池で長く動いている機器が電池切れ間際にブラウンアウトしたときは、これまでどおり保守モードにしない(電池を守るため)。
+//     電池で長く動いている機器が電池切れ間際にブラウンアウト・クラッシュしたときは、これまでどおり保守モードにしない(電池を守るため)。
 //   * 管理画面のトップに「前回の起動のきっかけ」(電源オン・ブラウンアウト・タイマーなど)を出す。
 //   * ピンなど、ほかは v1.25 と同じ
 //
@@ -3533,7 +3533,7 @@ void handleMainPage()
   h += "<p><b>機器ID : " + htmlEscape(deviceID) + "</b></p>";
   h += "<p>固有ID(MAC) : " + deviceUid + "</p>";
   h += "<p><b>Firmware Version: " + String(FW_VERSION) + "</b></p>";
-  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン、brownout=電圧が下がって再起動(電源が弱い)、sw=ソフトの再起動、ext=RESETボタン</small></p>";
+  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン、brownout=電圧が下がって再起動(電源が弱い)、panic=止まって再起動(電圧のゆれなど)、sw=ソフトの再起動、ext=RESETボタン</small></p>";
   if (useLte())
   {
     h += "<p>LTE-M: " + String(lteUp ? "つながっています" : "つながっていません");
@@ -4815,9 +4815,14 @@ void setup()
 
   initRtc(powerOnBoot);
   rtcBootCount++;
-  // v1.26: 電源を入れた直後のブラウンアウト(電源モジュールなどで電圧の立ち上がりが遅い・Wi-Fi を始めた瞬間に電圧が下がる)も
-  // 電源オンとみなして保守モードにする。電池で長く動いていた機器(起動回数が多い)のブラウンアウトは電池切れ間際とみて、これまでどおり
-  if (reason == ESP_RST_BROWNOUT && !timerWake && rtcBootCount <= 3) maintenanceBoot = true;
+  // v1.26: 電源を入れた直後のブラウンアウト・クラッシュ(panic・ウォッチドッグ)も電源オンとみなして保守モードにする。
+  // 電源モジュールなどでは、電源を入れた直後や Wi-Fi を始めた瞬間に電圧がゆれて、1回目の起動が止まることがある
+  // (TARO 2026-11-14: ELEGOO + 電源モジュールで「panic」を確認)。
+  // 電池で長く動いていた機器(起動回数が多い)のときは電池切れ間際とみて、これまでどおり計測だけしてすぐ眠る
+  if (!timerWake && rtcBootCount <= 3 &&
+      (reason == ESP_RST_BROWNOUT || reason == ESP_RST_PANIC || reason == ESP_RST_INT_WDT ||
+       reason == ESP_RST_TASK_WDT || reason == ESP_RST_WDT))
+    maintenanceBoot = true;
   setenv("TZ", "JST-9", 1);
   tzset();
   WiFi.persistent(false);
