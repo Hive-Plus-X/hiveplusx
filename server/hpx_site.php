@@ -732,6 +732,7 @@ function page_head(string $title, string $active): void
     // メニューと、期限切れ・今日の タスクの数
     [$over, $due] = todo_counts();
     $items = ['apiary.php' => '蜂場', 'hive.php' => '巣箱', 'memo.php' => 'メモ', 'task.php' => 'タスク', 'work.php' => '記録'];
+    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AIメモ・記録';   // config に Claude の API キーがあるときだけ (ai_note.php)
     if (cams_visible()) $items['camera.php'] = 'カメラ';   // HPX-CAM の写真が届いているときだけ
     echo '<nav>' . brand_nav_logo();
     foreach ($items as $f => $lb) {
