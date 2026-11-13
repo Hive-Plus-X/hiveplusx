@@ -94,6 +94,7 @@ if ($act === 'download') {
         . ($withHubs ? "・センサの記録 (HPX-Core " . count($hubIds) . " 台分) が入っています。\r\n" : "・センサの記録は入っていません。\r\n"));
     $zip->close();
     header('Content-Type: application/zip');
+    dl_mark_user($UID);   // ダウンロードした日 (お知らせ用、hpx_dl_remind.php)
     header('Content-Disposition: attachment; filename="hpx_backup_' . date('Ymd_Hi', $now) . '.zip"');
     header('Content-Length: ' . filesize($zipPath));
     header('Cache-Control: no-store');

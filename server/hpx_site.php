@@ -12,6 +12,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/hpx_auth.php';
 require_once __DIR__ . '/hpx_hive_alert.php';
 require_once __DIR__ . '/hpx_cam.php';
+require_once __DIR__ . '/hpx_links.php';
+require_once __DIR__ . '/hpx_dl_remind.php';
 
 const S_TITLE = BRAND_NAME;
 const S_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
@@ -27,6 +29,28 @@ const S_MEMO_TYPES = ['内検', 'ミツバチ', 'トラブル', '開花植物', 
 const S_MEMO_RENAME = ['蜂のイベント' => 'ミツバチ', '外敵' => 'トラブル', '開花状況' => '開花植物'];
 const S_TAG_RENAME = ['開花スタート' => '開花'];
 const S_MEMO_TYPES_OLD = ['給餌', '分蜂', '採蜜', '病害虫', '天候'];   // 前の版の「種類」。そのメモを直すときだけ選べる
+// メモの「共通の出来事」タグ (2026-11-13、AI の教師データ用)。だれのメモでも同じ言葉になるように、カスタマイズで消せない。
+//   memo.php のタグの一覧と、AIメモ・記録 (hpx_ai_note.php) で、いつも先頭に出す。言葉を変えるときは S_TAG_RENAME で前の言葉も読めるようにする
+const S_MEMO_EVENTS = ['スズメバチ', '分蜂', '逃去', '盗蜂', '大量死', '入居', 'クマ'];
+// 開花の記録 (メモの内容「開花植物」、2026-11-13 TARO 案)。花の種類は多いので、重要な蜜源だけ一覧から選び、
+//   一覧に無い植物は自由に書く (「一覧に足す」でその人の一覧 site/flower_plants.json {"plants": [...]} に足す)。メモの flower に持つ:
+//   {plant: 植物名, stage: 咲き具合, visit: ミツバチの訪花}。開花予想・採蜜予測の教師データにする
+const S_FLOWER_PLANTS = ['ウメ', 'サクラ', 'ナタネ (菜の花)', 'レンゲ', 'タンポポ', 'リンゴ', 'ミカン', 'ニセアカシア', 'トチノキ', 'クローバー',
+    'ヘアリーベッチ', 'エゴノキ', 'クリ', 'ユリノキ', 'シナノキ', 'ネズミモチ・トウネズミモチ', 'カラスザンショウ', 'ハゼノキ', 'キハダ', 'ソバ', 'ヒマワリ', 'セイタカアワダチソウ'];
+const S_FLOWER_STAGES = ['つぼみ', '咲き始め', '満開', '終わり', '不明'];   // 「-」(空) は書いていない、「不明」は見たが分からない
+const S_FLOWER_VISITS = ['多い', 'ふつう', '少ない', '見ない', '不明'];
+function flower_plants_custom(): array
+{
+    $v = site_read('flower_plants');
+    return array_values(array_filter(array_map('strval', (array)($v['plants'] ?? [])), fn($x) => $x !== '' && !in_array($x, S_FLOWER_PLANTS, true)));
+}
+function flower_text(array $f): string
+{
+    $o = trim((string)($f['plant'] ?? ''));
+    if (($f['stage'] ?? '') !== '') $o .= ($o !== '' ? ' ' : '') . $f['stage'];
+    if (($f['visit'] ?? '') !== '') $o .= ($o !== '' ? ' ・ ' : '') . '訪花 ' . $f['visit'];
+    return $o;
+}
 const S_WORK_TYPES = ['準備', '内検', '給餌', '採蜜', '分蜂対応', '片付け', '移動', 'その他'];
 
 // 内検の項目: キー => [見出し, 選択肢(空なら数値), 複数選べるか, 見出しの横の注意書き(省略可)]
@@ -70,6 +94,11 @@ if (defined('S_AS_UID')) {   // カレンダー配信(ical.php)は、ログイ�
 $SITE_UID = $UID;          // site_read()・site_update() の読み書き先(蜂場の持ち主)
 $now = time();
 $today = date('Y-m-d', $now);
+// ダウンロードのお知らせの「あとで」(hpx_dl_remind.php。どのページから押しても、そのページに戻る)
+if (($_POST['act'] ?? '') === 'dl_later' && $csrf !== '' && is_post()) {
+    dl_snooze($UID);
+    redirect(basename($selfPage) . (($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?' . $_SERVER['QUERY_STRING'] : ''), 'お知らせを ' . DLR_SNOOZE_DAYS . ' 日あとにまた出します。');
+}
 
 function csrf_field(): string
 {
@@ -143,7 +172,7 @@ function site_update_of(string $owner, string $name, callable $fn): bool
     $ok = @file_put_contents($tmp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false
         && @rename($tmp, $dir . '/' . $name . '.json');
     if ($lock) { flock($lock, LOCK_UN); fclose($lock); }
-    if ($name === 'site') owner_site($owner, true);
+    if ($name === 'site') { owner_site($owner, true); link_log_sync($owner); }   // つながりが変わったら履歴に残す (hpx_links.php)
     return $ok;
 }
 function site_update(string $name, callable $fn): bool { return site_update_of($GLOBALS['SITE_UID'], $name, $fn); }
@@ -358,6 +387,7 @@ function memo_chips(array $m): array
     $o = [];
     foreach ((array)($m['inspect'] ?? []) as $v) if (is_array($v)) foreach ($v as $x) $o[] = (string)$x;
     foreach ((array)($m['tags'] ?? []) as $x) $o[] = (string)$x;
+    if (($t = flower_text((array)($m['flower'] ?? []))) !== '') $o[] = '開花: ' . $t;
     return array_values(array_unique($o));
 }
 
@@ -444,10 +474,11 @@ JS;
 const S_TAG_LEN = 20;
 const S_TAG_MAX = 50;
 
-function tag_list(string $file, array $default): array
+function tag_list(string $file, array $default, array $fixed = []): array
 {
     $v = site_read($file);
-    return isset($v['tags']) && is_array($v['tags']) ? array_values(array_unique(array_map(fn($t) => S_TAG_RENAME[(string)$t] ?? (string)$t, $v['tags']))) : $default;
+    $list = isset($v['tags']) && is_array($v['tags']) ? array_values(array_unique(array_map(fn($t) => S_TAG_RENAME[(string)$t] ?? (string)$t, $v['tags']))) : $default;
+    return array_values(array_unique(array_merge($fixed, $list)));   // $fixed (消せないタグ) はいつも先頭
 }
 
 function tag_clean(string $t): string
@@ -467,14 +498,15 @@ function tags_in(): array
 }
 
 // 一覧の変更(画面からその場で送られ、新しい一覧を JSON で返す。書きかけのフォームは消えない)。act が違えば何もしない
-function tag_post(string $act, string $file, array $default): void
+function tag_post(string $act, string $file, array $default, array $fixed = []): void
 {
     if (!in_array($act, ['tag_add', 'tag_del', 'tag_reset'], true)) return;
     $t = tag_clean((string)($_POST['tag'] ?? ''));
     $err = '';
-    site_update($file, function (array $v) use ($act, $t, $default, &$err) {
+    site_update($file, function (array $v) use ($act, $t, $default, $fixed, &$err) {
         $tags = isset($v['tags']) && is_array($v['tags']) ? $v['tags'] : $default;
         if ($act === 'tag_reset') $tags = $default;
+        elseif ($act === 'tag_del' && in_array($t, $fixed, true)) $err = '「' . $t . '」はみんなで同じ言葉にそろえる共通の出来事なので、消せません。';
         elseif ($act === 'tag_del') $tags = array_values(array_filter($tags, fn($x) => $x !== $t));
         elseif ($t === '') $err = 'タグの名前を入れてください。';
         elseif (in_array($t, $tags, true)) $err = '「' . $t . '」はもうあります。';
@@ -483,7 +515,7 @@ function tag_post(string $act, string $file, array $default): void
         return ['tags' => array_values($tags)];
     });
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['tags' => tag_list($file, $default), 'error' => $err], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['tags' => tag_list($file, $default, $fixed), 'error' => $err], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -747,6 +779,7 @@ function page_head(string $title, string $active): void
             : (!empty($HPX_DEMO_READONLY) ? '見るだけで、変更はできません。'
             : '自由に入力して試せます。ほかの人も同じアカウントを使っているので、個人の情報は書かないでください。入力した内容は毎日 ' . (int)($HPX_DEMO_RESET_HOUR ?? 3) . '時ごろに元に戻ります (写真の追加と設定の変更はできません)。'))
         . '</div>';
+    echo dl_notice_html($ME, csrf_field());   // データのダウンロードを促すお知らせ (hpx_dl_remind.php)
 }
 
 // ====================================================================
