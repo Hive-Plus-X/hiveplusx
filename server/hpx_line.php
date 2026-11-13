@@ -25,6 +25,20 @@ function line_on(): bool
     return trim((string)($HPX_LINE_TOKEN ?? '')) !== '' && trim((string)($HPX_LINE_SECRET ?? '')) !== '';
 }
 
+// LINE で送った文を AI で読み取って HPX-note に記録する機能 (hpx_line_note.php) が使えるか。config の $HPX_AI_KEY (Claude の API キー) があれば使える
+function ai_on(): bool
+{
+    global $HPX_AI_KEY;
+    return line_on() && trim((string)($HPX_AI_KEY ?? '')) !== '';
+}
+
+// その人が LINE で記録する機能を使うか (マイアカウントで止められる。初めはオン)
+function line_note_on(string $uid): bool
+{
+    $l = line_link($uid);
+    return ai_on() && $l && ($l['note'] ?? true) !== false;
+}
+
 // 友だち追加の URL (config の $HPX_LINE_ADD_URL)
 function line_add_url(): string
 {
@@ -86,6 +100,21 @@ function line_link(string $uid): array
     return is_array($l) && (string)($l['to'] ?? '') !== '' ? $l : [];
 }
 
+// 同じイベントが2回届いた (LINE の再送) か。初めてなら覚えて false
+function line_event_seen(string $id): bool
+{
+    if ($id === '') return false;
+    $seen = false;
+    json_update(data_dir() . '/line_events.json', function (array $e) use ($id, &$seen) {
+        $now = time();
+        $e = array_filter($e, fn($t) => (int)$t > $now - 86400);
+        if (isset($e[$id])) $seen = true;
+        $e[$id] = $now;
+        return $e;
+    });
+    return $seen;
+}
+
 function line_users_path(): string { return data_dir() . '/line_users.json'; }
 function line_codes_path(): string { return data_dir() . '/line_codes.json'; }
 
@@ -128,7 +157,10 @@ function line_link_set(string $uid, string $to): void
         return $m;
     });
     if ($old !== '' && $old !== $uid) account_update($old, function (array $a) { unset($a['line']); return $a; });
-    account_update($uid, function (array $a) use ($to) { $a['line'] = ['to' => $to, 'at' => time(), 'only' => !empty($a['line']['only'])]; return $a; });
+    account_update($uid, function (array $a) use ($to) {
+        $a['line'] = ['to' => $to, 'at' => time(), 'only' => !empty($a['line']['only'])] + (isset($a['line']['note']) ? ['note' => (bool)$a['line']['note']] : []);
+        return $a;
+    });
 }
 
 // 連携を外す ($uid か、LINE の宛先 $to のどちらかで)
