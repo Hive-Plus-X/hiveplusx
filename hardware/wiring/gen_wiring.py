@@ -555,6 +555,97 @@ json.dump({"tables": [{"head": "部品の使いどころ", "rows": CORE_ROWS}], 
           open(os.path.join(OUT, "HPX-Core_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("ok")
 
+# ＋防水を ELEGOO・Freenove で作るとき (TARO 2026-11-13: どの版も Olimex・Freenove・ELEGOO で作れるように)
+# どちらも USB-C なので、防水USBカプラーと両側 USB-C のケーブルでつなぐ。HPX-Solar のときの 5V は ELEGOO=VIN、Freenove=5V。
+for kind, name, sub, fill, stroke, npin, v5 in (
+        ("elegoo", "ELEGOO ESP-32 開発ボード", "ESP-32（USB-C・CP2102）", "#212121", "#000", 15, "VIN"),
+        ("freenove", "Freenove ESP32 WROOM（FNK0090）", "ESP32 WROOM", "#0d47a1", "#062a63", 20, "5V")):
+    tag_ = "【ELEGOO で作るとき】" if kind == "elegoo" else "【Freenove で作るとき】"
+    short = "ELEGOO" if kind == "elegoo" else "Freenove"
+    s = S(1280, 1300)
+    title(s, f"{tag_}HPX-Core ＋防水の部品表と配線図", f"{name} ／ 電源 USB ／ ファーム HPX_Core v1.25")
+    cx, cy = 524, 170
+    s.rect(cx, cy, 232, 400, fill, stroke, 10, 3)
+    s.rect(cx + 46, cy + 8, 140, 170, "#b0bec5", "#78909c", 6, 2)
+    s.rect(cx + 46, cy + 8, 140, 46, "#212121", "#111", 4, 2)
+    s.text(cx + 116, cy + 36, "アンテナ", 12, "middle", "bold", "#eee")
+    s.text(cx + 116, cy + 110, "ESP32-", 16, "middle", "bold", "#263238")
+    s.text(cx + 116, cy + 132, "WROOM-32", 16, "middle", "bold", "#263238")
+    s.text(cx + 116, cy + 250, short, 15, "middle", "bold", "#fff")
+    s.text(cx + 116, cy + 270, sub, 12, "middle", "bold", "#fff")
+    s.rect(cx + 82, cy + 380, 68, 34, "#b0b0b0", "#777", 8)          # USB-C
+    s.rect(cx + 30, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 47, cy + 322, "EN", 12, "middle", "bold", "#fff")
+    s.rect(cx + 168, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 185, cy + 322, "BOOT", 12, "middle", "bold", "#fff")
+    gap = 370 / npin
+    for i in range(npin):
+        s.add(f'<circle cx="{cx+12}" cy="{cy+20+i*gap}" r="5" fill="#d4af37"/>')
+        s.add(f'<circle cx="{cx+220}" cy="{cy+20+i*gap}" r="5" fill="#d4af37"/>')
+    s.text(cx + 116, cy - 40, name, 15, "middle", "bold")
+    s.text(cx + 116, cy - 22, "（図はイメージ。ボタンの位置は製品によって違う）", 12, "middle", fill="#666")
+    s.text(cx + 100, cy + 440, "USB-C", 13, "end", "bold", "#333")
+    s.add(f'<path d="M{cx+116},{cy+412} L{cx+116},700" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+    s.text(cx + 100, 650, "USB-C ケーブル（両側 USB-C、短いもの）", 14, "end", fill="#333")
+    s.rect(330, 720, 620, 16, "#90a4ae", "#607d8b", 3, 1)
+    s.text(316, 733, "ケースの壁", 13, "end", "bold", "#607d8b")
+    s.rect(cx + 56, 700, 120, 56, "#455a64", "#263238", 8, 2)
+    s.text(cx + 116, 726, "防水USBカプラー", 13, "middle", "bold", "#fff")
+    s.text(cx + 116, 745, "USB-C メス-メス", 11, "middle", fill="#eceff1")
+    s.add(f'<path d="M{cx+116},756 L{cx+116},800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>')
+    s.text(cx + 132, 790, "ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ", 13, fill="#666")
+    s.text(960, 690, "ケースの中", 13, "end", "bold", "#999"); s.text(960, 770, "ケースの外", 13, "end", "bold", "#999")
+    for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-F", "電柵アラート（BLE）")]):
+        yy = 210 + i * 110
+        s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
+        s.text(90, yy + 30, n, 16, weight="bold"); s.text(90, yy + 54, d, 14, fill="#666")
+        s.add(f'<path d="M380,{yy+35} L{cx-20},{cy+150}" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+    s.text(220, 190, "電線なし（電波で受信）", 15, "middle", "bold", "#1565c0")
+    s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
+    s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
+    s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
+    s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+    s.rect(900, 380, 340, 290, "#fff3e0", "#e65100", 10, 2)
+    s.text(1070, 408, "HPX-Solar で電圧も測るとき", 15, "middle", "bold", "#e65100")
+    s.text(1070, 428, "（USB-C ケーブルの代わりに、中をこうする）", 11, "middle", fill="#666")
+    s.rect(920, 450, 90, 120, "#37474f", "#222", 6, 2)
+    s.text(965, 590, "USB-C メス基板", 11, "middle", "bold"); s.text(965, 604, "（データ対応）", 10, "middle", fill="#666")
+    s.text(1070, 630, "防水USBカプラーから USB-C ケーブル", 11, "middle", fill="#555"); s.text(1070, 644, "（データ対応）で受ける", 11, "middle", fill="#555")
+    for i, (n, to, c) in enumerate([("VBUS", v5, "red"), ("GND", "GND", "black"), ("D+", "IO39" if kind == "freenove" else "VN(IO39)", "white"), ("D−", "IO36" if kind == "freenove" else "VP(IO36)", "blue")]):
+        yy = 470 + i * 26
+        s.add(f'<circle cx="1010" cy="{yy}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(1000, yy + 4, n, 11, "end", "bold", "#fff")
+        s.wire([(1010, yy), (1110, yy)], c)
+        s.text(1118, yy + 5, short + " " + to, 12, weight="bold")
+    s.text(1120, 590, "ジャンパー線 4本", 12, "middle", "bold", "#333")
+    s.text(1070, 664, "設定「電圧の測り方」＝HPX-Solar", 11, "middle", "bold", "#c62828")
+    rows = [
+        ["部品", "数", "使うところ・メモ"],
+        [name, "1", "本体（親機）。差し込み口は USB-C"],
+        ["USB-C ケーブル（両側 USB-C、短いもの）", "1", f"ケースの中で、防水USBカプラーと {short} をつなぐ"],
+        ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
+        ["（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル（データ対応）", "各1", "中の USB-C ケーブルの代わり。カプラーから受けて 4本に分ける"],
+        ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", f"VBUS → {v5}、GND → GND、D+ → IO39、D− → IO36"],
+    ]
+    y = table(s, 60, 860, rows, [560, 50, 550], "部品表")
+    nts = [
+        "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
+        "・ファームは FireBeetle と同じ HPX_Core v1.25 を使う。管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
+        f"・{short} は省電力に向かないので家庭電源向き（USB の部品や電源の LED が眠っている間も電気を使う）。",
+        f"・HPX-Solar（小型ソーラー電源）から電気をもらって電圧も測るときは、右の枠のように 4本に分ける（試作中・実機未確認）。",
+        f"  {v5} から動かし、D+ は IO39、D− は IO36 で読む。ただし電池が早く減るので、HPX-Solar と組むなら FireBeetle か Olimex をすすめる。",
+        "・工場出荷リセットは、基板の BOOT ボタン（IO0）を起動してすぐ5秒長押し。",
+    ]
+    if kind == "freenove":
+        nts.append("・Freenove のピンの並びは Freenove の GitHub のピン配置図から。差す前に、基板の印字とピンの名前を見くらべる。")
+    notes(s, 60, y + 20, nts)
+    fn = f"HPX-Core_{kind}_wiring"
+    s.save(fn + ".svg")
+    _full = open(os.path.join(OUT, fn + ".svg"), encoding="utf-8").read()
+    open(os.path.join(OUT, fn + "_fig.svg"), "w", encoding="utf-8").write(
+        _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="820" viewBox="0 0 {s.w} 820"', 1))
+    json.dump({"tables": [{"head": "部品の使いどころ", "rows": rows}], "notes": [n.lstrip("・") for n in nts]},
+              open(os.path.join(OUT, fn + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok")
+
 # ------------------------------------------------------------------ HPX-Core 有線LAN (W5500)
 s = S(1280, 1770)
 title(s, "【古い図・ファーム v1.24 まで】HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ELEGOO ESP-32 ／ v1.25 のピンは HPX-Core_LAN_elegoo_pcb.png ／ 電源 USB")
