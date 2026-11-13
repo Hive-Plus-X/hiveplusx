@@ -8,6 +8,7 @@
 //   同じカメラ・同じ撮影時刻の写真がもうあれば、保存せずに ok を返す (送り直しで二重にならない)
 declare(strict_types=1);
 require __DIR__ . '/hpx_cam.php';
+require __DIR__ . '/hpx_cam_watch.php';
 header('Content-Type: application/json; charset=utf-8');
 
 function fail(int $code, string $msg): void
@@ -96,4 +97,15 @@ cam_update($uid, $id, function (array $x) use (&$c, $now, $t, $core, $saved, $na
 });
 flock($lock, LOCK_UN);
 fclose($lock);
-echo $reply($saved);
+
+// カメラへの返事を先に返して接続を切り (カメラを待たせない)、そのあと前の写真と見くらべる (大きく変わったらお知らせ、hpx_cam_watch.php)
+$out = $reply($saved);
+if (!$saved) { echo $out; exit; }
+ignore_user_abort(true);
+@set_time_limit(120);
+header('Content-Length: ' . strlen($out));
+header('Connection: close');
+echo $out;
+if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+else { while (ob_get_level() > 0) @ob_end_flush(); flush(); }
+cam_watch($uid, $id, $dir, $file, $t);

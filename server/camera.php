@@ -2,10 +2,12 @@
 // カメラページ: HPX-CAM (蜂場カメラ) が送ってきた写真を見る。
 //   ・月の一覧: 日ごとに、12時にいちばん近い写真の小さい版をカレンダーの形で並べる。日付を指定して飛べる
 //   ・1日の写真: 大きな写真と横向きのスライドバーで1枚ずつ見る。▶ でパラパラ漫画のように続けて再生する (速さを選べる)
-//   ・カメラの設定 (持ち主だけ): 名前、置いている蜂場、撮影の間隔と時間帯 (カメラへの返事で伝え、次の撮影から使う)
+//   ・カメラの設定 (持ち主だけ): 名前、置いている蜂場、撮影の間隔と時間帯 (カメラへの返事で伝え、次の撮影から使う)、
+//     大きな変化のお知らせ (知らせない/感度、hpx_cam_watch.php)。最近の大きな変化の記録は見られる人みんなに出す
 //   見られるのは、自分のカメラと、共有された蜂場に紐づいたカメラ。写真の受け口は cam_upload.php、保存の形は hpx_cam.php
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
+require_once __DIR__ . '/hpx_cam_watch.php';
 
 $cams = cams_visible();
 $cid = strtoupper((string)($_GET['c'] ?? $_POST['c'] ?? ''));
@@ -45,8 +47,11 @@ if (is_post()) {
         $h1 = max(1, min(24, (int)($_POST['h1'] ?? CAM_H1_DEFAULT)));
         if ($h1 <= $h0) redirect('camera.php?c=' . $cid . '#set', '撮影する時間帯は「から」より「まで」を後にしてください。');
         $name = mb_substr(trim(preg_replace('/[\x00-\x1F\x7F]/u', '', (string)($_POST['name'] ?? '')) ?? ''), 0, 30);
-        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name) {
-            $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid;
+        $watch = (int)($_POST['watch'] ?? 2);
+        if (!isset(CW_LEVELS[$watch])) $watch = 2;
+        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch) {
+            $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid; $x['watch'] = $watch;
+            if ($watch === 0) unset($x['wp']);
             $x['iv'] = in_array($iv, CAM_IVS, true) ? $iv : CAM_IV_DEFAULT; $x['h0'] = $h0; $x['h1'] = $h1;
             return $x;
         });
@@ -126,6 +131,17 @@ $st = '最後に届いた写真 ' . ($last ? h(date('n/j H:i', $last)) . ' (' . 
     . (isset($c['w']) ? ' ・ ' . (int)$c['w'] . '×' . (int)$c['h'] : '')
     . ' ・ ' . $iv . '分ごと ' . $h0 . '〜' . $h1 . '時';
 echo '<p class="muted" style="margin:0 0 .4em">' . $st . '</p>';
+
+// 最近の大きな変化 (hpx_cam_watch.php の記録。知らせたものだけ、3日以内)
+$wl = array_values(array_filter((array)($c['wlog'] ?? []), fn($r) => !empty($r[2]) && (int)$r[0] > $now - 3 * 86400));
+if ($wl) {
+    echo '<div style="margin:.2em 0 .6em;padding:6px 10px;border:1px solid #f0c36d;border-radius:6px;background:#fff8e1">⚠ <b>カメラ画像に大きな変化がありました</b>';
+    foreach (array_slice($wl, 0, 5) as $r) {
+        $u = $self(['d' => date('Y-m-d', (int)$r[0]), 'f' => date('His', (int)$r[0])]);
+        echo '<br><a href="' . h($u) . '">' . h(date('n/j H:i', (int)$r[0])) . '</a>' . ((string)($r[3] ?? '') !== '' ? ' <span class="muted">' . h((string)$r[3]) . '</span>' : '');
+    }
+    echo '</div>';
+}
 
 $dp = (string)($_GET['d'] ?? '');
 $days = cam_days($cam['dir']);
@@ -249,7 +265,11 @@ if ($cam['own']) {
     for ($v = 0; $v <= 23; $v++) echo $opt($v, $h0, $v . '時');
     echo '</select> から <select name="h1">';
     for ($v = 1; $v <= 24; $v++) echo $opt($v, $h1, $v . '時');
-    echo '</select> まで</p><p><button>保存</button></p></form>'
+    echo '</select> まで</p><p><label>写真が大きく変わったときのお知らせ (巣箱が倒れた、人が来た、など)</label><select name="watch">';
+    foreach (CW_LEVELS as $v => $lb) echo $opt($v, cw_level($c), $lb);
+    echo '</select><br><small class="muted">前の写真と見くらべて、大きく変わったら蜂場のメンバーにお知らせメール (LINE) を送ります。'
+        . (cw_ai_key() !== '' ? 'そのときだけ AI が写真を見て、明るさ・影・天気だけの違いなら送りません。' : 'AI のキーが設定されていないので、2枚続けて変わったままのときに送ります (明るさ・影で送ることがあります)。')
+        . '暗い時間の写真は比べません。</small></p><p><button>保存</button></p></form>'
         . '<p class="muted">カメラの ID: ' . h($cid) . ' ・ 届いた写真 通算 ' . (int)($c['n'] ?? 0) . '枚 ・ 写真は '
         . ((int)($HPX_CAM_KEEP_DAYS ?? 365) > 0 ? (int)($HPX_CAM_KEEP_DAYS ?? 365) . '日たつと自動で消します' : '消さずに残します') . '<br>'
         . '送り先: <code>' . h(site_url('cam_upload.php')) . '</code> (トークンは HPX-Core と同じ機器用トークン)</p>'
