@@ -464,7 +464,7 @@ constexpr uint32_t RTC_MAGIC = 0x48505803;  // レイアウトを変えたら値
 RTC_DATA_ATTR uint32_t rtcMagic = 0;
 RTC_DATA_ATTR uint32_t rtcBootCount = 0;
 // v1.26: いま何をしているか(止まって再起動したとき、どこで止まったかを管理画面に出すため)。
-// RTC_NOINIT は RESET・クラッシュでは消えない(電源を切ると消える)
+// RTC_NOINIT はクラッシュ・ソフトの再起動では消えない(電源を切る・RST(EN)ボタンでは消える)
 RTC_NOINIT_ATTR uint32_t rtcStage;
 uint32_t lastStage = 0;   // 前回の起動で最後に通った場所
 // ここに関数を書くと、Arduino IDE が自動で作る関数の宣言が構造体より前に入ってコンパイルできなくなるので、マクロにする
@@ -3552,8 +3552,8 @@ void handleMainPage()
   h += "<p><b>機器ID : " + htmlEscape(deviceID) + "</b></p>";
   h += "<p>固有ID(MAC) : " + deviceUid + "</p>";
   h += "<p><b>Firmware Version: " + String(FW_VERSION) + "</b></p>";
-  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン、brownout=電圧が下がって再起動(電源が弱い)、panic=止まって再起動(電圧のゆれなど)、task_wdt=どこかで60秒以上止まって再起動、sw=ソフトの再起動、ext=RESETボタン</small></p>";
-  if (lastStage != 0) h += "<p>前回の起動で最後にしていたこと: " + String(stageText(lastStage)) + "</p>";
+  h += "<p>前回の起動のきっかけ: " + String(timerWake ? "timer" : resetReasonStr()) + "<br><small>poweron=電源オン・RST(EN)ボタン、brownout=電圧が下がって再起動(電源が弱い)、panic=止まって再起動(電圧のゆれなど)、task_wdt=どこかで60秒以上止まって再起動、sw=ソフトの再起動</small></p>";
+  if (lastStage != 0) h += "<p>前回の起動で最後にしていたこと: " + String(stageText(lastStage)) + "</p>";   // 電源オン・RST のあとは記録が消えるので出ない(止まって再起動したときだけ出る)
   if (useLte())
   {
     h += "<p>LTE-M: " + String(lteUp ? "つながっています" : "つながっていません");
