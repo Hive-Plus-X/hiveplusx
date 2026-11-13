@@ -47,21 +47,21 @@ DEVICES = [
          # TARO 2026-11-10: 通信モジュール (チップボードの次) と その他 (最後) を追加
          cats=['チップボード', '通信モジュール', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル', 'その他'],
          no_cost_note=True,   # 部品代の目安の説明文を出さない (TARO 2026-11-06)
-         # TARO 2026-11-13: 配線図を全部 FireBeetle 2 ESP32-E (DFR0654) に描き直した。前の図 (ELEGOO・Olimex・Freenove) は 5つ目の欄から「以前の図」としてリンクする
+         # TARO 2026-11-13: 配線図を全部 FireBeetle 2 ESP32-E (DFR0654) に描き直した。ほかのボード (ELEGOO・Olimex・Freenove) の図は 5つ目の欄からリンクする (TARO 2026-11-13、どれも v1.25 のピンに描き直した)
          wiring=[('HPX-Core_BASIC_pcb.png', '基本モデルの配線図', 'FireBeetle 2 ESP32-E を 6×8cm のユニバーサル基板にピンソケットで差すだけの図です (線はありません)。「＋有線LAN」と同じ基板・同じ位置なので、あとから W5500 を足して「＋有線LAN」にできます。ルーターへは Wi-Fi でつなぎ、USB-C から電気をもらいます。', 'core_basic',
-                 [('HPX-Core_BASIC_elegoo_pcb.png', 'ELEGOO ESP-32 の図'), ('HPX-Core_freenove_wiring.png', 'Freenove FNK0090B の図')]),
+                 [('HPX-Core_BASIC_elegoo_pcb.png', 'ELEGOO ESP-32'), ('HPX-Core_freenove_wiring.png', 'Freenove ESP32 WROOM (FNK0090)')]),
                 ('HPX-Core_LAN_pcb.png', '＋有線LANの配線図', 'FireBeetle 2 ESP32-E と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.25 以降を使います (FireBeetle に合わせて W5500 のピンを変えたため)。', 'core',
-                 [('HPX-Core_LAN_elegoo_pcb.png', 'ELEGOO ESP-32 の図（ファーム v1.20〜v1.24）')]),
+                 [('HPX-Core_LAN_elegoo_pcb.png', 'ELEGOO ESP-32')]),
                 ('HPX-Core_LANV_pcb.png', '＋有線LAN＆ソーラーシステムチェックの配線図', '「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。FireBeetle は USB ではなくバッテリーから VCC ピンへ 5V を入れて動かします。ファームウェアは v1.25 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。', 'core_lanv',
-                 [('HPX-Core_LANV_elegoo_pcb.png', 'ELEGOO ESP-32 の図（ファーム v1.22〜v1.24）')]),
+                 [('HPX-Core_LANV_elegoo_pcb.png', 'ELEGOO ESP-32')]),
                 ('HPX-Core_wiring.png', '＋防水の配線図', 'ケースの中で FireBeetle 2 ESP32-E の USB-C と防水USBカプラーを短い USB-C ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。HPX-Solar から電気をもらって電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分けます (試作中、ファーム v1.25 以降)。', 'core_wp',
-                 [('HPX-Core_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO の図'), ('HPX-Core_freenove_wiring.png', 'Freenove FNK0090B の図')]),
+                 [('HPX-Core_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO'), ('HPX-Core_freenove_wiring.png', 'Freenove ESP32 WROOM (FNK0090)')]),
                 ('HPX-Core_BAT_pcb.png', '＋防水＆電池駆動の配線図', 'ケース用基板 PCB36-47 に FireBeetle 2 ESP32-E をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を FireBeetle の VCC と GND へつなぎます (表と裏、線は裏の2本だけ)。FireBeetle の電池コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。FireBeetle は基板より長く、ケースに収まるかはまだ確かめていません。管理画面の動作モードは「ディープスリープ」にします。', 'core_bat',
-                 [('HPX-Core_BAT_olimex_pcb.png', 'Olimex ESP32-DEVKIT-LIPO の図')]),
+                 [('HPX-Core_BAT_olimex_pcb.png', 'Olimex ESP32-DEVKIT-LIPO')]),
                 ('HPX-Core_LTE_pcb.png', '＋LTE-M の基板の配線図', 'ユニバーサル基板 タカチ PCB72-95 の左端に FireBeetle 2 ESP32-E をピンソケットで差し、右に CatM の 5V を入り切りするスイッチ (P-MOSFET・NPN トランジスタ・抵抗)、下に M5Stamp CatM を貼る図です (表と裏、線はすべて裏)。電源はケースの壁の USB-C メス基板から (HPX-Solar か USB 充電器)、その 4本の線を赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。', 'core_lte',
-                 [('HPX-Core_LTE_olimex_pcb.png', 'Olimex ESP32-DEVKIT-LIPO の図（ファーム v1.24）')]),
+                 [('HPX-Core_LTE_olimex_pcb.png', 'Olimex ESP32-DEVKIT-LIPO')]),
                 ('HPX-Core_LTE_wiring.png', '＋LTE-M の線の対応図', 'LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。電源は USB-C ケーブル1本で HPX-Solar か USB 充電器から。FireBeetle は VCC ピンから、CatM は送るときだけスイッチを通した 5V で動かします。HPX-Solar のときは D+・D− で電池とパネルの電圧も受け取ります。ファームウェアは HPX-Core v1.25 です。', 'core_lte',
-                 [('HPX-Core_LTE_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO の図（ファーム v1.24）')])],
+                 [('HPX-Core_LTE_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO')])],
          # TARO 2026-11-10: どの版を作ればよいかの選択チャート (電源 × 通信方法)
          chooser=CORE_CHOOSER,
          note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使います。'),
@@ -463,9 +463,9 @@ def wiring_html(dev):
         <figcaption><b>{esc(cap)}</b>{esc(note)}</figcaption>
         <a href="img/wiring/{f}" target="_blank" rel="noopener"><img src="img/wiring/{f}" alt="{esc(dev["name"])} {esc(cap)}" loading="lazy"></a>
       </figure>''')
-        if len(w) > 4 and w[4]:   # 以前の図へのテキストリンク (TARO 2026-11-13: 前のボードの図も消さずに見られるように)
+        if len(w) > 4 and w[4]:   # ほかの開発ボードの図へのテキストリンク (TARO 2026-11-13: FireBeetle 以外はリンクで。どれもファーム v1.25 の同じピン)
             links = '、'.join(f'<a href="img/wiring/{o}" target="_blank" rel="noopener">{esc(lab)}</a>' for o, lab in w[4])
-            figs.append(f'      <p class="note old-wiring"{dv}>以前の図: {links}</p>')
+            figs.append(f'      <p class="note old-wiring"{dv}>ほかの開発ボードで作るときの図: {links}</p>')
         info = wiring_info(f)
         if info:
             tabs = wiring_tables(info)

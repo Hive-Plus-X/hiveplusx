@@ -10,8 +10,9 @@
 //         (FireBeetle の GPIO34 には、基板の上で電池コネクタの電圧を 1/2 にする抵抗がつながっているため)
 //       - 工場出荷リセット: BOOT(GPIO0) に加えて、FireBeetle のボタン(GPIO27)の長押しでもできる
 //       - LTE-M (M5Stamp CatM) の GPIO16・17・4 はそのまま
-//   * これまでの ELEGOO ESP-32・Olimex で組んだ ＋有線LAN・＋有線LAN＆ソーラーシステムチェック・HPX-Solar の電圧は、
-//     v1.24 までを使う(ピンが違うため)。Wi-Fi だけの版(基本モデル・＋防水)はどのボードでも v1.25 で動く
+//   * ELEGOO ESP-32・Olimex・Freenove で作るときも、このピンで描き直した図(hardware/wiring/HPX-Core_*_elegoo_*・*_olimex_*)
+//     のとおりに組めば v1.25 で動く。2026-11-12 までの図で組んだ ＋有線LAN・＋有線LAN＆ソーラーシステムチェック・
+//     HPX-Solar の電圧は、v1.24 までを使う(ピンが違うため)。Wi-Fi だけの版(基本モデル・＋防水)はどのボードでも v1.25 で動く
 //
 // v1.24 の変更
 //   * 「＋LTE-M」版 (電源は HPX-Solar) に対応した。LTE ルーターなしで、LTE-M 通信モジュール M5Stamp CatM (SIMCom SIM7080G) から

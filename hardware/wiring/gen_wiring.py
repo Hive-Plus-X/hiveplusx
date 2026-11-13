@@ -380,7 +380,7 @@ s.save("HPX-A_wiring.svg")
 # Olimex の部品の位置は公式資料 (GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D) から: アンテナが上、micro USB が下、
 # RST ボタンが左下、BAT コネクタが右下。BOOT ボタンと GPIO2 の LED はない。
 s = S(1280, 1300)
-title(s, "【以前の図】HPX-Core（親機）＋防水の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB")
+title(s, "【Olimex で作るとき】HPX-Core ＋防水の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB ／ ファーム HPX_Core v1.25")
 cx, cy = 524, 170
 s.rect(cx, cy, 232, 400, "#c62828", "#7f0000", 10, 3)
 s.rect(cx + 56, cy - 14, 120, 44, "#212121", "#111", 4, 2)
@@ -428,7 +428,7 @@ s.text(1070, 428, "（micro USB の代わりに、中をこうする）", 11, "m
 s.rect(920, 450, 90, 120, "#37474f", "#222", 6, 2)
 s.text(965, 590, "USB-C メス基板", 11, "middle", "bold"); s.text(965, 604, "（データ対応）", 10, "middle", fill="#666")
 s.text(1070, 630, "防水USBカプラーから USB-C ケーブル", 11, "middle", fill="#555"); s.text(1070, 644, "（データ対応）で受ける", 11, "middle", fill="#555")
-for i, (n, to, c) in enumerate([("VBUS", "5V", "red"), ("GND", "GND", "black"), ("D+", "IO34", "white"), ("D−", "IO36", "blue")]):
+for i, (n, to, c) in enumerate([("VBUS", "5V", "red"), ("GND", "GND", "black"), ("D+", "IO39", "white"), ("D−", "IO36", "blue")]):
     yy = 470 + i * 26
     s.add(f'<circle cx="1010" cy="{yy}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
     s.text(1000, yy + 4, n, 11, "end", "bold", "#fff")
@@ -442,13 +442,13 @@ CORE_ROWS = [
     ["USB-C to MicroUSB ケーブル 15cm", "1", "ケースの中で、防水USBカプラーと Olimex をつなぐ"],
     ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
     ["（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル 15cm", "各1", "USB-C to MicroUSB ケーブルの代わり。カプラーから受けて 4本に分ける"],
-    ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", "VBUS → 5V、GND → GND、D+ → IO34、D− → IO36"],
+    ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", "VBUS → 5V、GND → GND、D+ → IO39、D− → IO36"],
 ]
 y = table(s, 60, 860, CORE_ROWS, [560, 50, 550], "部品表")
 CORE_NOTES = [
     "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
     "・HPX-Solar（小型ソーラー電源）から電気をもらい、電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分ける（試作中・実機未確認）。",
-    "  そのときは Olimex を 5V ピンから動かし、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。",
+    "  そのときは Olimex を 5V ピンから動かし（ファーム v1.25 以降。D+ は IO39 で読む）、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。",
     "・基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。",
     "・USB 電源のときは、管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
     "・Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。",
@@ -557,7 +557,7 @@ print("ok")
 
 # ------------------------------------------------------------------ HPX-Core 有線LAN (W5500)
 s = S(1280, 1770)
-title(s, "HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ファーム HPX_Core v1.20 以降 ／ 電源 USB")
+title(s, "【古い図・ファーム v1.24 まで】HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ELEGOO ESP-32 ／ v1.25 のピンは HPX-Core_LAN_elegoo_pcb.png ／ 電源 USB")
 # ESP32 ボード
 cx, cy = 150, 170
 s.rect(cx, cy, 300, 520, "#263238", "#111", 10, 3)
@@ -639,9 +639,9 @@ print("ok LAN")
 
 # ------------------------------------------------------------------ HPX-Core ＋LTE-M (TARO 2026-11-09、2026-11-10 電源を HPX-Solar に分け、USB-C ケーブル1本でつなぐ)
 # Olimex ESP32-DEVKIT-LIPO ＋ M5Stamp CatM (SIM7080G)。電源は USB-C 口から (HPX-Solar か USB 充電器)。
-# Olimex は 5V ピンから。CatM の 5V は基板の P-MOSFET で入り切り (IO4 → 10kΩ → NPN → ゲート)。D+・D− は HPX-Solar の電池・パネルの電圧 (IO34・IO36)。
+# Olimex は 5V ピンから。CatM の 5V は基板の P-MOSFET で入り切り (IO4 → 10kΩ → NPN → ゲート)。D+・D− は HPX-Solar の電池・パネルの電圧 (IO39・IO36、v1.25)。
 s = S(1280, 1990)
-title(s, "【以前の図】HPX-Core（親機）＋LTE-M の線の対応図", "試作中 ／ 実機未確認 ／ ファーム v1.24")
+title(s, "【Olimex で作るとき】HPX-Core ＋LTE-M の線の対応図", "試作中 ／ 実機未確認 ／ ファーム v1.25")
 # HPX-Solar (別の機器)
 s.rect(50, 110, 230, 170, "#fff3e0", "#e65100", 10, 3)
 s.text(165, 150, "HPX-Solar", 18, "middle", "bold", "#e65100")
@@ -697,11 +697,11 @@ s.text(1056, 132, "アンテナ", 12, "middle", "bold", "#eee")
 s.text(1060, 450, "Olimex", 16, "middle", "bold", "#fff")
 s.text(1060, 472, "ESP32-DevKit-LiPo", 13, "middle", "bold", "#fff")
 ol = {}
-for n, y in (("D34", 180), ("D36", 230), ("D16", 330), ("D17", 370), ("D4", 560), ("5V", 680), ("GND", 720)):
+for n, y in (("D39", 180), ("D36", 230), ("D16", 330), ("D17", 370), ("D4", 560), ("5V", 680), ("GND", 720)):
     s.pad(940, y, n, "L"); ol[n] = (940, y)
 s.text(1060, 782, "micro USB は書き込みのときだけ。BAT は使わない", 12, "middle", fill="#666")
 # 線
-s.wire([us["D+"], ol["D34"]], "white")
+s.wire([us["D+"], ol["D39"]], "white")
 s.wire([us["D−"], ol["D36"]], "blue")
 s.wire([us["VBUS"], (520, 280), (520, 680), ol["5V"]], "red")
 s.wire([(520, 460), (620, 460), sw["IN"]], "red")
@@ -719,7 +719,7 @@ LTE_WIRES = [
     ["black", "USB-C の GND", "Olimex GND・CatM GND・スイッチの GND", "GND は全部共通（図の GND の印）"],
     ["orange", "5V スイッチの出口（P-MOSFET の D）", "M5Stamp CatM 5V", "送るときだけ 5V を入れる"],
     ["purple", "Olimex D4（GPIO4）", "5V スイッチ（10kΩ → NPN のベース）", "High で ON"],
-    ["white", "USB-C の D+", "Olimex D34（GPIO34）", "HPX-Solar の電池の電圧（1/2）"],
+    ["white", "USB-C の D+", "Olimex D39（GPIO39、v1.25）", "HPX-Solar の電池の電圧（1/2）"],
     ["blue", "USB-C の D−", "Olimex D36（GPIO36）", "HPX-Solar のパネルの電圧（1/6）"],
     ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "初めは 115200bps、ファームで 921600bps に"],
     ["green", "M5Stamp CatM RX", "Olimex D17（GPIO17、送信）", ""],
@@ -736,7 +736,7 @@ LTE_ROWS = [
 ]
 y = table(s, 60, y + 60, LTE_ROWS, [560, 50, 550], "部品の使いどころ")
 LTE_NOTES = [
-    "・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.24（Wi-Fi・有線LAN の版と同じファイル）。",
+    "・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.25（Wi-Fi・有線LAN の版と同じファイル。D+ を IO39 で読むのは v1.25 から）。",
     "・動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。",
     "・USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。",
     "・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。",

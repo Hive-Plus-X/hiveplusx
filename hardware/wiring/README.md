@@ -20,10 +20,11 @@
 | HPX-B (バッテリー電圧、試作中) | [HPX-B_pcb.png](HPX-B_pcb.png) (6×8cm 基板、ケース タカチ PFF10-4-10W) | バッテリー＋ → 100kΩ/20kΩ → D1(A1)、パネル＋ → 100kΩ/10kΩ → D0(A0)、三端子 DCDC レギュレーター BP5293-50 (ROHM、入力 7〜26V) → 5V、入力側 10µF。端子台 3極 (パネル＋・マイナス・バッテリー＋)、ヒューズ 1A×2 は線の途中。ファームはまだ無い |
 | HPX-CAM (巣門カメラ、試作中) | [HPX-CAM_pcb.png](HPX-CAM_pcb.png) (穴 12×11 の基板、ケース タカチ BCAP091207T) | XIAO ESP32S3 Sense (カメラ・microSD は Sense 基板)。単三リチウム×3 の＋ → ショットキーダイオード 1N5819 → 5V、−→GND。電池の電圧は ダイオードの前で 100kΩ/100kΩ (1/2) → D0(A0)、0.1µF。100µF を 5V–GND に。D8〜D10 は microSD が使う。ファームはまだ無い |
 
-HPX-Core の図は 2026-11-13 に開発ボードを FireBeetle 2 ESP32-E (DFRobot DFR0654) に変えて描き直しました (TARO)。前のボードの図は名前を変えて残しています:
-ELEGOO ESP-32 の [基本モデル](HPX-Core_BASIC_elegoo_pcb.png)・[＋有線LAN](HPX-Core_LAN_elegoo_pcb.png) ([線の対応](HPX-Core_LAN_elegoo_wiring.png))・[＋有線LAN＆ソーラーシステムチェック](HPX-Core_LANV_elegoo_pcb.png)、
+HPX-Core の図は 2026-11-13 に開発ボードを FireBeetle 2 ESP32-E (DFRobot DFR0654) に変えて描き直しました (TARO)。ほかの開発ボードで作るときの図も、同じピン (ファーム v1.25) に合わせて描き直して残しています:
+ELEGOO ESP-32 の [基本モデル](HPX-Core_BASIC_elegoo_pcb.png)・[＋有線LAN](HPX-Core_LAN_elegoo_pcb.png)・[＋有線LAN＆ソーラーシステムチェック](HPX-Core_LANV_elegoo_pcb.png)、
 Olimex ESP32-DEVKIT-LIPO の [＋防水](HPX-Core_olimex_wiring.png)・[＋防水＆電池駆動](HPX-Core_BAT_olimex_pcb.png)・[＋LTE-M](HPX-Core_LTE_olimex_pcb.png) ([線の対応](HPX-Core_LTE_olimex_wiring.png))、
-Freenove FNK0090B の [図](HPX-Core_freenove_wiring.png)。ELEGOO・Olimex の ＋有線LAN・＋有線LAN＆ソーラーシステムチェック・HPX-Solar の電圧は、ピンが違うのでファーム v1.24 までを使います。
+Freenove ESP32 WROOM (FNK0090) の [図](HPX-Core_freenove_wiring.png) (線がないので v1.25 でもそのまま)。
+2026-11-12 までの ELEGOO の ＋有線LAN・＋有線LAN＆ソーラーシステムチェック (W5500 が 24〜29 行、MISO＝D4、パネル＝D34) と Olimex の HPX-Solar の D+＝IO34 で組んだものは、ファーム v1.24 までを使います ([古い線の対応図](HPX-Core_LAN_elegoo_wiring.png))。
 
 部品表は [部品表.md](部品表.md) にあります。
 

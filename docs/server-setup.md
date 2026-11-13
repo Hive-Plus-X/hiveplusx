@@ -20,8 +20,8 @@ StaFIX フェンスアラートの LED の点滅を HPX-F が数え、BLE で HP
 | `HPX_Alert_v1_02/HPX_Alert_v1_02.ino` | 古い版。電池電圧を測ったあと光センサが 0 を読み続ける不具合があるので使わない |
 | `HPX_Alert_v1_00/HPX_Alert_v1_00.ino` | 旧ファーム v1.01 (D0 のデジタル入力) |
 | `HPX_Core_v1_23/HPX_Core_v1_23.ino` | HPX-Core v1.23 (HPX-F の新しい広告 'F'・名前 "HPXF" を受け取る。v1.12〜v1.22 は旧 HPX-F の 'A' を受け取る版) |
-| `HPX_Core_v1_24/HPX_Core_v1_24.ino` | HPX-Core v1.24 (v1.23 に接続方法「LTE-M」(M5Stamp CatM) を足した版。ELEGOO ESP-32・Olimex で組んだ ＋有線LAN・＋有線LAN＆ソーラーシステムチェック・HPX-Solar の電圧はこの版まで) |
-| `HPX_Core_v1_25/HPX_Core_v1_25.ino` | HPX-Core v1.25 (最新。開発ボード FireBeetle 2 ESP32-E に合わせて W5500・電圧チェック・HPX-Solar のピンを変えた版。Wi-Fi だけの機器はどのボードでも書き込んでよい。コンパイル・実機は未確認) |
+| `HPX_Core_v1_24/HPX_Core_v1_24.ino` | HPX-Core v1.24 (v1.23 に接続方法「LTE-M」(M5Stamp CatM) を足した版。2026-11-12 までの図で組んだ ＋有線LAN・＋有線LAN＆ソーラーシステムチェック・HPX-Solar の電圧はこの版まで) |
+| `HPX_Core_v1_25/HPX_Core_v1_25.ino` | HPX-Core v1.25 (最新。開発ボード FireBeetle 2 ESP32-E に合わせて W5500・電圧チェック・HPX-Solar のピンを変えた版。ELEGOO・Olimex も 2026-11-13 の図で組めば同じファイル。Wi-Fi だけの機器はどのボードでも書き込んでよい。コンパイル・実機は未確認) |
 | `server/receive.php` | 既存の受信 PHP に、電柵の列とメール通知の呼び出しを追加 |
 | `server/config.php` | 既存の設定に、メールの送り先などを追加 |
 | `server/hpx_alert.php` | メール通知の本体 (新規) |
