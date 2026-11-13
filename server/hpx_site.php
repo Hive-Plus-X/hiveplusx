@@ -764,15 +764,15 @@ function page_head(string $title, string $active): void
     // メニューと、期限切れ・今日の タスクの数
     [$over, $due] = todo_counts();
     $items = ['apiary.php' => '蜂場', 'hive.php' => '巣箱', 'memo.php' => 'メモ', 'task.php' => 'タスク', 'work.php' => '記録'];
-    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AIメモ・記録';   // config に Claude の API キーがあるときだけ (ai_note.php)
+    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AI';   // config に Claude の API キーがあるときだけ (ai_note.php)
     if (cams_visible()) $items['camera.php'] = 'カメラ';   // HPX-CAM の写真が届いているときだけ
-    echo '<nav>' . brand_nav_logo();
+    echo '<nav>' . brand_nav_logo() . '<span class="nl">';   // メニューの文字 (スマホでは2段目に並ぶ)
     foreach ($items as $f => $lb) {
         echo '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb)
             . ($f === 'task.php' && $over ? '<span class="badge" title="期限切れの タスク">' . $over . '</span>' : '')
             . ($f === 'task.php' && $due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a>';
     }
-    echo auth_nav_right($active) . '</nav>';
+    echo '</span>' . auth_nav_right($active) . '</nav>';
     global $ME, $HPX_DEMO_READONLY, $HPX_DEMO_RESET_HOUR;
     if (is_demo($ME)) echo '<div class="card" style="background:#fdf0c8;border-color:#e0c060">これは<b>デモ用アカウント</b>です。'
         . (demo_editing() ? '<b>見本の準備中</b>です (写真も追加できます)。入れ終わったら、管理者のアカウントの管理ページで「今の状態を初期状態として保存」を押してください。'
