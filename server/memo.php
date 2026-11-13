@@ -23,8 +23,9 @@ function memo_photo_del(string $owner, string $name): void
 // 内検の項目 (M_INSPECT)・ダニ調査 (M_MITE_METHODS, mite_text) は hpx_site.php にある(データ一括ダウンロードでも使う)
 
 // タグの初期の一覧。カスタマイズしたら site/memo_tags.json に {"tags": [...]} で保存する
+//   共通の出来事 (S_MEMO_EVENTS、hpx_site.php) はいつも先頭に出て、消せない
 const M_TAGS_DEFAULT = ['分蜂', '入居', '大量死', 'スズメバチ', 'クマ'];
-function memo_tags(): array { return tag_list('memo_tags', M_TAGS_DEFAULT); }
+function memo_tags(): array { return tag_list('memo_tags', M_TAGS_DEFAULT, S_MEMO_EVENTS); }
 
 $site = site_load();
 
@@ -60,7 +61,7 @@ $selfUrl = fn(array $ch = [], string $anchor = '') => 'memo.php' . (($q = http_b
 if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
     $back = safe_back((string)($_POST['back'] ?? ''), 'memo.php');
-    tag_post($act, 'memo_tags', M_TAGS_DEFAULT);   // タグの一覧の変更(JSON を返して終わる)
+    tag_post($act, 'memo_tags', M_TAGS_DEFAULT, S_MEMO_EVENTS);   // タグの一覧の変更(JSON を返して終わる)
     if ($act === 'memo_save') {
         $id = (string)($_POST['id'] ?? '');
         // 対象: 蜂場で「すべて」(*)を選んだら、どの蜂場にも付けないメモ(apiary が空)
@@ -102,6 +103,7 @@ if (is_post()) {
         site_use($owner);
         $newId = $id !== '' ? $id : new_id();
         $date = date_in('date', date('Y-m-d'));
+        $time = time_in('time');   // 出来事の時刻 (分かれば。HH:MM か空)
         // 写真: 「外す」にチェックしたものを消し、送られたものを足す(合わせて M_PHOTO_MAX 枚まで)
         $photos = array_values((array)($ex['photos'] ?? []));
         $del = array_map('strval', (array)($_POST['photo_del'] ?? []));
@@ -158,8 +160,8 @@ if (is_post()) {
             if ($wantWork) $flash = 'メモを保存しました。かかった時間が無いので、作業記録には追加していません。';
         }
         if ($photoErr !== '') $flash .= ' ' . $photoErr;
-        site_update('memos', function (array $m) use ($newId, $tg, $text, $type, $insp, $mite, $tags, $date, $workId, $photos) {
-            $row = ['id' => $newId, 'apiary' => $tg[0], 'hive' => $tg[1], 'date' => $date,
+        site_update('memos', function (array $m) use ($newId, $tg, $text, $type, $insp, $mite, $tags, $date, $time, $workId, $photos) {
+            $row = ['id' => $newId, 'apiary' => $tg[0], 'hive' => $tg[1], 'date' => $date, 'time' => $time,
                 'type' => $type, 'tags' => $tags, 'text' => $text, 'inspect' => $insp, 'mite' => $mite, 'photos' => $photos, 'work' => $workId, 'updated' => time(), 'updated_by' => $GLOBALS['UID']];
             foreach ($m as &$x) if (($x['id'] ?? '') === $newId) { $x = array_merge($x, $row); return $m; }
             unset($x);
@@ -207,7 +209,8 @@ function memo_form(array $m, array $site, string $back): string
     $o = '<form method="post" class="form" id="' . $fid . '" enctype="multipart/form-data">' . csrf_field() . '<input type="hidden" name="act" value="memo_save">'
         . '<input type="hidden" name="id" value="' . h((string)($m['id'] ?? '')) . '"><input type="hidden" name="back" value="' . h($back) . '">'
         . '<div class="grid2"><p><label>対象 (蜂場・巣箱)</label><span class="tsel">' . $sa . '</select>' . $sh . '</select></span></p>'
-        . '<p><label>日付</label><input type="date" name="date" value="' . h((string)($m['date'] ?? date('Y-m-d'))) . '"></p></div>'
+        . '<p><label>日付・時刻 (時刻は分かれば)</label><span style="display:flex;gap:6px"><input type="date" name="date" value="' . h((string)($m['date'] ?? date('Y-m-d'))) . '">'
+        . '<input type="time" name="time" value="' . h((string)($m['time'] ?? '')) . '" aria-label="時刻" title="スズメバチや分蜂などを見た時刻。AI の学習に役立ちます"></span></p></div>'
         . '<p><label>内容</label><select name="type" onchange="document.getElementById(\'' . $fid . 'i\').style.display=this.value===\'内検\'?\'\':\'none\'">';
     foreach ($types as $t) $o .= '<option' . ($t === $type ? ' selected' : '') . '>' . h($t) . '</option>';
     $o .= '</select></p><div id="' . $fid . 'i" class="grid2 insp"' . ($type === '内検' ? '' : ' style="display:none"') . '>';
@@ -371,7 +374,7 @@ if (!$list) echo '<p class="muted">メモはありません。</p>';
 foreach (array_slice($list, ($pg - 1) * M_PAGE, M_PAGE) as $m) {
     $iv = (array)($m['inspect'] ?? []);
     echo '<div class="card ' . (($m['hive'] ?? '') !== '' ? 'hive' : 'apiary') . '">'
-        . '<b>' . h(date('Y-m-d', strtotime((string)$m['date']))) . '</b> ' . h((string)($m['type'] ?? ''))
+        . '<b>' . h(date('Y-m-d', strtotime((string)$m['date']))) . (($m['time'] ?? '') !== '' ? ' ' . h((string)$m['time']) : '') . '</b> ' . h((string)($m['type'] ?? ''))
         . ' <span class="muted">' . h(target_label($site, (string)$m['apiary'], (string)($m['hive'] ?? ''))) . '</span>' . by_html($m);
     if ($chips = memo_chips($m)) echo '<div class="tagl">' . implode('', array_map(fn($t) => '<span>' . h($t) . '</span>', $chips)) . '</div>';
     if ($iv) {

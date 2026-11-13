@@ -70,7 +70,7 @@ usort($ms, fn($x, $y) => [$x['date'] ?? '', $x['created'] ?? 0] <=> [$y['date'] 
 foreach ($ms as $m) {
     $iv = (array)($m['inspect'] ?? []);
     $mt = (array)($m['mite'] ?? []);
-    $r = [$m['date'] ?? '', $aname((string)($m['apiary'] ?? '')), $hname((string)($m['hive'] ?? '')), $m['type'] ?? ''];
+    $r = [$m['date'] ?? '', $m['time'] ?? '', $aname((string)($m['apiary'] ?? '')), $hname((string)($m['hive'] ?? '')), $m['type'] ?? ''];
     foreach (array_keys(M_INSPECT) as $k) $r[] = $iv[$k] ?? '';
     $r[] = $mt['method'] ?? '';
     $r[] = $mt['bees'] ?? '';
@@ -79,7 +79,7 @@ foreach ($ms as $m) {
     array_push($r, (array)($m['tags'] ?? []), $m['text'] ?? '', count((array)($m['photos'] ?? [])), $who($m['by'] ?? ''), $dt($m['created'] ?? 0), $dt($m['updated'] ?? 0), (string)($m['id'] ?? ''));
     $rows[] = $r;
 }
-csv_add($zip, 'メモ.csv', array_merge(['日付', '蜂場', '巣箱', '内容'], array_map(fn($it) => $it[0], array_values(M_INSPECT)),
+csv_add($zip, 'メモ.csv', array_merge(['日付', '時刻', '蜂場', '巣箱', '内容'], array_map(fn($it) => $it[0], array_values(M_INSPECT)),
     ['ダニ調査 方法', 'ダニ調査 検査ミツバチ数', 'ダニ調査 ダニ数', 'ダニ寄生率 (%)', 'タグ', 'メモ', '写真の枚数', '記入者', '作成', '更新', 'メモID']), $rows);
 
 // ---- タスク ----
@@ -170,6 +170,7 @@ $zip->close();
 foreach ($sensorTmp as $t) @unlink($t);
 
 header('Content-Type: application/zip');
+dl_mark_user($UID);   // ダウンロードした日 (お知らせ用、hpx_dl_remind.php)
 header('Content-Disposition: attachment; filename="hpx_data_' . date('Ymd_Hi', $now) . '.zip"');
 header('Content-Length: ' . filesize($zipPath));
 header('Cache-Control: no-store');

@@ -210,11 +210,18 @@ echo '<p class="muted">どの方法でも、登録するときに「データの
 // 全アカウントのデータのダウンロード
 $nAll = count(array_filter($users, fn($u) => !is_demo($u)));
 $nOk = count(array_filter($users, fn($u) => !is_demo($u) && consent_given($u)));
+$exLast = export_all_last();
 echo '<h2 id="export_all">全アカウントのデータのダウンロード</h2><div class="card form">'
+    . '<p class="muted">前回のダウンロード: ' . (!empty($exLast['t']) ? h(date('Y-m-d H:i', (int)$exLast['t'])) : 'まだありません') . ' (' . dlr_days('HPX_EXPORT_REMIND_DAYS', 30) . ' 日あくと、お知らせを出します)</p>'
     . '<p>データ利用に同意したアカウント (' . $nOk . ' / ' . $nAll . ' 人) の、蜂場・巣箱・メモ・タスク・作業記録・センサの記録を、アカウントごとのフォルダに分けて1つの ZIP にします。</p>'
     . '<p class="muted">同意していないアカウントと、デモ用アカウントの分は入りません。パスワードや機器用トークンは入りません。人数や記録が多いと、時間がかかり、ファイルも大きくなります。</p>'
     . '<form method="post" action="export_all.php">' . csrf_field()
     . '<p><label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox" name="photos" value="1"> 写真も入れる (蜂場とメモの写真。とても大きくなることがあります)</label></p>'
+    . '<p><label>HPX-CAM の写真</label>'
+    . '<label style="display:inline-flex;align-items:center;gap:4px;margin-right:1em"><input type="radio" name="cams" value="none" checked> 入れない</label>'
+    . '<label style="display:inline-flex;align-items:center;gap:4px;margin-right:1em"><input type="radio" name="cams" value="new"> 前回入れた日から' . ($exLast['cam_t'] ?? 0 ? ' (' . h(date('Y-m-d', (int)$exLast['cam_t'])) . ' 〜)' : ' (初めてなのですべて)') . '</label>'
+    . '<label style="display:inline-flex;align-items:center;gap:4px"><input type="radio" name="cams" value="all"> すべて</label></p>'
+    . '<p class="muted">カメラの写真はとても大きくなります (1台で1年に数GBになることがあります)。' . h(dlr_cam_note()) . '「前回入れた日から」で少しずつ保存すると軽くすみます。カメラの設定と、機器と巣箱のつながりの履歴はいつも入ります。</p>'
     . '<p><button type="submit"' . ($nOk === 0 ? ' disabled' : '') . '>全アカウントのデータをダウンロード</button></p></form></div>';
 
 // デモ用アカウント

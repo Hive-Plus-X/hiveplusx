@@ -228,7 +228,7 @@ function ln_system(): string
 - inspect は memo_type が内検のときだけ、言っていた項目だけ入れる (ほかは空文字・空の配列)。frames は蜂数を「〇枚」の数字だけで (例 "5")。
 - タグ (tags) は一覧にあるものだけ、当てはまるときだけ。
 - ダニの調査 (シュガーロールなど) の数は mite_method・mite_bees (調べた蜂の数)・mite_count (ダニの数)。無ければ空文字と 0。
-- minutes はかかった分。「1時間半」なら 90。start・end は HH:MM (言っていなければ空)。people は作業した人数 (workers の数より多いこともある。分からなければ 0)。honey_kg は採蜜量 kg (無ければ 0)。
+- minutes はかかった分。「1時間半」なら 90。start・end は HH:MM (言っていなければ空)。メモ (kind=memo) でも、出来事の時刻 (「朝9時ごろスズメバチが来た」など) が分かれば start に入れる。people は作業した人数 (workers の数より多いこともある。分からなければ 0)。honey_kg は採蜜量 kg (無ければ 0)。
 - 記録ではない文 (あいさつ・質問・お礼など) なら records を空にして not_a_record を true にする。
 - note には、読み取れなかったことや迷ったことがあれば一言で書く (無ければ空)。
 
@@ -258,7 +258,7 @@ function ln_parse(array $site, string $text): array
 {
     $targets = ln_targets($site);
     $workTypes = ln_work_types();
-    $memoTags = tag_list('memo_tags', LN_MEMO_TAGS_DEFAULT);
+    $memoTags = tag_list('memo_tags', LN_MEMO_TAGS_DEFAULT, S_MEMO_EVENTS);
     $people = ln_people($site);
     $plist = '';
     foreach ($people as $c => [$u, $nm]) $plist .= $c . ': ' . $nm . ($u === $GLOBALS['UID'] ? ' (書いた本人)' : '') . "\n";
@@ -357,7 +357,7 @@ function ln_save(array $site, array $recs, string $via = 'line'): array
             site_update('works', function (array $w) use ($row) { $w['logs'] = is_array($w['logs'] ?? null) ? $w['logs'] : []; $w['logs'][] = $row; return $w; });
             $done[] = [$owner, 'logs', $workId];
         }
-        $row = ['id' => $id] + $base + ['type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'photos' => [], 'work' => $workId];
+        $row = ['id' => $id] + $base + ['time' => (string)($r['start'] ?? ''), 'type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'photos' => [], 'work' => $workId];
         site_update('memos', function (array $m) use ($row) { $m[] = $row; return $m; });
         $done[] = [$owner, 'memos', $id];
     }

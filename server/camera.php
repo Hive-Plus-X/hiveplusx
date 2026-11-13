@@ -30,6 +30,38 @@ if (isset($_GET['img'])) {
     exit;
 }
 
+// ---- 1か月分の写真をまとめて保存 ?zip=<カメラ>&m=YYYY-MM (小さい版は入れない。カメラの写真は $HPX_CAM_KEEP_DAYS 日で消えるので手元に残す用) ----
+if (isset($_GET['zip'])) {
+    $mp = (string)($_GET['m'] ?? '');
+    if (!$cam || strtoupper((string)$_GET['zip']) !== $cid || !preg_match('/^(\d{4})-(\d{2})$/', $mp, $mm)) { http_response_code(404); exit; }
+    @set_time_limit(600);
+    $tmpDir = data_dir() . '/tmp';
+    @mkdir($tmpDir, 0755, true);
+    foreach (glob($tmpDir . '/cam_month_*') ?: [] as $old) if (filemtime($old) < $now - 3600) @unlink($old);
+    $zipPath = $tmpDir . '/cam_month_' . bin2hex(random_bytes(6)) . '.zip';
+    $zip = new ZipArchive();
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) redirect('camera.php?c=' . $cid, 'ZIP の準備ができませんでした。');
+    $n = 0;
+    foreach (glob($cam['dir'] . '/' . $mm[1] . $mm[2] . '[0-9][0-9]', GLOB_ONLYDIR) ?: [] as $dd) {
+        foreach (glob($dd . '/*.jpg') ?: [] as $jp) {
+            if (str_ends_with($jp, '_t.jpg')) continue;
+            $zip->addFile($jp, basename($dd) . '/' . basename($jp));
+            $n++;
+        }
+    }
+    if ($n === 0) { $zip->close(); @unlink($zipPath); redirect('camera.php?c=' . $cid . '&m=' . $mp, 'この月の写真はありません。'); }
+    $zip->addFromString('cam.json', json_encode($cam['c'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    $zip->close();
+    dl_mark_user($UID);   // ダウンロードした日 (お知らせ用、hpx_dl_remind.php)
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="HPX-CAM_' . $cid . '_' . $mm[1] . $mm[2] . '.zip"');
+    header('Content-Length: ' . filesize($zipPath));
+    header('Cache-Control: no-store');
+    readfile($zipPath);
+    @unlink($zipPath);
+    exit;
+}
+
 // ---- 設定の保存 (持ち主だけ) ----
 if (is_post()) {
     if (!$cam || !$cam['own']) redirect('camera.php', 'このカメラの設定は持ち主だけが変えられます。');
@@ -55,6 +87,7 @@ if (is_post()) {
             $x['iv'] = in_array($iv, CAM_IVS, true) ? $iv : CAM_IV_DEFAULT; $x['h0'] = $h0; $x['h1'] = $h1;
             return $x;
         });
+        link_log_sync($UID);   // カメラの巣箱が変わったら履歴に残す
         redirect('camera.php?c=' . $cid . '#set', 'カメラの設定を保存しました。撮影の間隔・時間帯は、カメラが次に写真を送ったあとから変わります。');
     }
     if ($act === 'remove' && ($_POST['ok'] ?? '') === '1') {
@@ -242,6 +275,9 @@ if ($dp !== '' && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dp, $mm) && checkda
     }
     for ($i = ($wd0 + $nd) % 7; $i > 0 && $i < 7; $i++) echo '<td></td>';
     echo '</tr></table>';
+    $inMonth = array_filter($days, fn($dd) => str_starts_with($dd, sprintf('%04d%02d', $y, $mo)));
+    if ($inMonth) echo '<p style="margin:.5em 0"><a href="' . h('camera.php?' . http_build_query(['c' => $cid, 'zip' => $cid, 'm' => sprintf('%04d-%02d', $y, $mo)])) . '">⬇ この月の写真をまとめて保存 (ZIP)</a>'
+        . ' <span class="muted">' . h(dlr_cam_note()) . '残したい写真は手元に保存してください。</span></p>';
 }
 
 // ---- カメラの設定 (持ち主だけ) ----
