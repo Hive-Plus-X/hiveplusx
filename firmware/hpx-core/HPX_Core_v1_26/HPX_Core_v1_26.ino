@@ -467,24 +467,9 @@ RTC_DATA_ATTR uint32_t rtcBootCount = 0;
 // RTC_NOINIT は RESET・クラッシュでは消えない(電源を切ると消える)
 RTC_NOINIT_ATTR uint32_t rtcStage;
 uint32_t lastStage = 0;   // 前回の起動で最後に通った場所
-inline void stage(uint32_t s) { rtcStage = 0x5A000000UL | s; }
-const char* stageText(uint32_t s)
-{
-  switch (s)
-  {
-    case 1: return "起動の始め";
-    case 2: return "工場出荷リセットのボタン待ち";
-    case 3: return "設定の読み込み";
-    case 4: return "ネットへの接続";
-    case 5: return "管理画面の開始";
-    case 6: return "時刻合わせ(NTP)";
-    case 7: return "BLEセンサの受信";
-    case 8: return "サーバーへの送信";
-    case 9: return "ファーム更新の確認";
-    case 10: return "ふだんの動作(管理画面の待ち受け)";
-    default: return "不明";
-  }
-}
+// ここに関数を書くと、Arduino IDE が自動で作る関数の宣言が構造体より前に入ってコンパイルできなくなるので、マクロにする
+#define stage(s) (rtcStage = 0x5A000000UL | (uint32_t)(s))
+const char* stageText(uint32_t s);   // 名前の表は setup() の前
 RTC_DATA_ATTR uint8_t rtcCrashCount = 0;
 RTC_DATA_ATTR uint8_t rtcFailStreak = 0;
 RTC_DATA_ATTR uint8_t rtcNtpFail = 0;
@@ -4837,6 +4822,25 @@ void wifiWatch(uint32_t now)
 // ====================================================================
 // 18. システム処理
 // ====================================================================
+
+// v1.26: 前回の起動で最後に通った場所の名前
+const char* stageText(uint32_t s)
+{
+  switch (s)
+  {
+    case 1: return "起動の始め";
+    case 2: return "工場出荷リセットのボタン待ち";
+    case 3: return "設定の読み込み";
+    case 4: return "ネットへの接続";
+    case 5: return "管理画面の開始";
+    case 6: return "時刻合わせ(NTP)";
+    case 7: return "BLEセンサの受信";
+    case 8: return "サーバーへの送信";
+    case 9: return "ファーム更新の確認";
+    case 10: return "ふだんの動作(管理画面の待ち受け)";
+    default: return "不明";
+  }
+}
 
 void setup()
 {
