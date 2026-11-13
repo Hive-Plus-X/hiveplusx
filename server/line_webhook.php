@@ -72,3 +72,4 @@ foreach ($notes as [$to, $uid, $text, $rt]) {
     $r = $rt !== '' ? line_api('/v2/bot/message/reply', ['replyToken' => $rt, 'messages' => [['type' => 'text', 'text' => $msg]]]) : [false];
     if (!$r[0]) line_push($to, $msg);
 }
+ln_rules_update(S_AS_UID);   // 聞き返しに答えて直したところがあれば、AI が「覚えたこと」にまとめる (返事の後で)

@@ -32,6 +32,12 @@ if (is_post()) {
         $_SESSION['ai_note'] = ['recs' => $recs, 'note' => $note, 'src' => $text, 'ai' => $recs];
         redirect(AN_PAGE . '#check');
     }
+    if ($act === 'rule_set') {   // 覚えたこと: 足す (id 空)・直す・消す (rule 空)・すべて消す (id *)
+        $id = (string)($_POST['id'] ?? '');
+        $del = !empty($_POST['del']);
+        if ($id === '' || $id === '*' || preg_match('/^[0-9a-f]{10}$/', $id)) ln_rule_set($UID, $id, $del ? '' : (string)($_POST['rule'] ?? ''));
+        redirect(AN_PAGE . '#rules', $id === '*' ? '覚えたことをすべて消しました。' : ($del ? '覚えたことを1つ消しました。' : '覚えたことを保存しました。'));
+    }
     if ($act === 'learn_del') {
         $id = (string)($_POST['id'] ?? '');
         if ($id === '*' || preg_match('/^[0-9a-f]{10}$/', $id)) ln_learn_del($UID, $id);
@@ -84,11 +90,15 @@ if (is_post()) {
         if (!$save) redirect(AN_PAGE . '#check', '記録するものにチェックを入れてください。');
         ln_save($site, $save, 'ai');
         // 直した例として残す (次からの読み取りの見本になる)。AI の読み取りと同じなら「直さなかった例」
-        if (empty($_POST['learn_off'])) ln_learn_add($UID, $site, (string)($draft['src'] ?? ''), (array)($draft['ai'] ?? []), $save, 'ai');
+        $newRules = 0;
+        if (empty($_POST['learn_off'])) {
+            ln_learn_add($UID, $site, (string)($draft['src'] ?? ''), (array)($draft['ai'] ?? []), $save, 'ai');
+            $newRules = ln_rules_update($UID);   // 直したところがあれば、AI が「覚えたこと」にまとめる
+        }
         unset($_SESSION['ai_note'], $_SESSION['ai_note_text']);
         $nm = count(array_filter($save, fn($r) => $r['kind'] === 'memo'));
         $nw = count($save) - $nm + count(array_filter($save, fn($r) => $r['kind'] === 'memo' && $r['type'] === '内検' && $r['min'] > 0));
-        redirect(AN_PAGE, '記録しました (メモ ' . $nm . '件・作業記録 ' . $nw . '件)。メモ・記録のページで見られます。');
+        redirect(AN_PAGE, '記録しました (メモ ' . $nm . '件・作業記録 ' . $nw . '件)。メモ・記録のページで見られます。' . ($newRules ? ' 直したところから、AI が「覚えたこと」を ' . $newRules . '件 足しました (このページの下で見られます)。' : ''));
     }
     redirect(AN_PAGE);
 }
@@ -161,10 +171,26 @@ if ($draft) {
         . '<p><button type="submit">チェックした記録を記録する</button></p></form>'
         . '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="reset"><button type="submit" class="link">読み取った結果を捨てる</button></form>';
 }
-// 3. AI が覚えた例 (直した例。次からの読み取りの見本になる)
+// 3. 覚えたこと (決まりの一覧。毎回すべて AI に渡す)
+$rules = ln_rules_all($UID);
+echo '<h2 id="rules">AI が覚えたこと (' . count($rules) . '件)</h2>'
+    . '<p class="muted">記録するときに直したところを、AI が「『いちばん』は 山の蜂場 / 1番 のこと」のような短い決まりにまとめて、ここにためます。読み取るたびに、すべて AI に渡します。'
+    . 'まちがっている決まりは直すか消してください。自分で足すこともできます (' . LN_RULES_MAX . '件まで。古いものから消えます)。</p><div class="card form">';
+foreach ($rules as $x) {
+    echo '<form method="post" style="display:flex;gap:6px;align-items:center;margin:4px 0">' . csrf_field() . '<input type="hidden" name="act" value="rule_set"><input type="hidden" name="id" value="' . h((string)($x['id'] ?? '')) . '">'
+        . '<input type="text" name="rule" value="' . h((string)($x['rule'] ?? '')) . '" maxlength="' . LN_RULE_LEN . '" style="flex:1">'
+        . '<button type="submit">保存</button><button type="submit" name="del" value="1" class="link">消す</button></form>';
+}
+echo '<form method="post" style="display:flex;gap:6px;align-items:center;margin:8px 0 4px">' . csrf_field() . '<input type="hidden" name="act" value="rule_set"><input type="hidden" name="id" value="">'
+    . '<input type="text" name="rule" maxlength="' . LN_RULE_LEN . '" placeholder="足す決まり (例: 「えさやり」は作業記録の 給餌)" style="flex:1"><button type="submit">足す</button></form>';
+if ($rules) echo '<form method="post" onsubmit="return window.confirm(\'覚えたことをすべて消します。よろしいですか?\')">' . csrf_field()
+    . '<input type="hidden" name="act" value="rule_set"><input type="hidden" name="id" value="*"><button type="submit" class="link">すべて消す</button></form>';
+echo '</div>';
+
+// 4. AI が覚えた例 (直した例。次からの読み取りの見本になる)
 $learn = array_reverse(ln_learn_all($UID));
 echo '<h2 id="learn">AI が覚えた例 (' . count($learn) . '件)</h2>'
-    . '<p class="muted">記録するときに直した内容を覚えておき、次から読み取るとき、あなたの最近の例 (直したものを先に ' . LN_LEARN_USE . '件まで) を見本として AI に渡します。'
+    . '<p class="muted">記録するときに直した内容を覚えておき、次から読み取るとき、今回の文と似ている例 (直したものを先に ' . LN_LEARN_USE . '件まで) を見本として AI に渡します。'
     . 'あなたの書き方や巣箱の呼び方に、だんだん合ってきます。例はあなたの読み取りにだけ使います (チームのほかの人には使いません)。いらない例は消せます。</p>';
 if ($learn) {
     echo '<details><summary>覚えた例を見る</summary>';

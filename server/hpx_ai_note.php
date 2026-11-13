@@ -232,7 +232,8 @@ function ln_system(): string
 - 記録ではない文 (あいさつ・質問・お礼など) なら records を空にして not_a_record を true にする。
 - note には、読み取れなかったことや迷ったことがあれば一言で書く (無ければ空)。
 
-この人が前に確かめた例:
+この人について覚えたこと・前に確かめた例:
+- 「この人について覚えたこと」は、この人が前に直したことからまとめた決まり。必ず守る (用語集やほかの説明より優先)。
 - 「この人の前の例」があれば、それはこの人が確かめて直した正しい記録。この人の書き方・巣箱や人の呼び方・記録の分け方は、例に合わせる。
 - 例の「前に AI が読み違えた記録」と同じまちがいをしない。
 - 例の日付「前日」などは、その文を送った日から数えたもの。
@@ -268,7 +269,8 @@ function ln_parse(array $site, string $text): array
         . "\n人の一覧:\n" . $plist
         . "\n作業の種類: " . implode('・', $workTypes) . "\nメモのタグ: " . implode('・', $memoTags)
         . "\n\n用語集 (正しい言葉: 化けやすい書き方):\n" . ln_terms_text()
-        . (($ex = ln_learn_text($GLOBALS['UID'])) !== '' ? "\nこの人の前の例 (新しい順):\n" . $ex : '')
+        . (($ru = ln_rules_text($GLOBALS['UID'])) !== '' ? "\nこの人について覚えたこと (必ず守る):\n" . $ru : '')
+        . (($ex = ln_learn_text($GLOBALS['UID'], $text)) !== '' ? "\nこの人の前の例 (今回の文と似ているもの):\n" . $ex : '')
         . "\n送られた文:\n" . mb_substr($text, 0, LN_TEXT_MAX);
     [$j, $err] = ai_json(ln_system(), $user, ln_schema(array_keys($targets), $workTypes, $memoTags, array_keys($people)));
     if ($j === null) return [null, false, $err];
@@ -447,13 +449,40 @@ function ln_learn_del(string $uid, string $id): void
     });
 }
 
-// AI に渡す見本 (直した例を新しい順に。足りなければ直さなかった例も)
-function ln_learn_text(string $uid): string
+// 文の似ている度合い (0〜1)。2文字ずつの組 (bigram) がどれだけ重なるか。空白・記号は除く
+function ln_bigrams(string $t): array
 {
-    $l = array_reverse(ln_learn_all($uid));
-    $use = array_slice(array_merge(array_filter($l, fn($x) => !empty($x['changed'])), array_filter($l, fn($x) => empty($x['changed']))), 0, LN_LEARN_USE);
+    $t = preg_replace('/[\s、。,.!！?？・「」()（）]+/u', '', mb_convert_kana($t, 'asKV')) ?? '';
+    $g = [];
+    $n = mb_strlen($t);
+    for ($i = 0; $i < $n - 1; $i++) $g[mb_substr($t, $i, 2)] = 1;
+    if ($n === 1) $g[$t] = 1;
+    return $g;
+}
+function ln_similar(array $a, array $b): float
+{
+    if (!$a || !$b) return 0.0;
+    $both = count(array_intersect_key($a, $b));
+    return $both / (count($a) + count($b) - $both);
+}
+
+// AI に渡す見本: 覚えた例 (最大 LN_LEARN_MAX 件) から、今回の文と似ているものを選ぶ。
+//   点数 = 似ている度合い + 直した例なら 0.15 + 新しいほど少し (最大 0.05)。上から LN_LEARN_USE 件
+function ln_learn_pick(string $uid, string $text): array
+{
+    $l = ln_learn_all($uid);
+    $q = ln_bigrams($text);
+    $n = count($l);
+    $sc = [];
+    foreach ($l as $i => $x) $sc[$i] = ln_similar($q, ln_bigrams((string)($x['text'] ?? ''))) + (!empty($x['changed']) ? 0.15 : 0) + ($n > 1 ? 0.05 * $i / ($n - 1) : 0.05);
+    arsort($sc);
+    return array_map(fn($i) => $l[$i], array_slice(array_keys($sc), 0, LN_LEARN_USE));
+}
+
+function ln_learn_text(string $uid, string $text = ''): string
+{
     $o = '';
-    foreach ($use as $x) {
+    foreach (ln_learn_pick($uid, $text) as $x) {
         $o .= "・文: " . (string)$x['text'] . "\n  正しい記録:\n";
         foreach ((array)$x['fixed'] as $line) $o .= "    - " . $line . "\n";
         if (!empty($x['changed']) && $x['ai']) {
@@ -463,6 +492,77 @@ function ln_learn_text(string $uid): string
         }
     }
     return $o;
+}
+
+// ====================================================================
+// 覚えたこと (決まりの一覧)。直した例から AI が短い決まりにまとめて、アカウントの ai_rules.json にためる。
+//   毎回すべて AI に渡す (例は似たものしか渡さないので、古いまちがいも決まりで防ぐ)。画面で見る・直す・足す・消す
+// ====================================================================
+const LN_RULES_MAX = 100;     // ためる決まりの数
+const LN_RULE_LEN = 100;      // 1つの決まりの長さ
+
+function ln_rules_path(string $uid): string { return account_dir($uid) . '/ai_rules.json'; }
+function ln_rules_all(string $uid): array { $v = json_load(ln_rules_path($uid))['rules'] ?? []; return is_array($v) ? $v : []; }
+
+// 決まりを足す・直す・消す。$id が空なら足す、$rule が空なら消す ('*' ならすべて消す)
+function ln_rule_set(string $uid, string $id, string $rule, string $by = 'me'): void
+{
+    $rule = mb_substr(trim(preg_replace('/\s+/u', ' ', $rule) ?? ''), 0, LN_RULE_LEN);
+    json_update(ln_rules_path($uid), function (array $d) use ($id, $rule, $by) {
+        $l = is_array($d['rules'] ?? null) ? $d['rules'] : [];
+        if ($id === '*') return ['rules' => []];
+        if ($id === '') {
+            if ($rule === '' || in_array($rule, array_column($l, 'rule'), true)) return ['rules' => $l];
+            $l[] = ['id' => new_id(), 'rule' => $rule, 'at' => time(), 'by' => $by];
+        } else {
+            foreach ($l as $k => $x) if (($x['id'] ?? '') === $id) { if ($rule === '') unset($l[$k]); else $l[$k] = ['rule' => $rule, 'at' => time(), 'by' => 'me'] + $x; }
+        }
+        return ['rules' => array_slice(array_values($l), -LN_RULES_MAX)];
+    });
+}
+
+function ln_rules_text(string $uid): string
+{
+    $o = '';
+    foreach (ln_rules_all($uid) as $x) $o .= '・' . (string)($x['rule'] ?? '') . "\n";
+    return $o;
+}
+
+// まだ決まりにしていない「直した例」から、AI に決まりを作ってもらう (1回に3件まで)。
+//   画面で記録した後と、LINE で返事をした後に呼ぶ。利用料は直したときだけかかる
+function ln_rules_update(string $uid): int
+{
+    if (!ai_key_on() || !is_uid($uid)) return 0;
+    $todo = [];
+    foreach (ln_learn_all($uid) as $x) if (!empty($x['changed']) && empty($x['ruled'])) $todo[] = $x;
+    $todo = array_slice($todo, -3);
+    if (!$todo) return 0;
+    $ex = '';
+    foreach ($todo as $x) {
+        $ex .= "・文: " . (string)$x['text'] . "\n  AI の読み取り:\n";
+        foreach ((array)$x['ai'] as $line) $ex .= "    - " . $line . "\n";
+        $ex .= "  本人が直した正しい記録:\n";
+        foreach ((array)$x['fixed'] as $line) $ex .= "    - " . $line . "\n";
+    }
+    $system = "あなたは養蜂の記録アプリ HPX-note の入力係の先輩です。AI が話し言葉の文を読み取ってまちがえ、本人が直した例を見て、次から同じまちがいをしないための決まりを短く書きます。\n"
+        . "- 決まりは、この人の書き方・呼び方についての具体的なもの (例「『いちばん』は 山の蜂場 / 1番 のこと」「『鈴木くん』は 鈴木 のこと」「『えさやり』は作業記録の 給餌」「時間を言わない内検は 30分」)。\n"
+        . "- 1つの決まりは " . LN_RULE_LEN . " 文字以内。今ある決まりと同じこと・その例だけの偶然 (日付や数字そのもの) は書かない。\n"
+        . "- 文のまとめ方を少し直しただけなど、決まりにすることが無ければ rules は空にする。";
+    $user = "今ある決まり:\n" . (ln_rules_text($uid) ?: "(なし)\n") . "\n直した例:\n" . $ex;
+    $schema = ['type' => 'object', 'properties' => ['rules' => ['type' => 'array', 'items' => ['type' => 'string']]], 'required' => ['rules'], 'additionalProperties' => false];
+    [$j, $err] = ai_json($system, $user, $schema);
+    @file_put_contents(data_dir() . '/line_note.log', date('c') . " {$uid} rules " . ($j === null ? 'FAILED ' . $err : count((array)($j['rules'] ?? []))) . "\n", FILE_APPEND);
+    if ($j === null) return 0;
+    $n = 0;
+    foreach (array_slice((array)($j['rules'] ?? []), 0, 5) as $r) if (trim((string)$r) !== '') { ln_rule_set($uid, '', (string)$r, 'ai'); $n++; }
+    $ids = array_column($todo, 'id');
+    json_update(ln_learn_path($uid), function (array $d) use ($ids) {
+        $l = is_array($d['ex'] ?? null) ? $d['ex'] : [];
+        foreach ($l as &$x) if (in_array($x['id'] ?? '', $ids, true)) $x['ruled'] = true;
+        unset($x);
+        return ['ex' => $l];
+    });
+    return $n;
 }
 
 function ln_hm(int $min): string { return $min >= 60 ? intdiv($min, 60) . '時間' . ($min % 60 ? ($min % 60) . '分' : '') : $min . '分'; }
