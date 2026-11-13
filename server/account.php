@@ -61,6 +61,11 @@ if (is_post()) {
             [$ok, $code, $res] = line_push((string)$l['to'], "【HPX】LINE のテスト\n\nHPX-note から LINE にお知らせが届くことを確かめました。");
             redirect('account.php#line', $ok ? 'LINE にテストのメッセージを送りました。届いたか確かめてください。' : 'LINE に送れませんでした (' . $code . ' ' . mb_substr($res, 0, 120) . ')。');
         }
+        if ($act === 'line_note' && line_link($UID)) {
+            $on = !empty($_POST['note']);
+            account_update($UID, function (array $a) use ($on) { if (is_array($a['line'] ?? null)) $a['line']['note'] = $on; return $a; });
+            redirect('account.php#line', $on ? 'LINE で送った文を HPX-note に記録するようにしました。' : 'LINE で送った文を記録しないようにしました。');
+        }
         if ($act === 'line_off') { line_unlink($UID); redirect('account.php#line', 'LINE の連携を外しました。お知らせはメールだけで届きます。'); }
         redirect('account.php#line');
     }
@@ -128,6 +133,12 @@ if (line_on()) {
             . '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="radio" name="mode" value="only"' . (!empty($l['only']) ? ' checked' : '') . '> LINE だけで受け取る</label>'
             . ' <span class="muted">(LINE で送れなかったときは、メールで届きます)</span></p>'
             . '<button type="submit">保存</button></form>'
+            . (ai_on() ? '<h3 style="margin:16px 0 4px;font-size:15px">LINE でメモ・作業記録を送る</h3>'
+                . '<p class="muted">LINE公式アカウントのトークに話し言葉で送ると、AI が蜂場・巣箱・メモか作業記録かを読み取って記録します (例「山の蜂場の1番、女王いた、王台なし、30分」)。'
+                . '巣箱などが分からないときは LINE で聞き返します。送り方の例は、トークに「使い方」と送ると出ます。送った文は読み取りのため AI (Claude) に送られます。</p>'
+                . '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="line_note">'
+                . '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="note" value="1"' . (($l['note'] ?? true) !== false ? ' checked' : '') . '> LINE で送った文を HPX-note に記録する</label></p>'
+                . '<button type="submit">保存</button></form>' : '')
             . '<form method="post" style="display:inline-block;margin-top:10px">' . csrf_field() . '<input type="hidden" name="act" value="line_test"><button type="submit">テストのメッセージを送る</button></form> '
             . '<form method="post" style="display:inline-block;margin-top:10px" onsubmit="return window.confirm(\'LINE の連携を外します。よろしいですか?\')">' . csrf_field()
             . '<input type="hidden" name="act" value="line_off"><button type="submit">連携を外す</button></form>';

@@ -68,6 +68,11 @@ $HPX_TODO_MAIL_HOUR = 7;       // タスクのお知らせメールを送る時�
 $HPX_LINE_TOKEN = '';
 $HPX_LINE_SECRET = '';
 $HPX_LINE_ADD_URL = '';         // 友だち追加の URL (例 'https://line.me/R/ti/p/@222xdxtk')。マイアカウントの連携の説明に出す
+// LINE で送ったメモ・作業記録を AI (Claude) で読み取って HPX-note に記録する (空なら使わない。LINE の設定も要る)。
+//   Claude Console (https://console.anthropic.com/) で作った API キー。利用料は送った回数に応じてかかる
+$HPX_AI_KEY = '';
+$HPX_AI_MODEL = 'claude-opus-5-5';   // 読み取りに使うモデル。'claude-haiku-5-5' にすると利用料はずっと安い (読み取りの正確さは少し下がるかもしれない)
+$HPX_AI_DAY_MAX = 50;          // 1人が1日に LINE で記録できる回数 (使いすぎ・料金の上がりすぎを防ぐ)
 
 // デモ用アカウント: このメールアドレスのアカウントはパスワードを公開して誰でも試せる (空ならデモなし)。
 //   設定・チームの変更、写真の追加、メールの送信はできない。管理ページで保存した初期状態に、毎日 $HPX_DEMO_RESET_HOUR 時ごろ戻す
