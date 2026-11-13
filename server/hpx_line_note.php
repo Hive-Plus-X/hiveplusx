@@ -56,7 +56,8 @@ function ln_need(array $recs): ?array
 
 function ln_rec_label(array $site, array $r): string
 {
-    $what = $r['kind'] === 'work' ? '作業記録「' . $r['wtype'] . '」' : 'メモ' . ($r['type'] !== '' ? '「' . $r['type'] . '」' : '');
+    $what = $r['kind'] === 'task' ? 'タスク「' . (string)$r['title'] . '」'
+        : ($r['kind'] === 'work' ? '作業記録「' . $r['wtype'] . '」' : 'メモ' . ($r['type'] !== '' ? '「' . $r['type'] . '」' : ''));
     $txt = $r['text'] !== '' ? ' ' . mb_strimwidth($r['text'], 0, 40, '…') : '';
     return ($r['a'] !== null ? target_label($site, $r['a'], $r['h']) . ' の' : '') . $what . $txt;
 }
@@ -95,6 +96,15 @@ function ln_saved_text(array $site, array $recs, string $note): string
 {
     $o = "HPX-note に記録しました。\n";
     foreach ($recs as $r) {
+        if ($r['kind'] === 'task') {
+            $due = (string)($r['due'] ?? '');
+            $o .= "\n・" . target_label($site, $r['a'], $r['h']) . "\n  タスク「" . (string)$r['title'] . '」'
+                . ($due !== '' ? ' 期限 ' . date('n/j', strtotime($due)) . '(' . ['日', '月', '火', '水', '木', '金', '土'][(int)date('w', strtotime($due))] . ')' : ' 期限なし')
+                . ($r['workers'] ? ' 担当 ' . implode('・', array_map('user_name', $r['workers'])) : '')
+                . (!empty($r['ttags']) ? "\n  " . implode('・', $r['ttags']) : '');
+            if ($r['text'] !== '') $o .= "\n  " . mb_strimwidth($r['text'], 0, 120, '…');
+            continue;
+        }
         $d = date('n/j', strtotime($r['date']));
         $o .= "\n・{$d} " . target_label($site, $r['a'], $r['h']) . "\n  ";
         if ($r['kind'] === 'work') {
@@ -115,8 +125,8 @@ function ln_saved_text(array $site, array $recs, string $note): string
 
 function ln_help(): string
 {
-    return "LINE で送った文を、HPX-note のメモや作業記録にします。\n話し言葉のままで大丈夫です (スマホのキーボードのマイクで声を文字にして送れます)。\n\n"
-        . "送り方の例:\n・山の蜂場の1番、女王いた、卵あり、王台なし、30分\n・きのう里の蜂場で給餌、糖液を全部の巣箱に、1時間\n・2番の巣箱の前にスズメバチが10匹くらい\n\n"
+    return "LINE で送った文を、HPX-note のメモ・作業記録・タスクにします。\n話し言葉のままで大丈夫です (スマホのキーボードのマイクで声を文字にして送れます)。\n\n"
+        . "送り方の例:\n・山の蜂場の1番、女王いた、卵あり、王台なし、30分\n・きのう里の蜂場で給餌、糖液を全部の巣箱に、1時間\n・2番の巣箱の前にスズメバチが10匹くらい\n・来週の土曜までに山の蜂場に継箱を用意、鈴木さん担当 (タスク)\n\n"
         . "蜂場や巣箱が分からないときは聞き返します。\n「取り消し」… 最後に記録したものを消す (" . LN_UNDO_MIN . "分以内)\n「使い方」… この説明\n\n"
         . "記録した内容は HPX-note で見られます。\n" . site_url('memo.php');
 }
