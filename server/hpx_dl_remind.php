@@ -67,7 +67,7 @@ function dl_notice_html(?array $me, string $csrfField): string
         $last = export_all_due();
         if ($last !== null) {
             $o .= $box('<b>サーバー管理者へ:</b> 全アカウントのデータを' . ($last > 0 ? ' ' . h(date('Y-m-d', $last)) . ' から' : 'まだ一度も') . 'ダウンロードしていません。'
-                . 'サーバーの負担を減らし、研究用のデータをなくさないように、定期的に手元へ保存してください。' . h(dlr_cam_note())
+                . 'センサの記録・メモ・作業記録・写真など、研究用のデータをなくさないように、定期的に全部を手元へ保存してください。' . h(dlr_cam_note())
                 . ' <a href="admin.php#export_all">ダウンロードのページへ</a>');
         }
     }
@@ -77,7 +77,7 @@ function dl_notice_html(?array $me, string $csrfField): string
         $since = max((int)($me['dl_last'] ?? 0), (int)($me['created'] ?? 0), (int)($me['dl_snooze'] ?? 0));
         if (time() - $since >= $days * 86400) {
             $o .= $box('自分のデータを' . ((int)($me['dl_last'] ?? 0) > 0 ? ' ' . h(date('Y-m-d', (int)$me['dl_last'])) . ' から' : 'まだ一度も') . 'ダウンロードしていません。'
-                . '念のため、<a href="account.php#backup">マイアカウントのバックアップ</a>で手元に保存しておきましょう。'
+                . '念のため、<a href="account.php#backup">マイアカウントのバックアップ</a> (センサの記録と写真も入れる) で、蜂場・メモ・作業記録・センサの記録を手元に保存しておきましょう。'
                 . (glob(cams_dir($uid) . '/*/cam.json') ? h(dlr_cam_note()) . '残したい写真は、カメラのページの「この月の写真をまとめて保存」で保存できます。' : '')
                 . ' <form method="post" class="inl" style="margin-left:6px">' . $csrfField . '<input type="hidden" name="act" value="dl_later">'
                 . '<button type="submit" class="link">あとで (' . DLR_SNOOZE_DAYS . '日後にまた出す)</button></form>');
@@ -109,7 +109,7 @@ function dl_remind_mail(): void
     foreach ($to as $addr) {
         account_mail($addr, '【HPX】全アカウントのデータを保存してください',
             "全アカウントのデータを" . ($last > 0 ? ' ' . date('Y-m-d', $last) . ' から' : 'まだ一度も') . "ダウンロードしていません。\n"
-            . "サーバーの負担を減らし、研究用のデータをなくさないように、定期的に手元へ保存してください。\n" . dlr_cam_note() . "\n\n"
+            . "センサの記録・メモ・作業記録・写真など、研究用のデータをなくさないように、定期的に全部を手元へ保存してください。\n" . dlr_cam_note() . "\n\n"
             . "サーバー管理のページ: " . site_url('admin.php#export_all') . "\n");
     }
 }
