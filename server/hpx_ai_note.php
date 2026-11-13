@@ -231,6 +231,11 @@ function ln_system(): string
 - minutes はかかった分。「1時間半」なら 90。start・end は HH:MM (言っていなければ空)。people は作業した人数 (workers の数より多いこともある。分からなければ 0)。honey_kg は採蜜量 kg (無ければ 0)。
 - 記録ではない文 (あいさつ・質問・お礼など) なら records を空にして not_a_record を true にする。
 - note には、読み取れなかったことや迷ったことがあれば一言で書く (無ければ空)。
+
+この人が前に確かめた例:
+- 「この人の前の例」があれば、それはこの人が確かめて直した正しい記録。この人の書き方・巣箱や人の呼び方・記録の分け方は、例に合わせる。
+- 例の「前に AI が読み違えた記録」と同じまちがいをしない。
+- 例の日付「前日」などは、その文を送った日から数えたもの。
 TXT;
 }
 
@@ -263,6 +268,7 @@ function ln_parse(array $site, string $text): array
         . "\n人の一覧:\n" . $plist
         . "\n作業の種類: " . implode('・', $workTypes) . "\nメモのタグ: " . implode('・', $memoTags)
         . "\n\n用語集 (正しい言葉: 化けやすい書き方):\n" . ln_terms_text()
+        . (($ex = ln_learn_text($GLOBALS['UID'])) !== '' ? "\nこの人の前の例 (新しい順):\n" . $ex : '')
         . "\n送られた文:\n" . mb_substr($text, 0, LN_TEXT_MAX);
     [$j, $err] = ai_json(ln_system(), $user, ln_schema(array_keys($targets), $workTypes, $memoTags, array_keys($people)));
     if ($j === null) return [null, false, $err];
@@ -380,5 +386,84 @@ function ln_undo(array $done): int
 }
 
 // 記録したことの返事
+// ====================================================================
+// 直した例から覚える (2026-11-13)
+//   AI そのものは作り直さない。本人が直した結果を「直した例」としてアカウントの ai_learn.json に残し、
+//   次に読み取るとき、その人の最近の例を見本として AI に渡す (その人の書き方・巣箱の呼び方に合ってくる)。
+//   例は本人の分だけを使う (チームのほかの人の文は渡さない)。画面の「AIメモ・記録」で見る・消すことができる。
+//   例を作るとき: 画面で「記録する」を押した (AI の読み取りと記録した内容が違えば「直した」)、LINE で聞き返しに答えた
+// ====================================================================
+const LN_LEARN_MAX = 100;     // 残す例の数
+const LN_LEARN_USE = 6;       // AI に渡す例の数 (直したものを先に)
+
+function ln_learn_path(string $uid): string { return account_dir($uid) . '/ai_learn.json'; }
+function ln_learn_all(string $uid): array { $v = json_load(ln_learn_path($uid))['ex'] ?? []; return is_array($v) ? $v : []; }
+
+// 記録1つを、名前で書いた1行にする (蜂場・巣箱の記号は変わることがあるので名前で残す)。日付は送った日からの差で
+function ln_rec_line(array $site, array $r, string $sent): string
+{
+    $o = [];
+    $o[] = '対象=' . ($r['a'] !== null ? target_label($site, (string)$r['a'], (string)$r['h']) : '(不明)');
+    $dd = (int)round((strtotime($r['date']) - strtotime($sent)) / 86400);
+    $o[] = '日付=' . ($dd === 0 ? '当日' : ($dd === -1 ? '前日' : ($dd < 0 ? (-$dd) . '日前' : $dd . '日後')));
+    if ($r['kind'] === 'work') {
+        $o[] = '作業記録=' . $r['wtype'];
+        if ($r['min'] > 0) $o[] = '時間=' . $r['min'] . '分';
+        if ($r['honey'] !== null) $o[] = '採蜜量=' . $r['honey'] . 'kg';
+    } else {
+        $o[] = 'メモ=' . ($r['type'] !== '' ? $r['type'] : '－');
+        if ($r['min'] > 0) $o[] = '内検の時間=' . $r['min'] . '分';
+        $chips = memo_chips($r);
+        foreach ($r['inspect'] as $k => $v) if (!is_array($v)) $chips[] = M_INSPECT[$k][0] . ':' . $v;
+        if ($r['mite']) $chips[] = 'ダニ調査:' . mite_text($r['mite']);
+        if ($chips) $o[] = '項目=' . implode('・', $chips);
+    }
+    if (!empty($r['workers'])) $o[] = '作業した人=' . implode('・', array_map('user_name', $r['workers']));
+    if ((int)$r['people'] > 0) $o[] = '人数=' . (int)$r['people'];
+    if ($r['text'] !== '') $o[] = '文=' . mb_strimwidth($r['text'], 0, 80, '…');
+    return implode(' / ', $o);
+}
+
+// 例を残す。$ai = AI が読み取った記録、$fixed = 本人が確かめて記録した記録
+function ln_learn_add(string $uid, array $site, string $text, array $ai, array $fixed, string $via): void
+{
+    if (!is_uid($uid) || trim($text) === '') return;
+    $sent = date('Y-m-d');
+    $a = array_map(fn($r) => ln_rec_line($site, $r, $sent), $ai);
+    $f = array_map(fn($r) => ln_rec_line($site, $r, $sent), $fixed);
+    $ex = ['id' => new_id(), 'at' => time(), 'via' => $via, 'text' => mb_substr($text, 0, 500), 'ai' => $a, 'fixed' => $f, 'changed' => $a !== $f];
+    json_update(ln_learn_path($uid), function (array $d) use ($ex) {
+        $l = is_array($d['ex'] ?? null) ? $d['ex'] : [];
+        $l[] = $ex;
+        return ['ex' => array_slice($l, -LN_LEARN_MAX)];
+    });
+}
+
+function ln_learn_del(string $uid, string $id): void
+{
+    json_update(ln_learn_path($uid), function (array $d) use ($id) {
+        $l = is_array($d['ex'] ?? null) ? $d['ex'] : [];
+        return ['ex' => $id === '*' ? [] : array_values(array_filter($l, fn($x) => ($x['id'] ?? '') !== $id))];
+    });
+}
+
+// AI に渡す見本 (直した例を新しい順に。足りなければ直さなかった例も)
+function ln_learn_text(string $uid): string
+{
+    $l = array_reverse(ln_learn_all($uid));
+    $use = array_slice(array_merge(array_filter($l, fn($x) => !empty($x['changed'])), array_filter($l, fn($x) => empty($x['changed']))), 0, LN_LEARN_USE);
+    $o = '';
+    foreach ($use as $x) {
+        $o .= "・文: " . (string)$x['text'] . "\n  正しい記録:\n";
+        foreach ((array)$x['fixed'] as $line) $o .= "    - " . $line . "\n";
+        if (!empty($x['changed']) && $x['ai']) {
+            $o .= "  (前に AI が読み違えた記録:\n";
+            foreach ((array)$x['ai'] as $line) $o .= "    - " . $line . "\n";
+            $o .= "  )\n";
+        }
+    }
+    return $o;
+}
+
 function ln_hm(int $min): string { return $min >= 60 ? intdiv($min, 60) . '時間' . ($min % 60 ? ($min % 60) . '分' : '') : $min . '分'; }
 

@@ -29,8 +29,13 @@ if (is_post()) {
         if ($recs === null) redirect(AN_PAGE, 'いま AI で読み取れませんでした。少し待ってもう一度押すか、メモ・記録のページで入力してください。');
         if (!$recs) redirect(AN_PAGE, $notRec ? 'メモや作業記録として読み取れる内容がありませんでした。どの蜂場・巣箱で、何を見た・何をしたかを書いてください。'
             : '記録にする内容が読み取れませんでした。' . ($note !== '' ? ' (' . $note . ')' : ''));
-        $_SESSION['ai_note'] = ['recs' => $recs, 'note' => $note];
+        $_SESSION['ai_note'] = ['recs' => $recs, 'note' => $note, 'src' => $text, 'ai' => $recs];
         redirect(AN_PAGE . '#check');
+    }
+    if ($act === 'learn_del') {
+        $id = (string)($_POST['id'] ?? '');
+        if ($id === '*' || preg_match('/^[0-9a-f]{10}$/', $id)) ln_learn_del($UID, $id);
+        redirect(AN_PAGE . '#learn', $id === '*' ? '覚えた例をすべて消しました。' : '覚えた例を1つ消しました。');
     }
     if ($act === 'reset') {
         unset($_SESSION['ai_note']);
@@ -78,6 +83,8 @@ if (is_post()) {
         }
         if (!$save) redirect(AN_PAGE . '#check', '記録するものにチェックを入れてください。');
         ln_save($site, $save, 'ai');
+        // 直した例として残す (次からの読み取りの見本になる)。AI の読み取りと同じなら「直さなかった例」
+        if (empty($_POST['learn_off'])) ln_learn_add($UID, $site, (string)($draft['src'] ?? ''), (array)($draft['ai'] ?? []), $save, 'ai');
         unset($_SESSION['ai_note'], $_SESSION['ai_note_text']);
         $nm = count(array_filter($save, fn($r) => $r['kind'] === 'memo'));
         $nw = count($save) - $nm + count(array_filter($save, fn($r) => $r['kind'] === 'memo' && $r['type'] === '内検' && $r['min'] > 0));
@@ -150,7 +157,31 @@ if ($draft) {
         if ($chips && !$isWork) echo '<p><label>内検の項目・タグ <span class="muted">(直すときは、記録してからメモのページで)</span></label><span class="tagl">' . implode('', array_map(fn($c) => '<span>' . h($c) . '</span>', $chips)) . '</span></p>';
         echo '<p><label>' . ($isWork ? 'メモ' : '内容の文') . '</label><textarea name="text[' . $i . ']" rows="3">' . h($r['text']) . '</textarea></p></div>';
     }
-    echo '<p><button type="submit">チェックした記録を記録する</button></p></form>'
+    echo '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="learn_off" value="1"> この結果は AI に覚えさせない</label></p>'
+        . '<p><button type="submit">チェックした記録を記録する</button></p></form>'
         . '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="reset"><button type="submit" class="link">読み取った結果を捨てる</button></form>';
+}
+// 3. AI が覚えた例 (直した例。次からの読み取りの見本になる)
+$learn = array_reverse(ln_learn_all($UID));
+echo '<h2 id="learn">AI が覚えた例 (' . count($learn) . '件)</h2>'
+    . '<p class="muted">記録するときに直した内容を覚えておき、次から読み取るとき、あなたの最近の例 (直したものを先に ' . LN_LEARN_USE . '件まで) を見本として AI に渡します。'
+    . 'あなたの書き方や巣箱の呼び方に、だんだん合ってきます。例はあなたの読み取りにだけ使います (チームのほかの人には使いません)。いらない例は消せます。</p>';
+if ($learn) {
+    echo '<details><summary>覚えた例を見る</summary>';
+    foreach (array_slice($learn, 0, 30) as $x) {
+        echo '<div class="card"><p class="muted">' . h(date('Y-m-d H:i', (int)($x['at'] ?? 0))) . ' ' . (($x['via'] ?? '') === 'line' ? 'LINE' : '画面')
+            . (!empty($x['changed']) ? ' <span class="warn">直した</span>' : ' 直さなかった') . '</p>'
+            . '<p>' . nl((string)($x['text'] ?? '')) . '</p><p class="muted">記録した内容:</p><ul>';
+        foreach ((array)($x['fixed'] ?? []) as $line) echo '<li>' . h((string)$line) . '</li>';
+        echo '</ul>';
+        if (!empty($x['changed'])) {
+            echo '<p class="muted">AI の読み取り:</p><ul class="muted">';
+            foreach ((array)($x['ai'] ?? []) as $line) echo '<li>' . h((string)$line) . '</li>';
+            echo '</ul>';
+        }
+        echo '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="learn_del"><input type="hidden" name="id" value="' . h((string)($x['id'] ?? '')) . '"><button type="submit" class="link">この例を消す</button></form></div>';
+    }
+    echo '<form method="post" onsubmit="return window.confirm(\'覚えた例をすべて消します。よろしいですか?\')">' . csrf_field()
+        . '<input type="hidden" name="act" value="learn_del"><input type="hidden" name="id" value="*"><button type="submit">すべて消す</button></form></details>';
 }
 echo voice_js() . '</body></html>';

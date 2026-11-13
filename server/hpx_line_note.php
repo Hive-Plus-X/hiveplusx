@@ -168,7 +168,7 @@ function line_note_handle(string $to, string $raw): string
                 $ok = true;
             }
         }
-        if ($ok) return ln_finish($to, $site, $recs, (string)($pending['note'] ?? ''));
+        if ($ok) return ln_finish($to, $site, $recs, (string)($pending['note'] ?? ''), (string)($pending['src'] ?? ''), is_array($pending['orig'] ?? null) ? $pending['orig'] : null, true);
         if (preg_match('/^\d{1,2}$/', mb_convert_kana($cmd, 'n')) || ($what === 'minutes' && mb_strlen($cmd) <= 8)) {
             return $what === 'target' ? '一覧の番号で答えてください。やめるときは「やめる」と送ってください。' : '「30分」のように時間で答えてください。時間なしなら「メモ」、やめるときは「やめる」と送ってください。';
         }
@@ -191,23 +191,25 @@ function line_note_handle(string $to, string $raw): string
         return $notRec ? "メモや作業記録として送るときは、どの蜂場・巣箱で、何を見た・何をしたかを書いてください。\n送り方の例は「使い方」と送ると出ます。"
             : "記録にする内容が読み取れませんでした。" . ($note !== '' ? "\n(" . $note . ')' : '') . "\n送り方の例は「使い方」と送ると出ます。";
     }
-    return ln_finish($to, $site, $recs, $note);
+    return ln_finish($to, $site, $recs, $note, $text, $recs);
 }
 
 // 決まっていないことがあれば聞き返し、全部決まれば書いて返事をする
-function ln_finish(string $to, array $site, array $recs, string $note): string
+//   $src・$orig: 送られた文と AI が読み取った記録 (聞き返しに答えてもらったら、直した例として残す)
+function ln_finish(string $to, array $site, array $recs, string $note, string $src = '', ?array $orig = null, bool $asked = false): string
 {
     $need = ln_need($recs);
     if ($need) {
         [$cand, $msg] = ln_ask($site, $recs, $need);
-        ln_state_set($to, function (array $s) use ($recs, $need, $cand, $note) {
-            $s['pending'] = ['recs' => $recs, 'need' => $need, 'cand' => $cand, 'note' => $note];
+        ln_state_set($to, function (array $s) use ($recs, $need, $cand, $note, $src, $orig) {
+            $s['pending'] = ['recs' => $recs, 'need' => $need, 'cand' => $cand, 'note' => $note, 'src' => $src, 'orig' => $orig ?? $recs];
             $s['pexp'] = time() + LN_PENDING_MIN * 60;
             return $s;
         });
         return $msg;
     }
     $done = ln_save($site, $recs);
+    if ($asked && $orig !== null) ln_learn_add($GLOBALS['UID'], $site, $src, $orig, $recs, 'line');
     ln_state_set($to, function (array $s) use ($done) {
         unset($s['pending'], $s['pexp']);
         $s['last'] = $done;
