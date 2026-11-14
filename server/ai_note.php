@@ -5,6 +5,8 @@
 //   3. 「記録する」でメモ・作業記録に保存 (データには via = 'ai' が付く。あとはふつうのメモ・作業記録と同じ)
 //   読み取りのしくみは hpx_ai_note.php (LINE で記録するのと同じ)。config.php の $HPX_AI_KEY が空なら使えない。
 //   読み取った結果は、記録するまでセッションに置く (ai_note)。
+//   手書きの記録の写真から: 「📷 写真から文字を読み取る」で写真の文字を 1 の文の欄に入れる (読みにくい所は 〔 〕? と一覧)。
+//     直してから「AI で読み取る」。記録したメモには元の写真を付ける。LINE で送った写真の文は ?photo=line で読み込む。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
 require __DIR__ . '/hpx_ai_note.php';
@@ -14,8 +16,54 @@ $site = site_load();
 $workTypes = ln_work_types();
 $draft = is_array($_SESSION['ai_note'] ?? null) ? $_SESSION['ai_note'] : null;
 
+// 置いてある写真を見せる (本人の分だけ)
+if (isset($_GET['img'])) {
+    $p = ln_photo_path($UID);
+    if (!is_file($p)) { http_response_code(404); exit; }
+    header('Content-Type: image/jpeg');
+    header('Cache-Control: private, no-store');
+    readfile($p);
+    exit;
+}
+// LINE で送った手書きの記録の写真から読み取った文を、ここで直す
+if (($_GET['photo'] ?? '') === 'line') {
+    $info = ln_photo_info($UID);
+    if (!$info) redirect(AN_PAGE, 'LINE で送った写真の読み取りが見つかりません (' . LN_PHOTO_KEEP_H . '時間たったか、もう記録・やめた写真です)。');
+    unset($_SESSION['ai_note']);
+    $_SESSION['ai_note_text'] = (string)$info['text'];
+    $_SESSION['ai_note_unsure'] = (array)($info['unsure'] ?? []);
+    $_SESSION['ai_note_photo'] = true;
+    redirect(AN_PAGE, 'LINE で送った写真から読み取った文を入れました。〔 〕? の所を確かめて直してから「AI で読み取る」を押してください。');
+}
+$hasPhoto = !empty($_SESSION['ai_note_photo']) && is_file(ln_photo_path($UID));
+
 if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
+    if ($act === 'photo') {   // 手書きの記録の写真から文字を読み取る
+        if (!ai_key_on()) redirect(AN_PAGE);
+        if (is_demo($ME)) redirect(AN_PAGE, 'デモ用アカウントでは AI の読み取りは使えません。');
+        if (!$site['apiaries']) redirect(AN_PAGE, '先に蜂場を登録してください。');
+        $f = $_FILES['photo'] ?? null;
+        if (!is_array($f) || (int)($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) redirect(AN_PAGE, '写真を選んでください (大きすぎる写真は送れません)。');
+        if (!ai_quota_use($UID)) redirect(AN_PAGE, '今日 AI で読み取れる回数 (' . ai_day_max() . '回) を使い切りました。');
+        if (!ln_photo_store($UID, (string)$f['tmp_name'])) redirect(AN_PAGE, 'この写真は読めませんでした (JPEG・PNG・WebP で 20MB まで)。');
+        [$ph, $err] = ln_photo_read($site, $UID);
+        if ($ph === null) redirect(AN_PAGE, 'いま写真を読み取れませんでした。少し待ってもう一度送ってください。');
+        if ($ph['text'] === '') {
+            ln_photo_clear($UID);
+            redirect(AN_PAGE, '写真から手書きの記録が読み取れませんでした。' . ($ph['note'] !== '' ? ' (' . $ph['note'] . ')' : '') . ' 明るい所で、紙全体がまっすぐ大きく写るように撮ってください。');
+        }
+        unset($_SESSION['ai_note']);
+        $_SESSION['ai_note_text'] = $ph['text'];
+        $_SESSION['ai_note_unsure'] = $ph['unsure'];
+        $_SESSION['ai_note_photo'] = true;
+        redirect(AN_PAGE, '写真から文字を読み取りました。〔 〕? の所を確かめて直してから「AI で読み取る」を押してください。' . ($ph['note'] !== '' ? ' (' . $ph['note'] . ')' : ''));
+    }
+    if ($act === 'photo_clear') {
+        ln_photo_clear($UID);
+        unset($_SESSION['ai_note_photo'], $_SESSION['ai_note_unsure'], $_SESSION['ai_note_text'], $_SESSION['ai_note']);
+        redirect(AN_PAGE, '写真をやめました。');
+    }
     if ($act === 'parse') {
         $text = str_in('text', LN_TEXT_MAX);
         if (!ai_key_on()) redirect(AN_PAGE);
@@ -23,13 +71,13 @@ if (is_post()) {
         if ($text === '') redirect(AN_PAGE, '文を入れてください。');
         if (!$site['apiaries']) redirect(AN_PAGE, '先に蜂場を登録してください。');
         if (!ai_quota_use($UID)) { $_SESSION['ai_note_text'] = $text; redirect(AN_PAGE, '今日 AI で読み取れる回数 (' . ai_day_max() . '回) を使い切りました。メモ・記録のページで入力してください。'); }
-        [$recs, $notRec, $note] = ln_parse($site, $text);
+        [$recs, $notRec, $note] = ln_parse($site, $hasPhoto ? ln_photo_src($text) : $text);
         @file_put_contents(data_dir() . '/line_note.log', date('c') . " {$UID} web " . ($recs === null ? 'AI FAILED ' . $note : 'records=' . count($recs)) . "\n", FILE_APPEND);
         $_SESSION['ai_note_text'] = $text;
         if ($recs === null) redirect(AN_PAGE, 'いま AI で読み取れませんでした。少し待ってもう一度押すか、メモ・記録のページで入力してください。');
         if (!$recs) redirect(AN_PAGE, $notRec ? 'メモや作業記録として読み取れる内容がありませんでした。どの蜂場・巣箱で、何を見た・何をしたかを書いてください。'
             : '記録にする内容が読み取れませんでした。' . ($note !== '' ? ' (' . $note . ')' : ''));
-        $_SESSION['ai_note'] = ['recs' => $recs, 'note' => $note, 'src' => $text, 'ai' => $recs];
+        $_SESSION['ai_note'] = ['recs' => $recs, 'note' => $note, 'src' => $hasPhoto ? ln_photo_src($text) : $text, 'ai' => $recs, 'photo' => $hasPhoto];
         redirect(AN_PAGE . '#check');
     }
     if ($act === 'rule_set') {   // 覚えたこと: 足す (id 空)・直す・消す (rule 空)・すべて消す (id *)
@@ -95,14 +143,16 @@ if (is_post()) {
             $save[] = $r;
         }
         if (!$save) redirect(AN_PAGE . '#check', '記録するものにチェックを入れてください。');
-        ln_save($site, $save, 'ai');
+        $withPhoto = !empty($draft['photo']) && $hasPhoto;
+        ln_save($site, $save, 'ai', $withPhoto && !empty($_POST['photo_attach']) ? ln_photo_path($UID) : '');
+        if ($withPhoto) ln_photo_clear($UID);
         // 直した例として残す (次からの読み取りの見本になる)。AI の読み取りと同じなら「直さなかった例」
         $newRules = 0;
         if (empty($_POST['learn_off'])) {
             ln_learn_add($UID, $site, (string)($draft['src'] ?? ''), (array)($draft['ai'] ?? []), $save, 'ai');
             $newRules = ln_rules_update($UID);   // 直したところがあれば、AI が「覚えたこと」にまとめる
         }
-        unset($_SESSION['ai_note'], $_SESSION['ai_note_text']);
+        unset($_SESSION['ai_note'], $_SESSION['ai_note_text'], $_SESSION['ai_note_photo'], $_SESSION['ai_note_unsure']);
         $nm = count(array_filter($save, fn($r) => $r['kind'] === 'memo'));
         $nt = count(array_filter($save, fn($r) => $r['kind'] === 'task'));
         $nw = count(array_filter($save, fn($r) => $r['kind'] === 'work')) + count(array_filter($save, fn($r) => $r['kind'] === 'memo' && $r['type'] === '内検' && $r['min'] > 0));
@@ -124,6 +174,20 @@ echo '<p class="muted">話し言葉のままで書いてください (🎤 音�
     . '<form method="post" class="card form">' . csrf_field() . '<input type="hidden" name="act" value="parse">'
     . '<p><textarea name="text" rows="5" data-voice placeholder="例: 山の蜂場の1番、女王いた、卵あり、王台なし。Aさんと2人で給餌、糖液を全部の巣箱に、1時間。来週の土曜までに継箱を用意、Bさん担当">' . h($text) . '</textarea></p>'
     . '<button type="submit">AI で読み取る</button> <span class="muted">(送った文は読み取りのため AI (Claude) に送られます。1日 ' . ai_day_max() . '回まで)</span></form>';
+
+// 手書きの記録の写真から
+if ($hasPhoto) {
+    $unsure = (array)($_SESSION['ai_note_unsure'] ?? []);
+    echo '<div class="card"><p><b>📷 手書きの記録の写真から読み取った文です。</b> 上の欄で直してから「AI で読み取る」を押してください。記録したメモには、この写真を付けます。</p>'
+        . '<p><img src="ai_note.php?img=1" alt="送った写真" style="max-width:100%;max-height:360px;border:1px solid #ccc"></p>';
+    if ($unsure) echo '<p class="warn">読みにくかった所 (文の中の 〔 〕? の所。写真と見くらべて直してください):</p><ul>'
+        . implode('', array_map(fn($l) => '<li>' . h($l) . '</li>', ln_unsure_lines($unsure))) . '</ul>';
+    echo '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="photo_clear"><button type="submit" class="link">写真をやめる</button></form></div>';
+} else {
+    echo '<form method="post" enctype="multipart/form-data" class="card form">' . csrf_field() . '<input type="hidden" name="act" value="photo">'
+        . '<p><label>📷 手書きの記録 (ノート・記録用紙など) の写真から</label><input type="file" name="photo" accept="image/*" required onchange="anPhoto(this)"></p>'
+        . '<button type="submit">写真から文字を読み取る</button> <span class="muted">(写真の文字を上の欄に入れます。読みにくい所には印が付くので、直してから読み取ってください。LINE に写真を送っても使えます)</span></form>';
+}
 
 // 2. 読み取った記録を確かめる
 if ($draft) {
@@ -191,6 +255,7 @@ if ($draft) {
         if ($chips && !$isWork) echo '<p><label>内検の項目・タグ <span class="muted">(直すときは、記録してからメモのページで)</span></label><span class="tagl">' . implode('', array_map(fn($c) => '<span>' . h($c) . '</span>', $chips)) . '</span></p>';
         echo '<p><label>' . ($isWork ? 'メモ' : '内容の文') . '</label><textarea name="text[' . $i . ']" rows="3">' . h($r['text']) . '</textarea></p></div>';
     }
+    if (!empty($draft['photo']) && $hasPhoto) echo '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="photo_attach" value="1" checked> 手書きの写真をメモに付ける</label></p>';
     echo '<p><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="learn_off" value="1"> この結果は AI に覚えさせない</label></p>'
         . '<p><button type="submit">チェックした記録を記録する</button></p></form>'
         . '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="reset"><button type="submit" class="link">読み取った結果を捨てる</button></form>';
@@ -234,4 +299,21 @@ if ($learn) {
     echo '<form method="post" onsubmit="return window.confirm(\'覚えた例をすべて消します。よろしいですか?\')">' . csrf_field()
         . '<input type="hidden" name="act" value="learn_del"><input type="hidden" name="id" value="*"><button type="submit">すべて消す</button></form></details>';
 }
-echo voice_js() . '</body></html>';
+// 写真は送る前にブラウザで小さくする (iPhone の HEIC も JPEG に。memo.php と同じやり方)
+echo voice_js() . <<<'JS'
+<script>
+function anPhoto(inp){
+  var file = inp.files && inp.files[0];
+  if (!file || !window.createImageBitmap || !window.DataTransfer) return;
+  var btn = inp.form.querySelector('button[type=submit]'); btn.disabled = true;
+  createImageBitmap(file, {imageOrientation: 'from-image'}).then(function(b){
+    var r = Math.min(1, 1568 / Math.max(b.width, b.height)), c = document.createElement('canvas');
+    c.width = Math.round(b.width * r); c.height = Math.round(b.height * r);
+    c.getContext('2d').drawImage(b, 0, 0, c.width, c.height);
+    return new Promise(function(ok){ c.toBlob(function(bl){ ok(bl ? new File([bl], 'photo.jpg', {type: 'image/jpeg'}) : file); }, 'image/jpeg', 0.88); });
+  }).catch(function(){ return file; }).then(function(x){
+    var d = new DataTransfer(); d.items.add(x); inp.files = d.files; btn.disabled = false;
+  });
+}
+</script>
+JS . '</body></html>';

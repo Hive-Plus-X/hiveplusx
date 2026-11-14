@@ -72,6 +72,25 @@ function line_api(string $path, array $body): array
     return [$code === 200, $code, (string)$res];
 }
 
+// 利用者が送った写真などの中身を受け取り、$dst に書く (Messaging API の「コンテンツを取得」)。成功なら true
+function line_content(string $messageId, string $dst, int $maxBytes = 20 * 1024 * 1024): bool
+{
+    global $HPX_LINE_TOKEN, $HPX_LINE_API;
+    if (!preg_match('/^\d{1,30}$/', $messageId) || !function_exists('curl_init')) return false;
+    $url = rtrim((string)($HPX_LINE_API ?? '') ?: 'https://api-data.line.me', '/') . '/v2/bot/message/' . $messageId . '/content';   // $HPX_LINE_API は試験用
+    $fp = @fopen($dst, 'wb');
+    if (!$fp) return false;
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . trim((string)($HPX_LINE_TOKEN ?? ''))], CURLOPT_FILE => $fp,
+        CURLOPT_TIMEOUT => 30, CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_NOPROGRESS => false,
+        CURLOPT_PROGRESSFUNCTION => fn($c, $dlTotal, $dl) => $dl > $maxBytes ? 1 : 0]);   // 大きすぎたら途中でやめる
+    $ok = curl_exec($ch) !== false && (int)curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200;
+    curl_close($ch);
+    fclose($fp);
+    if (!$ok) @unlink($dst);
+    return $ok;
+}
+
 function line_text(string $subject, string $body): string
 {
     $t = trim($subject . "\n\n" . trim($body));

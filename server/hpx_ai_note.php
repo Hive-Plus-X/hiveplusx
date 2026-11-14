@@ -86,7 +86,8 @@ const LN_MEMO_TAGS_DEFAULT = ['分蜂', '入居', '大量死', 'スズメバチ'
 // ====================================================================
 
 // [JSON の配列 または null, エラーの説明]
-function ai_json(string $system, string $user, array $schema): array
+//   $user: 文 (string)、または写真と文を並べた content の配列 (手書きの記録の写真を読むとき)
+function ai_json(string $system, string|array $user, array $schema, string $effort = 'low', int $timeout = 45): array
 {
     global $HPX_AI_KEY, $HPX_AI_MODEL, $HPX_AI_API;
     $model = trim((string)($HPX_AI_MODEL ?? '')) ?: 'claude-opus-5-5';
@@ -94,7 +95,7 @@ function ai_json(string $system, string $user, array $schema): array
         'model' => $model,
         'max_tokens' => 8000,
         'system' => $system,
-        'output_config' => ['effort' => 'low', 'format' => ['type' => 'json_schema', 'schema' => $schema]],
+        'output_config' => ['effort' => $effort, 'format' => ['type' => 'json_schema', 'schema' => $schema]],
         'messages' => [['role' => 'user', 'content' => $user]],
     ];
     $head = ['Content-Type: application/json', 'x-api-key: ' . trim((string)($HPX_AI_KEY ?? '')), 'anthropic-version: 2026-10-21'];
@@ -106,7 +107,7 @@ function ai_json(string $system, string $user, array $schema): array
     $url = rtrim((string)($HPX_AI_API ?? '') ?: 'https://api.anthropic.com', '/') . '/v1/messages';   // $HPX_AI_API は試験用
     $ch = curl_init($url);
     curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($body, JSON_UNESCAPED_UNICODE), CURLOPT_HTTPHEADER => $head,
-        CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 45, CURLOPT_CONNECTTIMEOUT => 5]);
+        CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => $timeout, CURLOPT_CONNECTTIMEOUT => 5]);
     $res = curl_exec($ch);
     $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $err = curl_error($ch);
@@ -345,10 +346,12 @@ function ln_clean(array $r, array $targets, array $workTypes, array $people = []
 
 // 記録を書く。返す値: 取り消し用の [[持ち主, 'memos'|'logs', id], ...]
 //   $via: 'line' (LINE から) か 'ai' (画面の AIメモ・記録)
-function ln_save(array $site, array $recs, string $via = 'line'): array
+//   $photo: 手書きの記録の写真 (ln_photo_path)。'' でなければ、メモにその写真を付ける (元の紙を後で見られるように)
+function ln_save(array $site, array $recs, string $via = 'line', string $photo = ''): array
 {
     global $UID;
     $done = [];
+    if ($photo !== '' && !is_file($photo)) $photo = '';
     foreach ($recs as $r) {
         $owner = apiary_owner($site, $r['a']);
         if ($owner === '') continue;
@@ -385,7 +388,7 @@ function ln_save(array $site, array $recs, string $via = 'line'): array
             site_update('works', function (array $w) use ($row) { $w['logs'] = is_array($w['logs'] ?? null) ? $w['logs'] : []; $w['logs'][] = $row; return $w; });
             $done[] = [$owner, 'logs', $workId];
         }
-        $row = ['id' => $id] + $base + ['time' => (string)($r['start'] ?? ''), 'type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'flower' => (array)($r['flower'] ?? []), 'photos' => [], 'work' => $workId];
+        $row = ['id' => $id] + $base + ['time' => (string)($r['start'] ?? ''), 'type' => $r['type'], 'tags' => $r['tags'], 'text' => $r['text'], 'inspect' => $r['inspect'], 'mite' => $r['mite'], 'flower' => (array)($r['flower'] ?? []), 'photos' => $photo !== '' ? ln_photo_attach($owner, $id, $photo) : [], 'work' => $workId];
         site_update('memos', function (array $m) use ($row) { $m[] = $row; return $m; });
         $done[] = [$owner, 'memos', $id];
     }
@@ -399,8 +402,13 @@ function ln_undo(array $done): int
     foreach ($done as [$owner, $kind, $id]) {
         if (!is_uid((string)$owner)) continue;
         if ($kind === 'memos') {
-            site_update_of((string)$owner, 'memos', function (array $m) use ($id, &$n) {
+            site_update_of((string)$owner, 'memos', function (array $m) use ($id, $owner, &$n) {
                 $c = count($m);
+                foreach ($m as $x) if (($x['id'] ?? '') === $id) foreach ((array)($x['photos'] ?? []) as $p) {   // 付けた写真も消す (memo.php の memo_photo_del と同じ)
+                    if (!preg_match('/^[0-9a-f]+_[0-9a-f]+$/', (string)$p)) continue;
+                    @unlink(site_dir_of((string)$owner) . '/memo_photos/' . $p . '.jpg');
+                    @unlink(site_dir_of((string)$owner) . '/memo_photos/' . $p . '_t.jpg');
+                }
                 $m = array_values(array_filter($m, fn($x) => ($x['id'] ?? '') !== $id));
                 $n += $c - count($m);
                 return $m;
@@ -468,6 +476,7 @@ function ln_rec_line(array $site, array $r, string $sent): string
 function ln_learn_add(string $uid, array $site, string $text, array $ai, array $fixed, string $via): void
 {
     if (!is_uid($uid) || trim($text) === '') return;
+    if (str_starts_with($text, LN_PHOTO_HEAD)) $text = '(手書きの写真から) ' . substr($text, strlen(LN_PHOTO_HEAD));   // 長い前置きは残さない
     $sent = date('Y-m-d');
     $a = array_map(fn($r) => ln_rec_line($site, $r, $sent), $ai);
     $f = array_map(fn($r) => ln_rec_line($site, $r, $sent), $fixed);
@@ -601,6 +610,130 @@ function ln_rules_update(string $uid): int
         return ['ex' => $l];
     });
     return $n;
+}
+
+// ====================================================================
+// 手書きの記録の写真を読む (2026-11-14)
+//   ノート・記録用紙・カレンダーなどに手書きした記録を写真に撮って送る (LINE か、画面の「AIメモ・記録」)
+//   → AI (Claude) が写真の文字を読み取って文にする (読みにくい所は 〔王台?〕 のように印を付け、一覧にする)
+//   → その文を、ふつうの AIメモ・記録と同じしくみ (ln_parse) で記録に分ける
+//   → 利用者が確かめて直してから記録する (LINE は「OK」と送るまで記録しない)。記録したメモには、元の写真を付ける。
+//   写真は その人の accounts/<uid>/ai_photo.jpg に1枚だけ置く (次の写真で上書き。記録・やめるで消す)。
+//   AI に送るのは、写真と、その人の蜂場・巣箱の名前・作業の種類 (読み取りの手がかり)、用語集だけ。
+// ====================================================================
+const LN_PHOTO_PX = 1568;               // AI に送る写真の長い辺 (これより大きくしても読み取りは良くならない)
+const LN_PHOTO_BYTES = 20 * 1024 * 1024; // 受け取る写真の上限 (縮める前)
+const LN_PHOTO_KEEP_H = 24;             // 写真と読み取った文を残す時間 (時間)
+const LN_PHOTO_HEAD = "(手書きの記録の写真から読み取った文です。〔 〕? は読みにくかった所 (いちばんありそうな読み)。日付が書いてあればその日の記録。予定と書いていなければ、すんだ記録として読む)\n";
+
+function ln_photo_path(string $uid): string { return account_dir($uid) . '/ai_photo.jpg'; }
+function ln_photo_info_path(string $uid): string { return account_dir($uid) . '/ai_photo.json'; }
+
+// 受け取った写真 (JPEG・PNG・WebP) を、AI に送る大きさの JPEG にしてその人の所に置く
+function ln_photo_store(string $uid, string $src): bool
+{
+    $info = @getimagesize($src);
+    if (!$info || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true) || filesize($src) > LN_PHOTO_BYTES) return false;
+    @mkdir(account_dir($uid), 0755, true);
+    @unlink(ln_photo_info_path($uid));
+    return img_resize_jpeg($src, ln_photo_path($uid), LN_PHOTO_PX, 85);
+}
+
+// 写真と読み取った文を消す
+function ln_photo_clear(string $uid): void
+{
+    @unlink(ln_photo_path($uid));
+    @unlink(ln_photo_info_path($uid));
+}
+
+// 前に読み取った写真の文 (LINE で送った写真を画面で直すとき)。無い・古ければ null
+function ln_photo_info(string $uid): ?array
+{
+    $j = json_load(ln_photo_info_path($uid));
+    if (!is_array($j) || (string)($j['text'] ?? '') === '' || (int)($j['at'] ?? 0) < time() - LN_PHOTO_KEEP_H * 3600 || !is_file(ln_photo_path($uid))) return null;
+    return $j;
+}
+
+// 記録したメモに写真を付ける (memo.php と同じ置き場所・大きさ)。付けた写真の名前の配列を返す
+function ln_photo_attach(string $owner, string $memoId, string $photo): array
+{
+    $dir = site_dir_of($owner) . '/memo_photos';
+    @mkdir($dir, 0755, true);
+    $name = $memoId . '_' . bin2hex(random_bytes(3));
+    if (!img_resize_jpeg($photo, $dir . '/' . $name . '.jpg', 1280, 82)) return [];
+    img_resize_jpeg($dir . '/' . $name . '.jpg', $dir . '/' . $name . '_t.jpg', 320, 78);
+    return [$name];
+}
+
+function ln_photo_system(): string
+{
+    return <<<TXT
+あなたは、養蜂家が手書きした記録 (ノート・記録用紙・カレンダー・ホワイトボードなど) の写真から、文字を読み取る係です。
+
+- 写真に書いてあることを、そのまま文字にして text に入れる。言葉を足したり、まとめたり、意味を推測して書きかえたりしない。
+- 行の区切りは改行で残す。表になっている記録は「項目: 値」のように、どの欄の値か分かる形で1行ずつ書く。日付ごと・巣箱ごとのまとまりが分かるようにする。
+- 日付・数字・巣箱の番号・記号 (○ × ✓ など) は特に正確に。○ や ✓ は「あり」、× は「なし」のように意味が分かるように書いてよい (例「王台: ×(なし)」)。
+- 読みにくい・自信がない所は、いちばんありそうな読みを 〔 〕で囲み、最後に ? を付ける (例「〔王台?〕なし」「〔3?〕番」)。まったく読めない所は〔?〕と書く。推測で決めつけない。
+- 〔 〕を付けた所はすべて unsure にも入れる: read に 〔 〕の中の読み、maybe にほかに考えられる読み (無ければ空)、where にどこに書いてあったか (「2行目」「11/3 の欄」など短く)。
+- 養蜂の言葉 (用語集) や、この人の蜂場・巣箱の名前・作業の種類 (手がかり) にある言葉は、字の形が近ければそれだと読んでよい。ただし自信がなければ 〔 〕を付ける。
+- 消してある (線で消した) 文字は読まない。印刷された見出し・罫線の数字などは、記録の欄名として必要なときだけ書く。
+- 手書きの文字が無い・養蜂の記録ではない写真なら、no_text を true にし、text は空にする。
+- note には、写真が暗い・ぼやけている・切れているなど、読み取りについて伝えたいことがあれば一言で (無ければ空)。
+TXT;
+}
+
+// 置いてある写真を AI で読み取る。[['text' => 文, 'unsure' => [[read, maybe[], where], ...], 'note' => ''] または null, エラーの説明]
+//   読み取れた文は ai_photo.json に残す (LINE で送った写真を、画面で直すときに使う)
+function ln_photo_read(array $site, string $uid): array
+{
+    $path = ln_photo_path($uid);
+    if (!is_file($path)) return [null, '写真がありません'];
+    $hint = '';
+    foreach (ln_targets($site) as $t) $hint .= $t[2] . "\n";
+    $user = [
+        ['type' => 'image', 'source' => ['type' => 'base64', 'media_type' => 'image/jpeg', 'data' => base64_encode((string)file_get_contents($path))]],
+        ['type' => 'text', 'text' => "今日: " . date('Y-m-d') . "\n\nこの人の蜂場・巣箱の名前 (手がかり):\n" . ($hint ?: "(登録なし)\n")
+            . "\n作業の種類 (手がかり): " . implode('・', ln_work_types())
+            . "\n\n用語集 (正しい言葉: 化けやすい書き方):\n" . ln_terms_text()
+            . "\nこの写真の手書きの記録を読み取ってください。"],
+    ];
+    $obj = fn(array $p) => ['type' => 'object', 'properties' => $p, 'required' => array_keys($p), 'additionalProperties' => false];
+    $schema = $obj([
+        'text' => ['type' => 'string'],
+        'unsure' => ['type' => 'array', 'items' => $obj(['read' => ['type' => 'string'], 'maybe' => ['type' => 'array', 'items' => ['type' => 'string']], 'where' => ['type' => 'string']])],
+        'no_text' => ['type' => 'boolean'],
+        'note' => ['type' => 'string'],
+    ]);
+    // 手書きは読み違えやすいので、ふつうの読み取りより少しよく考えさせる (medium)
+    [$j, $err] = ai_json(ln_photo_system(), $user, $schema, 'medium', 90);
+    @file_put_contents(data_dir() . '/line_note.log', date('c') . " {$uid} photo " . ($j === null ? 'FAILED ' . $err : 'chars=' . mb_strlen((string)($j['text'] ?? ''))) . "\n", FILE_APPEND);
+    if ($j === null) return [null, $err];
+    $text = mb_substr(trim((string)($j['text'] ?? '')), 0, LN_TEXT_MAX);
+    $unsure = [];
+    foreach (array_slice((array)($j['unsure'] ?? []), 0, 30) as $u) {
+        if (!is_array($u) || trim((string)($u['read'] ?? '')) === '') continue;
+        $unsure[] = ['read' => mb_substr(trim((string)$u['read']), 0, 40), 'maybe' => array_slice(array_values(array_filter(array_map(fn($v) => mb_substr(trim((string)$v), 0, 40), (array)($u['maybe'] ?? [])), fn($v) => $v !== '')), 0, 4),
+            'where' => mb_substr(trim((string)($u['where'] ?? '')), 0, 40)];
+    }
+    $out = ['text' => !empty($j['no_text']) ? '' : $text, 'unsure' => $unsure, 'note' => mb_substr(trim((string)($j['note'] ?? '')), 0, 200)];
+    if ($out['text'] !== '') file_put_contents(ln_photo_info_path($uid), json_encode($out + ['at' => time()], JSON_UNESCAPED_UNICODE));
+    return [$out, ''];
+}
+
+// 読みにくかった所の一覧 (LINE の返事・画面の注意書き)
+function ln_unsure_lines(array $unsure): array
+{
+    $o = [];
+    foreach ($unsure as $u) {
+        $o[] = '「' . $u['read'] . '」' . ($u['maybe'] ? ' (' . implode('・', $u['maybe']) . ' かも)' : '') . ($u['where'] !== '' ? ' … ' . $u['where'] : '');
+    }
+    return $o;
+}
+
+// 写真から読んだ文を、記録に分ける (ln_parse) ときに渡す形にする
+function ln_photo_src(string $text, string $fix = ''): string
+{
+    return LN_PHOTO_HEAD . $text . ($fix !== '' ? "\n\n(本人からの直し。写真の読み取りより、こちらを優先する)\n" . $fix : '');
 }
 
 function ln_hm(int $min): string { return $min >= 60 ? intdiv($min, 60) . '時間' . ($min % 60 ? ($min % 60) . '分' : '') : $min . '分'; }
