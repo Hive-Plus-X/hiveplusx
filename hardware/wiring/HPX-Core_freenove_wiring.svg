@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1300" viewBox="0 0 1280 1300">
+<rect width="100%" height="100%" fill="#fffdf6"/>
+<rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
+<text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">【Freenove で作るとき】HPX-Core ＋防水の部品表と配線図</text>
+<text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove ESP32 WROOM（FNK0090） ／ 電源 USB ／ ファーム HPX_Core v1.25</text>
+<rect x="524" y="170" width="232" height="400" rx="10" fill="#0d47a1" stroke="#062a63" stroke-width="3"/>
+<rect x="570" y="178" width="140" height="170" rx="6" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+<rect x="570" y="178" width="140" height="46" rx="4" fill="#212121" stroke="#111" stroke-width="2"/>
+<text x="640" y="206" font-size="12" text-anchor="middle" font-weight="bold" fill="#eee" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">アンテナ</text>
+<text x="640" y="280" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32-</text>
+<text x="640" y="302" font-size="16" text-anchor="middle" font-weight="bold" fill="#263238" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">WROOM-32</text>
+<text x="640" y="420" font-size="15" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove</text>
+<text x="640" y="440" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ESP32 WROOM</text>
+<rect x="606" y="550" width="68" height="34" rx="8" fill="#b0b0b0" stroke="#777" stroke-width="2"/>
+<rect x="554" y="500" width="34" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="571" y="492" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">EN</text>
+<rect x="692" y="500" width="34" height="30" rx="4" fill="#eceff1" stroke="#555" stroke-width="2"/>
+<text x="709" y="492" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BOOT</text>
+<circle cx="536" cy="190.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="190.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="208.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="208.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="227.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="227.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="245.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="245.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="264.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="264.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="282.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="282.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="301.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="301.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="319.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="319.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="338.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="338.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="356.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="356.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="375.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="375.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="393.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="393.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="412.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="412.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="430.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="430.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="449.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="449.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="467.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="467.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="486.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="486.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="504.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="504.5" r="5" fill="#d4af37"/>
+<circle cx="536" cy="523.0" r="5" fill="#d4af37"/>
+<circle cx="744" cy="523.0" r="5" fill="#d4af37"/>
+<circle cx="536" cy="541.5" r="5" fill="#d4af37"/>
+<circle cx="744" cy="541.5" r="5" fill="#d4af37"/>
+<text x="640" y="130" font-size="15" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove ESP32 WROOM（FNK0090）</text>
+<text x="640" y="148" font-size="12" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（図はイメージ。ボタンの位置は製品によって違う）</text>
+<text x="624" y="610" font-size="13" text-anchor="end" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C</text>
+<path d="M640,582 L640,700" stroke="#424242" stroke-width="9" stroke-linecap="round"/>
+<text x="624" y="650" font-size="14" text-anchor="end" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C ケーブル（両側 USB-C、短いもの）</text>
+<rect x="330" y="720" width="620" height="16" rx="3" fill="#90a4ae" stroke="#607d8b" stroke-width="1"/>
+<text x="316" y="733" font-size="13" text-anchor="end" font-weight="bold" fill="#607d8b" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの壁</text>
+<rect x="580" y="700" width="120" height="56" rx="8" fill="#455a64" stroke="#263238" stroke-width="2"/>
+<text x="640" y="726" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">防水USBカプラー</text>
+<text x="640" y="745" font-size="11" text-anchor="middle" font-weight="normal" fill="#eceff1" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C メス-メス</text>
+<path d="M640,756 L640,800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>
+<text x="656" y="790" font-size="13" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ</text>
+<text x="960" y="690" font-size="13" text-anchor="end" font-weight="bold" fill="#999" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの中</text>
+<text x="960" y="770" font-size="13" text-anchor="end" font-weight="bold" fill="#999" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの外</text>
+<rect x="70" y="210" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="240" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-W</text>
+<text x="90" y="264" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">重量（BLE）</text>
+<path d="M380,245 L504,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="70" y="320" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="350" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-TH</text>
+<text x="90" y="374" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">温湿度（BLE）</text>
+<path d="M380,355 L504,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="70" y="430" width="300" height="70" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="90" y="460" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-F</text>
+<text x="90" y="484" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電柵アラート（BLE）</text>
+<path d="M380,465 L504,320" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<text x="220" y="190" font-size="15" text-anchor="middle" font-weight="bold" fill="#1565c0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電線なし（電波で受信）</text>
+<rect x="830" y="270" width="360" height="84" rx="10" fill="#ffffff" stroke="#c9c2a8" stroke-width="2"/>
+<text x="850" y="305" font-size="16" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Wi-Fi ルーター → サーバー</text>
+<text x="850" y="332" font-size="14" text-anchor="start" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Wi-Fi で送る（電線なし）</text>
+<path d="M774,320 L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>
+<rect x="900" y="380" width="340" height="290" rx="10" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+<text x="1070" y="408" font-size="15" text-anchor="middle" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar で電圧も測るとき</text>
+<text x="1070" y="428" font-size="11" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（USB-C ケーブルの代わりに、中をこうする）</text>
+<rect x="920" y="450" width="90" height="120" rx="6" fill="#37474f" stroke="#222" stroke-width="2"/>
+<text x="965" y="590" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C メス基板</text>
+<text x="965" y="604" font-size="10" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（データ対応）</text>
+<text x="1070" y="630" font-size="11" text-anchor="middle" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">防水USBカプラーから USB-C ケーブル</text>
+<text x="1070" y="644" font-size="11" text-anchor="middle" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（データ対応）で受ける</text>
+<circle cx="1010" cy="470" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1000" y="474" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS</text>
+<path d="M1010,470 L1110,470" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,470 L1110,470" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,470 L1110,470" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1118" y="475" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove 5V</text>
+<circle cx="1010" cy="496" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1000" y="500" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<path d="M1010,496 L1110,496" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,496 L1110,496" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,496 L1110,496" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1118" y="501" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove GND</text>
+<circle cx="1010" cy="522" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1000" y="526" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D+</text>
+<path d="M1010,522 L1110,522" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,522 L1110,522" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,522 L1110,522" fill="none" stroke="#fafafa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1118" y="527" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove IO39</text>
+<circle cx="1010" cy="548" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1000" y="552" font-size="11" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D−</text>
+<path d="M1010,548 L1110,548" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,548 L1110,548" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1010,548 L1110,548" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1118" y="553" font-size="12" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove IO36</text>
+<text x="1120" y="590" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ジャンパー線 4本</text>
+<text x="1070" y="664" font-size="11" text-anchor="middle" font-weight="bold" fill="#c62828" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">設定「電圧の測り方」＝HPX-Solar</text>
+<text x="60" y="848" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品表</text>
+<rect x="60" y="860" width="1160" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="881" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品</text>
+<text x="630" y="881" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
+<text x="680" y="881" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使うところ・メモ</text>
+<rect x="60" y="890" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">Freenove ESP32 WROOM（FNK0090）</text>
+<text x="630" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="911" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">本体（親機）。差し込み口は USB-C</text>
+<rect x="60" y="920" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C ケーブル（両側 USB-C、短いもの）</text>
+<text x="630" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="941" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの中で、防水USBカプラーと Freenove をつなぐ</text>
+<rect x="60" y="950" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">防水USBカプラー（USB Type-C メス-メス）</text>
+<text x="630" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="680" y="971" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの壁に取り付ける。外から USB 電源をつなぐ</text>
+<rect x="60" y="980" width="1160" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1001" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル（データ対応）</text>
+<text x="630" y="1001" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">各1</text>
+<text x="680" y="1001" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">中の USB-C ケーブルの代わり。カプラーから受けて 4本に分ける</text>
+<rect x="60" y="1010" width="1160" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（HPX-Solar のとき）ジャンパー線・ピンヘッダー</text>
+<text x="630" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">4本</text>
+<text x="680" y="1031" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS → 5V、GND → GND、D+ → IO39、D− → IO36</text>
+<rect x="60" y="1060" width="1160" height="216" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="1086" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
+<text x="78" y="1114" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</text>
+<text x="78" y="1140" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ファームは FireBeetle と同じ HPX_Core v1.25 を使う。管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</text>
+<text x="78" y="1166" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・Freenove は省電力に向かないので家庭電源向き（USB の部品や電源の LED が眠っている間も電気を使う）。</text>
+<text x="78" y="1192" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・HPX-Solar（小型ソーラー電源）から電気をもらって電圧も測るときは、右の枠のように 4本に分ける（試作中・実機未確認）。</text>
+<text x="78" y="1218" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">  5V から動かし、D+ は IO39、D− は IO36 で読む。ただし電池が早く減るので、HPX-Solar と組むなら FireBeetle か Olimex をすすめる。</text>
+<text x="78" y="1244" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・工場出荷リセットは、基板の BOOT ボタン（IO0）を起動してすぐ5秒長押し。</text>
+<text x="78" y="1270" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・Freenove のピンの並びは Freenove の GitHub のピン配置図から。差す前に、基板の印字とピンの名前を見くらべる。</text>
+<circle cx="1010" cy="470" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="470" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="1010" cy="496" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="496" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="1010" cy="522" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="522" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+<circle cx="1010" cy="548" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="548" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+</svg>

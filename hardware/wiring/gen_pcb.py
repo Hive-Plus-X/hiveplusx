@@ -729,7 +729,7 @@ finish(s, y, [XIAO_NOTE_LONG if "ピンヘッダ（オス）" in n else n for n 
 # ================================================================== HPX-Core 有線LAN（6×8cm 基板）
 OX, OY = 260, 200
 s = S(1500, 3000)
-title(s, "HPX-Core（親機）＋有線LAN 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム HPX_Core v1.20")
+title(s, "【ELEGOO で作るとき】HPX-Core ＋有線LAN 基板の配線図", "6×8cm 縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム v1.25")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33。写真の向きから右へ90度回す）")
 
 def R(n):   # 行の番号（1〜33）→ 図の行（0〜）
@@ -767,11 +767,11 @@ s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y2-20}" width="68" height="44" rx="8
 s.text((x1 + x2) / 2, y2 + 46, "USB-C（下向き）", 13, "middle", "bold", "#333", layer=s.top)
 s.text((x1 + x2) / 2, y1 + 230, "ELEGOO ESP-32", 16, "middle", "bold", "#fff", layer=s.top)
 s.text((x1 + x2) / 2, y1 + 252, "ピンソケット 15ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
-pe_l = pins(1, 14, EL, "L", {"GND"})
-pe_r = pins(11, 14, ER, "R", {"D23", "D18", "D5", "TX2", "RX2", "D4", "3V3"})
+pe_l = pins(1, 14, EL, "L", {"D25", "D26", "D14", "D13"})
+pe_r = pins(11, 14, ER, "R", {"D23", "D19", "GND", "3V3"})
 
-# W5500（LAN 差し込み口が下）。ピン列は N 列と V 列（8穴離れている）、24〜29 行
-x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, R(24) - 0.5, R(24) - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
+# W5500（LAN 差し込み口が下）。ピン列は N 列と V 列（8穴離れている）、22〜27 行（TARO 2026-11-13: ファーム v1.25 のピンに合わせて FireBeetle の図と同じ行に）
+x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, R(22) - 0.5, R(22) - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
 s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+30}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
 s.text((x1 + x2) / 2, y1 + 70, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
 s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-150}" width="160" height="170" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
@@ -781,8 +781,8 @@ s.text((x1 + x2) / 2, y1 + 120, "W5500 モジュール", 14, "middle", "bold", "
 s.text((x1 + x2) / 2, y1 + 140, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
 WL = ["MI", "RST", "NC", "V", "V2", "G"]       # 上から（下から G, V, V, NC, RST, MI）
 WR = ["INT", "CS", "SCK", "MO", "G2", "G3"]     # 上から（下から G, G, MO, SCK, CS, INT）
-pw_l = pins(13, 24, WL, "L", {"MI", "RST", "V2", "G"})
-pw_r = pins(21, 24, WR, "R", {"INT", "CS", "SCK", "MO"})
+pw_l = pins(13, 22, WL, "L", {"MI", "RST", "V2", "G"})
+pw_r = pins(21, 22, WR, "R", {"INT", "CS", "SCK", "MO"})
 
 def Lc(ch):
     return COLS.index(ch)
@@ -790,32 +790,27 @@ def Lc(ch):
 def w(color, *holes):
     wireh(s, [(Lc(h[0]), R(int(h[1:]))) for h in holes], color)
 
-w("blue",   "L14", "Y14", "Y27", "V27")          # D23(MOSI) → MO
-w("yellow", "L20", "X20", "X26", "V26")          # D18(SCK) → SCK
-w("orange", "L21", "W21", "W25", "V25")          # D5(CS) → CS
-w("purple", "L22", "V22", "V24")                 # TX2(GPIO17) → INT
-w("white",  "L23", "O23", "O25", "N25")          # RX2(GPIO16) → RST
-w("green",  "L24", "N24")                        # D4(GPIO4, MISO) → MI
-w("red",    "L28", "N28")                        # 3V3 → V
-w("black",  "B27", "A27", "A30", "N30", "N29")   # GND → G
-yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LAN_pcb.svg")
-y = table(s, 60, yb + 40, [
-    ["線", "ESP-32 のピン（穴）", "通る穴", "W5500 のピン（穴）"],
-    ["blue", "D23 = GPIO23・MOSI（L14）", "L14 → Y14 → Y27 → V27", "MO（V27）"],
-    ["yellow", "D18 = GPIO18・SCK（L20）", "L20 → X20 → X26 → V26", "SCK（V26）"],
-    ["orange", "D5 = GPIO5・CS（L21）", "L21 → W21 → W25 → V25", "CS（V25）"],
-    ["purple", "TX2 = GPIO17（L22）", "L22 → V22 → V24", "INT（V24）"],
-    ["white", "RX2 = GPIO16（L23）", "L23 → O23 → O25 → N25", "RST（N25）"],
-    ["green", "D4 = GPIO4・MISO（L24）", "L24 → N24", "MI（N24）"],
-    ["red", "3V3（L28）", "L28 → N28", "V（N28）"],
-    ["black", "GND（左の列 B27）", "B27 → A27 → A30 → N30 → N29", "G（N29）"],
-], [100, 320, 420, 380], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+# TARO 2026-11-13: ファーム v1.25（FireBeetle と同じピン）に合わせた線。左の列の 4本は ESP-32 の下（裏）を通って下へ回る
+EL_LAN = [
+    ("purple", "D25 = GPIO25（B21）", ["B21", "F21", "F29", "P29", "P22", "V22"], "INT（V22）"),
+    ("orange", "D26 = GPIO26（B22）", ["B22", "E22", "E30", "Q30", "Q23", "V23"], "CS（V23）"),
+    ("yellow", "D14 = GPIO14・SCK（B24）", ["B24", "D24", "D31", "R31", "R24", "V24"], "SCK（V24）"),
+    ("blue", "D13 = GPIO13・MOSI（B26）", ["B26", "C26", "C32", "S32", "S25", "V25"], "MO（V25）"),
+    ("green", "D19 = GPIO19・MISO（L19）", ["L19", "M19", "M22", "N22"], "MI（N22）"),
+    ("white", "D23 = GPIO23（L14）", ["L14", "O14", "O23", "N23"], "RST（N23）"),
+    ("black", "GND（右の列 L27）", ["L27", "M27", "N27"], "G（N27）"),
+    ("red", "3V3（L28）", ["L28", "M28", "N28", "O28", "O26", "N26"], "V（N26）"),
+]
+for c, a_, hs, b_ in EL_LAN:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LAN_elegoo_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "ESP-32 のピン（穴）", "通る穴", "W5500 のピン（穴）"]] + [[c, a_, " → ".join(hs), b_] for c, a_, hs, b_ in EL_LAN], [100, 320, 420, 380], "つなぐ線（穴の位置は 列の文字＋行の数字）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
     ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）", "1", "B14〜B28・L14〜L28。USB-C を下に向ける"],
     ["ピンソケット（メス）15ピン", "2", "B14〜B28、L14〜L28 にはんだ付けして ESP-32 を差す"],
-    ["W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）", "1", "N24〜N29・V24〜V29。LAN 差し込み口を下に向ける"],
-    ["ピンソケット（メス）6ピン", "2", "N24〜N29、V24〜V29 にはんだ付けして W5500 を差す"],
+    ["W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）", "1", "N22〜N27・V22〜V27。LAN 差し込み口を下に向ける"],
+    ["ピンソケット（メス）6ピン", "2", "N22〜N27、V22〜V27 にはんだ付けして W5500 を差す"],
     ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
 ], [620, 60, 520], "部品表")
 finish(s, y, [
@@ -823,16 +818,18 @@ finish(s, y, [
     "・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。",
     "・裏の線どうしは交わらず、ほかのピンの穴の上も通らない。ESP-32・W5500 の下を通る線は、裏なので部品には触れない。",
     "・灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。",
-    "・線を交わらせないため、ファームのピンを変えた: MISO＝GPIO4（D4）、INT＝GPIO17（TX2）、RST＝GPIO16（RX2）。HPX_Core v1.20 はこのピンに合わせてある。",
+    "・ピンは FireBeetle 2 の図と同じ（ファーム HPX_Core v1.25 以降）: INT＝D25、CS＝D26、SCK＝D14、MOSI＝D13、MISO＝D19、RST＝D23。",
+    "・左の列の 4本（D25・D26・D14・D13）は ESP-32 の下（裏）を通って下の 29〜32 行へ回し、W5500 の右の列へつなぐ。",
+    "・2026-11-12 までのこの図（W5500 が 24〜29 行、MISO＝D4 など）で組んだものは、ファーム v1.24 までを使う。",
     "・ESP-32 の左右のピン列は10穴、W5500 の左右のピン列は8穴離れているとして描いた（ESP-32 は写真から、W5500 は幅23mm から計算）。差す前に実物で確かめる。",
-    "・W5500 のピンがモジュールの上下のどこにあるかは分からないので、ピンを ESP-32 の D4 と同じ 24 行から下に置いた。下の端に合わせたいときは、全部の線を同じ数だけ下へずらせばよい。",
-], "HPX-Core_LAN_pcb.svg")
+    "・W5500 のピンがモジュールの上下のどこにあるかは分からない（実物で確かめる）。",
+], "HPX-Core_LAN_elegoo_pcb.svg")
 
 # ================================================================== HPX-Core 基本モデル（＋有線LAN から W5500 を外したもの）
 # TARO 2026-11-10: 基本モデル (Wi-Fi＋USB給電) は「＋有線LAN」の基板から W5500 とその線を外して作る。ESP-32 の位置は同じ。
 OX, OY = 260, 200
 s = S(1500, 3000)
-title(s, "HPX-Core（親機）基本モデル 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ ELEGOO ESP-32 ／ Wi-Fi ＋ USB 給電")
+title(s, "【ELEGOO で作るとき】HPX-Core 基本モデル 基板の配線図", "6×8cm 縦置き ／ ELEGOO ESP-32 ／ Wi-Fi ＋ USB 給電")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（「＋有線LAN」と同じ基板・同じ位置。W5500 は付けない）")
 x1, y1, x2, y2 = module(1 - 0.47, 11 + 0.47, R(14) - 2.3, R(28) + 4.6, "#212121", "#000", "ESP-32")
 s.top.append(f'<rect x="{(x1+x2)/2-60}" y="{y1+30}" width="120" height="150" rx="4" fill="#b0bec5" fill-opacity="0.8" stroke="#78909c"/>')
@@ -845,11 +842,11 @@ s.text((x1 + x2) / 2, y1 + 252, "ピンソケット 15ピン×2 に差す", 12, 
 pins(1, 14, EL, "L", set())
 pins(11, 14, ER, "R", set())
 # W5500 を付けない場所 (将来 ＋有線LAN にするときはここに差す)
-_x1, _y1 = OX + (13 - 0.53) * P, OY + (R(24) - 0.5) * P
+_x1, _y1 = OX + (13 - 0.53) * P, OY + (R(22) - 0.5) * P
 s.top.append(f'<rect x="{_x1}" y="{_y1}" width="{9.06*P}" height="{9.84*P}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2.5" stroke-dasharray="10 7"/>')
 s.text(_x1 + 4.53 * P, _y1 + 4.4 * P, "空き（＋有線LAN では", 13, "middle", "bold", "#757575", layer=s.top)
 s.text(_x1 + 4.53 * P, _y1 + 5.2 * P, "ここに W5500 を差す）", 13, "middle", "bold", "#757575", layer=s.top)
-yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_BASIC_pcb.svg")
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_BASIC_elegoo_pcb.svg")
 y = table(s, 60, yb + 40, [
     ["部品", "数", "置き場所・メモ"],
     ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）", "1", "B14〜B28・L14〜L28。USB-C を下に向ける"],
@@ -859,10 +856,10 @@ y = table(s, 60, yb + 40, [
 finish(s, y, [
     "・基本モデルは、ルーターへ Wi-Fi でつなぎ、ESP-32 の USB-C から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。",
     "・「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_pcb.png）。",
-    "・ファームウェアは HPX_Core v1.20 以降を使い、初回設定で接続方法を「Wi-Fi」にします。",
+    "・ファームウェアは HPX_Core v1.25 を使い、初回設定で接続方法を「Wi-Fi」にします。",
     "・ESP-32 の左右のピン列は10穴離れているとして描いた（写真から）。差す前に実物で確かめる。",
     "・雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。",
-], "HPX-Core_BASIC_pcb.svg")
+], "HPX-Core_BASIC_elegoo_pcb.svg")
 
 # ================================================================== HPX-Core ＋防水＆電池駆動（タカチ PCB36-47）
 # TARO 2026-11-08: PCB36-47 に Olimex ESP32-DEVKIT-LIPO を載せ、単三リチウム3本（ケース WH145-25-M3 の電池ボックス）から 5V 端子へ。
@@ -870,7 +867,7 @@ finish(s, y, [
 # PCB36-47 は 36×47mm（取付穴 30×41mm）。穴は 13×17（A〜M × 1〜17）と見込んで描いた（実物で未確認）。
 OX, OY = 520, 420
 s = S(1500, 3000)
-title(s, "HPX-Core（親機）＋防水＆電池駆動の配線図", "タカチ PCB36-47（穴 A〜M × 1〜17 の見込み）／ Olimex ESP32-DEVKIT-LIPO ／ 単三リチウム ×3 → 5V 端子")
+title(s, "【Olimex で作るとき】HPX-Core ＋防水＆電池駆動の配線図", "PCB36-47 ／ Olimex ESP32-DEVKIT-LIPO ／ 単三リチウム ×3 → 5V 端子")
 board(s, 13, 17, " ")
 s.text(OX + 6 * P, 120, "ケース用基板 PCB36-47（36×47mm）を縦に置いたところ。穴 13×17 は見込み、四隅は取付穴", 15, "middle", "bold", "#5d4520")
 for c, r in ((0, 0), (12, 0), (0, 16), (12, 16)):   # 四隅は取付穴（その位置の穴は使わない）
@@ -931,7 +928,7 @@ s.wire([(bx0, by0 + 40), (bx0 - 30, by0 + 40), (bx0 - 30, tm[1]), tm], "black")
 solder_mark(s, 0, R(16)); solder_mark(s, 0, R(11))
 w("red", "A16", "B16")      # 電池＋ → 5V（ピン19）
 w("black", "A11", "B11")    # 電池− → GND（左の列のピン14）
-check_back("HPX-Core_BAT_pcb.svg")
+check_back("HPX-Core_BAT_olimex_pcb.svg")
 yb = backview(s, by0 + 140, OX + (NC - 1) * P / 2, y1 - 90, OY + (NR - 1) * P + 36)
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
@@ -954,7 +951,7 @@ finish(s, y, [
     "・PCB36-47 の穴の数（13×17）は見込み。四隅の取付穴に近い B1・L1 の穴がなければ、ソケットを15ピンにして B2〜B16・L2〜L16 にする。",
     "・ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋Olimex が収まるか未確認。足りないときは、ソケットを使わずに Olimex のピンを基板へ直接はんだ付けする。",
     "・管理画面の動作モードは「ディープスリープ」にする。電池のもちは保存間隔30分で 2〜4か月の見込み（未実測）。",
-], "HPX-Core_BAT_pcb.svg")
+], "HPX-Core_BAT_olimex_pcb.svg")
 
 # ================================================================== HPX-B バッテリー電圧（6×8cm 基板、ケース PFF10-4-10W）
 OX, OY = 260, 200
@@ -1092,8 +1089,8 @@ finish(s, y, [
 # ================================================================== HPX-Core ＋有線LAN＆ソーラーシステムチェック（6×8cm 基板、TARO 2026-11-08）
 # 「＋有線LAN」と同じ ESP-32・W5500 の並びに、上の空いた所（1〜9行）へ 12V バッテリー・パネルの電圧を測る部品と BP5293-50 を足す
 OX, OY = 260, 200
-s = S(1500, 3400)
-title(s, "HPX-Core（親機）＋有線LAN＆ソーラーシステムチェック 基板の配線図", "6×8cm（穴 A〜Y × 1〜33）縦置き ／ ESP-32 ＋ W5500 ＋ 電圧チェック ／ ファーム HPX_Core v1.22")
+s = S(1700, 3600)
+title(s, "【ELEGOO で作るとき】HPX-Core ＋有線LAN＆ソーラーシステムチェック 基板", "6×8cm 縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム v1.25")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
 
 def R(n):   # 行の番号（1〜33）→ 図の行（0〜）
@@ -1121,6 +1118,8 @@ def pins(col, first_row, names, side, used):
     return p
 
 # ESP-32（USB-C が下）。ピン列は B 列と L 列（10穴離れている）、14〜28 行
+# TARO 2026-11-13: ファーム v1.25（FireBeetle と同じピン）に合わせて描き直した。W5500 と 8本の線は「＋有線LAN」(ELEGOO) と同じ。
+# パネル＝D39（VN）、バッテリー＝D35、5V は VIN（B28）へ。5V の線は ESP-32 の下から基板の下の端（33行）・右（W 列）を回る
 EL = ["EN", "VP", "VN", "D34", "D35", "D32", "D33", "D25", "D26", "D27", "D14", "D12", "D13", "GND", "VIN"]
 ER = ["D23", "D22", "TX0", "RX0", "D21", "D19", "D18", "D5", "TX2", "RX2", "D4", "D2", "D15", "GND", "3V3"]
 x1, y1, x2, y2 = module(1 - 0.47, 11 + 0.47, R(14) - 2.3, R(28) + 4.6, "#212121", "#000", "ESP-32")
@@ -1131,126 +1130,102 @@ s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y2-20}" width="68" height="44" rx="8
 s.text((x1 + x2) / 2, y2 + 46, "USB-C（下向き）", 13, "middle", "bold", "#333", layer=s.top)
 s.text((x1 + x2) / 2, y1 + 230, "ELEGOO ESP-32", 16, "middle", "bold", "#fff", layer=s.top)
 s.text((x1 + x2) / 2, y1 + 252, "ピンソケット 15ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
-pe_l = pins(1, 14, EL, "L", {"GND", "D34", "D35", "VIN"})
-pe_r = pins(11, 14, ER, "R", {"D23", "D18", "D5", "TX2", "RX2", "D4", "3V3"})
-
-# W5500（LAN 差し込み口が下）。ピン列は N 列と V 列（8穴離れている）、24〜29 行
-x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, R(24) - 0.5, R(24) - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
+pins(1, 14, EL, "L", {"VN", "D35", "D25", "D26", "D14", "D13", "GND", "VIN"})
+pins(11, 14, ER, "R", {"D23", "D19", "GND", "3V3"})
+x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, R(22) - 0.5, R(22) - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
 s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+30}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
 s.text((x1 + x2) / 2, y1 + 70, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
 s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-150}" width="160" height="170" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
 s.text((x1 + x2) / 2, y2 - 60, "LAN 差し込み口", 13, "middle", "bold", "#37474f", layer=s.top)
-s.text((x1 + x2) / 2, y2 + 46, "LAN ケーブル（下へ）", 13, "middle", "bold", "#333", layer=s.top)
 s.text((x1 + x2) / 2, y1 + 120, "W5500 モジュール", 14, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 140, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
-WL = ["MI", "RST", "NC", "V", "V2", "G"]       # 上から（下から G, V, V, NC, RST, MI）
-WR = ["INT", "CS", "SCK", "MO", "G2", "G3"]     # 上から（下から G, G, MO, SCK, CS, INT）
-pw_l = pins(13, 24, WL, "L", {"MI", "RST", "V2", "G"})
-pw_r = pins(21, 24, WR, "R", {"INT", "CS", "SCK", "MO"})
-
+pins(13, 22, ["MI", "RST", "NC", "V", "V2", "G"], "L", {"MI", "RST", "V2", "G"})
+pins(21, 22, ["INT", "CS", "SCK", "MO", "G2", "G3"], "R", {"INT", "CS", "SCK", "MO"})
 def Lc(ch):
     return COLS.index(ch)
-
 def w(color, *holes):
     wireh(s, [(Lc(h[0]), R(int(h[1:]))) for h in holes], color)
-
-w("blue",   "L14", "Y14", "Y27", "V27")          # D23(MOSI) → MO
-w("yellow", "L20", "X20", "X26", "V26")          # D18(SCK) → SCK
-w("orange", "L21", "W21", "W25", "V25")          # D5(CS) → CS
-w("purple", "L22", "V22", "V24")                 # TX2(GPIO17) → INT
-w("white",  "L23", "O23", "O25", "N25")          # RX2(GPIO16) → RST
-w("green",  "L24", "N24")                        # D4(GPIO4, MISO) → MI
-w("red",    "L28", "N28")                        # 3V3 → V
-w("black",  "B27", "A27", "A30", "N30", "N29")   # GND → G
-
-# ---- 電圧チェックの部品（上の 1〜9 行）----
 def hole(h):
     return (Lc(h[0]), R(int(h[1:])))
-res_flat("G1", "G5", "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], (H(Lc("G"), 0)[0] - 18, H(0, R(3))[1] + 5), "end")
-cap_b("H3", "H5", (H(Lc("I"), 0)[0] + 4, H(0, R(3))[1] + 5), "start")
-res_flat("F5", "F9", "100kΩ", ["#8d5524", "#212121", "#f9a825"], (H(Lc("F"), 0)[0] - 18, H(0, R(8))[1] + 5), "end")
-res_flat("N1", "N5", "15kΩ", ["#8d5524", "#4caf50", "#f57c00"], (H(Lc("N"), 0)[0] - 18, H(0, R(3))[1] + 5), "end")
-cap_b("P3", "P5", (H(Lc("P"), 0)[0] - 30, H(0, R(4))[1] + 5), "end")
-res_flat("Q5", "U5", "100kΩ", ["#8d5524", "#212121", "#f9a825"], (H(Lc("S"), 0)[0], H(0, R(5))[1] + 30))
-# BP5293-50（足 S3・T3・U3 = 左から VOUT・GND・VIN。印字面を奥（上）に向ける）
-x1, y1 = H(Lc("S"), R(3)); x2, _ = H(Lc("U"), R(3))
+for c, a_, hs, b_ in EL_LAN:
+    w(c, *hs)
+# ---- 電圧チェックの部品（上の 1〜11 行。部品の位置は FireBeetle の図と同じ）----
+B100 = ["#8d5524", "#212121", "#f9a825"]
+res_flat("I1", "I5", "100kΩ", B100, (-2000, -2000))
+res_stand(s, hole("H5"), hole("H3"), "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], -2000, -2000)
+cap_flat(s, hole("G3"), hole("G5"), "0.1µF")
+res_flat("L3", "L7", "15kΩ", ["#8d5524", "#4caf50", "#f57c00"], (-2000, -2000))
+cap_flat(s, hole("M5"), hole("M7"), "0.1µF")
+res_flat("N7", "N11", "100kΩ", B100, (-2000, -2000))
+x1, y1 = H(*hole("R9")); x2, _ = H(*hole("T9"))
 s.top.append(f'<rect x="{x1-26}" y="{y1-34}" width="{x2-x1+52}" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>')
 rec_part(x1 - 26, y1 - 34, x2 - x1 + 52, 22, "")
 s.text((x1 + x2) / 2, y1 - 18, "BP5293-50", 12, "middle", "bold", "#fff", layer=s.top)
 for i, n in enumerate(["VOUT", "GND", "VIN"]):
-    x, y = H(Lc("S") + i, R(3))
+    x, y = H(Lc("R") + i, 8)
     rec_pin(x, y, n)
     s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
     tag(x, y + 24, n, 10, "middle", w=len(n) * 7 + 8)
-cap_flat(s, hole("V2"), hole("V4"), "10µF", True)
-tag(H(Lc("W"), 0)[0], H(0, R(3))[1] + 4, "10µF", 10, "middle", w=32)
-# 端子台 3極（5.08mm）を右の端に縦に。X3 = マイナス、X5 = バッテリー＋、X7 = パネル＋。線を入れる口は右向き
-x1, y1 = H(Lc("X"), R(3)); _, y2 = H(Lc("X"), R(7))
-s.top.append(f'<rect x="{x1-14}" y="{y1-34}" width="{P+36}" height="{y2-y1+68}" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>')
-rec_part(x1 - 14, y1 - 34, P + 36, y2 - y1 + 68, "")
-for h, n, col in (("X3", "マイナス", "black"), ("X5", "バッテリー＋", "red"), ("X7", "パネル＋", "blue")):
+cap_flat(s, hole("V9"), hole("V11"), "10µF", True)
+x1, y1 = H(*hole("X1")); _, y2 = H(*hole("X5"))
+s.top.append(f'<rect x="{x1-14}" y="{y1-30}" width="{P+36}" height="{y2-y1+60}" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>')
+rec_part(x1 - 14, y1 - 30, P + 36, y2 - y1 + 60, "")
+for h, n, col in (("X1", "パネル＋", "blue"), ("X3", "マイナス", "black"), ("X5", "バッテリー＋", "red")):
     x, y = H(*hole(h))
     rec_pin(x, y, n)
     s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
     s.top.append(f'<circle cx="{x+P}" cy="{y}" r="13" fill="#bdbdbd" stroke="#424242" stroke-width="2"/>')
-    s.add(f'<path d="M{x+P+16},{y} L{x+P+120},{y}" fill="none" stroke="{COL[col]}" stroke-width="7"/>')
-    s.text(x + P + 128, y + 5, n, 13, "start", "bold", COL[col] if col != "black" else "#212121")
-s.text(H(Lc("X"), 0)[0] + P + 128, H(0, R(7))[1] + 30, "（＋は 1A ヒューズ経由）", 11, "start", fill="#555")
-
-w("black",  "A27", "A1", "G1", "H1", "N1", "P1", "T1", "V1", "X1", "X3")   # マイナス: 左の列 A → 上の端（1行）→ 端子台
-w("black",  "H1", "H3")
-w("black",  "P1", "P3")
-w("black",  "T1", "T3")
-w("black",  "V1", "V2")
-w("yellow", "B17", "C17", "C5", "F5", "G5", "H5")                   # パネルの測る点 → D34
-w("green",  "B18", "C18", "D18", "D6", "N6", "N5", "P5", "Q5")      # バッテリーの測る点 → D35
-w("orange", "B28", "C28", "D28", "E28", "E7", "S7", "S3")           # BP5293 VOUT → VIN（5V）
-w("red",    "X5", "V5", "U5", "U3")                                 # バッテリー＋ → 100kΩ・BP5293 VIN
-w("red",    "V5", "V4")
-w("blue",   "X7", "X9", "F9")                                       # パネル＋ → 100kΩ
-yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LANV_pcb.svg")
-y = table(s, 60, yb + 40, [
-    ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
-    ["blue", "D23 = GPIO23・MOSI（L14）", "L14 → Y14 → Y27 → V27", "W5500 MO（V27）"],
-    ["yellow", "D18 = GPIO18・SCK（L20）", "L20 → X20 → X26 → V26", "W5500 SCK（V26）"],
-    ["orange", "D5 = GPIO5・CS（L21）", "L21 → W21 → W25 → V25", "W5500 CS（V25）"],
-    ["purple", "TX2 = GPIO17（L22）", "L22 → V22 → V24", "W5500 INT（V24）"],
-    ["white", "RX2 = GPIO16（L23）", "L23 → O23 → O25 → N25", "W5500 RST（N25）"],
-    ["green", "D4 = GPIO4・MISO（L24）", "L24 → N24", "W5500 MI（N24）"],
-    ["red", "3V3（L28）", "L28 → N28", "W5500 V（N28）"],
-    ["black", "GND（左の列 B27）", "B27 → A27 → A30 → N30 → N29", "W5500 G（N29）"],
-    ["black", "（とちゅうの A27）", "A27 → A1 → X1 → X3（H1→H3、P1→P3、T1→T3、V1→V2 も）", "8.2kΩ・15kΩ・0.1µF・BP5293 GND・10µF・端子台 マイナス"],
-    ["yellow", "D34（B17）", "B17 → C17 → C5 → H5", "100kΩ（F5）・8.2kΩ（G5）・0.1µF（H5）"],
-    ["green", "D35（B18）", "B18 → D18 → D6 → N6 → N5 → Q5", "15kΩ（N5）・0.1µF（P5）・100kΩ（Q5）"],
-    ["orange", "VIN（B28）", "B28 → E28 → E7 → S7 → S3", "BP5293 VOUT（S3）"],
-    ["red", "端子台 バッテリー＋（X5）", "X5 → U5 → U3（V5→V4 も）", "100kΩ（U5）・BP5293 VIN（U3）・10µF（V4）"],
-    ["blue", "端子台 パネル＋（X7）", "X7 → X9 → F9", "100kΩ（F9）"],
-], [100, 300, 480, 440], "つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」と同じ）")
+    s.add(f'<path d="M{x+P+16},{y} L{x+P+100},{y}" fill="none" stroke="{COL[col]}" stroke-width="7"/>')
+    s.text(x + P + 108, y + 5, n, 13, "start", "bold", COL[col] if col != "black" else "#212121")
+s.text(H(*hole("X5"))[0] + P + 108, H(*hole("X5"))[1] + 26, "（＋は 1A ヒューズ経由）", 11, "start", fill="#555")
+lx, ly = OX + 24 * P + 110, OY + 9 * P
+s.text(lx, ly, "上の部品（穴）", 14, weight="bold")
+for i, (a_, b_) in enumerate([("I1〜I5", "100kΩ（パネル＋ → 測る点）"), ("H3・H5", "8.2kΩ（立てる。H5 が本体）"), ("G3・G5", "0.1µF（パネル）"),
+                             ("L3〜L7", "15kΩ（GND → 測る点）"), ("M5・M7", "0.1µF（バッテリー）"), ("N7〜N11", "100kΩ（測る点 → バッテリー＋）"),
+                             ("R9・S9・T9", "BP5293-50（VOUT・GND・VIN）"), ("V9・V11", "10µF（BP5293 の入力側）"), ("X1・X3・X5", "端子台 3極")]):
+    s.text(lx, ly + 30 + i * 44, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, ly + 47 + i * 44, b_, 12, fill="#333")
+EL_V = [
+    ("black", "GND（左の列 B27）", ["B27", "A27", "A3", "G3", "H3", "L3"], "0.1µF（G3）・8.2kΩ（H3）・15kΩ（L3）"),
+    ("black", "（とちゅうの L3）", ["L3", "L5", "M5", "S5", "S8", "S9"], "0.1µF（M5）・BP5293 GND（S9）"),
+    ("black", "（とちゅうの S8）", ["S8", "V8", "V9"], "10µF（V9）"),
+    ("black", "（とちゅうの V8）", ["V8", "V3", "X3"], "端子台 マイナス（X3）"),
+    ("blue", "端子台 パネル＋（X1）", ["X1", "I1"], "100kΩ（I1）"),
+    ("yellow", "D39 = VN（B16）", ["B16", "G16", "G5", "H5", "I5"], "0.1µF（G5）・8.2kΩ（H5）・100kΩ（I5）"),
+    ("green", "D35（B18）", ["B18", "K18", "K7", "L7", "M7", "N7"], "15kΩ（L7）・0.1µF（M7）・100kΩ（N7）"),
+    ("orange", "VIN（B28）", ["B28", "B33", "W33", "W12", "M12", "M9", "R9"], "BP5293 VOUT（R9）"),
+    ("red", "端子台 バッテリー＋（X5）", ["X5", "X11", "V11", "T11", "N11"], "10µF（V11）・100kΩ（N11）"),
+    ("red", "", ["T11", "T9"], "BP5293 VIN（T9）"),
+]
+for c, a_, hs, b_ in EL_V:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LANV_elegoo_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a_, " → ".join(hs), "W5500 " + b_] for c, a_, hs, b_ in EL_LAN]
+          + [[c, a_, " → ".join(hs), b_] for c, a_, hs, b_ in EL_V], [100, 300, 520, 500], "つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」(ELEGOO) と同じ）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）＋ ピンソケット 15ピン×2", "1", "B14〜B28・L14〜L28。USB-C を下に向ける（「＋有線LAN」と同じ）"],
-    ["W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2", "1", "N24〜N29・V24〜V29（「＋有線LAN」と同じ）"],
-    ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "S3・T3・U3（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）"],
-    ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "V2・V4（BP5293 の入力側）"],
-    ["金属皮膜抵抗 100kΩ 1%", "2", "F5〜F9（パネル用、縦）、Q5〜U5（バッテリー用、横）。寝かせて付ける"],
-    ["金属皮膜抵抗 15kΩ 1%", "1", "N1〜N5（バッテリー用）"],
-    ["金属皮膜抵抗 8.2kΩ 1%", "1", "G1〜G5（パネル用）"],
-    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "H3〜H5（パネル用）、P3〜P5（バッテリー用）"],
-    ["端子台 3極 5.08mm（基板用、ねじ式）", "1", "X3・X5・X7（上から マイナス・バッテリー＋・パネル＋）。線を入れる口を右に向ける"],
+    ["ELEGOO ESP-32 開発ボード（USB-C・CP2102、30ピン）＋ ピンソケット 15ピン×2", "1", "B14〜B28・L14〜L28。USB-C を下に向ける"],
+    ["W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2", "1", "N22〜N27・V22〜V27"],
+    ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "R9・S9・T9（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）"],
+    ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "V9・V11（BP5293 の入力側）"],
+    ["金属皮膜抵抗 100kΩ 1%", "2", "I1〜I5（パネル用）、N7〜N11（バッテリー用）。寝かせて付ける"],
+    ["金属皮膜抵抗 15kΩ 1%", "1", "L3〜L7（バッテリー用、寝かせる）"],
+    ["金属皮膜抵抗 8.2kΩ 1%", "1", "H3・H5（パネル用、立てて付ける）"],
+    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "G3・G5（パネル用）、M5・M7（バッテリー用）"],
+    ["端子台 3極 5.08mm（基板用、ねじ式）", "1", "X1・X3・X5（上から パネル＋・マイナス・バッテリー＋）"],
     ["ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ", "2", "バッテリー＋とパネル＋の線の途中（コントローラーの近く）"],
     ["ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
-], [640, 60, 520], "部品表")
+], [640, 60, 560], "部品表")
 finish(s, y, [
     "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
-    "・ESP-32・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜9行）に電圧チェックの部品を足した。",
-    "・ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる（マイナスをバッテリーとそろえるため）。",
+    "・ピンは FireBeetle 2 の図と同じ（ファーム HPX_Core v1.25 以降）。パネルは D39（VN）、バッテリーは D35 で読む。W5500 の 8本は「＋有線LAN」(ELEGOO) と同じ。",
+    "・ESP-32 の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VIN（B28）に入れる。5V の線（橙）は B 列の下・基板の下の端・W 列を回る。",
     "・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（VIN の 5V と USB の 5V がぶつからないように）。",
     "・バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）下げて読む。",
-    "・100kΩ（F5〜F9）は裏の線（緑・橙）を、15kΩ・8.2kΩ・0.1µF は裏の線（青・緑・黄）をまたいで付ける（表と裏なので触れない）。",
-    "・ファーム v1.22 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。",
+    "・ファーム v1.25 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。",
     "・BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。",
     "・マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。",
-], "HPX-Core_LANV_pcb.svg")
+    "・2026-11-12 までのこの図（パネル＝D34、W5500 が 24〜29 行）で組んだものは、ファーム v1.24 までを使う。",
+], "HPX-Core_LANV_elegoo_pcb.svg")
 
 
 # ================================================================== HPX-Core ＋LTE-M（タカチ PCB72-95、ケース タカチ OB10-17-5W）
@@ -1270,7 +1245,7 @@ def w(color, *holes):
     wireh(s, [hole(h) for h in holes], color)
 OX, OY = 200, 300
 s = S(1500, 4400)
-title(s, "HPX-Core（親機）＋LTE-M 基板の配線図", "タカチ PCB72-95（穴 A〜AA × 1〜36）縦置き ／ Olimex ESP32-DEVKIT-LIPO ／ ケース タカチ OB10-17-5W")
+title(s, "【Olimex で作るとき】HPX-Core ＋LTE-M 基板の配線図", "PCB72-95 縦置き ／ Olimex ESP32-DEVKIT-LIPO ／ ファーム v1.25")
 board(s, 27, 36, "タカチ PCB72-95 を縦に置いたところ（穴 A〜AA × 1〜36。上下 3行は D〜X だけ）")
 _i0 = len(s.items)
 for r in (0, 1, 2, 33, 34, 35):
@@ -1304,7 +1279,7 @@ def vpins(names, col, used, left):
         on = (n, i) in used
         s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
         s.text(x + (14 if left else -14), y + 5, n, 12, "start" if left else "end", "bold", "#fff" if on else "#eee", layer=s.top)
-vpins(OLL, 0, {("IO36", 2), ("IO34", 4), ("5V", 18)}, True)
+vpins(OLL, 0, {("IO36", 2), ("IO39", 3), ("5V", 18)}, True)
 vpins(ORR, 10, {("GND", 0), ("IO17", 10), ("IO16", 11), ("IO4", 12)}, False)
 B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
 B10 = ["#795548", "#212121", "#fb8c00", "#c9a227"]
@@ -1363,11 +1338,11 @@ w("purple", "P17", "Q17")                         # 10kΩ → ベース
 w("purple", "Q17", "Q14")                         # ベース → 100kΩ
 w("gray", "R17", "R19", "W19")                    # コレクタ → ゲート
 w("gray", "W18", "W19")                           # ゲート
-w("white", "A9", "C9", "C25", "P25", "P27")       # IO34 ← USB-C D+（電池の電圧）
+w("white", "A8", "C8", "C25", "P25", "P27")       # IO39 ← USB-C D+（電池の電圧。v1.25 で IO34 から変更）
 w("blue", "A7", "D7", "D24", "Q24", "Q27")        # IO36 ← USB-C D−（パネルの電圧）
 w("yellow", "K16", "M16")                         # IO16（受信）← CatM TX
 w("green", "K15", "M15")                          # IO17（送信）→ CatM RX
-yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTE_pcb.svg")
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTE_olimex_pcb.svg")
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "通る穴", "どこへ（穴）"],
     ["black", "Olimex GND（右の列のいちばん上 K5）", "K5 → K4 → Z4 → Z30（右の端）", "USB-C GND（Y30）・CatM GND（Y14 → Z14）"],
@@ -1377,7 +1352,7 @@ y = table(s, 60, yb + 40, [
     ["orange", "P-MOSFET の D（V18）", "V18 → V16", "CatM 5V の線（V16 にはんだ付け）"],
     ["purple", "IO4（K17）", "K17 → L17、P17 → Q17 → Q14", "10kΩ（L17〜P17）・NPN の B（Q17）・100kΩ（Q14）"],
     ["gray", "NPN の C（R17）", "R17 → R19 → W19、W18 → W19", "P-MOSFET の G（W18）・100kΩ（W19）"],
-    ["white", "IO34（A9）", "A9 → C9 → C25 → P25 → P27（Olimex の下を通る）", "USB-C D+ の線（P27 にはんだ付け、電池の電圧）"],
+    ["white", "IO39（A8）", "A8 → C8 → C25 → P25 → P27（Olimex の下を通る）", "USB-C D+ の線（P27 にはんだ付け、電池の電圧）"],
     ["blue", "IO36（A7）", "A7 → D7 → D24 → Q24 → Q27（Olimex の下を通る）", "USB-C D− の線（Q27 にはんだ付け、パネルの電圧）"],
     ["yellow", "IO16（K16、受信）", "K16 → M16", "M5Stamp CatM TX の線（M16 にはんだ付け）"],
     ["green", "IO17（K15、送信）", "K15 → M15", "M5Stamp CatM RX の線（M15 にはんだ付け）"],
@@ -1403,11 +1378,11 @@ finish(s, y, [
     "・HPX-Solar のときは、D+ に電池の電圧（1/2）、D− にパネルの電圧（1/6）が来る（分圧の抵抗とコンデンサーは HPX-Solar の中）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。",
     "・USB 充電器につなぐときは「測らない」にする（充電器は D+・D− に独自の電圧を出すことがある）。",
     "・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。",
-    "・IO36・IO34 の線は、Olimex の下（C〜D 列、裏）を通して下へつなぐ。Olimex はピンソケットで浮いているので触れない。",
+    "・IO36・IO39 の線は、Olimex の下（C〜D 列、裏）を通して下へつなぐ。Olimex はピンソケットで浮いているので触れない。",
     "・穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。Olimex のピンの並びは公式資料から。差す前に実物で確かめる。",
     "・M5Stamp CatM は基板に貼るだけで、穴には差さない（ピンの位置を実物で確かめてから、ピンヘッダで差す形にもできる）。",
     "・アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。穴あけの位置は部品が届いてから決める。",
-], "HPX-Core_LTE_pcb.svg")
+], "HPX-Core_LTE_olimex_pcb.svg")
 COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 # ================================================================== HPX-CAM（巣門カメラ、試作）TARO 2026-11-09
 # XIAO ESP32S3 Sense（カメラ・microSD は上に重ねた Sense 基板）。単三リチウム×3 → ショットキーダイオード → 5V。
@@ -1500,5 +1475,887 @@ finish(s, y, [
     "・電池のもち（10分おきに撮影・未実測）: 24時間で 約3週間〜1か月半、昼12時間だけで 約1〜3か月。眠り中の電流しだい。",
     "・まだ組んで確かめていない。XIAO ESP32S3 Sense の眠り中の電流、1N5819 を入れたときの Wi-Fi 送信中の電圧は実物で測る。",
 ], "HPX-CAM_pcb.svg")
+
+# ================================================================== HPX-Core を FireBeetle 2 ESP32-E（DFRobot DFR0654）で（TARO 2026-11-13）
+# TARO 2026-11-13: HPX-Core の配線図を全部 FireBeetle 2 ESP32-E に描き直す。前の図（ELEGOO・Olimex）は *_elegoo_* / *_olimex_* の名前で残す。
+# FireBeetle 2 ESP32-E のピンの並びは DFRobot の資料（wiki・回路図）から。25.4×60mm、左右のピン列は 9穴（22.86mm）離れている（TARO 確認: 1列目と10列目に差さる）。
+#   USB-C を上にしたとき 左の列 18ピン（上から RST…RX）、右の列 14ピン（上から VCC…IO17。左の列の 5本目 EN の高さから）。
+#   RX は USB-C と反対の端から 5.5mm、RST は USB-C の端から 11.3mm。
+# ピンヘッダ（オス）は付いている（TARO 2026-11-13）。基板にはピンソケット（メス）18ピン・14ピンをはんだ付けして差す。
+import re as _re3
+FB18 = ["RST", "3V3", "NC", "GND", "EN", "IO18", "IO23", "IO19", "IO22", "IO21", "IO2", "IO13", "IO14", "IO0", "IO26", "IO25", "TX", "RX"]
+FB14 = ["VCC", "3V3", "GND", "SCL", "SDA", "IO15", "IO35", "IO34", "IO39", "IO36", "IO12", "IO4", "IO16", "IO17"]
+COLS = [chr(65 + i) for i in range(26)] + ["AA"]
+def hole(h):
+    m = _re3.match(r"([A-Z]+)(\d+)$", h)
+    return (COLS.index(m.group(1)), int(m.group(2)) - 1)
+def w(color, *holes):
+    wireh(s, [hole(h) for h in holes], color)
+def fb(cl, cr, r1, usb_down, used, sock):
+    """FireBeetle 2 ESP32-E を描く。cl・cr は列の文字、r1 は 18ピンの列のいちばん上の行（1から）。
+    USB-C が下: 左の列に 14ピン（上から IO17…VCC、r1〜r1+13）、右の列に 18ピン（上から RX…RST、r1〜r1+17）
+    USB-C が上: 左の列に 18ピン（上から RST…RX、r1〜r1+17）、右の列に 14ピン（上から VCC…IO17、r1+4〜r1+17）"""
+    cl, cr = COLS.index(cl), COLS.index(cr)
+    if usb_down:
+        cols = [(cl, r1, list(reversed(FB14)), "L"), (cr, r1, list(reversed(FB18)), "R")]
+        top, bot = r1 - 1 - 2.17, r1 - 1 + 17 + 4.45
+    else:
+        cols = [(cl, r1, FB18, "L"), (cr, r1 + 4, FB14, "R")]
+        top, bot = r1 - 1 - 4.45, r1 - 1 + 17 + 2.17
+    x1, y1 = OX + (cl - 0.5) * P, OY + top * P
+    x2, y2 = OX + (cr + 0.5) * P, OY + bot * P
+    cx = (x1 + x2) / 2
+    s.top.append(f'<rect x="{x1}" y="{y1}" width="{x2-x1}" height="{y2-y1}" rx="10" fill="#37474f" fill-opacity="0.72" stroke="#102027" stroke-width="3"/>')
+    rec_part(x1, y1, x2 - x1, y2 - y1, "FireBeetle 2")
+    # ESP32-WROOM-32E（18×25.5mm）は USB-C と反対の端。アンテナがいちばん端
+    mw, mh = 18 / 2.54 * P, 25.5 / 2.54 * P
+    my = y1 + 4 if usb_down else y2 - 4 - mh
+    s.top.append(f'<rect x="{cx-mw/2}" y="{my}" width="{mw}" height="{mh}" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c" stroke-width="2"/>')
+    ay = my if usb_down else my + mh - 90
+    s.top.append(f'<rect x="{cx-mw/2}" y="{ay}" width="{mw}" height="90" rx="4" fill="#212121" fill-opacity="0.8"/>')
+    s.text(cx, ay + 52, "アンテナ", 12, "middle", "bold", "#eee", layer=s.top)
+    ty = my + 150 if usb_down else my + 70
+    s.text(cx, ty, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+    s.text(cx, ty + 20, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
+    uy = y2 - 24 if usb_down else y1 - 20
+    s.top.append(f'<rect x="{cx-36}" y="{uy}" width="72" height="44" rx="10" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+    s.text(cx, (y2 + 46) if usb_down else (y1 - 30), "USB-C（下向き）" if usb_down else "USB-C（上向き）", 13, "middle", "bold", "#333", layer=s.top)
+    ly = (my + mh + 50) if usb_down else (y1 + 70)
+    s.text(cx, ly, "FireBeetle 2", 16, "middle", "bold", "#fff", layer=s.top)
+    s.text(cx, ly + 20, "ESP32-E", 15, "middle", "bold", "#fff", layer=s.top)
+    s.text(cx, ly + 42, sock, 12, "middle", "bold", "#eee", layer=s.top)
+    for c, r0, names, side in cols:
+        for i, n in enumerate(names):
+            r = r0 - 1 + i
+            x, y = H(c, r)
+            hname = f"{COLS[c]}{r+1}"
+            if 0 <= r < NR:
+                rec_pin(x, y, n)
+            on = hname in used
+            s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+            dx = 14 if side == "L" else -14
+            s.text(x + dx, y + 5, n, 12, "start" if side == "L" else "end", "bold", "#fff" if on else "#ddd", layer=s.top)
+    return x1, y1, x2, y2
+def fb_w5500(r):
+    """W5500（LAN 差し込み口が下）。ピン列は N 列と V 列、r〜r+5 行"""
+    x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, r - 1 - 0.5, r - 1 - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
+    s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+30}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
+    s.text((x1 + x2) / 2, y1 + 70, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
+    s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-150}" width="160" height="170" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
+    s.text((x1 + x2) / 2, y2 - 60, "LAN 差し込み口", 13, "middle", "bold", "#37474f", layer=s.top)
+    s.text((x1 + x2) / 2, y2 + 46, "LAN ケーブル（下へ）", 13, "middle", "bold", "#333", layer=s.top)
+    s.text((x1 + x2) / 2, y1 + 120, "W5500 モジュール", 14, "middle", "bold", "#fff", layer=s.top)
+    s.text((x1 + x2) / 2, y1 + 140, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+    pins(13, r, ["MI", "RST", "NC", "V", "V2", "G"], "L", {"MI", "RST", "V2", "G"})
+    pins(21, r, ["INT", "CS", "SCK", "MO", "G2", "G3"], "R", {"INT", "CS", "SCK", "MO"})
+
+FB_PARTS = ["DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）", "1"]
+FB_NOTE_PITCH = "・FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。"
+FB_NOTE_LED = "・FireBeetle 2 の GPIO5 は基板の上の RGB LED が使っていて、ピンは出ていない。GPIO2 は基板の青い LED、GPIO27 は基板のボタン（ファーム v1.25 では工場出荷リセットに使える）。"
+LAN_WIRES = [
+    ("purple", "IO25（K14）", ["K14", "U14", "U22", "V22"], "INT（V22）"),
+    ("orange", "IO26（K15）", ["K15", "T15", "T23", "V23"], "CS（V23）"),
+    ("yellow", "IO14・SCK（K17）", ["K17", "S17", "S24", "V24"], "SCK（V24）"),
+    ("blue", "IO13・MOSI（K18）", ["K18", "R18", "R25", "V25"], "MO（V25）"),
+    ("green", "IO19・MISO（K22）", ["K22", "N22"], "MI（N22）"),
+    ("white", "IO23（K23）", ["K23", "N23"], "RST（N23）"),
+    ("black", "GND（K26）", ["K26", "L26", "L27", "M27", "N27"], "G（N27）"),
+    ("red", "3V3（K28）", ["K28", "O28", "O26", "N26"], "V（N26）"),
+]
+LAN_USED = {"K14", "K15", "K17", "K18", "K22", "K23", "K26", "K28"}
+def lan_rows():
+    return [[c, a, " → ".join(hs), b] for c, a, hs, b in LAN_WIRES]
+
+# ------------------------------------------------------------------ ＋有線LAN
+OX, OY = 260, 200
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）＋有線LAN 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ FireBeetle 2 ESP32-E ＋ W5500 ／ ファーム HPX_Core v1.25")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+fb("B", "K", 12, True, LAN_USED, "ピンソケット 18ピン・14ピンに差す")
+fb_w5500(22)
+for c, a, hs, b in LAN_WIRES:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LAN_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "FireBeetle のピン（穴）", "通る穴", "W5500 のピン（穴）"]] + lan_rows(), [100, 320, 420, 380], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    FB_PARTS + ["B12〜B25（14ピン）・K12〜K29（18ピン）。USB-C を下に向ける"],
+    ["ピンソケット（メス）18ピン・14ピン", "各1", "K12〜K29、B12〜B25 にはんだ付けして FireBeetle を差す"],
+    ["W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）", "1", "N22〜N27・V22〜V27。LAN 差し込み口を下に向ける"],
+    ["ピンソケット（メス）6ピン", "2", "N22〜N27、V22〜V27 にはんだ付けして W5500 を差す"],
+    ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+], [620, 60, 520], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。",
+    "・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・裏の線どうしは交わらず、ほかのピンの穴の上も通らない。FireBeetle・W5500 の下を通る線は、裏なので部品には触れない。",
+    "・W5500 につなぐ 6本の信号は、FireBeetle の右の列（18ピンの列）にまとめた: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。",
+    "・このピンはファーム HPX_Core v1.25 から。v1.24 までは ELEGOO ESP-32 用のピンなので、FireBeetle では有線LAN が動かない。",
+    "・灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。",
+    FB_NOTE_PITCH,
+    "・W5500 のピンがモジュールの上下のどこにあるかは分からない（実物で確かめる）。ずれていたら、W5500 と線の端を同じ数だけ上下にずらせばよい。",
+    FB_NOTE_LED,
+], "HPX-Core_LAN_pcb.svg")
+
+# ------------------------------------------------------------------ 基本モデル（＋有線LAN から W5500 を外したもの）
+OX, OY = 260, 200
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）基本モデル 基板の配線図", "ユニバーサル基板 6×8cm（穴 A〜Y × 1〜33）縦置き ／ FireBeetle 2 ESP32-E ／ Wi-Fi ＋ USB 給電")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（「＋有線LAN」と同じ基板・同じ位置。W5500 は付けない）")
+fb("B", "K", 12, True, set(), "ピンソケット 18ピン・14ピンに差す")
+_x1, _y1 = OX + (13 - 0.53) * P, OY + (22 - 1 - 0.5) * P
+s.top.append(f'<rect x="{_x1}" y="{_y1}" width="{9.06*P}" height="{9.84*P}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2.5" stroke-dasharray="10 7"/>')
+s.text(_x1 + 4.53 * P, _y1 + 4.4 * P, "空き（＋有線LAN では", 13, "middle", "bold", "#757575", layer=s.top)
+s.text(_x1 + 4.53 * P, _y1 + 5.2 * P, "ここに W5500 を差す）", 13, "middle", "bold", "#757575", layer=s.top)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_BASIC_pcb.svg")
+y = table(s, 60, yb + 40, [
+    ["部品", "数", "置き場所・メモ"],
+    FB_PARTS + ["B12〜B25（14ピン）・K12〜K29（18ピン）。USB-C を下に向ける"],
+    ["ピンソケット（メス）18ピン・14ピン", "各1", "K12〜K29、B12〜B25 にはんだ付けして FireBeetle を差す"],
+    ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）", "1", "縦に置く。ケース PFF10-4-10W に AST2.5-5B で留める"],
+], [620, 60, 520], "部品表")
+finish(s, y, [
+    "・基本モデルは、ルーターへ Wi-Fi でつなぎ、FireBeetle の USB-C から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。",
+    "・「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_pcb.png）。",
+    "・ファームウェアは HPX_Core v1.25 以降を使い、初回設定で接続方法を「Wi-Fi」にします（Wi-Fi だけなら v1.24 でも動く）。",
+    FB_NOTE_PITCH,
+    "・FireBeetle の電池コネクタ（PH2.0）は充電式リチウムイオン電池用。基本モデルでは何もつながない。",
+    "・雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。",
+], "HPX-Core_BASIC_pcb.svg")
+
+# ------------------------------------------------------------------ ＋有線LAN＆ソーラーシステムチェック
+# 「＋有線LAN」と同じ FireBeetle・W5500・8本の線に、上の空いた所（1〜11行）へ 12V バッテリー・パネルの電圧を測る部品と BP5293-50 を足す。
+# パネル＝IO39（v1.25 で 34 から変更。FireBeetle の IO34 は基板の上で電池コネクタにつながっているため）、バッテリー＝IO35。5V は VCC へ。
+OX, OY = 260, 200
+s = S(1700, 3500)
+title(s, "HPX-Core（親機）＋有線LAN＆ソーラーシステムチェック 基板の配線図", "6×8cm（穴 A〜Y × 1〜33）縦置き ／ FireBeetle 2 ESP32-E ＋ W5500 ＋ 電圧チェック ／ ファーム HPX_Core v1.25")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+fb("B", "K", 12, True, LAN_USED | {"B17", "B19", "B23", "B25"}, "ピンソケット 18ピン・14ピンに差す")
+fb_w5500(22)
+for c, a, hs, b in LAN_WIRES:
+    w(c, *hs)
+B100 = ["#8d5524", "#212121", "#f9a825"]
+res_flat("I1", "I5", "100kΩ", B100, (-2000, -2000))         # パネル＋ → 測る点
+res_stand(s, hole("H5"), hole("H3"), "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], -2000, -2000)   # 測る点 → GND（立てる）
+cap_flat(s, hole("G3"), hole("G5"), "0.1µF")
+res_flat("L3", "L7", "15kΩ", ["#8d5524", "#4caf50", "#f57c00"], (-2000, -2000))   # GND → バッテリーの測る点
+cap_flat(s, hole("M5"), hole("M7"), "0.1µF")
+res_flat("N7", "N11", "100kΩ", B100, (-2000, -2000))         # 測る点 → バッテリー＋
+# BP5293-50（足 R9・S9・T9 = 左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）
+x1, y1 = H(*hole("R9")); x2, _ = H(*hole("T9"))
+s.top.append(f'<rect x="{x1-26}" y="{y1-34}" width="{x2-x1+52}" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>')
+rec_part(x1 - 26, y1 - 34, x2 - x1 + 52, 22, "")
+s.text((x1 + x2) / 2, y1 - 18, "BP5293-50", 12, "middle", "bold", "#fff", layer=s.top)
+for i, n in enumerate(["VOUT", "GND", "VIN"]):
+    x, y = H(COLS.index("R") + i, 8)
+    rec_pin(x, y, n)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+    tag(x, y + 24, n, 10, "middle", w=len(n) * 7 + 8)
+cap_flat(s, hole("V9"), hole("V11"), "10µF", True)
+# 端子台 3極（5.08mm）を右の端に縦に。X1 = パネル＋、X3 = マイナス、X5 = バッテリー＋。線を入れる口は右向き
+x1, y1 = H(*hole("X1")); _, y2 = H(*hole("X5"))
+s.top.append(f'<rect x="{x1-14}" y="{y1-30}" width="{P+36}" height="{y2-y1+60}" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>')
+rec_part(x1 - 14, y1 - 30, P + 36, y2 - y1 + 60, "")
+for h, n, col in (("X1", "パネル＋", "blue"), ("X3", "マイナス", "black"), ("X5", "バッテリー＋", "red")):
+    x, y = H(*hole(h))
+    rec_pin(x, y, n)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{x+P}" cy="{y}" r="13" fill="#bdbdbd" stroke="#424242" stroke-width="2"/>')
+    s.add(f'<path d="M{x+P+16},{y} L{x+P+100},{y}" fill="none" stroke="{COL[col]}" stroke-width="7"/>')
+    s.text(x + P + 108, y + 5, n, 13, "start", "bold", COL[col] if col != "black" else "#212121")
+s.text(H(*hole("X5"))[0] + P + 108, H(*hole("X5"))[1] + 26, "（＋は 1A ヒューズ経由）", 11, "start", fill="#555")
+lx, ly = OX + 24 * P + 110, OY + 9 * P
+s.text(lx, ly, "上の部品（穴）", 14, weight="bold")
+for i, (a_, b_) in enumerate([("I1〜I5", "100kΩ（パネル＋ → 測る点）"), ("H3・H5", "8.2kΩ（立てる。H5 が本体）"), ("G3・G5", "0.1µF（パネル）"),
+                             ("L3〜L7", "15kΩ（GND → 測る点）"), ("M5・M7", "0.1µF（バッテリー）"), ("N7〜N11", "100kΩ（測る点 → バッテリー＋）"),
+                             ("R9・S9・T9", "BP5293-50（VOUT・GND・VIN）"), ("V9・V11", "10µF（BP5293 の入力側）"), ("X1・X3・X5", "端子台 3極")]):
+    s.text(lx, ly + 30 + i * 44, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, ly + 47 + i * 44, b_, 12, fill="#333")
+LANV_WIRES = [
+    ("black", "GND（左の列 B23）", ["B23", "A23", "A3", "G3", "H3", "L3", "M3", "S3", "V3", "X3"], "0.1µF（G3）・8.2kΩ（H3）・15kΩ（L3）・端子台 マイナス（X3）"),
+    ("black", "（とちゅうの M3・S3・V3）", ["M3", "M5"], "0.1µF（M5）"),
+    ("black", "", ["S3", "S9"], "BP5293 GND（S9）"),
+    ("black", "", ["V3", "V9"], "10µF（V9）"),
+    ("blue", "端子台 パネル＋（X1）", ["X1", "I1"], "100kΩ（I1）"),
+    ("yellow", "IO39（B17）", ["B17", "C17", "C5", "G5", "H5", "I5"], "0.1µF（G5）・8.2kΩ（H5）・100kΩ（I5）"),
+    ("green", "IO35（B19）", ["B19", "D19", "D7", "L7", "M7", "N7"], "15kΩ（L7）・0.1µF（M7）・100kΩ（N7）"),
+    ("orange", "VCC（B25）", ["B25", "F25", "F9", "R9"], "BP5293 VOUT（R9）"),
+    ("red", "端子台 バッテリー＋（X5）", ["X5", "X11", "V11", "T11", "N11"], "10µF（V11）・100kΩ（N11）"),
+    ("red", "", ["T11", "T9"], "BP5293 VIN（T9）"),
+]
+for c, a, hs, b in LANV_WIRES:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LANV_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, b_, d] for c, a, b_, d in
+          [[c, a, " → ".join(hs), "W5500 " + b] for c, a, hs, b in LAN_WIRES] + [[c, a, " → ".join(hs), b] for c, a, hs, b in LANV_WIRES]],
+          [100, 300, 520, 500], "つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」と同じ）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン", "1", "B12〜B25・K12〜K29。USB-C を下に向ける（「＋有線LAN」と同じ）"],
+    ["W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2", "1", "N22〜N27・V22〜V27（「＋有線LAN」と同じ）"],
+    ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "R9・S9・T9（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）"],
+    ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "V9・V11（BP5293 の入力側）"],
+    ["金属皮膜抵抗 100kΩ 1%", "2", "I1〜I5（パネル用）、N7〜N11（バッテリー用）。寝かせて付ける"],
+    ["金属皮膜抵抗 15kΩ 1%", "1", "L3〜L7（バッテリー用、寝かせる）"],
+    ["金属皮膜抵抗 8.2kΩ 1%", "1", "H3・H5（パネル用、立てて付ける）"],
+    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "G3・G5（パネル用）、M5・M7（バッテリー用）"],
+    ["端子台 3極 5.08mm（基板用、ねじ式）", "1", "X1・X3・X5（上から パネル＋・マイナス・バッテリー＋）。線を入れる口を右に向ける"],
+    ["ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ", "2", "バッテリー＋とパネル＋の線の途中（コントローラーの近く）"],
+    ["ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+], [640, 60, 560], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
+    "・FireBeetle・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜11行）に電圧チェックの部品を足した。",
+    "・FireBeetle の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VCC（B25）に入れる（マイナスをバッテリーとそろえるため）。",
+    "・バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）して IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）して IO39 で読む。",
+    "・パネルのピンは v1.25 から IO39（v1.24 までは IO34）。FireBeetle の IO34 は基板の上で電池コネクタの電圧を測る抵抗がつながっているので使わない。",
+    "・ファーム v1.25 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。",
+    "・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（念のため。FireBeetle は USB の 5V の後ろにダイオードがある）。",
+    "・FireBeetle の電池コネクタ（PH2.0）には何もつながない。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（FireBeetle の回路図から。充電の部品に悪くないかは未確認）。",
+    "・BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。",
+    "・マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。",
+    FB_NOTE_PITCH,
+], "HPX-Core_LANV_pcb.svg")
+
+# ------------------------------------------------------------------ ＋防水＆電池駆動（タカチ PCB36-47）
+# FireBeetle（USB-C が下）。右の列（18ピン）の RX を K1 に置くと RST（18本目）は基板の下の端からはみ出す → ソケットは 17ピン。
+# 電池の＋は VCC（B14）、−は GND（B12）。FireBeetle の VCC は 3.3V を作る部品（RT9080）の入口。
+OX, OY = 520, 420
+s = S(1500, 3000)
+title(s, "HPX-Core（親機）＋防水＆電池駆動の配線図", "タカチ PCB36-47（穴 A〜M × 1〜17 の見込み）／ FireBeetle 2 ESP32-E ／ 単三リチウム ×3 → VCC")
+board(s, 13, 17, " ")
+s.text(OX + 6 * P, 120, "ケース用基板 PCB36-47（36×47mm）を縦に置いたところ。穴 13×17 は見込み、四隅は取付穴", 15, "middle", "bold", "#5d4520")
+for c, r in ((0, 0), (12, 0), (0, 16), (12, 16)):
+    x, y = H(c, r)
+    s.add(f'<circle cx="{x}" cy="{y}" r="15" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+    s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#c8a165" stroke="#8d6e3f" stroke-width="1.5"/>')
+REC["board"] = REC["board"] + s.items[-8:]
+fx1, fy1, fx2, fy2 = fb("B", "K", 1, True, {"B12", "B14"}, "ソケット 17ピン・14ピンに差す")
+tp, tm = H(*hole("A14")), H(*hole("A12"))
+bx0, by0 = 60, fy2 + 110
+s.rect(bx0, by0, 440, 80, "#455a64", "#263238", 10, 3)
+for i in range(3):
+    s.rect(bx0 + 18 + i * 140, by0 + 18, 124, 44, "#c0ca33", "#827717", 20, 2)
+    s.text(bx0 + 80 + i * 140, by0 + 46, "単3", 15, "middle", "bold", "#333")
+s.text(bx0 + 426, by0 + 24, "＋", 16, "end", "bold", "#fff")
+s.text(bx0 + 14, by0 + 24, "−", 18, "start", "bold", "#fff")
+s.text(bx0 + 220, by0 + 106, "ケース WH145-25-M3 の電池ボックス ＋ 単三リチウム電池 ×3（直列 約4.5〜5.4V）", 14, "middle", "bold")
+s.wire([(bx0 + 440, by0 + 40), (bx0 + 470, by0 + 40), (bx0 + 470, fy2 + 50), (OX - 120, fy2 + 50), (OX - 120, tp[1]), tp], "red")
+s.wire([(bx0, by0 + 40), (bx0 - 30, by0 + 40), (bx0 - 30, tm[1]), tm], "black")
+solder_mark(s, *hole("A14")); solder_mark(s, *hole("A12"))
+w("red", "A14", "B14")      # 電池＋ → VCC
+w("black", "A12", "B12")    # 電池− → GND
+check_back("HPX-Core_BAT_pcb.svg")
+yb = backview(s, by0 + 140, OX + (NC - 1) * P / 2, fy1 - 90, fy2 + 60)
+y = table(s, 60, yb + 40, [
+    ["線", "どこから（穴）", "どこへ（穴）", "役目"],
+    ["red", "電池ボックスの＋の線（A14 に直接はんだ付け）", "裏で A14 → B14（FireBeetle の VCC、左の列のいちばん下）", "電池の＋を VCC へ"],
+    ["black", "電池ボックスの−の線（A12 に直接はんだ付け）", "裏で A12 → B12（FireBeetle の GND、左の列の下から3本目）", "電池の−を GND へ"],
+], [100, 400, 480, 220], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    FB_PARTS + ["B1〜B14・K1〜K17 のソケットに差す。USB-C を下に向ける"],
+    ["ピンソケット（メス）17ピン・14ピン", "各1", "K1〜K17、B1〜B14 にはんだ付け。右の列の 18本目（RST）は基板の外"],
+    ["ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池", "1／3", "＋の線を A14、−の線を A12 にはんだ付け"],
+    ["ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線", "1", "線は裏の2本だけ"],
+], [600, 60, 540], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・電池は FireBeetle の「VCC」（左の列のいちばん下）と「GND」へつなぐ。電池コネクタ（PH2.0）は充電式リチウムイオン電池用なので、乾電池は絶対につながない。",
+    "・電池を入れたまま USB-C をつながない（書き込みは電池を外してから）。",
+    "・新品の単三リチウム3本は約5.4V。VCC の先の 3.3V を作る部品（RT9080）の入力の上限は 5.5V と覚えているが、資料ではまだ確かめていない。余裕は少ない。",
+    "・VCC に電池をつなぐと、基板の中のスイッチを通って電池コネクタ（PH2.0）と IO34 の抵抗（1/2 にする）にも電池の電圧がかかる（回路図から）。IO34 で電池の電圧を読めるかもしれない（ファームはまだ使っていない）。",
+    "・FireBeetle は長さ 60mm で基板（47mm）より長い。上の端は約2mm、USB-C の側は約11mm 基板からはみ出す。ケースに収まるかは未確認。",
+    "・PCB36-47 の穴の数（13×17）は見込み。ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋FireBeetle が収まるかも未確認。足りないときはソケットを使わずに直接はんだ付けする。",
+    "・眠っている間の電流を減らすには、FireBeetle の裏の「低消費電力パッド」を切る（約0.5mA 減る。切ると電源の LED が消える）。",
+    "・管理画面の動作モードは「ディープスリープ」にする。電池のもちは未実測。",
+], "HPX-Core_BAT_pcb.svg")
+
+# ------------------------------------------------------------------ ＋LTE-M（タカチ PCB72-95、ケース タカチ OB10-17-5W）
+# FireBeetle（USB-C が上）を左端に。左の列（18ピン）A9〜A26、右の列（14ピン）J13〜J26。
+# 5V（HPX-Solar から USB-C）→ FireBeetle VCC。CatM の 5V は P-MOSFET で入り切り（IO4）。D+ → IO39（電池 1/2）、D− → IO36（パネル 1/6）。
+OX, OY = 200, 300
+s = S(1600, 4400)
+title(s, "HPX-Core（親機）＋LTE-M 基板の配線図", "タカチ PCB72-95（穴 A〜AA × 1〜36）縦置き ／ FireBeetle 2 ESP32-E ＋ M5Stamp CatM ／ ファーム HPX_Core v1.25")
+board(s, 27, 36, "タカチ PCB72-95 を縦に置いたところ（穴 A〜AA × 1〜36。上下 3行は D〜X だけ）")
+_i0 = len(s.items)
+for r in (0, 1, 2, 33, 34, 35):
+    for c in (0, 1, 2, 24, 25, 26):
+        x, y = H(c, r)
+        s.add(f'<circle cx="{x}" cy="{y}" r="9" fill="#e8d3a8"/>')
+for c, r in ((0.9, 0.9), (25.1, 0.9), (0.9, 34.1), (25.1, 34.1)):
+    x, y = OX + c * P, OY + r * P
+    s.add(f'<circle cx="{x}" cy="{y}" r="26" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+REC["board"] = REC["board"] + s.items[_i0:]
+fb("A", "J", 9, False, {"J13", "J15", "J21", "J22", "J24", "J25", "J26"}, "ピンソケット 18ピン・14ピンに差す")
+B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
+B10 = ["#795548", "#212121", "#fb8c00", "#c9a227"]
+def tr3(hs, names, label, fill):
+    pts = [H(*hole(h)) for h in hs]
+    x1, x2, y = pts[0][0], pts[-1][0], pts[0][1]
+    s.top.append(f'<rect x="{x1-16}" y="{y-34}" width="{x2-x1+32}" height="30" rx="6" fill="{fill}" stroke="#222" stroke-width="2"/>')
+    s.text((x1 + x2) / 2, y - 14, label, 11, "middle", "bold", "#fff", layer=s.top)
+    for (x, yy), n in zip(pts, names):
+        rec_pin(x, yy, n)
+        s.top.append(f'<circle cx="{x}" cy="{yy}" r="7" fill="#9e9e9e" stroke="#333" stroke-width="1.5"/>')
+        s.text(x, yy + 22, n, 11, "middle", "bold", "#5d4520", layer=s.top)
+res_flat("L24", "P24", "10kΩ", B10, (-2000, -2000))                    # IO4 → ベース
+tr3(["Q24", "R24", "S24"], ["B", "C", "E"], "NPN", "#455a64")
+res_stand(s, hole("Q23"), hole("Q22"), "100kΩ", B100, -2000, -2000)    # ベース → GND（立てる）
+tr3(["U19", "V19", "W19"], ["D", "G", "S"], "P-MOSFET", "#37474f")
+res_flat("V14", "V18", "100kΩ", B100, (-2000, -2000))                  # 5V → ゲート
+lx = OX + 26 * P + 70
+s.text(lx, OY + 13 * P, "基板の上の部品", 14, weight="bold")
+for i, (a_, b_) in enumerate([("L24〜P24", "10kΩ（IO4 → ベース）"), ("Q23・Q22", "100kΩ（ベース → GND、立てる）"), ("Q24・R24・S24", "NPN トランジスタ（B・C・E）"),
+                             ("U19・V19・W19", "P-MOSFET（D・G・S）"), ("V14〜V18", "100kΩ（5V → ゲート）")]):
+    s.text(lx, OY + 13 * P + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, OY + 13 * P + 48 + i * 46, b_, 12, fill="#333")
+# M5Stamp CatM（30×20mm）は下の空いた所（M〜X 列、27〜33 行）に両面テープで貼る
+mx1, my1 = OX + 12 * P - 14, OY + 26 * P - 10
+mx2, my2 = OX + 23 * P + 14, OY + 32 * P + 10
+s.top.append(f'<rect x="{mx1}" y="{my1}" width="{mx2-mx1}" height="{my2-my1}" rx="8" fill="#eceff1" fill-opacity="0.9" stroke="#90a4ae" stroke-width="3"/>')
+rec_part(mx1, my1, mx2 - mx1, my2 - my1, "CatM")
+s.text((mx1 + mx2) / 2, my1 + 70, "M5Stamp CatM", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 92, "SIM7080G・microSIM", 12, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 120, "両面テープで貼る", 12, "middle", "bold", "#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 140, "TX・RX は M25・M26、5V は U21、GND は X21 へ", 11, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 158, "アンテナ（IPEX）は右へ", 11, "middle", fill="#455a64", layer=s.top)
+LAND = [("L13", "USB-C VBUS（5V）", "start"), ("L15", "USB-C GND", "start"), ("L21", "USB-C D+", "start"), ("L22", "USB-C D−", "start"),
+        ("M25", "CatM TX", "start"), ("M26", "CatM RX", "start"), ("U21", "CatM 5V", "end"), ("X21", "CatM GND", "start")]
+for h, txt, an in LAND:
+    solder_mark(s, *hole(h))
+    x, y = H(*hole(h))
+    tag(x + (16 if an == "start" else -16), y - 14, txt, 12, an, "#c62828")
+LTE_WIRES = [
+    ("red", "FireBeetle VCC（J13）", ["J13", "L13", "V13", "W13", "W19"], "USB-C VBUS の線（L13）・P-MOSFET の S（W19）"),
+    ("red", "（とちゅうの V13）", ["V13", "V14"], "100kΩ（V14）"),
+    ("black", "FireBeetle GND（J15）", ["J15", "L15", "O15", "O22", "O25", "S25", "S24"], "USB-C GND の線（L15）・NPN の E（S24）"),
+    ("black", "（とちゅうの O22）", ["O22", "Q22"], "100kΩ（Q22）"),
+    ("black", "（とちゅうの S25）", ["S25", "X25", "X21"], "CatM GND の線（X21）"),
+    ("white", "IO39（J21）", ["J21", "L21"], "USB-C D+ の線（L21、電池の電圧）"),
+    ("blue", "IO36（J22）", ["J22", "L22"], "USB-C D− の線（L22、パネルの電圧）"),
+    ("purple", "IO4（J24）", ["J24", "L24"], "10kΩ（L24）"),
+    ("purple", "10kΩ（P24）", ["P24", "Q24", "Q23"], "NPN の B（Q24）・100kΩ（Q23）"),
+    ("gray", "NPN の C（R24）", ["R24", "R22", "V22", "V19", "V18"], "P-MOSFET の G（V19）・100kΩ（V18）"),
+    ("orange", "P-MOSFET の D（U19）", ["U19", "U21"], "CatM 5V の線（U21）"),
+    ("yellow", "IO16（J25、受信）", ["J25", "M25"], "CatM TX の線（M25）"),
+    ("green", "IO17（J26、送信）", ["J26", "M26"], "CatM RX の線（M26）"),
+]
+for c, a, hs, b in LTE_WIRES:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTE_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, " → ".join(hs), b] for c, a, hs, b in LTE_WIRES],
+          [100, 300, 480, 560], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン", "1", "A9〜A26・J13〜J26（左端に寄せる）。USB-C を上に向ける"],
+    ["M5Stamp CatM（SIM7080G）", "1", "M27〜X33 のあたりに両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で"],
+    ["USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）", "1", "ケースの壁に付け、4本の線を L13・L15・L21・L22 へ"],
+    ["P-MOSFET（ロジックレベル、1A 以上）", "1", "U19・V19・W19（D・G・S）。足の並びは部品の資料で確かめて合わせる"],
+    ["NPN トランジスタ（2SC1815 など）", "1", "Q24・R24・S24（B・C・E）。足の並びは部品の資料で確かめて合わせる"],
+    ["金属皮膜抵抗 100kΩ", "2", "V14〜V18（5V → ゲート、縦）・Q23・Q22（ベース → GND、立てる）"],
+    ["金属皮膜抵抗 10kΩ", "1", "L24〜P24（IO4 → ベース、横）"],
+    ["ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+    ["ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B", "1", "四隅の取付穴（φ3.2）を AST3-6B に留める"],
+    ["電源: HPX-Solar（別の機器）と USB-C ケーブル（データ対応）", "1", "USB-C ケーブル1本でつなぐ（HPX-Solar_pcb.png）。家では USB 充電器でもよい"],
+], [640, 60, 620], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
+    "・赤丸の穴は、ほかの部品からの線（USB-C メス基板の 4本、M5Stamp CatM の TX・RX・5V・GND）を直接はんだ付けするところ。",
+    "・電源は USB-C から（HPX-Solar か USB 充電器）。FireBeetle は VCC ピンから、CatM は P-MOSFET を通した 5V から動かす。FireBeetle の電池コネクタ（PH2.0）には何もつながない。",
+    "・CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。眠っている間と起動のときは 100kΩ で切れたまま。",
+    "・HPX-Solar のときは、D+ に電池の電圧（1/2）、D− にパネルの電圧（1/6）が来る。FireBeetle では D+ を IO39 で読む（v1.25 から。v1.24 までは IO34）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。",
+    "・USB 充電器につなぐときは「測らない」にする（充電器は D+・D− に独自の電圧を出すことがある）。USB-C ケーブルは「データ対応」のものを使う。",
+    "・CatM の TX・RX（IO16・IO17）と 5V のスイッチ（IO4）のピンは v1.24 と同じ。",
+    "・VCC に 5V を入れると、FireBeetle の中のスイッチを通って電池コネクタにも 5V が出る（回路図から。充電の部品に悪くないかは未確認）。",
+    "・穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。FireBeetle のピンの並びは DFRobot の資料から。差す前に実物で確かめる。",
+    "・M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。",
+    FB_NOTE_PITCH,
+], "HPX-Core_LTE_pcb.svg")
+
+# ================================================================== ほかの開発ボード（Olimex・Freenove・ELEGOO）で作るときの図（TARO 2026-11-13）
+# TARO 2026-11-13: HPX-Core のすべての版を、Olimex・Freenove・ELEGOO のどれでも作れるように図をそろえる。ピンはファーム v1.25（FireBeetle と同じ）。
+# Olimex ESP32-DEVKIT-LIPO と Freenove ESP32 WROOM（FNK0090）は ESP32-DevKitC と同じピンの並び（Freenove は 1列 20ピン）。
+# Freenove のピンの並びは Freenove の GitHub のピン配置図から。左右のピン列の間は 10穴と見込んだ（実物で未確認）。
+DK_PINS = {
+    "olimex": (["3V3", "EN", "IO36", "IO39", "IO34", "IO35", "IO32", "IO33", "IO25", "IO26", "IO27", "IO14", "IO12", "GND", "IO13", "IO9", "IO10", "IO11", "5V"],
+               ["GND", "IO23", "IO22", "IO1", "IO3", "IO21", "GND", "IO19", "IO18", "IO5", "IO17", "IO16", "IO4", "IO0", "IO2", "IO15", "IO8", "IO7", "IO6"]),
+    "freenove": (["3V3", "EN", "IO36", "IO39", "IO34", "IO35", "IO32", "IO33", "IO25", "IO26", "IO27", "IO14", "IO12", "GND", "IO13", "3V3", "3V3", "3V3", "5V", "5V"],
+                 ["GND", "IO23", "IO22", "IO1", "IO3", "IO21", "GND", "IO19", "IO18", "IO5", "IO17", "IO16", "IO4", "IO0", "IO2", "IO15", "GND", "GND", "GND", "GND"]),
+    "elegoo": (["EN", "VP", "VN", "D34", "D35", "D32", "D33", "D25", "D26", "D27", "D14", "D12", "D13", "GND", "VIN"],
+               ["D23", "D22", "TX0", "RX0", "D21", "D19", "D18", "D5", "TX2", "RX2", "D4", "D2", "D15", "GND", "3V3"]),
+}
+DK_NAME = {"olimex": "Olimex ESP32-DEVKIT-LIPO", "freenove": "Freenove ESP32 WROOM（FNK0090）", "elegoo": "ELEGOO ESP-32"}
+DK_TAG = {"olimex": "【Olimex で作るとき】", "freenove": "【Freenove で作るとき】", "elegoo": "【ELEGOO で作るとき】"}
+DK_NOTE = {
+    "olimex": "・Olimex のピンの並びは公式資料（GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D）から。左右のピン列は 10穴（25.4mm）離れている。差す前に実物で確かめる。",
+    "freenove": "・Freenove のピンの並びは Freenove の GitHub のピン配置図から。左右のピン列は 10穴離れていると見込んで描いた（実物で未確認）。差す前に、基板の印字とピンの名前を見くらべる。",
+    "elegoo": "・ELEGOO の左右のピン列は 10穴離れているとして描いた（写真から）。差す前に実物で確かめる。",
+}
+DK_PWR = {"olimex": "家庭の電源でも電池でも使える（眠っている間の電流が少ない）", "freenove": "省電力に向かないので家庭電源向き", "elegoo": "省電力に向かないので家庭電源向き"}
+
+def dk(kind, c0, r0, used, sock, rot=False):
+    """DevKitC 型の開発ボードを描く。c0 は左の列（数字）、r0 は 1本目のピンの行（1から）。ピンの列は c0 と c0+10。
+    rot=False: アンテナが上・USB が下。used は金色にする穴の名前"""
+    L, Rr = DK_PINS[kind]
+    if rot:   # 180度回す（USB が上・アンテナが下）。左右の列も入れかわる
+        L, Rr = Rr[::-1], L[::-1]
+    n = len(L)
+    ext = {"olimex": (0.5, 0.5), "freenove": (2.2, 3.2), "elegoo": (2.3, 4.6)}[kind]
+    if rot:
+        ext = ext[::-1]
+    top, bot = r0 - 1 - ext[0], r0 - 1 + n - 1 + ext[1]
+    fill, stroke = {"olimex": ("#c62828", "#7f0000"), "freenove": ("#0d47a1", "#062a63"), "elegoo": ("#212121", "#000")}[kind]
+    x1, y1 = OX + (c0 - 0.5) * P, OY + top * P
+    x2, y2 = OX + (c0 + 10.5) * P, OY + bot * P
+    cx = (x1 + x2) / 2
+    s.top.append(f'<rect x="{x1}" y="{y1}" width="{x2-x1}" height="{y2-y1}" rx="10" fill="{fill}" fill-opacity="0.62" stroke="{stroke}" stroke-width="3"/>')
+    rec_part(x1, y1, x2 - x1, y2 - y1, kind)
+    my = y2 - 180 if rot else y1 + 30
+    ay = my + 106 if rot else my
+    s.top.append(f'<rect x="{cx-70}" y="{my}" width="140" height="150" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
+    s.top.append(f'<rect x="{cx-70}" y="{ay}" width="140" height="44" rx="4" fill="#212121" fill-opacity="0.8"/>')
+    s.text(cx, ay + 28, "アンテナ（下）" if rot else "アンテナ（上）", 12, "middle", "bold", "#eee", layer=s.top)
+    s.text(cx, my + (52 if rot else 82), "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+    s.text(cx, my + (72 if rot else 102), "WROOM-32", 15, "middle", "bold", "#263238", layer=s.top)
+    nm = {"olimex": ("Olimex", "ESP32-DEVKIT-LIPO"), "freenove": ("Freenove", "ESP32 WROOM"), "elegoo": ("ELEGOO", "ESP-32")}[kind]
+    ty = y1 + 130 if rot else y1 + 230
+    s.text(cx, ty, nm[0], 16, "middle", "bold", "#fff", layer=s.top)
+    s.text(cx, ty + 22, nm[1], 14, "middle", "bold", "#fff", layer=s.top)
+    s.text(cx, ty + 44, sock, 12, "middle", "bold", "#eee", layer=s.top)
+    usb = ("micro USB" if kind == "olimex" else "USB-C") + ("（上）" if rot else "（下）")
+    uy = y1 - 20 if rot else y2 - 24
+    s.top.append(f'<rect x="{cx-34}" y="{uy}" width="68" height="44" rx="8" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+    s.text(cx, (y1 + 46) if rot else (y2 + 42), usb, 13, "middle", "bold", "#333", layer=s.top)
+    if kind == "olimex" and not rot:
+        s.top.append(f'<rect x="{x2-80}" y="{y2-64}" width="52" height="40" rx="4" fill="#fafafa" stroke="#9e9e9e" stroke-width="2"/>')
+        s.text(x2 - 54, y2 - 38, "BAT", 12, "middle", "bold", "#333", layer=s.top)
+    for c, names, side in ((c0, L, "L"), (c0 + 10, Rr, "R")):
+        for i, nme in enumerate(names):
+            r = r0 - 1 + i
+            x, y = H(c, r)
+            if 0 <= r < NR:
+                rec_pin(x, y, nme)
+            on = f"{COLS[c]}{r+1}" in used
+            s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
+            s.text(x + (14 if side == "L" else -14), y + 5, nme, 12, "start" if side == "L" else "end", "bold", "#fff" if on else "#ddd", layer=s.top)
+    return x1, y1, x2, y2
+
+def dk_pin(kind, c0, r0, hname, rot=False):
+    """穴の名前 → そこに来るピンの名前"""
+    c, r = hole(hname)
+    L, Rr = DK_PINS[kind]
+    if rot:
+        L, Rr = Rr[::-1], L[::-1]
+    names = L if c == c0 else Rr
+    return names[r - (r0 - 1)]
+
+def w5500_space(r):
+    _x1, _y1 = OX + (13 - 0.53) * P, OY + (r - 1 - 0.5) * P
+    s.top.append(f'<rect x="{_x1}" y="{_y1}" width="{9.06*P}" height="{9.84*P}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2.5" stroke-dasharray="10 7"/>')
+    s.text(_x1 + 4.53 * P, _y1 + 4.4 * P, "空き（＋有線LAN では", 13, "middle", "bold", "#757575", layer=s.top)
+    s.text(_x1 + 4.53 * P, _y1 + 5.2 * P, "ここに W5500 を差す）", 13, "middle", "bold", "#757575", layer=s.top)
+
+W_NAME = {"INT": "INT", "CS": "CS", "SCK": "SCK", "MOSI": "MO", "MISO": "MI", "RST": "RST", "GND": "G", "3V3": "V"}
+def dk_lan_rows(kind, r0, wires, rw):
+    rows = []
+    for c, net, hs in wires:
+        a = f"{dk_pin(kind, 1, r0, hs[0])}（{hs[0]}）"
+        wc, wr = hole(hs[-1])
+        b = f"W5500 {W_NAME[net]}（{hs[-1]}）"
+        rows.append([c, a, " → ".join(hs), b])
+    return rows
+
+# 線（ルーターで探した。裏で交わらず、ほかのピンの穴の上も通らない）
+DK_LAN = {
+    "olimex": (9, 24, [
+        ("purple", "INT", ["B17", "A17", "A8", "V8", "V24"]),
+        ("orange", "CS", ["B18", "J18", "J30", "U30", "U25", "V25"]),
+        ("yellow", "SCK", ["B20", "A20", "A32", "X32", "X26", "V26"]),
+        ("blue", "MOSI", ["B23", "I23", "I31", "W31", "W27", "V27"]),
+        ("green", "MISO", ["L16", "N16", "N24"]),
+        ("white", "RST", ["L10", "O10", "O25", "N25"]),
+        ("black", "GND", ["L9", "P9", "P29", "N29"]),
+        ("red", "3V3", ["B9", "K9", "K28", "N28"]),
+    ]),
+    "freenove": (12, 22, [
+        ("purple", "INT", ["B20", "J20", "J10", "V10", "V22"]),
+        ("orange", "CS", ["B21", "K21", "K11", "U11", "U23", "V23"]),
+        ("yellow", "SCK", ["B23", "A23", "A9", "W9", "W24", "V24"]),
+        ("blue", "MOSI", ["B26", "A26", "A33", "U33", "U25", "V25"]),
+        ("green", "MISO", ["L19", "N19", "N22"]),
+        ("white", "RST", ["L13", "O13", "O23", "N23"]),
+        ("black", "GND", ["L12", "P12", "P27", "N27"]),
+        ("red", "3V3", ["B29", "K29", "K32", "M32", "M26", "N26"]),
+    ]),
+}
+DK_SOCK = {"olimex": "ピンソケット 19ピン×2 に差す", "freenove": "ピンソケット 20ピン×2 に差す"}
+DK_SOCK_ROW = {"olimex": ["ピンソケット（メス）19ピン（20ピンを切る）", "2"], "freenove": ["ピンソケット（メス）20ピン", "2"]}
+
+for kind in ("olimex", "freenove"):
+    r0, rw, wires = DK_LAN[kind]
+    n = len(DK_PINS[kind][0])
+    pos = f"B{r0}〜B{r0+n-1}・L{r0}〜L{r0+n-1}"
+    usb = "micro USB" if kind == "olimex" else "USB-C"
+    # ---------------------------------------------------------------- ＋有線LAN
+    OX, OY = 260, 200
+    s = S(1500, 3000)
+    title(s, f"{DK_TAG[kind]}HPX-Core ＋有線LAN 基板の配線図", f"6×8cm 縦置き ／ {DK_NAME[kind]} ＋ W5500 ／ ファーム v1.25")
+    board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+    dk(kind, 1, r0, {h for _, _, hs in wires for h in (hs[0],)}, DK_SOCK[kind])
+    fb_w5500(rw)
+    for c, net, hs in wires:
+        w(c, *hs)
+    fname = f"HPX-Core_LAN_{kind}_pcb.svg"
+    yb = back_section(s, OY + (NR - 1) * P + 160, fname)
+    y = table(s, 60, yb + 40, [["線", "ESP32 のピン（穴）", "通る穴", "W5500 のピン（穴）"]] + dk_lan_rows(kind, r0, wires, rw), [100, 300, 480, 340], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    y = table(s, 60, y + 50, [
+        ["部品", "数", "置き場所・メモ"],
+        [DK_NAME[kind] + "（ピンヘッダ付き）", "1", f"{pos}。{usb} を下に向ける"],
+        DK_SOCK_ROW[kind] + [f"{pos} にはんだ付けして差す"],
+        ["W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）", "1", f"N{rw}〜N{rw+5}・V{rw}〜V{rw+5}。LAN 差し込み口を下に向ける"],
+        ["ピンソケット（メス）6ピン", "2", f"N{rw}〜N{rw+5}、V{rw}〜V{rw+5} にはんだ付けして W5500 を差す"],
+        ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+    ], [620, 60, 520], "部品表")
+    finish(s, y, [
+        "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。",
+        "・線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+        "・裏の線どうしは交わらず、ほかのピンの穴の上も通らない。開発ボード・W5500 の下を通る線は、裏なので部品には触れない。",
+        "・ピンは FireBeetle 2 の図と同じ（ファーム HPX_Core v1.25 以降）: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。",
+        "・灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。",
+        f"・電源は {usb} から（USB 充電器）。",
+        DK_NOTE[kind],
+        "・W5500 のピンがモジュールの上下のどこにあるかは分からない（実物で確かめる）。ずれていたら、W5500 と線の端を同じ数だけ上下にずらせばよい。",
+    ] + (["・Freenove の IO16 は基板の上の RGB LED（WS2812）につながっていると資料にある。有線LAN では使わないので問題ない。"] if kind == "freenove" else []), fname)
+
+    # ---------------------------------------------------------------- 基本モデル
+    OX, OY = 260, 200
+    s = S(1500, 3000)
+    title(s, f"{DK_TAG[kind]}HPX-Core 基本モデル 基板の配線図", f"6×8cm 縦置き ／ {DK_NAME[kind]} ／ Wi-Fi ＋ USB 給電")
+    board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（「＋有線LAN」と同じ基板・同じ位置。W5500 は付けない）")
+    dk(kind, 1, r0, set(), DK_SOCK[kind])
+    w5500_space(rw)
+    fname = f"HPX-Core_BASIC_{kind}_pcb.svg"
+    yb = back_section(s, OY + (NR - 1) * P + 160, fname)
+    y = table(s, 60, yb + 40, [
+        ["部品", "数", "置き場所・メモ"],
+        [DK_NAME[kind] + "（ピンヘッダ付き）", "1", f"{pos}。{usb} を下に向ける"],
+        DK_SOCK_ROW[kind] + [f"{pos} にはんだ付けして差す"],
+        ["ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）", "1", "縦に置く。ケース PFF10-4-10W に AST2.5-5B で留める"],
+    ], [620, 60, 520], "部品表")
+    finish(s, y, [
+        f"・基本モデルは、ルーターへ Wi-Fi でつなぎ、開発ボードの {usb} から電気をもらいます。基板の上の線はありません（ピンソケットのはんだ付けだけ）。",
+        f"・「＋有線LAN」と同じ基板・同じ位置です。あとから W5500 とピンソケット 6ピン×2・線8本を足せば「＋有線LAN」にできます（HPX-Core_LAN_{kind}_pcb.png）。",
+        "・ファームウェアは HPX_Core v1.25 を使い、初回設定で接続方法を「Wi-Fi」にします。",
+        DK_NOTE[kind],
+        "・雨のかかる屋外に置くときは、防水の版（＋防水）を使ってください。",
+    ], fname)
+
+# ---------------------------------------------------------------- ＋防水＆電池駆動（タカチ PCB36-47）を Freenove・ELEGOO で
+# Freenove: 5V（20本目）を B16 に置く → ピン1〜4 は基板の上の外。電池＋ → B16（5V）、− → B10（左の列の GND）。
+# ELEGOO: 15ピンが B1〜B15 に収まる。電池＋ → B15（VIN）、− → B14（GND）。
+# どちらも USB と 3.3V の部品が電気を食うので、電池は長くもたない（TARO: 省電力に向かないので家庭電源向き）。
+for kind, r0, plus, minus, sockn in (("freenove", -3, "B16", "B10", 16), ("elegoo", 1, "B15", "B14", 15)):
+    OX, OY = 520, 420
+    s = S(1500, 3000)
+    title(s, f"{DK_TAG[kind]}HPX-Core ＋防水＆電池駆動の配線図", f"PCB36-47 ／ {DK_NAME[kind]} ／ 単三リチウム ×3 → {'5V' if kind == 'freenove' else 'VIN'} 端子")
+    board(s, 13, 17, " ")
+    s.text(OX + 6 * P, 120, "ケース用基板 PCB36-47（36×47mm）を縦に置いたところ。穴 13×17 は見込み、四隅は取付穴", 15, "middle", "bold", "#5d4520")
+    for c, r in ((0, 0), (12, 0), (0, 16), (12, 16)):
+        x, y = H(c, r)
+        s.add(f'<circle cx="{x}" cy="{y}" r="15" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+        s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#c8a165" stroke="#8d6e3f" stroke-width="1.5"/>')
+    REC["board"] = REC["board"] + s.items[-8:]
+    fx1, fy1, fx2, fy2 = dk(kind, 1, r0, {plus, minus}, f"ピンソケット {sockn}ピン×2 に差す")
+    ap, am = "A" + plus[1:], "A" + minus[1:]
+    tp, tm = H(*hole(ap)), H(*hole(am))
+    bx0, by0 = 60, fy2 + 110
+    s.rect(bx0, by0, 440, 80, "#455a64", "#263238", 10, 3)
+    for i in range(3):
+        s.rect(bx0 + 18 + i * 140, by0 + 18, 124, 44, "#c0ca33", "#827717", 20, 2)
+        s.text(bx0 + 80 + i * 140, by0 + 46, "単3", 15, "middle", "bold", "#333")
+    s.text(bx0 + 426, by0 + 24, "＋", 16, "end", "bold", "#fff")
+    s.text(bx0 + 14, by0 + 24, "−", 18, "start", "bold", "#fff")
+    s.text(bx0 + 220, by0 + 106, "ケース WH145-25-M3 の電池ボックス ＋ 単三リチウム電池 ×3（直列 約4.5〜5.4V）", 14, "middle", "bold")
+    s.wire([(bx0 + 440, by0 + 40), (bx0 + 470, by0 + 40), (bx0 + 470, fy2 + 50), (OX - 120, fy2 + 50), (OX - 120, tp[1]), tp], "red")
+    s.wire([(bx0, by0 + 40), (bx0 - 30, by0 + 40), (bx0 - 30, tm[1]), tm], "black")
+    solder_mark(s, *hole(ap)); solder_mark(s, *hole(am))
+    w("red", ap, plus)
+    w("black", am, minus)
+    fname = f"HPX-Core_BAT_{kind}_pcb.svg"
+    check_back(fname)
+    yb = backview(s, by0 + 140, OX + (NC - 1) * P / 2, fy1 - 90, fy2 + 60)
+    pn, mn = dk_pin(kind, 1, r0, plus), dk_pin(kind, 1, r0, minus)
+    y = table(s, 60, yb + 40, [
+        ["線", "どこから（穴）", "どこへ（穴）", "役目"],
+        ["red", f"電池ボックスの＋の線（{ap} に直接はんだ付け）", f"裏で {ap} → {plus}（{pn}）", f"電池の＋を {pn} へ"],
+        ["black", f"電池ボックスの−の線（{am} に直接はんだ付け）", f"裏で {am} → {minus}（GND）", "電池の−を GND へ"],
+    ], [100, 400, 460, 240], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    y = table(s, 60, y + 50, [
+        ["部品", "数", "置き場所・メモ"],
+        [DK_NAME[kind] + "（ピンヘッダ付き）", "1", f"B1〜B{sockn}・L1〜L{sockn} のソケットに差す。USB-C を下、アンテナを上に向ける"],
+        [f"ピンソケット（メス）{sockn}ピン", "2", f"B1〜B{sockn}、L1〜L{sockn} にはんだ付け"],
+        ["ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池", "1／3", f"＋の線を {ap}、−の線を {am} にはんだ付け"],
+        ["ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線", "1", "線は裏の2本だけ"],
+    ], [600, 60, 540], "部品表")
+    extra = {
+        "freenove": [
+            "・Freenove は1列 20ピンで基板（47mm）より長い。ピン1〜4（3V3・EN・IO36・IO39 と GND・IO23・IO22・IO1）は基板の上の端からはみ出す。USB-C の側も下へはみ出す。",
+            "・電池は「5V」端子（左の列のいちばん下）へ。5V の先の 3.3V を作る部品（AMS1117 の見込み）は、入力が 4.3V くらいより下がると 3.3V を保てない。電池が減ってくると止まりやすい。",
+        ],
+        "elegoo": [
+            "・ELEGOO は 15ピンなので B1〜B15・L1〜L15 に収まる。長さ（約51mm）は基板（47mm）より長く、USB-C の側が下へはみ出す。",
+            "・電池は「VIN」（左の列のいちばん下）へ。VIN の先の 3.3V を作る部品（AMS1117）は、入力が 4.3V くらいより下がると 3.3V を保てない。電池が減ってくると止まりやすい。",
+        ],
+    }[kind]
+    finish(s, y, [
+        "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+        f"・この開発ボードは {DK_PWR[kind]}。USB の部品・電源の LED・3.3V を作る部品が眠っている間も電気を使うので、電池は FireBeetle や Olimex よりずっと早くなくなる（未実測）。電池で使うなら FireBeetle か Olimex をすすめる。",
+    ] + extra + [
+        "・電池を入れたまま USB-C をつながない（書き込みは電池を外してから）。",
+        "・PCB36-47 の穴の数（13×17）は見込み。ケースの深さに、スペーサー＋基板＋ソケット＋開発ボードが収まるかは未確認。",
+        "・管理画面の動作モードは「ディープスリープ」にする。",
+        DK_NOTE[kind],
+    ], fname)
+
+# ---------------------------------------------------------------- ＋LTE-M（タカチ PCB72-95）を Freenove・ELEGOO で
+# 部品の位置・赤丸の穴は「Olimex で作るとき」の図と同じ。開発ボードは左端（A 列と K 列）。
+DK_LTE = {
+    "freenove": (5, "A24", [
+        ("black", "GND（右の列のいちばん上 K5）", ["K5", "K4", "Z4", "Z30"], "右の端 → USB-C GND（Y30）"),
+        ("black", "USB-C GND（Y30）", ["Y30", "Z30"], "右の端の GND"),
+        ("black", "NPN の E（S17）", ["S17", "S14", "Y14"], "CatM GND の穴（Y14）"),
+        ("black", "CatM GND（Y14）", ["Y14", "Z14"], "右の端の GND"),
+        ("black", "100kΩ（R14）", ["R14", "S14"], "GND"),
+        ("red", "USB-C VBUS（X30）", ["X30", "X18"], "P-MOSFET の S（X18）"),
+        ("red", "USB-C VBUS（X30）", ["X30", "X31", "A31", "A24"], "5V（左の列のいちばん下 A24）"),
+        ("red", "100kΩ（W23）", ["W23", "X23"], "5V"),
+        ("orange", "P-MOSFET の D（V18）", ["V18", "V16"], "CatM 5V の線（V16）"),
+        ("purple", "IO4（K17）", ["K17", "L17"], "10kΩ（L17）"),
+        ("purple", "10kΩ（P17）", ["P17", "Q17", "Q14"], "NPN の B（Q17）・100kΩ（Q14）"),
+        ("gray", "NPN の C（R17）", ["R17", "R19", "W19"], "100kΩ（W19）"),
+        ("gray", "P-MOSFET の G（W18）", ["W18", "W19"], "100kΩ（W19）"),
+        ("white", "IO39（A8）", ["A8", "C8", "C26", "P26", "P27"], "USB-C D+ の線（P27、電池の電圧）"),
+        ("blue", "IO36（A7）", ["A7", "D7", "D25", "Q25", "Q27"], "USB-C D− の線（Q27、パネルの電圧）"),
+        ("yellow", "IO16（K16、受信）", ["K16", "M16"], "CatM TX の線（M16）"),
+        ("green", "IO17（K15、送信）", ["K15", "M15"], "CatM RX の線（M15）"),
+    ]),
+    "elegoo": (7, "A21", [
+        ("black", "GND（右の列 K20）", ["K20", "O20", "O13", "Y13", "Y14"], "CatM GND の穴（Y14）"),
+        ("black", "CatM GND（Y14）", ["Y14", "Y30"], "USB-C GND の線（Y30）"),
+        ("black", "（とちゅうの S13）", ["S13", "S17"], "NPN の E（S17）"),
+        ("black", "（とちゅうの R13）", ["R13", "R14"], "100kΩ（R14）"),
+        ("red", "VIN（A21）", ["A21", "A30", "X30"], "USB-C VBUS の線（X30）"),
+        ("red", "USB-C VBUS（X30）", ["X30", "X18"], "P-MOSFET の S（X18）"),
+        ("red", "100kΩ（W23）", ["W23", "X23"], "5V"),
+        ("orange", "P-MOSFET の D（V18）", ["V18", "V16"], "CatM 5V の線（V16）"),
+        ("purple", "D4 = IO4（K17）", ["K17", "L17"], "10kΩ（L17）"),
+        ("purple", "10kΩ（P17）", ["P17", "Q17", "Q14"], "NPN の B（Q17）・100kΩ（Q14）"),
+        ("gray", "NPN の C（R17）", ["R17", "R19", "W19", "W18"], "100kΩ（W19）・P-MOSFET の G（W18）"),
+        ("white", "VN = IO39（A9）", ["A9", "I9", "I27", "P27"], "USB-C D+ の線（P27、電池の電圧）"),
+        ("blue", "VP = IO36（A8）", ["A8", "J8", "J26", "Q26", "Q27"], "USB-C D− の線（Q27、パネルの電圧）"),
+        ("yellow", "RX2 = IO16（K16、受信）", ["K16", "M16"], "CatM TX の線（M16）"),
+        ("green", "TX2 = IO17（K15、送信）", ["K15", "M15"], "CatM RX の線（M15）"),
+    ]),
+}
+for kind in ("freenove", "elegoo"):
+    r0, v5, LTE_W = DK_LTE[kind]
+    n = len(DK_PINS[kind][0])
+    OX, OY = 200, 300
+    s = S(1500, 4400)
+    title(s, f"{DK_TAG[kind]}HPX-Core ＋LTE-M 基板の配線図", f"PCB72-95 縦置き ／ {DK_NAME[kind]} ／ ファーム v1.25")
+    board(s, 27, 36, "タカチ PCB72-95 を縦に置いたところ（穴 A〜AA × 1〜36。上下 3行は D〜X だけ）")
+    _i0 = len(s.items)
+    for r in (0, 1, 2, 33, 34, 35):
+        for c in (0, 1, 2, 24, 25, 26):
+            x, y = H(c, r)
+            s.add(f'<circle cx="{x}" cy="{y}" r="9" fill="#e8d3a8"/>')
+    for c, r in ((0.9, 0.9), (25.1, 0.9), (0.9, 34.1), (25.1, 34.1)):
+        x, y = OX + c * P, OY + r * P
+        s.add(f'<circle cx="{x}" cy="{y}" r="26" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
+    REC["board"] = REC["board"] + s.items[_i0:]
+    dk(kind, 0, r0, {hs[0] for _, a, hs, _ in LTE_W if hs[0][0] in "AK" and hs[0][1:].isdigit()}, f"ピンソケット {n}ピン×2 に差す")
+    B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
+    B10 = ["#795548", "#212121", "#fb8c00", "#c9a227"]
+    OFF = (-2000, -2000)
+    res_flat("L17", "P17", "10kΩ", B10, OFF)
+    tr3(["Q17", "R17", "S17"], ["B", "C", "E"], "NPN", "#455a64")
+    res_stand(s, hole("Q14"), hole("R14"), "100kΩ", B100, -2000, -2000)
+    tr3(["V18", "W18", "X18"], ["D", "G", "S"], "P-MOSFET", "#37474f")
+    res_flat("W19", "W23", "100kΩ", B100, OFF)
+    lx = OX + 26 * P + 70
+    s.text(lx, OY + 15 * P, "基板の上の部品", 14, weight="bold")
+    for i, (a_, b_) in enumerate([("L17〜P17", "10kΩ（IO4 → ベース）"), ("Q14・R14", "100kΩ（ベース → GND、立てる）"), ("Q17・R17・S17", "NPN トランジスタ（B・C・E）"),
+                                 ("V18・W18・X18", "P-MOSFET（D・G・S）"), ("W19〜W23", "100kΩ（ゲート → 5V）")]):
+        s.text(lx, OY + 15 * P + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
+        s.text(lx, OY + 15 * P + 48 + i * 46, b_, 12, fill="#333")
+    mx1, my1 = OX + 15 * P - 14, OY + R(5) * P - 10
+    mx2, my2 = OX + 26 * P + 14, OY + R(12) * P + 10
+    s.top.append(f'<rect x="{mx1}" y="{my1}" width="{mx2-mx1}" height="{my2-my1}" rx="8" fill="#eceff1" fill-opacity="0.9" stroke="#90a4ae" stroke-width="3"/>')
+    rec_part(mx1, my1, mx2 - mx1, my2 - my1, "CatM")
+    s.text((mx1 + mx2) / 2, my1 + 90, "M5Stamp CatM", 15, "middle", "bold", "#263238", layer=s.top)
+    s.text((mx1 + mx2) / 2, my1 + 112, "SIM7080G・microSIM", 12, "middle", fill="#455a64", layer=s.top)
+    s.text((mx1 + mx2) / 2, my1 + 140, "両面テープで貼る", 12, "middle", "bold", "#455a64", layer=s.top)
+    s.text((mx1 + mx2) / 2, my1 + 158, "TX・RX は M16・M15、5V は V16、GND は Y14 へ", 11, "middle", fill="#455a64", layer=s.top)
+    s.text((mx1 + mx2) / 2, my1 + 176, "アンテナ（IPEX）は上へ", 11, "middle", fill="#455a64", layer=s.top)
+    LAND = [("P27", "USB-C D+", "end"), ("Q27", "USB-C D−", "start"), ("X30", "USB-C VBUS（5V）", "end"), ("Y30", "USB-C GND", "start"),
+            ("M15", "CatM RX", "start"), ("M16", "CatM TX", "start"), ("V16", "CatM 5V", "end"), ("Y14", "CatM GND", "start")]
+    for h, txt, an in LAND:
+        solder_mark(s, *hole(h))
+        x, y = H(*hole(h))
+        tag(x + (16 if an == "start" else -16), y - 14, txt, 12, an, "#c62828")
+    for c, a, hs, b in LTE_W:
+        w(c, *hs)
+    fname = f"HPX-Core_LTE_{kind}_pcb.svg"
+    yb = back_section(s, OY + (NR - 1) * P + 160, fname)
+    y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, " → ".join(hs), b] for c, a, hs, b in LTE_W],
+              [100, 340, 480, 500], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    y = table(s, 60, y + 50, [
+        ["部品", "数", "置き場所・メモ"],
+        [f"{DK_NAME[kind]}（ピンヘッダ付き）＋ ピンソケット {n}ピン×2", "1", f"A{r0}〜A{r0+n-1}・K{r0}〜K{r0+n-1}（左端に寄せる）。アンテナを上、USB-C を下に向ける"],
+        ["M5Stamp CatM（SIM7080G）", "1", "P5〜AA12 の上に両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で"],
+        ["USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）", "1", "ケースの壁に付け、4本の線を X30・Y30・P27・Q27 へ"],
+        ["P-MOSFET（ロジックレベル、1A 以上）", "1", "V18・W18・X18（D・G・S）。足の並びは部品の資料で確かめて合わせる"],
+        ["NPN トランジスタ（2SC1815 など）", "1", "Q17・R17・S17（B・C・E）。足の並びは部品の資料で確かめて合わせる"],
+        ["金属皮膜抵抗 100kΩ", "2", "W19〜W23（ゲート → 5V、縦）・Q14〜R14（ベース → GND、立てる）"],
+        ["金属皮膜抵抗 10kΩ", "1", "L17〜P17（IO4 → ベース、横）"],
+        ["ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+        ["ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B", "1", "四隅の取付穴（φ3.2）を AST3-6B に留める"],
+        ["電源: HPX-Solar（別の機器）と USB-C ケーブル（データ対応）", "1", "USB-C ケーブル1本でつなぐ（HPX-Solar_pcb.png）。家では USB 充電器でもよい"],
+    ], [640, 60, 620], "部品表")
+    extra = {
+        "freenove": [
+            "・Freenove の IO16 は基板の上の RGB LED（WS2812）にもつながっていると資料にある。CatM からの受信で LED が光ることがあるが、受信はできる見込み（未確認）。",
+            f"・5V は左の列のいちばん下（{v5}）へ。Freenove は 5V ピンが2本（A23・A24）ある。",
+        ],
+        "elegoo": [
+            "・ELEGOO の 5V は VIN（A21）へ。ピンの印字は D4・RX2（IO16）・TX2（IO17）・VP（IO36）・VN（IO39）。",
+        ],
+    }[kind]
+    finish(s, y, [
+        "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
+        "・部品の位置と赤丸の穴（USB-C メス基板の 4本、M5Stamp CatM の TX・RX・5V・GND）は「Olimex で作るとき」の図と同じ。",
+        "・電源は USB-C から（HPX-Solar か USB 充電器）。開発ボードは 5V ピンから、CatM は P-MOSFET を通した 5V から動かす。",
+        "・CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。",
+        "・HPX-Solar のときは、D+ に電池の電圧（1/2）を IO39 で、D− にパネルの電圧（1/6）を IO36 で読む（ファーム v1.25）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。USB 充電器のときは「測らない」。",
+        f"・この開発ボードは {DK_PWR[kind]}。HPX-Solar の小さな電池で動かすと、眠っている間も電気を使うので電池が早く減る（未実測）。HPX-Solar と組むなら FireBeetle か Olimex をすすめる。",
+    ] + extra + [
+        "・USB-C ケーブルは「データ対応」のものを使う。アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。",
+        DK_NOTE[kind],
+    ], fname)
+
+# ---------------------------------------------------------------- ＋有線LAN＆ソーラーシステムチェック を Olimex・Freenove で
+# 上の部品（1〜11 行）は FireBeetle・ELEGOO の図と同じ位置。線が交わらないように、開発ボードは 180度回して（USB が上）差す。
+# 回すと右の列に 5V・IO13・IO14・IO26・IO25・IO35・IO39・3V3 が並び、W5500 と上の部品へ近くなる。
+def w5500_used(r, left_used):
+    x1, y1, x2, y2 = module(13 - 0.53, 21 + 0.53, r - 1 - 0.5, r - 1 - 0.5 + 9.84, "#1565c0", "#0d3c7a", "W5500")
+    s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+30}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
+    s.text((x1 + x2) / 2, y1 + 70, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
+    s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-150}" width="160" height="170" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
+    s.text((x1 + x2) / 2, y2 - 60, "LAN 差し込み口", 13, "middle", "bold", "#37474f", layer=s.top)
+    s.text((x1 + x2) / 2, y1 + 120, "W5500 モジュール", 14, "middle", "bold", "#fff", layer=s.top)
+    s.text((x1 + x2) / 2, y1 + 140, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+    pins(13, r, ["MI", "RST", "NC", "V", "V2", "G"], "L", left_used)
+    pins(21, r, ["INT", "CS", "SCK", "MO", "G2", "G3"], "R", {"INT", "CS", "SCK", "MO"})
+
+DK_LANV = {
+    "olimex": (9, 28, {"MI", "RST", "V", "G"}, [
+        ("purple", "IO25（L19）", ["L19", "V19", "V28"], "W5500 INT（V28）"),
+        ("orange", "IO26（L18）", ["L18", "W18", "W29", "V29"], "W5500 CS（V29）"),
+        ("yellow", "IO14・SCK（L16）", ["L16", "X16", "X30", "V30"], "W5500 SCK（V30）"),
+        ("blue", "IO13・MOSI（L13）", ["L13", "Y13", "Y31", "V31"], "W5500 MO（V31）"),
+        ("green", "IO19・MISO（B20）", ["B20", "D20", "D28", "N28"], "W5500 MI（N28）"),
+        ("white", "IO23（B26）", ["B26", "C26", "C29", "N29"], "W5500 RST（N29）"),
+        ("black", "GND（B27）", ["B27", "B33", "N33"], "W5500 G（N33）"),
+        ("red", "3V3（L27）", ["L27", "O27", "O31", "N31"], "W5500 V（N31）"),
+        ("black", "GND（B21）", ["B21", "A21", "A3", "G3", "H3", "L3"], "0.1µF（G3）・8.2kΩ（H3）・15kΩ（L3）"),
+        ("black", "（とちゅうの L3）", ["L3", "L5", "M5", "S5", "S8", "S9"], "0.1µF（M5）・BP5293 GND（S9）"),
+        ("black", "（とちゅうの S8）", ["S8", "V8", "V9"], "10µF（V9）"),
+        ("black", "（とちゅうの V8）", ["V8", "V3", "X3"], "端子台 マイナス（X3）"),
+        ("blue", "端子台 パネル＋（X1）", ["X1", "I1"], "100kΩ（I1）"),
+        ("yellow", "IO39（L24）", ["L24", "J24", "J5", "I5", "H5", "G5"], "100kΩ（I5）・8.2kΩ（H5）・0.1µF（G5）"),
+        ("green", "IO35（L22）", ["L22", "K22", "K7", "L7", "M7", "N7"], "15kΩ（L7）・0.1µF（M7）・100kΩ（N7）"),
+        ("orange", "5V（L9）", ["L9", "R9"], "BP5293 VOUT（R9）"),
+        ("red", "端子台 バッテリー＋（X5）", ["X5", "X11", "V11", "T11", "N11"], "10µF（V11）・100kΩ（N11）"),
+        ("red", "", ["T11", "T9"], "BP5293 VIN（T9）"),
+    ]),
+}
+for kind, (r0, rw, wused, LV) in DK_LANV.items():
+    n = len(DK_PINS[kind][0])
+    OX, OY = 260, 200
+    s = S(1700, 3600)
+    title(s, f"{DK_TAG[kind]}HPX-Core ＋有線LAN＆ソーラーシステムチェック", f"6×8cm 縦置き ／ {DK_NAME[kind]}（180度回して差す）＋ W5500 ＋ 電圧チェック ／ ファーム v1.25")
+    board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+    dk(kind, 1, r0, {hs[0] for _, _, hs, _ in LV if hs[0][0] in "BL"}, DK_SOCK[kind], rot=True)
+    w5500_used(rw, wused)
+    B100 = ["#8d5524", "#212121", "#f9a825"]
+    res_flat("I1", "I5", "100kΩ", B100, (-2000, -2000))
+    res_stand(s, hole("H5"), hole("H3"), "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], -2000, -2000)
+    cap_flat(s, hole("G3"), hole("G5"), "0.1µF")
+    res_flat("L3", "L7", "15kΩ", ["#8d5524", "#4caf50", "#f57c00"], (-2000, -2000))
+    cap_flat(s, hole("M5"), hole("M7"), "0.1µF")
+    res_flat("N7", "N11", "100kΩ", B100, (-2000, -2000))
+    x1, y1 = H(*hole("R9")); x2, _ = H(*hole("T9"))
+    s.top.append(f'<rect x="{x1-26}" y="{y1-34}" width="{x2-x1+52}" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>')
+    rec_part(x1 - 26, y1 - 34, x2 - x1 + 52, 22, "")
+    s.text((x1 + x2) / 2, y1 - 18, "BP5293-50", 12, "middle", "bold", "#fff", layer=s.top)
+    for i, nn in enumerate(["VOUT", "GND", "VIN"]):
+        x, y = H(COLS.index("R") + i, 8)
+        rec_pin(x, y, nn)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+        tag(x, y + 24, nn, 10, "middle", w=len(nn) * 7 + 8)
+    cap_flat(s, hole("V9"), hole("V11"), "10µF", True)
+    x1, y1 = H(*hole("X1")); _, y2 = H(*hole("X5"))
+    s.top.append(f'<rect x="{x1-14}" y="{y1-30}" width="{P+36}" height="{y2-y1+60}" rx="5" fill="#2e7d32" fill-opacity="0.9" stroke="#1b5e20" stroke-width="2"/>')
+    rec_part(x1 - 14, y1 - 30, P + 36, y2 - y1 + 60, "")
+    for h, nn, col in (("X1", "パネル＋", "blue"), ("X3", "マイナス", "black"), ("X5", "バッテリー＋", "red")):
+        x, y = H(*hole(h))
+        rec_pin(x, y, nn)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+        s.top.append(f'<circle cx="{x+P}" cy="{y}" r="13" fill="#bdbdbd" stroke="#424242" stroke-width="2"/>')
+        s.add(f'<path d="M{x+P+16},{y} L{x+P+100},{y}" fill="none" stroke="{COL[col]}" stroke-width="7"/>')
+        s.text(x + P + 108, y + 5, nn, 13, "start", "bold", COL[col] if col != "black" else "#212121")
+    s.text(H(*hole("X5"))[0] + P + 108, H(*hole("X5"))[1] + 26, "（＋は 1A ヒューズ経由）", 11, "start", fill="#555")
+    lx, ly = OX + 24 * P + 110, OY + 9 * P
+    s.text(lx, ly, "上の部品（穴）", 14, weight="bold")
+    for i, (a_, b_) in enumerate([("I1〜I5", "100kΩ（パネル＋ → 測る点）"), ("H3・H5", "8.2kΩ（立てる。H5 が本体）"), ("G3・G5", "0.1µF（パネル）"),
+                                 ("L3〜L7", "15kΩ（GND → 測る点）"), ("M5・M7", "0.1µF（バッテリー）"), ("N7〜N11", "100kΩ（測る点 → バッテリー＋）"),
+                                 ("R9・S9・T9", "BP5293-50（VOUT・GND・VIN）"), ("V9・V11", "10µF（BP5293 の入力側）"), ("X1・X3・X5", "端子台 3極")]):
+        s.text(lx, ly + 30 + i * 44, a_, 13, weight="bold", fill="#5d4520")
+        s.text(lx, ly + 47 + i * 44, b_, 12, fill="#333")
+    for c, a, hs, b in LV:
+        w(c, *hs)
+    fname = f"HPX-Core_LANV_{kind}_pcb.svg"
+    yb = back_section(s, OY + (NR - 1) * P + 160, fname)
+    y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, " → ".join(hs), b] for c, a, hs, b in LV],
+              [100, 300, 520, 500], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    y = table(s, 60, y + 50, [
+        ["部品", "数", "置き場所・メモ"],
+        [f"{DK_NAME[kind]}（ピンヘッダ付き）＋ " + DK_SOCK_ROW[kind][0], "1／2", f"B{r0}〜B{r0+n-1}・L{r0}〜L{r0+n-1}。180度回して、USB を上・アンテナを下に向ける"],
+        ["W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2", "1", f"N{rw}〜N{rw+5}・V{rw}〜V{rw+5}。LAN 差し込み口を下に向ける"],
+        ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "R9・S9・T9（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）"],
+        ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "V9・V11（BP5293 の入力側）"],
+        ["金属皮膜抵抗 100kΩ 1%", "2", "I1〜I5（パネル用）、N7〜N11（バッテリー用）。寝かせて付ける"],
+        ["金属皮膜抵抗 15kΩ 1%", "1", "L3〜L7（バッテリー用、寝かせる）"],
+        ["金属皮膜抵抗 8.2kΩ 1%", "1", "H3・H5（パネル用、立てて付ける）"],
+        ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "G3・G5（パネル用）、M5・M7（バッテリー用）"],
+        ["端子台 3極 5.08mm（基板用、ねじ式）", "1", "X1・X3・X5（上から パネル＋・マイナス・バッテリー＋）。線を入れる口を右に向ける"],
+        ["ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ", "2", "バッテリー＋とパネル＋の線の途中（コントローラーの近く）"],
+        ["ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+    ], [640, 60, 560], "部品表")
+    finish(s, y, [
+        "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
+        "・上の部品（1〜11 行）の位置は FireBeetle・ELEGOO の図と同じ。開発ボードは 180度回して（USB を上、アンテナを下に）差す。こうすると線が交わらずに引ける。",
+        "・開発ボードの電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を 5V ピン（右の列のいちばん上 L9）に入れる。",
+        "・バッテリーは 100kΩ と 15kΩ で 約1/7.7 にして IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 にして IO39 で読む（ファーム v1.25）。",
+        "・W5500 の信号は FireBeetle の図と同じピン: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。",
+        f"・W5500（{rw}〜{rw+5} 行）の LAN 差し込み口は、基板の下の端から 1cm ほどはみ出す。ケースに収まるかは実物で確かめる。",
+        "・USB の口が上の部品の近くに来るので、書き込みは開発ボードをソケットから抜いて行う。差したまま書き込むときは、端子台の線を外すかヒューズを抜く。",
+        "・BP5293-50 の入力は 26V まで。足の並びは秋月の資料（データシート）で確かめてから差す。",
+        "・マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」が共通のコントローラーでだけ、パネル電圧を正しく測れる。",
+        DK_NOTE[kind],
+    ], fname)
+
+COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 
 print("ok")

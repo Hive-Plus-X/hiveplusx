@@ -380,7 +380,7 @@ s.save("HPX-A_wiring.svg")
 # Olimex の部品の位置は公式資料 (GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D) から: アンテナが上、micro USB が下、
 # RST ボタンが左下、BAT コネクタが右下。BOOT ボタンと GPIO2 の LED はない。
 s = S(1280, 1300)
-title(s, "HPX-Core（親機）＋防水の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB")
+title(s, "【Olimex で作るとき】HPX-Core ＋防水の部品表と配線図", "Olimex ESP32-DEVKIT-LIPO ／ 電源 USB ／ ファーム HPX_Core v1.25")
 cx, cy = 524, 170
 s.rect(cx, cy, 232, 400, "#c62828", "#7f0000", 10, 3)
 s.rect(cx + 56, cy - 14, 120, 44, "#212121", "#111", 4, 2)
@@ -428,7 +428,7 @@ s.text(1070, 428, "（micro USB の代わりに、中をこうする）", 11, "m
 s.rect(920, 450, 90, 120, "#37474f", "#222", 6, 2)
 s.text(965, 590, "USB-C メス基板", 11, "middle", "bold"); s.text(965, 604, "（データ対応）", 10, "middle", fill="#666")
 s.text(1070, 630, "防水USBカプラーから USB-C ケーブル", 11, "middle", fill="#555"); s.text(1070, 644, "（データ対応）で受ける", 11, "middle", fill="#555")
-for i, (n, to, c) in enumerate([("VBUS", "5V", "red"), ("GND", "GND", "black"), ("D+", "IO34", "white"), ("D−", "IO36", "blue")]):
+for i, (n, to, c) in enumerate([("VBUS", "5V", "red"), ("GND", "GND", "black"), ("D+", "IO39", "white"), ("D−", "IO36", "blue")]):
     yy = 470 + i * 26
     s.add(f'<circle cx="1010" cy="{yy}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
     s.text(1000, yy + 4, n, 11, "end", "bold", "#fff")
@@ -442,16 +442,106 @@ CORE_ROWS = [
     ["USB-C to MicroUSB ケーブル 15cm", "1", "ケースの中で、防水USBカプラーと Olimex をつなぐ"],
     ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
     ["（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル 15cm", "各1", "USB-C to MicroUSB ケーブルの代わり。カプラーから受けて 4本に分ける"],
-    ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", "VBUS → 5V、GND → GND、D+ → IO34、D− → IO36"],
+    ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", "VBUS → 5V、GND → GND、D+ → IO39、D− → IO36"],
 ]
 y = table(s, 60, 860, CORE_ROWS, [560, 50, 550], "部品表")
 CORE_NOTES = [
     "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
     "・HPX-Solar（小型ソーラー電源）から電気をもらい、電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分ける（試作中・実機未確認）。",
-    "  そのときは Olimex を 5V ピンから動かし、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。",
+    "  そのときは Olimex を 5V ピンから動かし（ファーム v1.25 以降。D+ は IO39 で読む）、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。",
     "・基板の「BAT」コネクタは充電式リチウムイオン電池用。この版では何もつながない。",
     "・USB 電源のときは、管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
     "・Olimex には BOOT ボタンと GPIO2 の LED がありません。工場出荷リセット（BOOT 長押し）は、GPIO0 のピンを GND に5秒つないで代わりにする（未確認）。",
+]
+notes(s, 60, y + 20, CORE_NOTES)
+s.save("HPX-Core_olimex_wiring.svg")
+# ウェブサイト用 (TARO 2026-11-08): 図だけの SVG (部品表の上で切る) と、部品表・注意の文字 (JSON)。表・注意はページに HTML で出す
+_full = open(os.path.join(OUT, "HPX-Core_olimex_wiring.svg"), encoding="utf-8").read()
+_cut = 820
+open(os.path.join(OUT, "HPX-Core_olimex_wiring_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+import json
+json.dump({"tables": [{"head": "部品の使いどころ", "rows": CORE_ROWS}], "notes": [n.lstrip("・") for n in CORE_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_olimex_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok")
+# ------------------------------------------------------------------ HPX-Core
+# ＋防水 (TARO 2026-11-13: FireBeetle 2 ESP32-E に。電源は防水USBカプラーから USB-C ケーブルで)
+s = S(1280, 1300)
+title(s, "HPX-Core（親機）＋防水の部品表と配線図", "FireBeetle 2 ESP32-E ／ 電源 USB ／ ファーム HPX_Core v1.25")
+cx, cy = 524, 170
+s.rect(cx, cy, 232, 400, "#37474f", "#102027", 10, 3)
+s.rect(cx + 46, cy + 8, 140, 196, "#b0bec5", "#78909c", 6, 2)
+s.rect(cx + 46, cy + 8, 140, 46, "#212121", "#111", 4, 2)
+s.text(cx + 116, cy + 36, "アンテナ", 12, "middle", "bold", "#eee")
+s.text(cx + 116, cy + 120, "ESP32-", 16, "middle", "bold", "#263238")
+s.text(cx + 116, cy + 142, "WROOM-32E", 16, "middle", "bold", "#263238")
+s.text(cx + 116, cy + 250, "FireBeetle 2", 15, "middle", "bold", "#fff")
+s.text(cx + 116, cy + 270, "ESP32-E", 13, "middle", "bold", "#fff")
+s.rect(cx + 82, cy + 380, 68, 34, "#b0b0b0", "#777", 8)          # USB-C
+s.rect(cx + 30, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 47, cy + 322, "RST", 12, "middle", "bold", "#fff")
+s.rect(cx + 168, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 185, cy + 322, "IO27", 12, "middle", "bold", "#fff")
+s.rect(cx + 150, cy + 278, 60, 26, "#fafafa", "#9e9e9e", 4); s.text(cx + 180, cy + 296, "電池", 11, "middle", "bold", "#555")
+for i in range(18):
+    s.add(f'<circle cx="{cx+12}" cy="{cy+24+i*20.5}" r="5" fill="#d4af37"/>')
+for i in range(14):
+    s.add(f'<circle cx="{cx+220}" cy="{cy+24+(i+4)*20.5}" r="5" fill="#d4af37"/>')
+s.text(cx + 116, cy - 40, "DFRobot FireBeetle 2 ESP32-E（DFR0654）", 15, "middle", "bold")
+s.text(cx + 116, cy - 22, "（図はイメージ。部品の位置は DFRobot の資料から）", 12, "middle", fill="#666")
+s.text(cx + 250, cy + 296, "← 使わない", 13, fill="#c62828", weight="bold")
+s.text(cx + 100, cy + 440, "USB-C", 13, "end", "bold", "#333")
+# ケーブル → 防水USBカプラー（ケースの壁）→ 外の USB 電源
+s.add(f'<path d="M{cx+116},{cy+412} L{cx+116},700" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+s.text(cx + 100, 650, "USB-C ケーブル（両側 USB-C、短いもの）", 14, "end", fill="#333")
+s.rect(330, 720, 620, 16, "#90a4ae", "#607d8b", 3, 1)
+s.text(316, 733, "ケースの壁", 13, "end", "bold", "#607d8b")
+s.rect(cx + 56, 700, 120, 56, "#455a64", "#263238", 8, 2)
+s.text(cx + 116, 726, "防水USBカプラー", 13, "middle", "bold", "#fff")
+s.text(cx + 116, 745, "USB-C メス-メス", 11, "middle", fill="#eceff1")
+s.add(f'<path d="M{cx+116},756 L{cx+116},800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>')
+s.text(cx + 132, 790, "ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ", 13, fill="#666")
+s.text(960, 690, "ケースの中", 13, "end", "bold", "#999"); s.text(960, 770, "ケースの外", 13, "end", "bold", "#999")
+for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-F", "電柵アラート（BLE）")]):
+    yy = 210 + i * 110
+    s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
+    s.text(90, yy + 30, n, 16, weight="bold"); s.text(90, yy + 54, d, 14, fill="#666")
+    s.add(f'<path d="M380,{yy+35} L{cx-20},{cy+150}" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+s.text(220, 190, "電線なし（電波で受信）", 15, "middle", "bold", "#1565c0")
+s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
+s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
+s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
+s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+# HPX-Solar で電圧も測るとき (TARO 2026-11-10、案2): micro USB の代わりに、ケースの中で USB-C メス基板 (データ対応) に受けて 4本に分ける
+s.rect(900, 380, 340, 290, "#fff3e0", "#e65100", 10, 2)
+s.text(1070, 408, "HPX-Solar で電圧も測るとき", 15, "middle", "bold", "#e65100")
+s.text(1070, 428, "（USB-C ケーブルの代わりに、中をこうする）", 11, "middle", fill="#666")
+s.rect(920, 450, 90, 120, "#37474f", "#222", 6, 2)
+s.text(965, 590, "USB-C メス基板", 11, "middle", "bold"); s.text(965, 604, "（データ対応）", 10, "middle", fill="#666")
+s.text(1070, 630, "防水USBカプラーから USB-C ケーブル", 11, "middle", fill="#555"); s.text(1070, 644, "（データ対応）で受ける", 11, "middle", fill="#555")
+for i, (n, to, c) in enumerate([("VBUS", "VCC", "red"), ("GND", "GND", "black"), ("D+", "IO39", "white"), ("D−", "IO36", "blue")]):
+    yy = 470 + i * 26
+    s.add(f'<circle cx="1010" cy="{yy}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(1000, yy + 4, n, 11, "end", "bold", "#fff")
+    s.wire([(1010, yy), (1110, yy)], c)
+    s.text(1118, yy + 5, "FireBeetle " + to, 12, weight="bold")
+s.text(1120, 590, "ジャンパー線 4本", 12, "middle", "bold", "#333")
+s.text(1070, 664, "設定「電圧の測り方」＝HPX-Solar、ディープスリープ", 11, "middle", "bold", "#c62828")
+CORE_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["DFRobot FireBeetle 2 ESP32-E（DFR0654）", "1", "本体（親機）。差し込み口は USB-C"],
+    ["USB-C ケーブル（両側 USB-C、短いもの）", "1", "ケースの中で、防水USBカプラーと FireBeetle をつなぐ"],
+    ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
+    ["（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル（データ対応）", "各1", "中の USB-C ケーブルの代わり。カプラーから受けて 4本に分ける"],
+    ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", "VBUS → VCC、GND → GND、D+ → IO39、D− → IO36"],
+]
+y = table(s, 60, 860, CORE_ROWS, [560, 50, 550], "部品表")
+CORE_NOTES = [
+    "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
+    "・HPX-Solar（小型ソーラー電源）から電気をもらい、電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分ける（試作中・実機未確認）。",
+    "  そのときは FireBeetle を VCC ピンから動かし（D+ は IO39 で読む。ファーム v1.25 から）、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。",
+    "・FireBeetle の電池コネクタ（PH2.0）は充電式リチウムイオン電池用。この版では何もつながない。",
+    "・USB 電源のときは、管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
+    "・FireBeetle には BOOT ボタンがありません。工場出荷リセットは、ファーム v1.25 なら基板のボタン（IO27）を起動してすぐ5秒長押し（v1.24 までは IO0 のピンを GND に5秒つなぐ）。",
+    "・ケースの中のケーブルは、両側 USB-C の短いもの（L型だと収まりやすい）。HPX-Solar のときはデータ対応のものにする。",
 ]
 notes(s, 60, y + 20, CORE_NOTES)
 s.save("HPX-Core_wiring.svg")
@@ -465,9 +555,100 @@ json.dump({"tables": [{"head": "部品の使いどころ", "rows": CORE_ROWS}], 
           open(os.path.join(OUT, "HPX-Core_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("ok")
 
+# ＋防水を ELEGOO・Freenove で作るとき (TARO 2026-11-13: どの版も Olimex・Freenove・ELEGOO で作れるように)
+# どちらも USB-C なので、防水USBカプラーと両側 USB-C のケーブルでつなぐ。HPX-Solar のときの 5V は ELEGOO=VIN、Freenove=5V。
+for kind, name, sub, fill, stroke, npin, v5 in (
+        ("elegoo", "ELEGOO ESP-32 開発ボード", "ESP-32（USB-C・CP2102）", "#212121", "#000", 15, "VIN"),
+        ("freenove", "Freenove ESP32 WROOM（FNK0090）", "ESP32 WROOM", "#0d47a1", "#062a63", 20, "5V")):
+    tag_ = "【ELEGOO で作るとき】" if kind == "elegoo" else "【Freenove で作るとき】"
+    short = "ELEGOO" if kind == "elegoo" else "Freenove"
+    s = S(1280, 1300)
+    title(s, f"{tag_}HPX-Core ＋防水の部品表と配線図", f"{name} ／ 電源 USB ／ ファーム HPX_Core v1.25")
+    cx, cy = 524, 170
+    s.rect(cx, cy, 232, 400, fill, stroke, 10, 3)
+    s.rect(cx + 46, cy + 8, 140, 170, "#b0bec5", "#78909c", 6, 2)
+    s.rect(cx + 46, cy + 8, 140, 46, "#212121", "#111", 4, 2)
+    s.text(cx + 116, cy + 36, "アンテナ", 12, "middle", "bold", "#eee")
+    s.text(cx + 116, cy + 110, "ESP32-", 16, "middle", "bold", "#263238")
+    s.text(cx + 116, cy + 132, "WROOM-32", 16, "middle", "bold", "#263238")
+    s.text(cx + 116, cy + 250, short, 15, "middle", "bold", "#fff")
+    s.text(cx + 116, cy + 270, sub, 12, "middle", "bold", "#fff")
+    s.rect(cx + 82, cy + 380, 68, 34, "#b0b0b0", "#777", 8)          # USB-C
+    s.rect(cx + 30, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 47, cy + 322, "EN", 12, "middle", "bold", "#fff")
+    s.rect(cx + 168, cy + 330, 34, 30, "#eceff1", "#555", 4); s.text(cx + 185, cy + 322, "BOOT", 12, "middle", "bold", "#fff")
+    gap = 370 / npin
+    for i in range(npin):
+        s.add(f'<circle cx="{cx+12}" cy="{cy+20+i*gap}" r="5" fill="#d4af37"/>')
+        s.add(f'<circle cx="{cx+220}" cy="{cy+20+i*gap}" r="5" fill="#d4af37"/>')
+    s.text(cx + 116, cy - 40, name, 15, "middle", "bold")
+    s.text(cx + 116, cy - 22, "（図はイメージ。ボタンの位置は製品によって違う）", 12, "middle", fill="#666")
+    s.text(cx + 100, cy + 440, "USB-C", 13, "end", "bold", "#333")
+    s.add(f'<path d="M{cx+116},{cy+412} L{cx+116},700" stroke="#424242" stroke-width="9" stroke-linecap="round"/>')
+    s.text(cx + 100, 650, "USB-C ケーブル（両側 USB-C、短いもの）", 14, "end", fill="#333")
+    s.rect(330, 720, 620, 16, "#90a4ae", "#607d8b", 3, 1)
+    s.text(316, 733, "ケースの壁", 13, "end", "bold", "#607d8b")
+    s.rect(cx + 56, 700, 120, 56, "#455a64", "#263238", 8, 2)
+    s.text(cx + 116, 726, "防水USBカプラー", 13, "middle", "bold", "#fff")
+    s.text(cx + 116, 745, "USB-C メス-メス", 11, "middle", fill="#eceff1")
+    s.add(f'<path d="M{cx+116},756 L{cx+116},800" stroke="#424242" stroke-width="9" stroke-linecap="round" stroke-dasharray="4 8"/>')
+    s.text(cx + 132, 790, "ケースの外：USB-C ケーブルで USB 電源（5V・1A 以上）へ", 13, fill="#666")
+    s.text(960, 690, "ケースの中", 13, "end", "bold", "#999"); s.text(960, 770, "ケースの外", 13, "end", "bold", "#999")
+    for i, (n, d) in enumerate([("HPX-W", "重量（BLE）"), ("HPX-TH", "温湿度（BLE）"), ("HPX-F", "電柵アラート（BLE）")]):
+        yy = 210 + i * 110
+        s.rect(70, yy, 300, 70, "#ffffff", "#c9c2a8", 10, 2)
+        s.text(90, yy + 30, n, 16, weight="bold"); s.text(90, yy + 54, d, 14, fill="#666")
+        s.add(f'<path d="M380,{yy+35} L{cx-20},{cy+150}" stroke="#1e88e5" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+    s.text(220, 190, "電線なし（電波で受信）", 15, "middle", "bold", "#1565c0")
+    s.rect(830, 270, 360, 84, "#ffffff", "#c9c2a8", 10, 2)
+    s.text(850, 305, "Wi-Fi ルーター → サーバー", 16, weight="bold")
+    s.text(850, 332, "Wi-Fi で送る（電線なし）", 14, fill="#666")
+    s.add(f'<path d="M{cx+250},{cy+150} L825,320" stroke="#43a047" stroke-width="2.5" stroke-dasharray="8 7" fill="none"/>')
+    s.rect(900, 380, 340, 290, "#fff3e0", "#e65100", 10, 2)
+    s.text(1070, 408, "HPX-Solar で電圧も測るとき", 15, "middle", "bold", "#e65100")
+    s.text(1070, 428, "（USB-C ケーブルの代わりに、中をこうする）", 11, "middle", fill="#666")
+    s.rect(920, 450, 90, 120, "#37474f", "#222", 6, 2)
+    s.text(965, 590, "USB-C メス基板", 11, "middle", "bold"); s.text(965, 604, "（データ対応）", 10, "middle", fill="#666")
+    s.text(1070, 630, "防水USBカプラーから USB-C ケーブル", 11, "middle", fill="#555"); s.text(1070, 644, "（データ対応）で受ける", 11, "middle", fill="#555")
+    for i, (n, to, c) in enumerate([("VBUS", v5, "red"), ("GND", "GND", "black"), ("D+", "IO39" if kind == "freenove" else "VN(IO39)", "white"), ("D−", "IO36" if kind == "freenove" else "VP(IO36)", "blue")]):
+        yy = 470 + i * 26
+        s.add(f'<circle cx="1010" cy="{yy}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(1000, yy + 4, n, 11, "end", "bold", "#fff")
+        s.wire([(1010, yy), (1110, yy)], c)
+        s.text(1118, yy + 5, short + " " + to, 12, weight="bold")
+    s.text(1120, 590, "ジャンパー線 4本", 12, "middle", "bold", "#333")
+    s.text(1070, 664, "設定「電圧の測り方」＝HPX-Solar", 11, "middle", "bold", "#c62828")
+    rows = [
+        ["部品", "数", "使うところ・メモ"],
+        [name, "1", "本体（親機）。差し込み口は USB-C"],
+        ["USB-C ケーブル（両側 USB-C、短いもの）", "1", f"ケースの中で、防水USBカプラーと {short} をつなぐ"],
+        ["防水USBカプラー（USB Type-C メス-メス）", "1", "ケースの壁に取り付ける。外から USB 電源をつなぐ"],
+        ["（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル（データ対応）", "各1", "中の USB-C ケーブルの代わり。カプラーから受けて 4本に分ける"],
+        ["（HPX-Solar のとき）ジャンパー線・ピンヘッダー", "4本", f"VBUS → {v5}、GND → GND、D+ → IO39、D− → IO36"],
+    ]
+    y = table(s, 60, 860, rows, [560, 50, 550], "部品表")
+    nts = [
+        "・HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。",
+        "・ファームは FireBeetle と同じ HPX_Core v1.25 を使う。管理画面の動作モードは「常時稼働（商用電源）」のまま使う。",
+        f"・{short} は省電力に向かないので家庭電源向き（USB の部品や電源の LED が眠っている間も電気を使う）。",
+        f"・HPX-Solar（小型ソーラー電源）から電気をもらって電圧も測るときは、右の枠のように 4本に分ける（試作中・実機未確認）。",
+        f"  {v5} から動かし、D+ は IO39、D− は IO36 で読む。ただし電池が早く減るので、HPX-Solar と組むなら FireBeetle か Olimex をすすめる。",
+        "・工場出荷リセットは、基板の BOOT ボタン（IO0）を起動してすぐ5秒長押し。",
+    ]
+    if kind == "freenove":
+        nts.append("・Freenove のピンの並びは Freenove の GitHub のピン配置図から。差す前に、基板の印字とピンの名前を見くらべる。")
+    notes(s, 60, y + 20, nts)
+    fn = f"HPX-Core_{kind}_wiring"
+    s.save(fn + ".svg")
+    _full = open(os.path.join(OUT, fn + ".svg"), encoding="utf-8").read()
+    open(os.path.join(OUT, fn + "_fig.svg"), "w", encoding="utf-8").write(
+        _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="820" viewBox="0 0 {s.w} 820"', 1))
+    json.dump({"tables": [{"head": "部品の使いどころ", "rows": rows}], "notes": [n.lstrip("・") for n in nts]},
+              open(os.path.join(OUT, fn + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok")
+
 # ------------------------------------------------------------------ HPX-Core 有線LAN (W5500)
 s = S(1280, 1770)
-title(s, "HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ファーム HPX_Core v1.20 以降 ／ 電源 USB")
+title(s, "【古い図・ファーム v1.24 まで】HPX-Core（親機）有線LAN（W5500）の部品表と配線図", "ELEGOO ESP-32 ／ v1.25 のピンは HPX-Core_LAN_elegoo_pcb.png ／ 電源 USB")
 # ESP32 ボード
 cx, cy = 150, 170
 s.rect(cx, cy, 300, 520, "#263238", "#111", 10, 3)
@@ -544,14 +725,14 @@ notes(s, 60, y + 20, [
     "・実機ではまだ確かめていません（ファーム v1.20 はコンパイルだけ確認済み）。",
     "・ピンは基板の裏の線が交わらないように選んだ（MISO＝D4、INT＝TX2、RST＝RX2）。",
 ])
-s.save("HPX-Core_LAN_wiring.svg")
+s.save("HPX-Core_LAN_elegoo_wiring.svg")
 print("ok LAN")
 
 # ------------------------------------------------------------------ HPX-Core ＋LTE-M (TARO 2026-11-09、2026-11-10 電源を HPX-Solar に分け、USB-C ケーブル1本でつなぐ)
 # Olimex ESP32-DEVKIT-LIPO ＋ M5Stamp CatM (SIM7080G)。電源は USB-C 口から (HPX-Solar か USB 充電器)。
-# Olimex は 5V ピンから。CatM の 5V は基板の P-MOSFET で入り切り (IO4 → 10kΩ → NPN → ゲート)。D+・D− は HPX-Solar の電池・パネルの電圧 (IO34・IO36)。
+# Olimex は 5V ピンから。CatM の 5V は基板の P-MOSFET で入り切り (IO4 → 10kΩ → NPN → ゲート)。D+・D− は HPX-Solar の電池・パネルの電圧 (IO39・IO36、v1.25)。
 s = S(1280, 1990)
-title(s, "HPX-Core（親機）＋LTE-M の線の対応図", "試作中 ／ 実機未確認 ／ ファーム v1.24")
+title(s, "【Olimex で作るとき】HPX-Core ＋LTE-M の線の対応図", "試作中 ／ 実機未確認 ／ ファーム v1.25")
 # HPX-Solar (別の機器)
 s.rect(50, 110, 230, 170, "#fff3e0", "#e65100", 10, 3)
 s.text(165, 150, "HPX-Solar", 18, "middle", "bold", "#e65100")
@@ -600,18 +781,18 @@ sw = {"IN": (620, 480), "G": (700, 480), "OUT": (760, 480), "CTL": (820, 560), "
 for k, (x, y) in sw.items():
     s.add(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
 gnd(690, 628)
-# Olimex
+# 開発ボード
 s.rect(940, 120, 240, 640, "#c62828", "#7f0000", 10, 3)
 s.rect(996, 106, 120, 40, "#212121", "#111", 4, 2)
 s.text(1056, 132, "アンテナ", 12, "middle", "bold", "#eee")
 s.text(1060, 450, "Olimex", 16, "middle", "bold", "#fff")
 s.text(1060, 472, "ESP32-DevKit-LiPo", 13, "middle", "bold", "#fff")
 ol = {}
-for n, y in (("D34", 180), ("D36", 230), ("D16", 330), ("D17", 370), ("D4", 560), ("5V", 680), ("GND", 720)):
+for n, y in (("D39", 180), ("D36", 230), ("D16", 330), ("D17", 370), ("D4", 560), ("5V", 680), ("GND", 720)):
     s.pad(940, y, n, "L"); ol[n] = (940, y)
 s.text(1060, 782, "micro USB は書き込みのときだけ。BAT は使わない", 12, "middle", fill="#666")
 # 線
-s.wire([us["D+"], ol["D34"]], "white")
+s.wire([us["D+"], ol["D39"]], "white")
 s.wire([us["D−"], ol["D36"]], "blue")
 s.wire([us["VBUS"], (520, 280), (520, 680), ol["5V"]], "red")
 s.wire([(520, 460), (620, 460), sw["IN"]], "red")
@@ -629,7 +810,7 @@ LTE_WIRES = [
     ["black", "USB-C の GND", "Olimex GND・CatM GND・スイッチの GND", "GND は全部共通（図の GND の印）"],
     ["orange", "5V スイッチの出口（P-MOSFET の D）", "M5Stamp CatM 5V", "送るときだけ 5V を入れる"],
     ["purple", "Olimex D4（GPIO4）", "5V スイッチ（10kΩ → NPN のベース）", "High で ON"],
-    ["white", "USB-C の D+", "Olimex D34（GPIO34）", "HPX-Solar の電池の電圧（1/2）"],
+    ["white", "USB-C の D+", "Olimex D39（GPIO39、v1.25）", "HPX-Solar の電池の電圧（1/2）"],
     ["blue", "USB-C の D−", "Olimex D36（GPIO36）", "HPX-Solar のパネルの電圧（1/6）"],
     ["yellow", "M5Stamp CatM TX", "Olimex D16（GPIO16、受信）", "初めは 115200bps、ファームで 921600bps に"],
     ["green", "M5Stamp CatM RX", "Olimex D17（GPIO17、送信）", ""],
@@ -646,7 +827,7 @@ LTE_ROWS = [
 ]
 y = table(s, 60, y + 60, LTE_ROWS, [560, 50, 550], "部品の使いどころ")
 LTE_NOTES = [
-    "・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.24（Wi-Fi・有線LAN の版と同じファイル）。",
+    "・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.25（Wi-Fi・有線LAN の版と同じファイル。D+ を IO39 で読むのは v1.25 から）。",
     "・動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。",
     "・USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。",
     "・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。",
@@ -655,6 +836,128 @@ LTE_NOTES = [
     "・線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。",
     "  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。",
     "・HPX-CAM の画像: Olimex が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。",
+    "・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。",
+    "・動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。",
+]
+notes(s, 60, y + 20, LTE_NOTES)
+s.save("HPX-Core_LTE_olimex_wiring.svg")
+_full = open(os.path.join(OUT, "HPX-Core_LTE_olimex_wiring.svg"), encoding="utf-8").read()
+_cut = 845
+open(os.path.join(OUT, "HPX-Core_LTE_olimex_wiring_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+json.dump({"tables": [{"head": "つなぐ線", "rows": LTE_WIRES}, {"head": "部品の使いどころ", "rows": LTE_ROWS}],
+           "notes": [n.lstrip("・") for n in LTE_NOTES]},
+          open(os.path.join(OUT, "HPX-Core_LTE_olimex_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok LTE")
+# ------------------------------------------------------------------ HPX-Core ＋LTE-M (TARO 2026-11-09、2026-11-10 電源を HPX-Solar に分け、USB-C ケーブル1本でつなぐ)
+# FireBeetle 2 ESP32-E ＋ M5Stamp CatM (SIM7080G)。TARO 2026-11-13 に変更。電源は USB-C 口から (HPX-Solar か USB 充電器)。
+# FireBeetle は VCC ピンから。CatM の 5V は基板の P-MOSFET で入り切り (IO4 → 10kΩ → NPN → ゲート)。D+・D− は HPX-Solar の電池・パネルの電圧 (IO39・IO36、v1.25)。
+s = S(1280, 1990)
+title(s, "HPX-Core（親機）＋LTE-M の線の対応図", "試作中 ／ 実機未確認 ／ FireBeetle 2 ESP32-E ／ ファーム v1.25")
+# HPX-Solar (別の機器)
+s.rect(50, 110, 230, 170, "#fff3e0", "#e65100", 10, 3)
+s.text(165, 150, "HPX-Solar", 18, "middle", "bold", "#e65100")
+s.text(165, 174, "（別の機器・別のケース）", 12, "middle", fill="#e65100")
+s.text(165, 200, "パネル・DFR0559・18650", 12, "middle", fill="#555")
+s.rect(200, 220, 70, 46, "#37474f", "#222", 6, 2)
+s.text(235, 248, "USB-C", 12, "middle", "bold", "#fff")
+s.text(165, 305, "または USB 充電器（家庭用）", 13, "middle", "bold", "#555")
+# USB-C ケーブル
+s.add('<path d="M270,243 C330,243 330,243 380,243" stroke="#424242" stroke-width="12" stroke-linecap="round"/>')
+s.text(325, 225, "USB-C ケーブル", 12, "middle", "bold", "#333")
+s.text(325, 275, "（データ対応）", 11, "middle", fill="#666")
+# HPX-Core 側の USB-C メス基板
+s.rect(380, 150, 90, 230, "#37474f", "#222", 8, 2)
+s.text(425, 400, "USB-C メス基板", 12, "middle", "bold"); s.text(425, 416, "（ケースの壁）", 11, "middle", fill="#666")
+us = {}
+for i, n in enumerate(["D+", "D−", "VBUS", "GND"]):
+    yy = 180 + i * 50
+    s.add(f'<circle cx="470" cy="{yy}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(456, yy + 5, n, 13, "end", "bold", "#fff"); us[n] = (470, yy)
+def gnd(x, y):   # GND の印
+    s.add(f'<path d="M{x},{y} L{x},{y+14} M{x-12},{y+14} L{x+12},{y+14} M{x-7},{y+20} L{x+7},{y+20} M{x-3},{y+26} L{x+3},{y+26}" stroke="#212121" stroke-width="3" fill="none"/>')
+    s.text(x + 16, y + 22, "GND", 11, fill="#333")
+# M5Stamp CatM
+s.rect(560, 300, 260, 130, "#eceff1", "#90a4ae", 10, 3)
+s.text(690, 350, "M5Stamp CatM", 16, "middle", "bold", "#263238")
+s.text(690, 372, "SIM7080G（LTE-M）・microSIM", 12, "middle", fill="#455a64")
+st = {}
+for n, x in (("5V", 760), ("GND", 700)):
+    s.add(f'<circle cx="{x}" cy="430" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(x, 416, n, 13, "middle", "bold", "#333"); st[n] = (x, 430)
+for n, y in (("TX", 330), ("RX", 370)):
+    s.add(f'<circle cx="820" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+    s.text(806, y + 5, n, 13, "end", "bold", "#333"); st[n] = (820, y)
+s.add('<path d="M600,300 L600,272" stroke="#212121" stroke-width="6" stroke-linecap="round"/>')
+s.text(612, 284, "付属アンテナ（ケースの外へ、SMA）", 12, fill="#666")
+# CatM の 5V スイッチ
+s.rect(560, 480, 260, 140, "#eceff1", "#90a4ae", 10, 2)
+s.text(690, 512, "CatM の 5V スイッチ（基板の上）", 13, "middle", "bold", "#263238")
+s.text(690, 532, "P-MOSFET: S＝5V、D＝CatM 5V", 11, "middle", fill="#37474f")
+s.text(690, 549, "ゲート → 100kΩ → 5V", 11, "middle", fill="#37474f")
+s.text(690, 566, "NPN: B ← 10kΩ ← IO4（100kΩ → GND）", 11, "middle", fill="#37474f")
+s.text(690, 583, "C → ゲート、E → GND", 11, "middle", fill="#37474f")
+s.text(690, 605, "IO4 が High で ON", 12, "middle", "bold", "#c62828")
+sw = {"IN": (620, 480), "G": (700, 480), "OUT": (760, 480), "CTL": (820, 560), "GND": (690, 620)}
+for k, (x, y) in sw.items():
+    s.add(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+gnd(690, 628)
+# 開発ボード
+s.rect(940, 120, 240, 640, "#37474f", "#102027", 10, 3)
+s.rect(1016, 106, 80, 40, "#b0b0b0", "#777", 8, 2)
+s.text(1056, 132, "USB-C", 12, "middle", "bold", "#eee")
+s.text(1060, 450, "FireBeetle 2", 16, "middle", "bold", "#fff")
+s.text(1060, 472, "ESP32-E", 13, "middle", "bold", "#fff")
+ol = {}
+for n, y in (("IO39", 180), ("IO36", 230), ("IO16", 330), ("IO17", 370), ("IO4", 560), ("VCC", 680), ("GND", 720)):
+    s.pad(940, y, n, "L"); ol[n] = (940, y)
+s.text(1060, 782, "USB-C は書き込みのときだけ。電池コネクタは使わない", 12, "middle", fill="#666")
+# 線
+s.wire([us["D+"], ol["IO39"]], "white")
+s.wire([us["D−"], ol["IO36"]], "blue")
+s.wire([us["VBUS"], (520, 280), (520, 680), ol["VCC"]], "red")
+s.wire([(520, 460), (620, 460), sw["IN"]], "red")
+s.dot(520, 460, "red")
+s.wire([sw["OUT"], st["5V"]], "orange")
+s.wire([st["GND"], sw["G"]], "black")
+s.wire([us["GND"], (500, 330), (500, 720), ol["GND"]], "black")
+s.wire([sw["CTL"], ol["IO4"]], "purple")
+s.wire([st["TX"], ol["IO16"]], "yellow")
+s.wire([st["RX"], ol["IO17"]], "green")
+s.text(640, 820, "センサ（HPX-W・HPX-TH・HPX-F）は、これまでどおり電波（BLE）で受け取ります。ルーターは使いません。", 15, "middle", "bold", "#1565c0")
+LTE_WIRES = [
+    ["線の色（例）", "どこから", "どこへ", "メモ"],
+    ["red", "USB-C の VBUS（5V）", "FireBeetle VCC と CatM の 5V スイッチ", "HPX-Solar か USB 充電器から"],
+    ["black", "USB-C の GND", "FireBeetle GND・CatM GND・スイッチの GND", "GND は全部共通（図の GND の印）"],
+    ["orange", "5V スイッチの出口（P-MOSFET の D）", "M5Stamp CatM 5V", "送るときだけ 5V を入れる"],
+    ["purple", "FireBeetle IO4（GPIO4）", "5V スイッチ（10kΩ → NPN のベース）", "High で ON"],
+    ["white", "USB-C の D+", "FireBeetle IO39（GPIO39、v1.25）", "HPX-Solar の電池の電圧（1/2）"],
+    ["blue", "USB-C の D−", "FireBeetle IO36（GPIO36）", "HPX-Solar のパネルの電圧（1/6）"],
+    ["yellow", "M5Stamp CatM TX", "FireBeetle IO16（GPIO16、受信）", "初めは 115200bps、ファームで 921600bps に"],
+    ["green", "M5Stamp CatM RX", "FireBeetle IO17（GPIO17、送信）", ""],
+]
+y = table(s, 60, 890, LTE_WIRES, [140, 330, 340, 350], "つなぐ線")
+LTE_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["DFRobot FireBeetle 2 ESP32-E（DFR0654）", "1", "本体（親機）。VCC ピンから動かす"],
+    ["M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル", "1", "LTE-M でサーバーへ送る。付属アンテナを使う（技適）"],
+    ["LTE-M 対応 SIM（microSIM）", "1", "例: SORACOM plan-D（LTE-M 対応）"],
+    ["USB-C メス基板（データ対応）", "1", "ケースの壁に付ける。HPX-Solar から USB-C ケーブルで"],
+    ["P-MOSFET・NPN トランジスタ・抵抗 100kΩ ×2・10kΩ ×1", "1式", "CatM の 5V スイッチ"],
+    ["電源: HPX-Solar（別の機器）または USB 充電器（5V・1A 以上）", "1", "HPX-Solar のときは電池とパネルの電圧も測れる"],
+]
+y = table(s, 60, y + 60, LTE_ROWS, [560, 50, 550], "部品の使いどころ")
+LTE_NOTES = [
+    "・試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.25（Wi-Fi・有線LAN の版と同じファイル。HPX-Solar の電池の電圧を IO39 で読むのは v1.25 から）。",
+    "・動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。",
+    "・USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。",
+    "・USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。",
+    "・ESP32 は眠る前に IO4 を Low にして固定し、CatM の 5V を切る（ファームで行う）。起動のときも 100kΩ で切れたまま。",
+    "・M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。",
+    "・線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。",
+    "  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。",
+    "・HPX-CAM の画像: FireBeetle が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。",
+    "・FireBeetle の VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。電池コネクタには何もつながない。",
     "・アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。",
     "・動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。",
 ]
@@ -791,9 +1094,9 @@ SOLAR_WIRES = [
 y = table(s, 60, 1040, SOLAR_WIRES, [140, 320, 300, 380], "中の線")
 OUT_ROWS = [
     ["USB-C の線", "HPX-Solar から", "HPX-Core（＋LTE-M・＋防水）で", "メモ"],
-    ["VBUS", "DFR0559 の 5V", "Olimex 5V（＋LTE-M は CatM の 5V スイッチへも）", "5V・1A まで"],
+    ["VBUS", "DFR0559 の 5V", "HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）", "5V・1A まで"],
     ["GND", "DFR0559 の GND", "GND", ""],
-    ["D+", "電池の電圧（1/2）", "GPIO34", "動作設定「電圧の測り方」で HPX-Solar を選ぶ"],
+    ["D+", "電池の電圧（1/2）", "GPIO39（v1.25。v1.24 までは GPIO34）", "動作設定「電圧の測り方」で HPX-Solar を選ぶ"],
     ["D−", "パネルの電圧（1/6）", "GPIO36", ""],
 ]
 y = table(s, 60, y + 60, OUT_ROWS, [120, 260, 420, 340], "HPX-Core への USB-C ケーブル（データ対応のもの）")
