@@ -13,7 +13,7 @@
 | HPX-Core ＋防水 | [HPX-Core_wiring.png](HPX-Core_wiring.png) | FireBeetle 2 ESP32-E (DFR0654)。外付けの配線なし。防水USBカプラー (USB-C) から短い USB-C ケーブルで給電。HPX-Solar で電圧も測るときは、中を USB-C メス基板 (データ対応) にして VBUS→VCC・GND・D+→IO39・D−→IO36 のジャンパー線4本に (試作中、ファーム v1.25) |
 | HPX-Core ＋有線LAN | [HPX-Core_LAN_pcb.png](HPX-Core_LAN_pcb.png) (6×8cm 基板に組む図) | FireBeetle 2 ESP32-E + W5500 (ACEIRMC): INT=IO25, CS=IO26, SCK=IO14, MOSI(MO)=IO13, MISO(MI)=IO19, RST=IO23, V=3V3, G=GND (6本とも FireBeetle の 18ピンの列。HPX_Core v1.25 以降、接続方法を「有線LAN」に)。USB 電源 |
 | HPX-Core ＋有線LAN＆ソーラーシステムチェック | [HPX-Core_LANV_pcb.png](HPX-Core_LANV_pcb.png) (6×8cm 基板、ケース PFF10-4-10W) | 「＋有線LAN」と同じ FireBeetle・W5500 に、パネル＋ → 100kΩ/8.2kΩ → IO39、バッテリー＋ → 100kΩ/15kΩ → IO35、BP5293-50 (バッテリー → 5V → VCC)、端子台 3極 (パネル＋・マイナス・バッテリー＋) を足す。USB ではなくバッテリーで動かす (HPX_Core v1.25 以降、動作設定で「バッテリー・パネルの電圧を測る」) |
-| HPX-Core ＋防水＆電池駆動 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | FireBeetle 2 ESP32-E の VCC (左の列のいちばん下) ← 単三リチウム×3 の＋、GND ← −。電池コネクタ (PH2.0) は使わない。動作モードはディープスリープ |
+| HPX-Core ＋防水＆電池駆動 | [HPX-Core_BAT_pcb.png](HPX-Core_BAT_pcb.png) (ケース用基板 PCB36-47 に組む図) | FireBeetle 2 ESP32-E の VCC (左の列のいちばん下) ← ショットキーダイオード 1N5819 (A16→A13) ← 単三リチウム×3 の＋、GND ← −。ダイオードは USB をつないだとき USB の約4.7V が電池へ流れ込むのを防ぎ、新品 5.4V を RT9080 の入力上限 5.5V から離すため (2026-11-14)。電池コネクタ (PH2.0) は使わない。動作モードはディープスリープ |
 | HPX-Core 基本モデル | [HPX-Core_BASIC_pcb.png](HPX-Core_BASIC_pcb.png) (6×8cm 基板に FireBeetle 2 ESP32-E をピンソケットで差すだけ。＋有線LAN から W5500 を外したもの、ケース PFF10-4-10W) | Wi-Fi ＋ USB 給電。線なし |
 | HPX-Core ＋LTE-M (試作中) | [HPX-Core_LTE_pcb.png](HPX-Core_LTE_pcb.png) (タカチ PCB72-95 に FireBeetle・M5Stamp CatM・CatM の 5V スイッチ、ケース タカチ OB10-17-5W)・[HPX-Core_LTE_wiring.png](HPX-Core_LTE_wiring.png) (線の対応) | FireBeetle 2 ESP32-E + M5Stamp CatM (SIM7080G、TX→IO16・RX←IO17)。電源はケースの壁の USB-C メス基板 (データ対応) から: VBUS → FireBeetle VCC と P-MOSFET (IO4 → 10kΩ → NPN → ゲート、ゲート 100kΩ → 5V、ベース 100kΩ → GND) → CatM 5V、D+ → IO39 (HPX-Solar の電池 1/2)、D− → IO36 (パネル 1/6)。HPX-Solar か USB 充電器につなぐ。ファーム HPX-Core v1.25 |
 | HPX-Solar (試作中、小型ソーラー電源) | [HPX-Solar_pcb.png](HPX-Solar_pcb.png) (タカチ PCB72-95 に入力 USB-C メス基板・DFR0559・18650 ホルダー×2・分圧の抵抗、ケース タカチ OB10-17-5W) | 10W/5V パネル (USB-C のまま入力 USB-C メス基板 (5.1kΩ 付き) で受けて DFR0559 SOLAR へ) + 18650×2 並列 (DFR0559 BAT へ)。出力 USB-C (データ対応、ケースの壁): VBUS=DFR0559 5V、GND、D+=電池＋ 100kΩ/100kΩ+0.1µF、D−=パネル＋ 100kΩ/20kΩ+0.1µF。HPX-Core ＋LTE-M・＋防水 へ USB-C ケーブル1本 |
@@ -42,7 +42,7 @@ ELEGOO ESP-32 の [基本モデル](HPX-Core_BASIC_elegoo_pcb.png)・[＋有線L
 - HPX-B: BP5293-50 の足の並び (データシートで確認)、PFF10-4-10W の内側の寸法と基板の留め方、使うソーラーコントローラーが共通マイナスか (違うとパネル電圧は測れない) は未確認
 - HPX-Core の有線LAN (W5500) は実機で確かめていません (ファーム v1.20 はコンパイルだけ確認)。ESP-32 の左右のピン列 10穴・W5500 の左右のピン列 8穴は計算で、実物では未確認。W5500 のピンがモジュールの上下のどこにあるかも未確認
 - HPX-CAM: XIAO ESP32S3 Sense の眠り中の電流、1N5819 を入れたときの Wi-Fi 送信中の電圧、カメラがケースのふたに届く高さ (電池ボックスの上に重ねる案) は未確認
-- HPX-Core 電池版: PCB36-47 の穴の数 (13×17) は見込み。FireBeetle 2 (60mm) は基板 (47mm) からはみ出すので、ケースに収まるか未確認。VCC の先の RT9080 の入力上限 (5.5V と覚えているが資料で未確認) と、新品の単三リチウム3本 (約5.4V) の余裕
+- HPX-Core 電池版: PCB36-47 の穴の数 (13×17) は見込み。FireBeetle 2 (60mm) は基板 (47mm) からはみ出すので、ケースに収まるか未確認。FireBeetle の回路図は DFRobot のサイトに届かず今回は見直せていない (VCC の先が RT9080 であること、USB→VCC のダイオード、電池コネクタへのスイッチは前の作業で読んだもの)。1N5819 を入れたときの Wi-Fi 送信中の電圧と、電池の終わりのほうでどれだけ早く止まるか
 - FireBeetle 2: VCC に外から 5V を入れたとき、基板の中のスイッチを通って電池コネクタ (充電の部品 TP4056) にも電圧がかかる (回路図から)。悪くないかは未確認。値段は未記入
 
 ケースに合わせたタカチ基板 (TNF39-70・TNF34-124・TNF44-69) の図は [case/](case/) にあります。
