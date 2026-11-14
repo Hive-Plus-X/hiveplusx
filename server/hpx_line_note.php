@@ -9,6 +9,8 @@
 //   ・巣箱が分からない・作業の時間が分からないときは、記録する前に LINE で聞き返す (番号や「30分」で答える)
 //   ・「取り消し」と送ると、LINE で最後に記録したものを消す (30分以内)
 //   ・「使い方」と送ると、送り方の例を返す
+//   ・手書きの記録の写真を送ると、AI が文字を読み取り、読み取った文と記録する内容を返す。「OK」と送るまで記録しない
+//     (直すところは文で送る → 読み直す。読みにくかった所は一覧にして確かめてもらう。記録したメモには元の写真を付ける)
 //   ・書き先は、ふつうの画面と同じ (蜂場の持ち主のフォルダ)。記録には via = 'line' を付ける
 //
 //   設定は config.php の $HPX_AI_KEY (Claude の API キー)。空なら、この機能は動かない (いままでどおり)。
@@ -22,6 +24,8 @@ require_once __DIR__ . '/hpx_ai_note.php';
 const LN_PENDING_MIN = 30;    // 聞き返したことに答えられる時間 (分)
 const LN_UNDO_MIN = 30;       // 「取り消し」できる時間 (分)
 const LN_ASK_MAX = 20;        // 聞き返すときに並べる候補の数の上限
+const LN_PHOTO_MIN = 60;      // 写真の読み取りを「OK」で記録できる時間 (分)
+const LN_OK_WORDS = ['ok', 'オーケー', 'おけ', 'はい', 'いいよ', 'いいです', 'よい', '良い', 'よし', '記録', '記録する', '記録して', '保存', 'お願いします', 'おねがいします', '👍'];
 
 function ln_state_path(): string { return data_dir() . '/line_note_state.json'; }
 
@@ -92,13 +96,15 @@ function ln_minutes_of(string $t): int
     return 0;
 }
 
-function ln_saved_text(array $site, array $recs, string $note): string
+// 記録の一覧 (「・日付 対象 / 内容」を並べた文)。対象や時間がまだ分からないものは、そう書く
+function ln_recs_text(array $site, array $recs): string
 {
-    $o = "HPX-note に記録しました。\n";
+    $o = '';
     foreach ($recs as $r) {
+        $tl = $r['a'] !== null ? target_label($site, $r['a'], $r['h']) : '(蜂場・巣箱はあとで聞きます)';
         if ($r['kind'] === 'task') {
             $due = (string)($r['due'] ?? '');
-            $o .= "\n・" . target_label($site, $r['a'], $r['h']) . "\n  タスク「" . (string)$r['title'] . '」'
+            $o .= "\n・" . $tl . "\n  タスク「" . (string)$r['title'] . '」'
                 . ($due !== '' ? ' 期限 ' . date('n/j', strtotime($due)) . '(' . ['日', '月', '火', '水', '木', '金', '土'][(int)date('w', strtotime($due))] . ')' : ' 期限なし')
                 . ($r['workers'] ? ' 担当 ' . implode('・', array_map('user_name', $r['workers'])) : '')
                 . (!empty($r['ttags']) ? "\n  " . implode('・', $r['ttags']) : '');
@@ -106,9 +112,9 @@ function ln_saved_text(array $site, array $recs, string $note): string
             continue;
         }
         $d = date('n/j', strtotime($r['date']));
-        $o .= "\n・{$d} " . target_label($site, $r['a'], $r['h']) . "\n  ";
+        $o .= "\n・{$d} " . $tl . "\n  ";
         if ($r['kind'] === 'work') {
-            $o .= '作業記録「' . $r['wtype'] . '」' . ln_hm($r['min']) . ($r['workers'] ? ' ' . implode('・', array_map('user_name', $r['workers'])) : '') . ($r['honey'] !== null && mb_strpos($r['wtype'], '採蜜') !== false ? ' 採蜜 ' . $r['honey'] . 'kg' : '');
+            $o .= '作業記録「' . $r['wtype'] . '」' . ($r['min'] > 0 ? ln_hm($r['min']) : ' (時間はあとで聞きます)') . ($r['workers'] ? ' ' . implode('・', array_map('user_name', $r['workers'])) : '') . ($r['honey'] !== null && mb_strpos($r['wtype'], '採蜜') !== false ? ' 採蜜 ' . $r['honey'] . 'kg' : '');
         } else {
             $o .= 'メモ' . ($r['type'] !== '' ? '「' . $r['type'] . '」' : '') . ($r['type'] === '内検' && $r['min'] > 0 ? ' (作業記録も ' . ln_hm($r['min']) . ')' : '');
             $chips = memo_chips($r);
@@ -118,6 +124,13 @@ function ln_saved_text(array $site, array $recs, string $note): string
         }
         if ($r['text'] !== '') $o .= "\n  " . mb_strimwidth($r['text'], 0, 120, '…');
     }
+    return $o;
+}
+
+function ln_saved_text(array $site, array $recs, string $note, bool $photo = false): string
+{
+    $o = "HPX-note に記録しました。\n" . ln_recs_text($site, $recs);
+    if ($photo && in_array('memo', array_column($recs, 'kind'), true)) $o .= "\n\n(メモには、送った写真も付けました)";
     if ($note !== '') $o .= "\n\n(" . $note . ')';
     $o .= "\n\n違っていたら「取り消し」と送ってください (" . LN_UNDO_MIN . "分以内)。画面で直すこともできます。\n" . site_url('memo.php');
     return $o;
@@ -127,6 +140,7 @@ function ln_help(): string
 {
     return "LINE で送った文を、HPX-note のメモ・作業記録・タスクにします。\n話し言葉のままで大丈夫です (スマホのキーボードのマイクで声を文字にして送れます)。\n\n"
         . "送り方の例:\n・山の蜂場の1番、女王いた、卵あり、王台なし、30分\n・きのう里の蜂場で給餌、糖液を全部の巣箱に、1時間\n・2番の巣箱の前にスズメバチが10匹くらい\n・来週の土曜までに山の蜂場に継箱を用意、鈴木さん担当 (タスク)\n\n"
+        . "手書きの記録 (ノートや記録用紙) は、写真を送ってください。文字を読み取って、記録する前に確かめてもらいます。\n\n"
         . "蜂場や巣箱が分からないときは聞き返します。\n「取り消し」… 最後に記録したものを消す (" . LN_UNDO_MIN . "分以内)\n「使い方」… この説明\n\n"
         . "記録した内容は HPX-note で見られます。\n" . site_url('memo.php');
 }
@@ -153,7 +167,28 @@ function line_note_handle(string $to, string $raw): string
     }
     if ($pending && in_array($cmd, ['やめる', 'やめ', 'キャンセル', '中止', 'いいえ'], true)) {
         ln_state_set($to, function (array $s) { unset($s['pending'], $s['pexp']); return $s; });
+        if (!empty($pending['photo'])) ln_photo_clear($UID);
         return '記録をやめました。';
+    }
+
+    // 写真の読み取りを確かめているところ: 「OK」で記録、それ以外の文は直しとして読み直す
+    if ($pending && !empty($pending['confirm'])) {
+        if (in_array(mb_strtolower($cmd), LN_OK_WORDS, true)) {
+            $recs = (array)$pending['recs'];
+            return ln_finish($to, $site, $recs, (string)($pending['note'] ?? ''), ln_photo_src((string)$pending['text'], (string)($pending['fix'] ?? '')),
+                (array)$pending['orig'], (string)($pending['fix'] ?? '') !== '', true);
+        }
+        if (!ai_quota_use($UID)) return "今日 AI で読み取れる回数 (" . ai_day_max() . "回) を使い切りました。「OK」でこのまま記録するか、画面で直してください。\n" . site_url('ai_note.php?photo=line');
+        $fix = trim((string)($pending['fix'] ?? '') . "\n" . mb_substr($text, 0, 500));
+        [$recs, , $note] = ln_parse($site, ln_photo_src((string)$pending['text'], $fix));
+        if ($recs === null) return "ごめんなさい、いま読み直せませんでした。少し待ってもう一度送るか、画面で直してください。\n" . site_url('ai_note.php?photo=line');
+        if (!$recs) return "直した内容では、記録にするものが見つかりませんでした。もう一度、直すところを送ってください。\nやめるときは「やめる」と送ってください。";
+        ln_state_set($to, function (array $s) use ($recs, $note, $fix) {
+            $s['pending'] = array_merge((array)$s['pending'], ['recs' => $recs, 'note' => $note, 'fix' => $fix]);
+            $s['pexp'] = time() + LN_PHOTO_MIN * 60;
+            return $s;
+        });
+        return ln_photo_confirm($site, $recs, $note, (string)$pending['text'], [], true);
     }
 
     // 聞き返したことへの答え
@@ -178,7 +213,7 @@ function line_note_handle(string $to, string $raw): string
                 $ok = true;
             }
         }
-        if ($ok) return ln_finish($to, $site, $recs, (string)($pending['note'] ?? ''), (string)($pending['src'] ?? ''), is_array($pending['orig'] ?? null) ? $pending['orig'] : null, true);
+        if ($ok) return ln_finish($to, $site, $recs, (string)($pending['note'] ?? ''), (string)($pending['src'] ?? ''), is_array($pending['orig'] ?? null) ? $pending['orig'] : null, true, !empty($pending['photo']));
         if (preg_match('/^\d{1,2}$/', mb_convert_kana($cmd, 'n')) || ($what === 'minutes' && mb_strlen($cmd) <= 8)) {
             return $what === 'target' ? '一覧の番号で答えてください。やめるときは「やめる」と送ってください。' : '「30分」のように時間で答えてください。時間なしなら「メモ」、やめるときは「やめる」と送ってください。';
         }
@@ -206,19 +241,21 @@ function line_note_handle(string $to, string $raw): string
 
 // 決まっていないことがあれば聞き返し、全部決まれば書いて返事をする
 //   $src・$orig: 送られた文と AI が読み取った記録 (聞き返しに答えてもらったら、直した例として残す)
-function ln_finish(string $to, array $site, array $recs, string $note, string $src = '', ?array $orig = null, bool $asked = false): string
+//   $photo: 手書きの記録の写真から読んだもの (記録したメモに写真を付けて、写真を片づける)
+function ln_finish(string $to, array $site, array $recs, string $note, string $src = '', ?array $orig = null, bool $asked = false, bool $photo = false): string
 {
     $need = ln_need($recs);
     if ($need) {
         [$cand, $msg] = ln_ask($site, $recs, $need);
-        ln_state_set($to, function (array $s) use ($recs, $need, $cand, $note, $src, $orig) {
-            $s['pending'] = ['recs' => $recs, 'need' => $need, 'cand' => $cand, 'note' => $note, 'src' => $src, 'orig' => $orig ?? $recs];
+        ln_state_set($to, function (array $s) use ($recs, $need, $cand, $note, $src, $orig, $photo) {
+            $s['pending'] = ['recs' => $recs, 'need' => $need, 'cand' => $cand, 'note' => $note, 'src' => $src, 'orig' => $orig ?? $recs, 'photo' => $photo];
             $s['pexp'] = time() + LN_PENDING_MIN * 60;
             return $s;
         });
         return $msg;
     }
-    $done = ln_save($site, $recs);
+    $done = ln_save($site, $recs, 'line', $photo ? ln_photo_path($GLOBALS['UID']) : '');
+    if ($photo) ln_photo_clear($GLOBALS['UID']);
     if ($asked && $orig !== null) ln_learn_add($GLOBALS['UID'], $site, $src, $orig, $recs, 'line');
     ln_state_set($to, function (array $s) use ($done) {
         unset($s['pending'], $s['pexp']);
@@ -226,5 +263,63 @@ function ln_finish(string $to, array $site, array $recs, string $note, string $s
         $s['lexp'] = time() + LN_UNDO_MIN * 60;
         return $s;
     });
-    return ln_saved_text($site, $recs, $note);
+    return ln_saved_text($site, $recs, $note, $photo);
+}
+
+// ====================================================================
+// 手書きの記録の写真
+// ====================================================================
+
+// 読み取った結果を見せて、確かめてもらう文
+function ln_photo_confirm(array $site, array $recs, string $note, string $text, array $unsure, bool $again = false): string
+{
+    $o = ($again ? "直したところを入れて、読み直しました。まだ記録していません。\n" : "手書きの記録を読み取りました。まだ記録していません。\n");
+    if (!$again) {
+        $o .= "\n■ 写真から読み取った文\n" . mb_strimwidth($text, 0, 1600, '…') . "\n";
+        if ($unsure) $o .= "\n■ 読みにくかった所 (〔 〕? の所。確かめてください)\n・" . implode("\n・", array_slice(ln_unsure_lines($unsure), 0, 15)) . "\n";
+    }
+    $o .= "\n■ 記録する内容 (" . count($recs) . "件)" . ln_recs_text($site, $recs) . "\n";
+    if ($note !== '') $o .= "\n(" . $note . ")\n";
+    return $o . "\n合っていれば「OK」と送ってください。\n"
+        . "違うところは、正しく書いて送ってください (例「3番ではなく5番」「王台はなし」)。\n"
+        . "やめるときは「やめる」。\n"
+        . "画面でくわしく直すときは: " . site_url('ai_note.php?photo=line');
+}
+
+// 写真を1枚受け取って返事の文を返す
+function line_photo_handle(string $to, string $messageId): string
+{
+    global $UID;
+    $site = site_load();
+    if (!$site['apiaries']) return "まだ蜂場が登録されていません。HPX-note で蜂場と巣箱を登録してから送ってください。\n" . site_url('apiary.php');
+    if (!ai_quota_use($UID)) return "今日 AI で記録できる回数 (" . ai_day_max() . "回) を使い切りました。HPX-note の画面で入力してください。\n" . site_url('memo.php');
+    $tmp = data_dir() . '/line_photo_' . bin2hex(random_bytes(4)) . '.tmp';
+    $ok = line_content($messageId, $tmp) && ln_photo_store($UID, $tmp);
+    @unlink($tmp);
+    if (!$ok) return "写真を受け取れませんでした。もう一度送ってください (大きすぎる写真は受け取れません)。";
+    $st = ln_state($to);
+    $was = is_array($st['pending'] ?? null) && (int)($st['pexp'] ?? 0) > time();
+    ln_state_set($to, function (array $s) { unset($s['pending'], $s['pexp']); return $s; });   // 前の聞き返しはやめる
+
+    [$ph, $err] = ln_photo_read($site, $UID);
+    if ($ph === null) return "ごめんなさい、いま写真を読み取れませんでした。少し待ってもう一度送ってください。";
+    $pre = $was ? "(前の確認はやめて、新しい写真を読みました)\n\n" : '';
+    if ($ph['text'] === '') {
+        ln_photo_clear($UID);
+        return $pre . "写真から手書きの記録が読み取れませんでした。" . ($ph['note'] !== '' ? "\n(" . $ph['note'] . ")" : '')
+            . "\n明るい所で、紙全体がまっすぐ大きく写るように撮って、もう一度送ってください。";
+    }
+    [$recs, , $note] = ln_parse($site, ln_photo_src($ph['text']));
+    $note = trim($ph['note'] . ($ph['note'] !== '' && $note !== '' ? ' / ' : '') . $note);
+    if ($recs === null || !$recs) {
+        return $pre . "写真から読み取った文:\n" . mb_strimwidth($ph['text'], 0, 1600, '…') . "\n\n"
+            . ($recs === null ? "ごめんなさい、記録に分けるところでうまくいきませんでした。" : "この文から、記録にする内容が見つかりませんでした。")
+            . "\n画面で文を直してから読み取れます: " . site_url('ai_note.php?photo=line');
+    }
+    ln_state_set($to, function (array $s) use ($recs, $note, $ph) {
+        $s['pending'] = ['confirm' => true, 'photo' => true, 'recs' => $recs, 'orig' => $recs, 'note' => $note, 'text' => $ph['text'], 'fix' => ''];
+        $s['pexp'] = time() + LN_PHOTO_MIN * 60;
+        return $s;
+    });
+    return $pre . ln_photo_confirm($site, $recs, $note, $ph['text'], $ph['unsure']);
 }
