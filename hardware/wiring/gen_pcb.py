@@ -864,44 +864,69 @@ finish(s, y, [
 # ================================================================== HPX-Core ＋防水＆電池駆動（タカチ PCB36-47）
 # TARO 2026-11-08: PCB36-47 に Olimex ESP32-DEVKIT-LIPO を載せ、単三リチウム3本（ケース WH145-25-M3 の電池ボックス）から 5V 端子へ。
 # Olimex のピンの並びは公式資料（GitHub OLIMEX/ESP32-DevKit-LiPo Rev.D、ESP32-DevKitC と同じ）。左右のピン列は 25.4mm（10穴）離れている。
-# PCB36-47 は 36×47mm（取付穴 30×41mm）。穴は 13×17（A〜M × 1〜17）と見込んで描いた（実物で未確認）。
-OX, OY = 520, 420
+# TARO 2026-11-14: 基板を横に置く（47×36mm、穴 17×13 の見込み）。Olimex は縦（USB が下）。
+#   穴の名前は「行の文字（下から A〜M）＋列の数字（左から 1〜17）」。Olimex の 5V（左の列のいちばん下）を A4 に置く。
+#   右の取付穴2つでケースに留める。Olimex の上（ピン1〜6）は基板の上へはみ出す。
+OX, OY = 430, 480
 s = S(1500, 3000)
-title(s, "【Olimex で作るとき】HPX-Core ＋防水＆電池駆動の配線図", "PCB36-47 ／ Olimex ESP32-DEVKIT-LIPO ／ 単三リチウム ×3 → 5V 端子")
-board(s, 13, 17, " ")
-s.text(OX + 6 * P, 120, "ケース用基板 PCB36-47（36×47mm）を縦に置いたところ。穴 13×17 は見込み、四隅は取付穴", 15, "middle", "bold", "#5d4520")
-for c, r in ((0, 0), (12, 0), (0, 16), (12, 16)):   # 四隅は取付穴（その位置の穴は使わない）
+title(s, "【Olimex で作るとき】HPX-Core ＋防水＆電池駆動の配線図", "PCB36-47（横置き）／ Olimex ESP32-DEVKIT-LIPO（縦）／ 単三リチウム ×3 → 5V 端子")
+BC, BR = 17, 13          # 列（横）17・行（縦）13
+def bh(name):            # "A4" → (列, 図の行)。行の文字 A がいちばん下
+    return (int(name[1:]) - 1, BR - 1 - (ord(name[0]) - 65))
+def bname(c, r):
+    return f"{chr(65 + BR - 1 - r)}{c + 1}"
+board(s, BC, BR, " ")
+# board() が付けた見出し（上の文字・右の数字）を、この図の呼び方（左に行の文字・下に列の数字）に描き直す
+REC["board"] = [e for e in REC["board"] if not e.startswith("<text")]
+s.items = [e for e in s.items if not (e.startswith("<text") and float(_re.search(r'y="([-\d.]+)"', e).group(1)) > 100)]
+for r in range(BR):
+    s.text(OX - 48, OY + r * P + 5, chr(65 + BR - 1 - r), 13, "end", fill="#8d6e3f", weight="bold")
+for c in range(BC):
+    s.text(OX + c * P, OY + (BR - 1) * P + 56, str(c + 1), 13, "middle", fill="#8d6e3f", weight="bold")
+REC["board"] = REC["board"] + s.items[-(BR + BC):]
+s.text(OX + 8 * P, OY - 300, "ケース用基板 PCB36-47（47×36mm）を横に置いたところ。穴 17×13 は見込み、四隅は取付穴（右の2つでケースに留める）", 15, "middle", "bold", "#5d4520")
+i0 = len(s.items)
+for c, r in ((0, 0), (16, 0), (0, 12), (16, 12)):   # 四隅は取付穴（その位置の穴は使わない）
     x, y = H(c, r)
-    s.add(f'<circle cx="{x}" cy="{y}" r="15" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2"/>')
-    s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#c8a165" stroke="#8d6e3f" stroke-width="1.5"/>')
-REC["board"] = REC["board"] + s.items[-8:]
+    use = c == 16
+    s.add(f'<circle cx="{x}" cy="{y}" r="15" fill="#fffdf6" stroke="{"#1565c0" if use else "#8d6e3f"}" stroke-width="{3 if use else 2}"/>')
+    s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="{"#90caf9" if use else "#c8a165"}" stroke="#8d6e3f" stroke-width="1.5"/>')
+REC["board"] = REC["board"] + s.items[i0:]
+for r in (0, 12):
+    x, y = H(16, r)
+    s.text(x + 60, y + 5, "ネジでケースに留める", 13, "start", "bold", "#1565c0")
+    x, y = H(0, r)
+    s.text(x - 76, y + 5, "使わない", 12, "end", "bold", "#8d6e3f")
 
-# Olimex（USB が下）。左の列 B（EXT1）、右の列 L（EXT2）。ピン19（5V）を 16 行に置く → ピン1〜3 は基板の上の外にはみ出す
+# Olimex（縦、USB が下）。左の列は 4 列目、右の列は 14 列目。ピン19（5V）を A4 に置く → ピン1〜6 は基板の上の外にはみ出す
 OL = ["3V3", "EN", "IO36", "IO39", "IO34", "IO35", "IO32", "IO33", "IO25", "IO26", "IO27", "IO14", "IO12", "GND", "IO13", "IO9", "IO10", "IO11", "5V"]
 OR = ["GND", "IO23", "IO22", "IO1", "IO3", "IO21", "GND", "IO19", "IO18", "IO5", "IO17", "IO16", "IO4", "IO0", "IO2", "IO15", "IO8", "IO7", "IO6"]
-x1, y1, x2, y2 = module(0.5, 11.5, R(16) - 18.5, R(16) + 0.5, "#c62828", "#7f0000", "Olimex")
-s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y1-34}" width="160" height="60" rx="4" fill="#212121" fill-opacity="0.85"/>')
-s.text((x1 + x2) / 2, y1 - 8, "アンテナ（上）", 12, "middle", "bold", "#eee", layer=s.top)
-s.top.append(f'<rect x="{(x1+x2)/2-70}" y="{y1+30}" width="140" height="160" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
-s.text((x1 + x2) / 2, y1 + 105, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 125, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 250, "Olimex", 16, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 272, "ESP32-DEVKIT-LIPO", 14, "middle", "bold", "#fff", layer=s.top)
-s.text((x1 + x2) / 2, y1 + 294, "ピンソケット 16ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
-ux = (x1 + x2) / 2
-s.top.append(f'<rect x="{ux-30}" y="{y2-26}" width="60" height="40" rx="6" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
-s.text(ux, y2 + 40, "micro USB（下向き。電池版では使わない）", 13, "middle", "bold", "#333", layer=s.top)
+c5, r5 = bh("A4")
+rtop = r5 - 18                          # ピン1 の図の行（負＝基板の外）
+x1, y1, x2, y2 = module(c5 - 0.5, c5 + 10.5, rtop - 0.5, r5 + 0.5, "#c62828", "#7f0000", "Olimex")
+cx = (x1 + x2) / 2
+s.top.append(f'<rect x="{cx-80}" y="{y1-34}" width="160" height="60" rx="4" fill="#212121" fill-opacity="0.85"/>')
+s.text(cx, y1 - 8, "アンテナ（上）", 12, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{cx-70}" y="{y1+30}" width="140" height="160" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c"/>')
+s.text(cx, y1 + 105, "ESP32-", 15, "middle", "bold", "#263238", layer=s.top)
+s.text(cx, y1 + 125, "WROOM-32E", 15, "middle", "bold", "#263238", layer=s.top)
+s.text(cx, y1 + 250, "Olimex", 16, "middle", "bold", "#fff", layer=s.top)
+s.text(cx, y1 + 272, "ESP32-DEVKIT-LIPO", 14, "middle", "bold", "#fff", layer=s.top)
+s.text(cx, y1 + 294, "ピンソケット 13ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+yedge = OY - 26 - 6
+s.top.append(f'<path d="M{x1-150},{yedge-40} L{x1-30},{yedge-40} L{x1-30},{yedge} L{x1-6},{yedge}" fill="none" stroke="#5d4520" stroke-width="2"/>')
+s.text(x1 - 36, yedge - 66, "ここから上は基板の外", 12, "end", "bold", "#5d4520", layer=s.top)
+s.text(x1 - 36, yedge - 48, "（ピン1〜6・約17mm はみ出す）", 12, "end", "bold", "#5d4520", layer=s.top)
+s.top.append(f'<rect x="{cx-30}" y="{y2-26}" width="60" height="40" rx="6" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+s.text(cx, y2 + 64, "micro USB（下向き。電池版では使わない）", 13, "middle", "bold", "#333", layer=s.top)
 bx = x1 + (151.384 - 129.54) / 2.54 * P
 s.top.append(f'<rect x="{bx-26}" y="{y2-44}" width="52" height="40" rx="4" fill="#fafafa" stroke="#9e9e9e" stroke-width="2"/>')
 s.text(bx, y2 - 52, "BAT", 12, "middle", "bold", "#fff", layer=s.top)
-s.text(bx + 40, y2 + 84, "↑ BAT コネクタ：乾電池はつながない", 13, "middle", "bold", "#c62828", layer=s.top)
-# ピン（1〜3 は基板の外、4〜19 がソケットに入る）
+s.text(bx + 60, y2 + 88, "↑ BAT コネクタ：乾電池はつながない", 13, "middle", "bold", "#c62828", layer=s.top)
 def opins(col, side):
     names = OL if side == "L" else OR
-    used = {"5V", "GND"} if side == "L" else set()
-    out = {}
     for i, n in enumerate(names):
-        r = R(16) - 18 + i
+        r = rtop + i
         x, y = H(col, r)
         on = side == "L" and (n == "5V" or (n == "GND" and i == 13))
         if r >= 0:
@@ -909,13 +934,13 @@ def opins(col, side):
         s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{"#d4af37" if on else "#9e9e9e"}" stroke="#5d4520" stroke-width="2"/>')
         dx = 14 if side == "L" else -14
         s.text(x + dx, y + 5, n, 12, "start" if side == "L" else "end", "bold", "#fff" if on else "#eee", layer=s.top)
-        out[(n, i)] = (col, r)
-    return out
-opins(1, "L"); opins(11, "R")
+opins(c5, "L"); opins(c5 + 10, "R")
+P5V, PGND = "A4", bname(c5, rtop + 13)        # 5V（ピン19）と GND（左の列のピン14）
+LP, LM = "A3", bname(c5 - 1, rtop + 13)       # 電池の線をはんだ付けする穴（Olimex の左どなり）
 
-# 電池ボックス（ケース WH145-25-M3 の単3×3）。＋の線を A16、−の線を A11 に直接はんだ付けし、裏で B16（5V）・B11（GND）へ
-tp, tm = H(0, R(16)), H(0, R(11))
-bx0, by0 = 60, OY + 17 * P + 110
+# 電池ボックス（ケース WH145-25-M3 の単3×3）。＋の線を A3、−の線を F3 に直接はんだ付けし、裏で A4（5V）・F4（GND）へ
+tp, tm = H(*bh(LP)), H(*bh(LM))
+bx0, by0 = 60, OY + (BR - 1) * P + 170
 s.rect(bx0, by0, 440, 80, "#455a64", "#263238", 10, 3)
 for i in range(3):
     s.rect(bx0 + 18 + i * 140, by0 + 18, 124, 44, "#c0ca33", "#827717", 20, 2)
@@ -923,32 +948,35 @@ for i in range(3):
 s.text(bx0 + 426, by0 + 24, "＋", 16, "end", "bold", "#fff")
 s.text(bx0 + 14, by0 + 24, "−", 18, "start", "bold", "#fff")
 s.text(bx0 + 220, by0 + 106, "ケース WH145-25-M3 の電池ボックス ＋ 単三リチウム電池 ×3（直列 約4.5〜5.4V）", 14, "middle", "bold")
-s.wire([(bx0 + 440, by0 + 40), (bx0 + 470, by0 + 40), (bx0 + 470, tp[1]), tp], "red")
+s.wire([(bx0 + 440, by0 + 40), (bx0 + 470, by0 + 40), (bx0 + 470, tp[1] + 70), (tp[0], tp[1] + 70), tp], "red")
 s.wire([(bx0, by0 + 40), (bx0 - 30, by0 + 40), (bx0 - 30, tm[1]), tm], "black")
-solder_mark(s, 0, R(16)); solder_mark(s, 0, R(11))
-w("red", "A16", "B16")      # 電池＋ → 5V（ピン19）
-w("black", "A11", "B11")    # 電池− → GND（左の列のピン14）
+solder_mark(s, *bh(LP)); solder_mark(s, *bh(LM))
+wireh(s, [bh(LP), bh(P5V)], "red")      # 電池＋ → 5V（ピン19）
+wireh(s, [bh(LM), bh(PGND)], "black")   # 電池− → GND（左の列のピン14）
 check_back("HPX-Core_BAT_olimex_pcb.svg")
-yb = backview(s, by0 + 140, OX + (NC - 1) * P / 2, y1 - 90, OY + (NR - 1) * P + 36)
+yb = backview(s, by0 + 140, OX + (BC - 1) * P / 2, y1 - 90, OY + (BR - 1) * P + 70)
 y = table(s, 60, yb + 40, [
     ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-    ["red", "電池ボックスの＋の線（A16 に直接はんだ付け）", "裏で A16 → B16（Olimex の 5V、左の列のいちばん下）", "電池の＋を 5V 端子へ"],
-    ["black", "電池ボックスの−の線（A11 に直接はんだ付け）", "裏で A11 → B11（Olimex の GND、左の列の下から6本目）", "電池の−を GND へ"],
-], [100, 400, 460, 240], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+    ["red", f"電池ボックスの＋の線（{LP} に直接はんだ付け）", f"裏で {LP} → {P5V}（Olimex の 5V、左の列のいちばん下）", "電池の＋を 5V 端子へ"],
+    ["black", f"電池ボックスの−の線（{LM} に直接はんだ付け）", f"裏で {LM} → {PGND}（Olimex の GND、左の列の下から6本目）", "電池の−を GND へ"],
+], [100, 400, 460, 240], "つなぐ線（穴の位置は 行の文字＋列の数字。行は下から A〜M、列は左から 1〜17）")
 y = table(s, 60, y + 50, [
     ["部品", "数", "置き場所・メモ"],
-    ["Olimex ESP32-DEVKIT-LIPO（micro USB、ピンヘッダ付き）", "1", "B1〜B16・L1〜L16 のソケットに差す。USB を下、アンテナを上に向ける"],
-    ["ピンソケット（メス）16ピン（20ピンを切る）", "2", "B1〜B16、L1〜L16 にはんだ付け。Olimex のピン4〜19 が入る"],
-    ["ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池", "1／3", "＋の線を A16、−の線を A11 にはんだ付け"],
-    ["ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線", "1", "線は裏の2本だけ"],
+    ["Olimex ESP32-DEVKIT-LIPO（micro USB、ピンヘッダ付き）", "1", "A4〜M4・A14〜M14 のソケットに差す。USB を下、アンテナを上に向ける（縦）"],
+    ["ピンソケット（メス）13ピン（20ピンを切る）", "2", "A4〜M4、A14〜M14 にはんだ付け。Olimex のピン7〜19 が入る"],
+    ["ケース WH145-25-M3-BR（単3×3 電池ボックス付き）／ 単三リチウム電池", "1／3", f"＋の線を {LP}、−の線を {LM} にはんだ付け"],
+    ["ケース用基板 PCB36-47・基板スペーサー AST2.5-5B・すずめっき線", "1", "横に置き、右の取付穴2つでケースに留める。線は裏の2本だけ"],
 ], [600, 60, 540], "部品表")
 finish(s, y, [
     "・上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。",
+    "・基板は横向き（47mm が横）。穴の名前は「行の文字（下から A〜M）＋列の数字（左から 1〜17）」。Olimex の 5V（左の列のいちばん下）が A4 に来るように差す。",
+    "・基板の右の取付穴2つだけでケースに留める。左の2つは使わない。",
+    "・Olimex は長さ 48mm で、基板の高さ（36mm）より長い。ピン1〜6（3V3・EN・IO36・IO39・IO34・IO35 と GND・IO23・IO22・IO1・IO3・IO21）とアンテナの側は、",
+    "　基板の上の端から約17mm はみ出す。ケースの中でぶつからないか確かめる。",
     "・電池は Olimex の「5V」端子（左の列のいちばん下）と「GND」へつなぐ。基板の「BAT」コネクタは充電式リチウムイオン電池用なので、乾電池は絶対につながない。",
     "・電池を入れたまま micro USB をつながない（書き込みは電池を外してから）。USB の 5V と電池がぶつかるおそれがある。",
     "・新品の単三リチウム3本は約5.4V。5V 端子の先は、ダイオード（約0.3V 下がる）を通って 3.3V を作る部品（HX6211、入力の上限 6V と販売店の資料）へ行く。上限の内側だが余裕は少ない。",
-    "・Olimex は長さ 48mm で基板（47mm）より長く、ピンは19本ある。ピン1〜3（3V3・EN・IO36 と GND・IO23・IO22）は基板の上の端からはみ出す。",
-    "・PCB36-47 の穴の数（13×17）は見込み。四隅の取付穴に近い B1・L1 の穴がなければ、ソケットを15ピンにして B2〜B16・L2〜L16 にする。",
+    "・PCB36-47 の穴の数（17×13）は見込み。実物で穴の数がちがうときは、5V が「左から4つ目・下から1つ目」の穴に来るように合わせる。",
     "・ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋Olimex が収まるか未確認。足りないときは、ソケットを使わずに Olimex のピンを基板へ直接はんだ付けする。",
     "・管理画面の動作モードは「ディープスリープ」にする。電池のもちは保存間隔30分で 2〜4か月の見込み（未実測）。",
 ], "HPX-Core_BAT_olimex_pcb.svg")
