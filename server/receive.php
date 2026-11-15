@@ -57,7 +57,10 @@ if (!is_dir($dir)) {
     if ($uid !== '' && $max > 0 && empty(user_get($uid)['admin']) && count($active) >= $max) fail(403, 'hub limit');
     if (!@mkdir($dir, 0700, true) && !is_dir($dir)) fail(500, 'cannot create data dir');
 }
-@unlink($dir . '/.retired');   // 外したハブからまた届いたら、元に戻す
+// センサページで「アカウントから外した」ハブ (.retired)。届いた記録は保存するが、外したままにする
+//   (前は届いたら自動で元に戻していたが、外したあとに HPX-Core の送信先を消すまでに届くと戻ってしまうため、2026-11-16 TARO)。
+//   元に戻すのは、センサページの「外した HPX-Core」の「元に戻す」だけ。外している間はお知らせメールを送らない
+$retired = is_file($dir . '/.retired');
 
 $now = time();
 $saved = 0;
@@ -331,4 +334,5 @@ flush();
 if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 
 // 送り先: アカウントの通知先と、このハブ・電柵を紐づけた蜂場を見られるチームの人
-hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id), 'device') : $notifyTo);
+if ($retired) $HPX_ALERT_QUEUE = [];   // 外したハブのお知らせは送らない
+else hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id), 'device') : $notifyTo);
