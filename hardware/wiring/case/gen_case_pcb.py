@@ -366,10 +366,11 @@ def hn(c, r):
 
 GEO = None
 
-def board_tnf(s, model, wmm, hmm, nc, nr, cut=None, cut_label=None, mount_d=None, ng=None):
+def board_tnf(s, model, wmm, hmm, nc, nr, cut=None, cut_label=None, mount_d=None, ng=None, mount_at=None):
     """タカチ TNF 基板。横が長い向きで描く。穴は 行の文字 (A〜) ＋ 列の数字 (1〜)。
     cut=(幅mm, 高さmm) なら左下を切り欠く (cut_label は図に書く寸法)。
-    mount_d=取付穴の直径mm (白丸で描く)、ng=使えない穴 [(列,行)] (0 始まり、× を付ける)"""
+    mount_d=取付穴の直径mm (白丸で描く)、ng=使えない穴 [(列,行)] (0 始まり、× を付ける)、
+    mount_at=取付穴にする穴 [(列,行)] (なければ四すみから 3.5mm)"""
     global BW, BH, BOT, GEO
     rec_reset(); _i0 = len(s.items)
     BW, BH = nc, nr
@@ -402,7 +403,8 @@ def board_tnf(s, model, wmm, hmm, nc, nr, cut=None, cut_label=None, mount_d=None
         s.text(x0 - 10, OY + r * P + 5, ROWS[r], 13, "end", fill="#8d6e3f", weight="bold")
     # 四すみの取付穴 (位置は目安)。すぐ内側の穴は使わない
     m = 3.5 * k
-    for hx, hy in ((x0 + m, y0 + m), (x0 + bw - m, y0 + m), (x0 + m, y0 + bh - m), (x0 + bw - m, y0 + bh - m)):
+    corners = ((x0 + m, y0 + m), (x0 + bw - m, y0 + m), (x0 + m, y0 + bh - m), (x0 + bw - m, y0 + bh - m))
+    for hx, hy in ([(OX + c * P, OY + r * P) for c, r in mount_at] if mount_at else corners):
         if in_cut(hx, hy):
             continue
         if mount_d:
@@ -411,7 +413,7 @@ def board_tnf(s, model, wmm, hmm, nc, nr, cut=None, cut_label=None, mount_d=None
         s.add(f'<circle cx="{hx}" cy="{hy}" r="{1.6*k}" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2" stroke-dasharray="4 3"/>')
     for c, r in (ng if ng is not None else ((0, 0), (nc - 1, 0), (0, nr - 1), (nc - 1, nr - 1))):
         x, y = OX + c * P, OY + r * P
-        if in_cut(x, y, 1.0 * k):
+        if in_cut(x, y, 1.0 * k) or (mount_at and (c, r) in mount_at):
             continue
         s.add(f'<path d="M{x-7},{y-7} L{x+7},{y+7} M{x-7},{y+7} L{x+7},{y-7}" stroke="#9e9e9e" stroke-width="2.5"/>')
     s.text(x0 + bw / 2, y0 - 34, f"タカチ {model}（{wmm}×{hmm}mm、穴 {nc}×{nr}、2.54mm ピッチ）", 16, "middle", "bold", "#5d4520")
@@ -676,45 +678,63 @@ def make_W_cut(fname):
     NG = ([(c, r) for c in (0, 1) for r in (0, 1, 2)] + [(c, r) for c in (22, 23, 24) for r in (0, 1)]
           + [(23, 2), (24, 2)] + [(c, r) for c in (22, 23, 24) for r in (11, 12, 13)])
     # 切る線は 16 列と 17 列の間、G 行と H 行の間 (穴の位置からの目安。17 列と G 行の穴は残す)
-    board_tnf(s, "TNF39-70", 70, 39.5, 25, 14, cut=(43.9, 19.75), cut_label="20×45mm", mount_d=2.5, ng=NG)
+    board_tnf(s, "TNF39-70", 70, 39.5, 25, 14, cut=(43.9, 19.75), cut_label="20×45mm", mount_d=2.5, ng=NG,
+              mount_at=[(0, 1), (23, 1), (23, 12)])   # 取付穴は B1・B24・M24 の穴を 2.5mm に広げる (TARO 2026-11-15)
     p = xiao_pcb(s, 17, 3)                                   # XIAO D18〜J24
     # −の線 (黒): HX711 GND C16 → C20 → L20 → L19 → L18 (電池−)、E20 → E24 (XIAO GND)、L20 → L21
-    wireh(s, [(15, 2), (19, 2), (19, 4)], "black")
+    wireh(s, [(14, 2), (19, 2), (19, 4)], "black")
     wireh(s, [(19, 4), p["GND"]], "black")
     wireh(s, [(19, 4), (19, 11)], "black")
     wireh(s, [(19, 11), (18, 11)], "black")
     wireh(s, [(18, 11), (17, 11)], "black")
     wireh(s, [(19, 11), (20, 11)], "black")
     # ＋の線 (赤): HX711 VCC F16 → F17 → N17 → N18 (電池＋) → N19 → N21 → N22 → K22 → K23 → F23 → F24 (XIAO 3V3)
-    wireh(s, [(15, 5), (16, 5), (16, 13), (17, 13)], "red")
+    wireh(s, [(14, 5), (16, 5), (16, 13), (17, 13)], "red")
     wireh(s, [(17, 13), (18, 13)], "red")
     wireh(s, [(18, 13), (20, 13)], "red")
     wireh(s, [(20, 13), (21, 13), (21, 10), (22, 10), (22, 5), p["3V3"]], "red")
     x1, y1 = H(22, 5); _, y2 = H(22, 9)
     s.text(x1 - 10, (y1 + y2) / 2 + 40, "XIAO の下", 11, "end", "bold", "#ffcdd2", layer=s.top)
     s.text(x1 - 10, (y1 + y2) / 2 + 55, "を通す", 11, "end", "bold", "#ffcdd2", layer=s.top)
-    wireh(s, [p["D0"], (15, 3)], "yellow")
-    wireh(s, [p["D1"], (15, 4)], "blue")
+    wireh(s, [p["D0"], (14, 3)], "yellow")
+    wireh(s, [p["D1"], (14, 4)], "blue")
     cap_flat(s, (18, 11), (18, 13), "100µF", True, (H(18, 12)[0] - 22, H(18, 12)[1] + 5), "end")
     cap_flat(s, (20, 11), (20, 13), "0.1µF", False, (H(20, 12)[0] + 22, H(20, 12)[1] + 5))
-    lx, ty, by = flat_module(s, [2, 3, 4, 5], ["GND", "DT", "SCK", "VCC"], "#2e7d32", 11,
-                             "HX711 モジュール", "ピンヘッダで寝かせて付ける（基板と平行）", col=15)
-    s.top.append(f'<rect x="{lx+120}" y="{(ty+by)/2-24}" width="48" height="48" fill="#212121"/>')
-    s.text(lx + 144, (ty + by) / 2 + 5, "HX711", 11, "middle", "bold", "#eee", layer=s.top)
-    for i, n in enumerate(["E+", "E-", "A-", "A+"]):
-        y = ty + 26 + i * 30
-        s.top.append(f'<circle cx="{lx+18}" cy="{y}" r="6" fill="#d4af37" stroke="#8a6d1d" stroke-width="1.5"/>')
-        s.text(lx + 30, y + 4, n, 11, "start", "bold", "#fff", layer=s.top)
-    s.rect(20, ty - 10, 170, 130, "#b0bec5", "#78909c", 6, 3)
-    s.text(105, ty + 50, "ロードセル", 15, "middle", "bold", "#263238")
-    s.text(105, ty + 72, "SC601（120kg）", 12, "middle", fill="#263238")
-    s.text(105, ty + 144, "線の色は説明書で確認", 12, "middle", fill="#b23", weight="bold")
+    # HX711 (TARO 2026-11-15): 20×35mm。左に E+・E-・A-・A+・B-・B+ の6ピン (E+ が B 行、B+ が G 行)、
+    # 右に GND・DT・SCK・VCC の4ピン (GND は E- と同じ行、VCC は B- と同じ行)。左右のピンは 10 穴はなれる。
+    # 右のピンを 15 列にして、本体の右の端が XIAO のピンソケットに当たらないようにした
+    LP, RP = 4, 14
+    k = GEO[4]
+    xl, yt = H(LP, 1); xr, yb2 = H(RP, 6)
+    ex, ey = (35 - 25.4) / 2 * k, (20 - 12.7) / 2 * k
+    hx0, hy0, hw, hh = xl - ex, yt - ey, (xr - xl) + 2 * ex, (yb2 - yt) + 2 * ey
+    s.top.append(f'<rect x="{hx0}" y="{hy0}" width="{hw}" height="{hh}" rx="6" fill="#2e7d32" fill-opacity="0.82" stroke="#333" stroke-width="2"/>')
+    rec_part(hx0, hy0, hw, hh, "HX711")
+    cx_, cy_ = (xl + xr) / 2, (yt + yb2) / 2
+    s.top.append(f'<rect x="{cx_-24}" y="{cy_-24}" width="48" height="48" fill="#212121"/>')
+    s.text(cx_, cy_ + 5, "HX711", 11, "middle", "bold", "#eee", layer=s.top)
+    for i, n in enumerate(["E+", "E-", "A-", "A+", "B-", "B+"]):
+        x, y = H(LP, 1 + i); rec_pin(x, y, n)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(x + 14, y + 5, n, 12, "start", "bold", "#fff", layer=s.top)
+    for i, n in enumerate(["GND", "DT", "SCK", "VCC"]):
+        x, y = H(RP, 2 + i); rec_pin(x, y, n)
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>')
+        s.text(x - 14, y + 5, n, 12, "end", "bold", "#fff", layer=s.top)
+    s.text(cx_, hy0 + hh + 18, "HX711 モジュール（20×35mm）ピンヘッダで寝かせて付ける", 12, "middle", "bold", "#222", layer=s.top)
+    # ロードセルの線は HX711 の E+・E-・A-・A+ のピンの上 (モジュールの表) に直接はんだ付け
+    s.rect(20, yt - 30, 170, 150, "#b0bec5", "#78909c", 6, 3)
+    s.text(105, yt + 40, "ロードセル", 15, "middle", "bold", "#263238")
+    s.text(105, yt + 62, "SC601（120kg）", 12, "middle", fill="#263238")
+    s.text(105, yt + 144, "線の色は説明書で確認", 12, "middle", fill="#b23", weight="bold")
     for i, c in enumerate(["red", "black", "white", "green"]):
-        y = ty + 26 + i * 30
+        x, y = H(LP, 1 + i)
+        d = f"M{x},{y} L{x-30},{y} L{x-30-(3-i)*8},{yt-20+i*30+20} L190,{yt-20+i*30+20}" if False else f"M{x},{y} L190,{y}"
         if c == "white":
-            s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
+            s.top.append(f'<path d="{d}" fill="none" stroke="#777" stroke-width="7"/><path d="{d}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
         else:
-            s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
+            s.top.append(f'<path d="{d}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
+        s.top.append(f'<circle cx="{x}" cy="{y}" r="5" fill="{COL[c] if c != "white" else "#fafafa"}" stroke="#333" stroke-width="1.5"/>')
     # 電池ケースを切り欠きに置く (＋を左、−を右)。裏の出っ張りは切り取り、電極に線をはんだ付け
     bpos, bneg = cr123a_in_cut(s, 0.5, 20.5)
     x0, y0, bw, bh, k = GEO
@@ -727,12 +747,12 @@ def make_W_cut(fname):
     yb = back_section(s, BOT + 110, fname)
     y = table(s, 60, yb + 40, [
         ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-        ["yellow", f"XIAO D0（{hn(17,3)}）", f"HX711 DT（{hn(15,3)}）", "重さのデータ"],
-        ["blue", f"XIAO D1（{hn(17,4)}）", f"HX711 SCK（{hn(15,4)}）", "読み取りの合図"],
-        ["black", f"HX711 GND（{hn(15,2)}）", f"{hn(19,2)} → {hn(19,4)} → {hn(19,11)}（XIAO の下）→ {hn(17,11)}", "−の線"],
+        ["yellow", f"XIAO D0（{hn(17,3)}）", f"HX711 DT（{hn(14,3)}）", "重さのデータ"],
+        ["blue", f"XIAO D1（{hn(17,4)}）", f"HX711 SCK（{hn(14,4)}）", "読み取りの合図"],
+        ["black", f"HX711 GND（{hn(14,2)}）", f"{hn(19,2)} → {hn(19,4)} → {hn(19,11)}（XIAO の下）→ {hn(17,11)}", "−の線"],
         ["black", f"XIAO GND（{hn(23,4)}）", f"{hn(19,4)}（−の線）", "XIAO の −"],
         ["black", f"{hn(19,11)}（−の線）", f"{hn(20,11)}", "0.1µF の −側"],
-        ["red", f"HX711 VCC（{hn(15,5)}）", f"{hn(16,5)} → {hn(16,13)} → {hn(21,13)} → {hn(21,10)} → {hn(22,10)} → {hn(22,5)}", "＋の線"],
+        ["red", f"HX711 VCC（{hn(14,5)}）", f"{hn(16,5)} → {hn(16,13)} → {hn(21,13)} → {hn(21,10)} → {hn(22,10)} → {hn(22,5)}", "＋の線"],
         ["red", f"{hn(22,5)}（＋の線）", f"XIAO 3V3（{hn(23,5)}）", "XIAO の ＋"],
         ["red", "電池ケースの ＋ 電極", f"{hn(17,13)}", "線ではんだ付け"],
         ["black", "電池ケースの − 電極", f"{hn(17,11)}", "線ではんだ付け"],
@@ -740,8 +760,8 @@ def make_W_cut(fname):
     y = table(s, 60, y + 50, [
         ["部品", "数", "置き場所・メモ"],
         ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(17,3)}〜{hn(23,9)}"],
-        ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(15,2)}〜{hn(15,5)}（GND・DT・SCK・VCC）。本体は左へ寝かせる"],
-        ["ロードセル SC601 120kg", "1", "HX711 の E+・E-・A-・A+ に直接はんだ付け"],
+        ["HX711 モジュール（20×35mm）＋ ピンヘッダ 4ピン・6ピン", "1", f"右 {hn(14,2)}〜{hn(14,5)}（GND・DT・SCK・VCC）、左 {hn(4,1)}〜{hn(4,6)}（E+〜B+）"],
+        ["ロードセル SC601 120kg", "1", "HX711 の E+・E-・A-・A+ のピンの上に直接はんだ付け"],
         ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(18,11)}・{hn(18,13)}（向きなし）"],
         ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(20,11)}・{hn(20,13)}"],
         ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", "裏の出っ張りを切り取り、切り欠きに置いて電極と基板を線でつなぐ"],
@@ -749,13 +769,15 @@ def make_W_cut(fname):
         ["タカチ TW5-3-9B ／ M2.5 ビス EM-2.3-8", "1／3", "左下のスペーサー台座を切り取り、基板を 3か所で留める"],
     ], [700, 60, 520], "部品表")
     L = NOTES[:-1] + [
-        "・白い丸は取付穴（3か所、2.5mm のドリルで広げる。位置は目安なので実物で確認）。× の穴（A1〜C2、A23〜B25・C24〜C25、L23〜N25）はネジに当たるので使わない。",
+        "・白い丸は取付穴。B1・B24・M24 の穴を 2.5mm のドリルで広げる。× の穴（A1〜C2、A23〜B25・C24〜C25、L23〜N25）はネジに当たるので使わない。",
+        f"・HX711 は左右のピンヘッダ（左6本 {hn(4,1)}〜{hn(4,6)}、右4本 {hn(14,2)}〜{hn(14,5)}）で寝かせて付ける。左の6本は基板の線にはつながず、支えにするだけ。",
+        "・HX711 の右のピンを 15 列にしたのは、本体（35mm）の右の端が XIAO のピンソケット（18 列）に当たらないようにするため。本体はピンから左右に約 4.8mm ずつ出る（左右同じとして描いた）。",
         "・左下 20×45mm を、のこぎりやニッパーで切り取る（切り口はやすりで平らに）。切る線は 16 列と 17 列の間、G 行と H 行の間（17 列と G 行の穴は残す）。",
         "・ケース TW5-3-9B の左下のスペーサー台座（基板を留める柱）は、電池ケースが入るように切り取る。基板は残りの 3か所をビスで留める。",
         "・電池ケースは裏の出っ張りを切り取って、プラスチックと電極 2つだけにする。ケースの底に両面テープなどで固定し、長さを合わせた線を電極にはんだ付け。",
         f"・−の線（{hn(19,2)}〜{hn(19,11)}・{hn(19,4)}〜{hn(23,4)}）と ＋の線（{hn(22,5)}〜{hn(22,10)}）は XIAO の真下の裏を通るが、XIAO のピンは 18 列と 24 列だけなので触れない。",
         "・XIAO の右上の角は、右上のネジ（A〜C 行の 23〜25 列）の近くになる。XIAO はピンソケットで浮いているので当たらない見込みだが、組み立てる前に確かめる。",
-        "・HX711 の大きさは製品によって違う。幅が広いと切り欠きの上に張り出すので、電池ケース（高さ 14mm）に当たらないか確認する。",
+        "・HX711（20mm）は下の端が G 行より約 3.6mm 下まで出て、切り欠きの上に少し張り出す。電池ケース（高さ 14mm）に当たらないか確認する。",
     ]
     notes(s, 60, y + 20, L)
     s.h = int(y + 20 + 34 + 26 * len(L) + 40)
