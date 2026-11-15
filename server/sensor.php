@@ -296,7 +296,8 @@ foreach (glob(account_hubs_dir($UID) . '/*/state.json') ?: [] as $statePath) {
 }
 uasort($hubs, fn($a, $b) => strcmp($a['name'], $b['name']));
 $hubId = (string)($_GET['hub'] ?? $_POST['hub'] ?? '');
-if (!isset($hubs[$hubId])) $hubId = (string)(array_key_first($hubs) ?? '');
+// 初めに出すのは、外していない HPX-Core (外したものしか無ければ、その最初)
+if (!isset($hubs[$hubId])) $hubId = (string)(array_key_first(array_filter($hubs, fn($hb) => !is_file($hb['dir'] . '/.retired'))) ?? array_key_first($hubs) ?? '');
 $hub = $hubs[$hubId] ?? null;
 
 // グラフごとの期間(pt=温度 ph=湿度 pw=重量 pv=バッテリー・パネル電圧)
@@ -578,23 +579,35 @@ if (!$hub) {
 
 // ---- 機器名(選択) ----
 echo '<p class="muted" style="margin:.4em 0 .2em;font-size:.85em">HPX-Core名</p><div class="tabs">';
+$retiredHubs = [];   // アカウントから外した HPX-Core は、選んでいるとき以外はボタンに出さず、下に小さく並べる
 foreach ($hubs as $id => $hb) {
+    $ret = is_file($hb['dir'] . '/.retired');
+    if ($ret && $id !== $hubId) { $retiredHubs[$id] = $hb; continue; }
     echo '<a href="' . h('sensor.php?' . http_build_query(['hub' => $id] + $per)) . '"' . ($id === $hubId ? ' class="on"' : '') . '>' . h($hb['name'])
-        . (is_file($hb['dir'] . '/.retired') ? ' <span style="font-size:.8em;opacity:.7">(外した)</span>' : '') . '</a>';
+        . ($ret ? ' <span style="font-size:.8em;opacity:.7">(外した)</span>' : '') . '</a>';
 }
 echo '</div>';
+if ($retiredHubs) {
+    echo '<p class="muted" style="margin:.2em 0;font-size:.85em">外した HPX-Core: ';
+    $i = 0;
+    foreach ($retiredHubs as $id => $hb) echo ($i++ ? '、' : '') . '<a href="' . h('sensor.php?' . http_build_query(['hub' => $id] + $per)) . '">' . h($hb['name']) . '</a>';
+    echo '</p>';
+}
 
 $st = $hub['st'];
 $dir = $hub['dir'];
 $byKind = ['th' => [], 'w' => [], 'fa' => []];
+$removedSens = [];   // HPX-Core の管理画面で削除したセンサ (receive.php が removed を付ける)。表・グラフに出さない。記録は ble.csv に残す
 foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $s) {
     if (!is_array($s)) continue;
+    if (!empty($s['removed'])) { $removedSens[(string)$mac] = $s; continue; }
     $k = (string)($s['kind'] ?? 'th');
     $byKind[isset($byKind[$k]) ? $k : 'th'][(string)$mac] = $s;
 }
 // 読む範囲: 3つのグラフの期間のうち長いもの(全期間ならすべて)と、電柵の履歴の日数
 $since = in_array(0, $per, true) ? 0 : $now - max(D_FENCE_DAYS, ...array_values($per)) * 86400;
 $data = read_ble($dir . '/ble.csv', $since);
+if ($removedSens) $data['fa'] = array_values(array_filter($data['fa'], fn($r) => !isset($removedSens[(string)$r[2]])));   // 削除した HPX-F の検出の履歴も出さない
 $range = fn(int $p): int => $p === 0 ? ($data['first'] > 0 ? min($data['first'], $now - 3600) : $now - 86400) : $now - $p * 86400;
 $perLinks = function (string $key, string $anchor) use ($per): string {
     $o = '<div class="per">';
@@ -901,6 +914,8 @@ $size = @filesize($dir . '/ble.csv');
 echo '<div class="card"><b>データダウンロード</b><br><span class="muted">' . h($hub['name']) . ' の全期間の記録を CSV で保存します'
     . ($size ? ' (約 ' . h(number_format(max(1, (int)round($size / 1024)))) . ' KB' . ($data['first'] ? '、' . h(date('Y-m-d', $data['first'])) . ' から' : '') . ')' : '')
     . '。日時ごとに1行で、温湿度計・重量・電柵アラートを列に並べます。</span><br>'
+    . ($removedSens ? '<span class="muted">HPX-Core で削除したセンサ (' . h(implode('、', array_map(fn($m) => (string)(($removedSens[$m]['name'] ?? '') !== '' ? $removedSens[$m]['name'] : $m), array_keys($removedSens))))
+        . ') は画面に出しませんが、過去の記録は消さずに残してあり、この CSV に入ります。もう一度登録すると、また画面に出ます。</span><br>' : '')
     . '<a href="' . h(self_url(['download' => 1])) . '"><button type="button">CSV をダウンロード</button></a></div>';
 echo '<details><summary><b>データクリア</b></summary><div class="card danger">'
     . '<p>' . h($hub['name']) . ' の記録 (温湿度・重量・電柵)、状態の履歴、メール送信履歴を消します。<b>先に CSV をダウンロードしてください。</b><br>'
@@ -912,13 +927,14 @@ echo '<details><summary><b>データクリア</b></summary><div class="card dang
     . '<button type="submit">データをクリア</button></form></div></details>';
 if (is_file($dir . '/.retired')) {
     echo '<div class="card"><b>外した HPX-Core</b><br><span class="muted">' . h(date('Y-m-d H:i', (int)@filemtime($dir . '/.retired'))) . ' に外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。'
-        . '「届いていません」のメールは出しません。このアカウントのトークンでまた届くと、自動で元に戻ります。</span>'
+        . '「届いていません」などのメールは出しません。この HPX-Core からまた届いても記録を保存するだけで、外したままです。もう一度使うときは「元に戻す」を押してください。</span>'
         . '<form method="post"><input type="hidden" name="action" value="unretire"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
         . '<button type="submit">元に戻す</button></form></div>';
 } else {
     echo '<details><summary><b>この HPX-Core をアカウントから外す</b></summary><div class="card danger">'
-        . '<p>' . h($hub['name']) . ' をほかのアカウントのトークンに付け替えたときなどに使います。「届いていません」のメールが止まり、蜂場・巣箱の設定の選択肢からも消えます。<br>'
-        . '<span class="muted">これまでの記録と、巣箱・蜂場への紐づけはそのまま残すので、過去のグラフは見られます。センサページにも「外した」として残ります。</span></p>'
+        . '<p>' . h($hub['name']) . ' をほかのアカウントのトークンに付け替えたときなどに使います。「届いていません」などのメールが止まり、蜂場・巣箱の設定の選択肢からも消えます。<br>'
+        . '<span class="muted">これまでの記録と、巣箱・蜂場への紐づけはそのまま残すので、過去のグラフは見られます。センサページでは上の「外した HPX-Core」から開けます。'
+        . 'HPX-Core の送信先を消す前に外しても、元に戻すまでは外したままです。</span></p>'
         . '<form method="post" onsubmit="return window.confirm(\'' . h($hub['name']) . ' をこのアカウントから外します。よろしいですか?\')">'
         . '<input type="hidden" name="action" value="remove"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
         . '<p>確認のため、機器名 <b>' . h($hub['name']) . '</b> を入れてください<br><input type="text" name="confirm_name" autocomplete="off" required></p>'

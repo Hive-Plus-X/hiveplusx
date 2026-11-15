@@ -38,7 +38,7 @@ $who = fn($uid) => (string)$uid !== '' ? user_name((string)$uid) : '';
 $aname = fn(string $aid) => $aid === '' ? 'すべて' : (string)($site['apiaries'][$aid]['name'] ?? '(削除した蜂場)');
 $hname = fn(string $hid) => $hid === '' ? '' : (string)($site['hives'][$hid]['name'] ?? '(削除した巣箱)');
 $hubs = hpx_hubs();
-$sensors = hpx_sensors();
+$sensors = hpx_sensors(true);   // 削除したセンサも、過去の紐づけの名前として出す
 $sname = fn(string $k) => isset($sensors[$k]) ? $sensors[$k]['hubName'] . ' / ' . $sensors[$k]['name'] : (isset($hubs[$k]) ? $hubs[$k]['name'] : $k);
 
 // ---- 蜂場 ----

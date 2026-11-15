@@ -57,7 +57,10 @@ if (!is_dir($dir)) {
     if ($uid !== '' && $max > 0 && empty(user_get($uid)['admin']) && count($active) >= $max) fail(403, 'hub limit');
     if (!@mkdir($dir, 0700, true) && !is_dir($dir)) fail(500, 'cannot create data dir');
 }
-@unlink($dir . '/.retired');   // 外したハブからまた届いたら、元に戻す
+// センサページで「アカウントから外した」ハブ (.retired)。届いた記録は保存するが、外したままにする
+//   (前は届いたら自動で元に戻していたが、外したあとに HPX-Core の送信先を消すまでに届くと戻ってしまうため、2026-11-16 TARO)。
+//   元に戻すのは、センサページの「外した HPX-Core」の「元に戻す」だけ。外している間はお知らせメールを送らない
+$retired = is_file($dir . '/.retired');
 
 $now = time();
 $saved = 0;
@@ -209,6 +212,20 @@ foreach ($sidMap as $e) {
     if (isset($sens[$e['mac']]) && $e['name'] !== '') $sens[$e['mac']]['name'] = $e['name'];
 }
 
+// HPX-Core の管理画面で削除したセンサ: 送ってきた登録センサの一覧 (ble_sensors) に無いものに "removed" (削除に気づいた時刻) を付ける。
+//   removed のセンサは、蜂場・巣箱・センサの画面に出さない (hpx_sensors()・sensor.php)。ble.csv の過去の記録は消さない
+//   (センサページの CSV ダウンロード・全データのダウンロードには入る)。また登録されて一覧に戻ったら removed を外す。
+//   一覧は HPX-Core v1.10〜v1.26 では記録を送るときだけ、v1.27 からは毎回届く。届かなかったレポートでは何も変えない
+if (isset($d['sensors']['ble_sensors']) && is_array($d['sensors']['ble_sensors'])) {
+    $regMacs = array_map(fn($e) => $e['mac'], $sidMap);
+    foreach ($sens as $mac => &$s) {
+        if ((string)$mac === '' || !is_array($s)) continue;   // v1.09以前のアドレス不明の記録はそのまま
+        if (in_array((string)$mac, $regMacs, true)) unset($s['removed']);
+        elseif (empty($s['removed'])) $s['removed'] = $now;
+    }
+    unset($s);
+}
+
 // センサの記録が途切れていないか (HPX-F は1時間、HPX-W・HPX-TH・温湿度計は24時間)。ハブに登録中のセンサだけ見る
 hpx_alert_check_missing($sens, $now, $name, array_values(array_map(fn($e) => $e['mac'], $sidMap)));
 
@@ -317,4 +334,5 @@ flush();
 if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 
 // 送り先: アカウントの通知先と、このハブ・電柵を紐づけた蜂場を見られるチームの人
-hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id), 'device') : $notifyTo);
+if ($retired) $HPX_ALERT_QUEUE = [];   // 外したハブのお知らせは送らない
+else hpx_alert_flush($dir, $uid !== '' ? apiary_alert_to($uid, hub_apiaries($uid, $id), 'device') : $notifyTo);

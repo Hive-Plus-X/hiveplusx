@@ -906,7 +906,7 @@ function shared_devices(): array
             $hid = basename(dirname($p));
             if (!isset($used[$hid])) $keys['*free'][$hid] = 1;
             $st = json_decode((string)@file_get_contents($p), true);
-            foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $sn) if (!isset($used[$hid . '/' . $mac])) $keys['*free'][$hid . '/' . $mac] = 1;
+            foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $sn) if (!isset($used[$hid . '/' . $mac]) && empty($sn['removed'])) $keys['*free'][$hid . '/' . $mac] = 1;
         }
         $keys += $keys['*free'];
     }
@@ -940,7 +940,9 @@ function hpx_hubs(): array
 
 // センサーの一覧: "ハブid/mac" => [hub, mac, kind(th/w/fa), name, hubName, s(state.json の内容), o(持ち主)]
 //   ほかの人のハブのセンサは、共有された蜂場・巣箱に紐づいているものだけ
-function hpx_sensors(): array
+//   HPX-Core の管理画面で削除したセンサ (state.json の removed、receive.php が付ける) は入れない。
+//   $withRemoved = true なら入れる (一括ダウンロードで、過去の紐づけの名前を出すため)
+function hpx_sensors(bool $withRemoved = false): array
 {
     global $UID;
     $shared = shared_devices();
@@ -948,6 +950,7 @@ function hpx_sensors(): array
     foreach (hpx_hubs() as $hid => $hb) {
         foreach ((is_array($hb['st']['sensors'] ?? null) ? $hb['st']['sensors'] : []) as $mac => $s) {
             if (!is_array($s)) continue;
+            if (!$withRemoved && !empty($s['removed'])) continue;
             if ($hb['o'] !== $UID && !isset($shared[$hb['o']][$hid . '/' . $mac])) continue;
             $k = (string)($s['kind'] ?? 'th');
             $out[$hid . '/' . $mac] = ['hub' => $hid, 'mac' => (string)$mac, 'kind' => in_array($k, ['th', 'w', 'fa'], true) ? $k : 'th',

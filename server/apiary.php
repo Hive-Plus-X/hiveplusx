@@ -239,6 +239,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     if (!$hubs) $o .= '<span class="muted">まだハブからのデータがありません。</span>';
     foreach ($hubs as $hid => $hb) {
         $on = in_array($hid, (array)($a['hubs'] ?? []), true);
+        if ($hb['retired'] && !$on) continue;   // アカウントから外した HPX-Core は、今この蜂場に付いているときだけ出す
         $o .= '<span style="display:block"><input type="checkbox" name="hubs[]" value="' . h($hid) . '"' . ($on ? ' checked' : '') . '> '
             . h($hb['name']) . ' <span class="muted">' . h($hid) . ($hb['retired'] ? ' (外した)' : '') . '</span>' . $other($hid) . '</span>';
     }
@@ -249,6 +250,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     $mine = array_map('strval', (array)($a['fences'] ?? []));
     foreach ($fa as $k => $s) {
         $k = (string)$k;
+        if ($s['retired'] && !in_array($k, $mine, true)) continue;   // 外した HPX-Core のセンサは、今付いているときだけ出す
         $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
             . '<input type="checkbox" name="fences[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k)

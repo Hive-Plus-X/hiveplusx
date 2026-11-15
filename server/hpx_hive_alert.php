@@ -116,7 +116,7 @@ function hive_weight_base(string $owner, array $hv): array
     foreach ($byHub as $hub => $macs) {
         $dir = account_hubs_dir($owner) . '/' . $hub;
         $st = json_load($dir . '/state.json');
-        $macs = array_values(array_filter($macs, fn($m) => ($st['sensors'][$m]['kind'] ?? '') === 'w'));
+        $macs = array_values(array_filter($macs, fn($m) => ($st['sensors'][$m]['kind'] ?? '') === 'w' && empty($st['sensors'][$m]['removed'])));   // 削除したセンサは数えない
         if (!$macs) continue;
         $cal = json_load($dir . '/weight_cal.json');
         $now = ha_scan($dir);   // まず今の記録を見て、その時刻から基準日の同時刻を決める
@@ -176,7 +176,7 @@ function check_hive_alerts(int $now): void
                     $st = json_load($dir . '/state.json');
                     $scan = null;
                     foreach ($macs as $m) {
-                        if (($st['sensors'][$m]['kind'] ?? 'th') !== 'th') continue;
+                        if (($st['sensors'][$m]['kind'] ?? 'th') !== 'th' || !empty($st['sensors'][$m]['removed'])) continue;
                         $scan ??= ha_scan($dir);
                         $l = $scan['latest'][$m] ?? null;
                         $key = $hub . '/' . $m;

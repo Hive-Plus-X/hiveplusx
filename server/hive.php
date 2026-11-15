@@ -123,6 +123,7 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
     $mine = array_map('strval', (array)($hv['sensors'] ?? []));
     foreach ($list as $k => $s) {
         $k = (string)$k;
+        if ($s['retired'] && !in_array($k, $mine, true)) continue;   // アカウントから外した HPX-Core のセンサは、今この巣箱に付いているときだけ出す
         $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
             . '<input type="checkbox" name="sensors[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">[' . h(kind_text($s['kind'])) . '] ' . h($s['hubName']) . ($s['retired'] ? ' (外した)' : '') . '</span>'
