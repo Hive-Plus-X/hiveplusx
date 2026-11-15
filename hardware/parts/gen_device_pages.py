@@ -68,8 +68,11 @@ DEVICES = [
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
-         wiring=[('HPX-W_CR123A_TNF39-70.png', 'CR123A 版の配線図', '基板 TNF39-70 の左下を切り取り、CR123A 電池ケースを置きます。', 'w_cr'),
+         wiring=[('HPX-W_CR123A_TNF39-70.png', 'CR123A 版の配線図', '基板 TNF39-70 の左下 20×45mm を切り取り、CR123A 電池ケースを置きます。ケース TW5-3-9B の左下のスペーサー台座も切り取り、基板は残りの3か所 (2.5mm に広げた穴) をビスで留めます。', 'w_cr'),
                  ('HPX-W_AA_TNF34-124.png', '単三リチウム電池版の配線図', '基板 TNF34-124 の上に、単3×2本の電池ボックスを貼ります。', 'w_aa')],
+         # TARO 2026-11-15: CR123A 電池ケースの説明を足す、100μF の代わりに PX は出さない (MH5 は残す)
+         rename={'CR123A 電池ケース': ('CR123A 電池ケース', 'CR123A用電池ケース（裏面の出っ張りを切除。プラスチックと電極２つ）')},
+         hide_alts=['電解コンデンサー 100μF16V 105℃ ルビコン PX'],
          note='電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。'),
     dict(key='th', file='device-th.html', tag='温湿度', name='HPX-TH',
          lead='巣箱の中の温度と湿度を測り、Bluetooth で発信します。',
@@ -355,6 +358,8 @@ def page_rows(dev, rows):
                 r['detail'] = dt
         if dev.get('no_alts'):
             r['alts'] = []
+        elif dev.get('hide_alts'):
+            r['alts'] = [x for x in r['alts'] if x['name'] not in dev['hide_alts']]
         out.append(r)
     return out
 

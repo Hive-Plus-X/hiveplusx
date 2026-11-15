@@ -4,7 +4,7 @@ import sys, os
 OUT = sys.argv[1]
 os.makedirs(OUT, exist_ok=True)
 
-FONT = "'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"
+FONT = "'Hiragino Kaku Gothic ProN','Meiryo','Yu Gothic','IPAPGothic','IPAGothic','Noto Sans CJK JP',sans-serif"   # 日本のフォント (TARO 2026-11-07)
 COL = {
     "red": "#e53935", "black": "#212121", "yellow": "#fdd835", "blue": "#1e88e5",
     "white": "#fafafa", "green": "#43a047", "orange": "#fb8c00", "purple": "#8e24aa",
@@ -366,9 +366,10 @@ def hn(c, r):
 
 GEO = None
 
-def board_tnf(s, model, wmm, hmm, nc, nr, cut=None):
+def board_tnf(s, model, wmm, hmm, nc, nr, cut=None, cut_label=None, mount_d=None, ng=None):
     """タカチ TNF 基板。横が長い向きで描く。穴は 行の文字 (A〜) ＋ 列の数字 (1〜)。
-    cut=(幅mm, 高さmm) なら左下を切り欠く"""
+    cut=(幅mm, 高さmm) なら左下を切り欠く (cut_label は図に書く寸法)。
+    mount_d=取付穴の直径mm (白丸で描く)、ng=使えない穴 [(列,行)] (0 始まり、× を付ける)"""
     global BW, BH, BOT, GEO
     rec_reset(); _i0 = len(s.items)
     BW, BH = nc, nr
@@ -384,13 +385,13 @@ def board_tnf(s, model, wmm, hmm, nc, nr, cut=None):
         cx, cy = x0 + cut[0] * k, y0 + bh - cut[1] * k
         s.add(f'<rect x="{x0}" y="{cy}" width="{cx-x0}" height="{y0+bh-cy}" fill="none" stroke="#b71c1c" stroke-width="2" stroke-dasharray="8 5"/>')
         s.add(f'<path d="M{x0},{y0} L{x0+bw},{y0} L{x0+bw},{y0+bh} L{cx},{y0+bh} L{cx},{cy} L{x0},{cy} Z" fill="#e8d3a8" stroke="#8d6e3f" stroke-width="2.5" stroke-linejoin="round"/>')
-        s.text((x0 + cx) / 2, y0 + bh + 26, f"ここを切り取る（{cut[0]}×{cut[1]}mm）", 14, "middle", "bold", "#b71c1c")
+        s.text((x0 + cx) / 2, y0 + bh + 26, f"ここを切り取る（{cut_label or f'{cut[0]}×{cut[1]}mm'}）", 14, "middle", "bold", "#b71c1c")
     else:
         s.rect(x0, y0, bw, bh, "#e8d3a8", "#8d6e3f", 8, 2.5)
     for c in range(nc):
         for r in range(nr):
             x, y = OX + c * P, OY + r * P
-            if in_cut(x, y, 1.0 * k):
+            if in_cut(x, y, 0 if ng is not None else 1.0 * k):
                 continue
             s.add(f'<circle cx="{x}" cy="{y}" r="7" fill="#d9a441" stroke="#a87b24" stroke-width="1"/>')
             s.add(f'<circle cx="{x}" cy="{y}" r="2.6" fill="#5d4520"/>')
@@ -404,8 +405,11 @@ def board_tnf(s, model, wmm, hmm, nc, nr, cut=None):
     for hx, hy in ((x0 + m, y0 + m), (x0 + bw - m, y0 + m), (x0 + m, y0 + bh - m), (x0 + bw - m, y0 + bh - m)):
         if in_cut(hx, hy):
             continue
+        if mount_d:
+            s.add(f'<circle cx="{hx}" cy="{hy}" r="{mount_d/2*k}" fill="#ffffff" stroke="#5d4520" stroke-width="2.5"/>')
+            continue
         s.add(f'<circle cx="{hx}" cy="{hy}" r="{1.6*k}" fill="#fffdf6" stroke="#8d6e3f" stroke-width="2" stroke-dasharray="4 3"/>')
-    for c, r in ((0, 0), (nc - 1, 0), (0, nr - 1), (nc - 1, nr - 1)):
+    for c, r in (ng if ng is not None else ((0, 0), (nc - 1, 0), (0, nr - 1), (nc - 1, nr - 1))):
         x, y = OX + c * P, OY + r * P
         if in_cut(x, y, 1.0 * k):
             continue
@@ -663,25 +667,37 @@ def make_TH(fname, model, wmm, hmm, nc, nr, cx, cy, batt, shtcols, board_fn=None
 
 # ------------------------------------------------------------------ HPX-W CR123A 切り欠き版
 def make_W_cut(fname):
+    """TARO 2026-11-15: 左下 20×45mm を切り取り (残る穴 A〜G×1〜16 と A〜N×17〜25)、
+    取付穴 3か所を 2.5mm に広げる。ネジに当たる A1〜C2・A23〜B25・C24〜C25・L23〜N25 は使わない"""
     global CX, CY
     CX, CY = 0, 0
     s = S(1400, 1900)
-    title(s, "HPX-W（重量センサ）CR123A 版の配線図", "基板 タカチ TNF39-70（左下を切り欠いて電池ケースを置く）／ HX711 DT=D0, SCK=D1")
-    board_tnf(s, "TNF39-70", 70, 39.5, 25, 14, cut=(44, 22))
-    p = xiao_pcb(s, 17, 1)
-    wireh(s, [(15, 0), (24, 0), (24, 8), (23, 8), (23, 13)], "black")
-    wireh(s, [p["GND"], (24, 2)], "black")
-    wireh(s, [p["3V3"], (22, 3), (22, 8), (21, 8), (21, 13)], "red")
-    x1, y1 = H(22, 3); _, y2 = H(22, 8)
-    s.top.append(f'<path d="M{x1},{y1} L{x1},{y2}" stroke="#e53935" stroke-width="4" stroke-dasharray="7 5"/>')
-    s.text(x1 - 8, (y1 + y2) / 2 + 30, "XIAO の下", 11, "end", "bold", "#ffcdd2", layer=s.top)
-    s.text(x1 - 8, (y1 + y2) / 2 + 45, "を通す", 11, "end", "bold", "#ffcdd2", layer=s.top)
-    wireh(s, [(15, 3), (16, 3), (16, 9), (21, 9)], "red")
-    wireh(s, [p["D0"], (15, 1)], "yellow")
-    wireh(s, [p["D1"], (15, 2)], "blue")
-    cap_flat(s, (21, 10), (23, 10), "100µF", True, (H(24, 10)[0] + 30, H(24, 10)[1] + 5))
-    cap_flat(s, (21, 12), (23, 12), "0.1µF", False, (H(24, 12)[0] + 30, H(24, 12)[1] + 5))
-    lx, ty, by = flat_module(s, [0, 1, 2, 3], ["GND", "DT", "SCK", "VCC"], "#2e7d32", 11,
+    title(s, "HPX-W（重量センサ）CR123A 版の配線図", "基板 タカチ TNF39-70（左下 20×45mm を切り取って電池ケースを置く）／ HX711 DT=D0, SCK=D1")
+    NG = ([(c, r) for c in (0, 1) for r in (0, 1, 2)] + [(c, r) for c in (22, 23, 24) for r in (0, 1)]
+          + [(23, 2), (24, 2)] + [(c, r) for c in (22, 23, 24) for r in (11, 12, 13)])
+    # 切る線は 16 列と 17 列の間、G 行と H 行の間 (穴の位置からの目安。17 列と G 行の穴は残す)
+    board_tnf(s, "TNF39-70", 70, 39.5, 25, 14, cut=(43.9, 19.75), cut_label="20×45mm", mount_d=2.5, ng=NG)
+    p = xiao_pcb(s, 17, 3)                                   # XIAO D18〜J24
+    # −の線 (黒): HX711 GND C16 → C20 → L20 → L19 → L18 (電池−)、E20 → E24 (XIAO GND)、L20 → L21
+    wireh(s, [(15, 2), (19, 2), (19, 4)], "black")
+    wireh(s, [(19, 4), p["GND"]], "black")
+    wireh(s, [(19, 4), (19, 11)], "black")
+    wireh(s, [(19, 11), (18, 11)], "black")
+    wireh(s, [(18, 11), (17, 11)], "black")
+    wireh(s, [(19, 11), (20, 11)], "black")
+    # ＋の線 (赤): HX711 VCC F16 → F17 → N17 → N18 (電池＋) → N19 → N21 → N22 → K22 → K23 → F23 → F24 (XIAO 3V3)
+    wireh(s, [(15, 5), (16, 5), (16, 13), (17, 13)], "red")
+    wireh(s, [(17, 13), (18, 13)], "red")
+    wireh(s, [(18, 13), (20, 13)], "red")
+    wireh(s, [(20, 13), (21, 13), (21, 10), (22, 10), (22, 5), p["3V3"]], "red")
+    x1, y1 = H(22, 5); _, y2 = H(22, 9)
+    s.text(x1 - 10, (y1 + y2) / 2 + 40, "XIAO の下", 11, "end", "bold", "#ffcdd2", layer=s.top)
+    s.text(x1 - 10, (y1 + y2) / 2 + 55, "を通す", 11, "end", "bold", "#ffcdd2", layer=s.top)
+    wireh(s, [p["D0"], (15, 3)], "yellow")
+    wireh(s, [p["D1"], (15, 4)], "blue")
+    cap_flat(s, (18, 11), (18, 13), "100µF", True, (H(18, 12)[0] - 22, H(18, 12)[1] + 5), "end")
+    cap_flat(s, (20, 11), (20, 13), "0.1µF", False, (H(20, 12)[0] + 22, H(20, 12)[1] + 5))
+    lx, ty, by = flat_module(s, [2, 3, 4, 5], ["GND", "DT", "SCK", "VCC"], "#2e7d32", 11,
                              "HX711 モジュール", "ピンヘッダで寝かせて付ける（基板と平行）", col=15)
     s.top.append(f'<rect x="{lx+120}" y="{(ty+by)/2-24}" width="48" height="48" fill="#212121"/>')
     s.text(lx + 144, (ty + by) / 2 + 5, "HX711", 11, "middle", "bold", "#eee", layer=s.top)
@@ -699,42 +715,46 @@ def make_W_cut(fname):
             s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#777" stroke-width="7"/><path d="M{lx+18},{y} L190,{y}" fill="none" stroke="#fafafa" stroke-width="4.5"/>')
         else:
             s.top.append(f'<path d="M{lx+18},{y} L190,{y}" fill="none" stroke="{COL[c]}" stroke-width="5"/>')
-    # 電池ケースを切り欠きに置く (− を左、＋を右に向ける)
-    bp_left, bp_right = cr123a_in_cut(s, 0.5, 19.5)
+    # 電池ケースを切り欠きに置く (＋を左、−を右)。裏の出っ張りは切り取り、電極に線をはんだ付け
+    bpos, bneg = cr123a_in_cut(s, 0.5, 20.5)
     x0, y0, bw, bh, k = GEO
-    s.top[-2] = s.top[-2].replace(">＋<", ">−<").replace('font-size="15"', 'font-size="18"')
-    s.top[-1] = s.top[-1].replace(">−<", ">＋<").replace('font-size="18"', 'font-size="15"')
-    mneg, mpos = bp_left, bp_right
-    tp, tm = H(21, 13), H(23, 13)
-    s.wire([mpos, (mpos[0] + 30, mpos[1]), (mpos[0] + 30, BOT + 40), (tp[0], BOT + 40), tp], "red")
-    s.wire([mneg, (mneg[0] - 30, mneg[1]), (mneg[0] - 30, BOT + 70), (tm[0], BOT + 70), tm], "black")
-    solder_mark(s, 21, 13); solder_mark(s, 23, 13)
-    s.text(mmxy(21.5, 0)[0], BOT + 110, "CR123A 用電池ケース（秋月 110192、43×18×14mm、ピン付き）を切り欠きに置く", 14, "middle", "bold", "#263238")
-    yb = back_section(s, BOT + 140, fname)
+    tp, tm = H(17, 13), H(17, 11)
+    xm = mmxy(44.6, 0)[0]
+    s.wire([bneg, (xm, bneg[1]), (xm, tm[1]), tm], "black")
+    s.wire([bpos, (bpos[0] - 30, bpos[1]), (bpos[0] - 30, BOT + 40), (tp[0], BOT + 40), tp], "red")
+    solder_mark(s, 17, 13); solder_mark(s, 17, 11)
+    s.text(mmxy(22, 0)[0], BOT + 80, "CR123A 用電池ケース（秋月 110192、43×18×14mm）の裏の出っ張りを切り取り、切り欠きに置く", 14, "middle", "bold", "#263238")
+    yb = back_section(s, BOT + 110, fname)
     y = table(s, 60, yb + 40, [
         ["線", "どこから（穴）", "どこへ（穴）", "役目"],
-        ["yellow", f"XIAO D0（{hn(17,1)}）", f"HX711 DT（{hn(15,1)}）", "重さのデータ"],
-        ["blue", f"XIAO D1（{hn(17,2)}）", f"HX711 SCK（{hn(15,2)}）", "読み取りの合図"],
-        ["black", f"HX711 GND（{hn(15,0)}）", f"{hn(24,0)} → {hn(24,8)} → {hn(23,8)} → {hn(23,13)}", f"−の線。XIAO GND（{hn(23,2)}）も {hn(24,2)} でつなぐ"],
-        ["red", f"XIAO 3V3（{hn(23,3)}）", f"{hn(22,3)} → {hn(22,8)}（XIAO の下）→ {hn(21,8)} → {hn(21,13)}", "＋の線"],
-        ["red", f"HX711 VCC（{hn(15,3)}）", f"{hn(16,3)} → {hn(16,9)} → {hn(21,9)}（＋の線）", "HX711 の電源"],
-        ["red", "電池ケースの ＋ ピン", f"{hn(21,13)}", "線ではんだ付け"],
-        ["black", "電池ケースの − ピン", f"{hn(23,13)}", "線ではんだ付け"],
-    ], [100, 260, 470, 450], "つなぐ線（穴の位置は 行の文字＋列の数字）")
+        ["yellow", f"XIAO D0（{hn(17,3)}）", f"HX711 DT（{hn(15,3)}）", "重さのデータ"],
+        ["blue", f"XIAO D1（{hn(17,4)}）", f"HX711 SCK（{hn(15,4)}）", "読み取りの合図"],
+        ["black", f"HX711 GND（{hn(15,2)}）", f"{hn(19,2)} → {hn(19,4)} → {hn(19,11)}（XIAO の下）→ {hn(17,11)}", "−の線"],
+        ["black", f"XIAO GND（{hn(23,4)}）", f"{hn(19,4)}（−の線）", "XIAO の −"],
+        ["black", f"{hn(19,11)}（−の線）", f"{hn(20,11)}", "0.1µF の −側"],
+        ["red", f"HX711 VCC（{hn(15,5)}）", f"{hn(16,5)} → {hn(16,13)} → {hn(21,13)} → {hn(21,10)} → {hn(22,10)} → {hn(22,5)}", "＋の線"],
+        ["red", f"{hn(22,5)}（＋の線）", f"XIAO 3V3（{hn(23,5)}）", "XIAO の ＋"],
+        ["red", "電池ケースの ＋ 電極", f"{hn(17,13)}", "線ではんだ付け"],
+        ["black", "電池ケースの − 電極", f"{hn(17,11)}", "線ではんだ付け"],
+    ], [100, 260, 560, 360], "つなぐ線（穴の位置は 行の文字＋列の数字）")
     y = table(s, 60, y + 50, [
         ["部品", "数", "置き場所・メモ"],
-        ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(17,1)}〜{hn(23,7)}"],
-        ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(15,0)}〜{hn(15,3)}（GND・DT・SCK・VCC）。本体は左へ寝かせる"],
+        ["Seeed XIAO BLE nRF52840 ＋ ピンヘッダ 7ピン×2（XIAO 側）＋ ピンソケット 7ピン×2（基板側）", "1", f"{hn(17,3)}〜{hn(23,9)}"],
+        ["HX711 モジュール ＋ ピンヘッダ 4ピン", "1", f"{hn(15,2)}〜{hn(15,5)}（GND・DT・SCK・VCC）。本体は左へ寝かせる"],
         ["ロードセル SC601 120kg", "1", "HX711 の E+・E-・A-・A+ に直接はんだ付け"],
-        ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(21,10)}・{hn(23,10)}（向きなし）"],
-        ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(21,12)}・{hn(23,12)}"],
-        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", "切り欠きに置き、ピンと基板を線でつなぐ"],
-        ["タカチ ユニバーサル基板 TNF39-70・すずめっき線", "1", "左下 44×22mm を切り取る"],
-    ], [560, 60, 540], "部品表")
-    L = NOTES + [
-        "・左下の 44×22mm を、のこぎりやニッパーで切り取る（切り口はやすりで平らに）。電池ケース（43×18mm）が入る大きさ。左下の取付穴はなくなるので、残りの 3つで留める。",
-        f"・＋の線は裏の {hn(22,3)}〜{hn(22,8)} を通る。ここは XIAO の真下だが、XIAO のピンは 18 列と 24 列だけなので触れない。",
-        "・電池ケースのピンには、ケースを置いてから長さを合わせた線をはんだ付けする。ケースは両面テープなどでケースの底に固定。",
+        ["絶縁ラジアルリード型積層セラミックコンデンサー 100µF 6.3V 5mm", "1", f"{hn(18,11)}・{hn(18,13)}（向きなし）"],
+        ["積層セラミックコンデンサー 0.1µF 50V C0G 5mm", "1", f"{hn(20,11)}・{hn(20,13)}"],
+        ["CR123A 用電池ケース（秋月 110192）／ CR123A 電池", "各1", "裏の出っ張りを切り取り、切り欠きに置いて電極と基板を線でつなぐ"],
+        ["タカチ ユニバーサル基板 TNF39-70・すずめっき線", "1", "左下 20×45mm を切り取り、白丸 3か所を 2.5mm 穴に広げる"],
+        ["タカチ TW5-3-9B ／ M2.5 ビス EM-2.3-8", "1／3", "左下のスペーサー台座を切り取り、基板を 3か所で留める"],
+    ], [700, 60, 520], "部品表")
+    L = NOTES[:-1] + [
+        "・白い丸は取付穴（3か所、2.5mm のドリルで広げる。位置は目安なので実物で確認）。× の穴（A1〜C2、A23〜B25・C24〜C25、L23〜N25）はネジに当たるので使わない。",
+        "・左下 20×45mm を、のこぎりやニッパーで切り取る（切り口はやすりで平らに）。切る線は 16 列と 17 列の間、G 行と H 行の間（17 列と G 行の穴は残す）。",
+        "・ケース TW5-3-9B の左下のスペーサー台座（基板を留める柱）は、電池ケースが入るように切り取る。基板は残りの 3か所をビスで留める。",
+        "・電池ケースは裏の出っ張りを切り取って、プラスチックと電極 2つだけにする。ケースの底に両面テープなどで固定し、長さを合わせた線を電極にはんだ付け。",
+        f"・−の線（{hn(19,2)}〜{hn(19,11)}・{hn(19,4)}〜{hn(23,4)}）と ＋の線（{hn(22,5)}〜{hn(22,10)}）は XIAO の真下の裏を通るが、XIAO のピンは 18 列と 24 列だけなので触れない。",
+        "・XIAO の右上の角は、右上のネジ（A〜C 行の 23〜25 列）の近くになる。XIAO はピンソケットで浮いているので当たらない見込みだが、組み立てる前に確かめる。",
         "・HX711 の大きさは製品によって違う。幅が広いと切り欠きの上に張り出すので、電池ケース（高さ 14mm）に当たらないか確認する。",
     ]
     notes(s, 60, y + 20, L)
