@@ -51,6 +51,10 @@ if (is_post()) {
                 if ($hid !== $newId) $x['sensors'] = array_values(array_diff((array)($x['sensors'] ?? []), $sel));
             }
             unset($x);
+            // 蜂場の温湿度センサ (蜂場の気温・湿度) に選ばれていたものは、蜂場から外す (1台は1か所にだけ)
+            foreach ((array)($s['apiaries'] ?? []) as $aid => $a) {
+                if (is_array($a) && isset($a['ths'])) $s['apiaries'][$aid]['ths'] = array_values(array_diff((array)$a['ths'], $sel));
+            }
             $old = $s['hives'][$newId] ?? ['created' => time()];
             $s['hives'][$newId] = array_merge($old, [
                 'apiary' => $to, 'name' => $name, 'state' => $state, 'started' => date_in('started'),
@@ -101,6 +105,8 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
     $sensors = array_filter($sensors, fn($sn) => $sn['o'] === $own);
     $owner = [];
     foreach ($site['hives'] as $hid => $x) foreach ((array)($x['sensors'] ?? []) as $v) $owner[$v] = $hid;
+    $apTh = [];   // 蜂場の温湿度センサ (蜂場の気温・湿度) に選ばれているもの
+    foreach ($site['apiaries'] as $x => $a) foreach ((array)($a['ths'] ?? []) as $v) $apTh[$v] = (string)$a['name'];
     $o = '<form method="post" class="form" data-cf>' . csrf_field() . '<input type="hidden" name="act" value="hive_save"><input type="hidden" name="id" value="' . h($id) . '">'
         . '<div class="grid2"><p><label>巣箱の名前 (必須)</label><input type="text" name="name" maxlength="40" required value="' . h((string)($hv['name'] ?? '')) . '"></p>'
         . '<p><label>蜂場</label><select name="apiary">';
@@ -128,6 +134,7 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
             . '<input type="checkbox" name="sensors[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">[' . h(kind_text($s['kind'])) . '] ' . h($s['hubName']) . ($s['retired'] ? ' (外した)' : '') . '</span>'
             . (isset($owner[$k]) && $owner[$k] !== $id ? ' <span class="muted">(今は「' . h(target_label($site, (string)($site['hives'][$owner[$k]]['apiary'] ?? ''), $owner[$k])) . '」。選ぶとこちらに移ります)</span>' : '')
+            . (isset($apTh[$k]) ? ' <span class="muted">(今は蜂場「' . h($apTh[$k]) . '」の気温・湿度。選ぶと蜂場から外れて、この巣箱に移ります)</span>' : '')
             . ' <span class="ng cf-x" style="display:none">(この蜂場の HPX-Core のセンサではありません。チェックを外して保存すると、もう選べません)</span>'
             . '</span>';
     }
@@ -200,10 +207,11 @@ if ($canEdit) echo '<a class="add' . ($hsel === 'new' ? ' on' : '') . '" href="'
 echo '</div>';
 if (!$hives && !$canEdit) echo '<p class="muted">この蜂場には巣箱が登録されていません。</p>';
 
-// グラフの色: 重量は青、温度は赤、湿度は緑。1つの巣箱にセンサが2台以上あるときは、2台目から破線にする
-const H_C_W = '#1565c0';
-const H_C_T = '#D55E00';
-const H_C_H = '#56B4E9';
+// グラフの色 (hpx_site.php の S_C_*): 重量は黒、温度は赤、湿度は青。蜂場の気温はピンク、蜂場の湿度は水色。
+//   1つの巣箱にセンサが2台以上あるときは、2台目から破線にする
+const H_C_W = S_C_W;
+const H_C_T = S_C_T;
+const H_C_H = S_C_H;
 const H_DASH = ['', '7 4', '2 3', '10 3 2 3'];
 $memos = memos_load();
 usort($memos, fn($x, $y) => [$y['date'] ?? '', $y['created'] ?? 0] <=> [$x['date'] ?? '', $x['created'] ?? 0]);
@@ -294,6 +302,15 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     } elseif ($nw > 0) {
         $wHow = ' <span class="muted" style="font-size:.7em">較正していない重量センサがあるため、巣箱の重さを出せません</span>';
     }
+    // 蜂場の温湿度センサ (蜂場ページで選んだもの) があれば、蜂場の気温 (ピンク)・湿度 (水色) も同じグラフに出す
+    $atS = []; $ahS = [];
+    $apTh = apiary_th($site['apiaries'][$aid] ?? [], $sensors, $since);
+    foreach ($apTh as $i => $x) {
+        $nm = '蜂場' . (count($apTh) > 1 ? ' ' . $x['name'] : '');
+        $atS[] = [$nm, S_C_AT, $x['t'], H_DASH[$i % count(H_DASH)]];
+        $ahS[] = [$nm, S_C_AH, $x['h'], H_DASH[$i % count(H_DASH)]];
+    }
+    foreach ($apTh as $x) if ($x['t'] && (!$first || $x['t'][0][0] < $first)) $first = $x['t'][0][0];
     // グラフは上から 重量、温度と湿度(1つのグラフ。温度は左の目盛り、湿度は右の目盛り)。記録が無くても枠は出す
     $from = $per === 0 ? ($first > 0 ? min($first, $now - 3600) : $now - 86400) : $since;
     // パソコン用とスマホ用(幅を狭くして、目盛りの数字が小さくなりすぎないようにしたもの)を作り、画面の幅で出し分ける
@@ -318,8 +335,14 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     if ($conf['t_lo'] !== null) $tl[] = '下限 ' . h((string)$conf['t_lo']) . '℃';
     echo '<p class="gt"><span style="color:' . H_C_W . '">重量 (kg)</span>' . $wHow . $wb . '</p>' . $dual($wS, [], 0.5, 0, H_C_W, '#666', ['l' => ['重量', 'kg', 2]])
         . '<p class="gt"><span style="color:' . H_C_T . '">温度 (℃)</span>・<span style="color:' . H_C_H . '">湿度 (%)</span>'
+        . ($apTh ? '・<span style="color:' . S_C_AT . '">蜂場の気温</span>・<span style="color:' . S_C_AH . '">蜂場の湿度</span>' : '')
         . ' <span class="muted" style="font-size:.7em">温度は左、湿度は右の目盛り</span>' . '</p>'
-        . $dual($tS, $hS, 2, 5, H_C_T, H_C_H, ['l' => ['温度', '℃', 1], 'r' => ['湿度', '%', 1]]);
+        . $dual(array_merge($tS, $atS), array_merge($hS, $ahS), 2, 5, H_C_T, H_C_H, ['l' => ['温度', '℃', 1], 'r' => ['湿度', '%', 1]]);
+    if (count($apTh) > 1) {
+        $lg = [];
+        foreach ($atS as $i => $x) $lg[] = '<span style="color:' . S_C_AT . '">' . ($i === 0 ? '━' : '┅') . '</span> ' . h('蜂場 ' . $apTh[$i]['name']);
+        echo '<p class="muted" style="margin:.2em 0">' . implode('　', $lg) . '</p>';
+    }
     // センサが2台以上あるときだけ、線の種類とセンサ名の対応を出す
     $legend = [];
     foreach ([$wS, $tS] as $ser) {

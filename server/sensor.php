@@ -622,10 +622,10 @@ $siteJson = json_decode((string)@file_get_contents(account_site_dir($UID) . '/si
 foreach ((is_array($siteJson['apiaries'] ?? null) ? $siteJson['apiaries'] : []) as $aid => $ap) {
     if (in_array($hubId, (array)($ap['hubs'] ?? []), true)) { $place = (string)($ap['name'] ?? ''); $placeId = (string)$aid; break; }
 }
-// センサの紐づけ先(蜂場・巣箱ページで選んだもの)。キーは "ハブid/mac"。温湿度・重量は巣箱、電柵アラートは蜂場
+// センサの紐づけ先(蜂場・巣箱ページで選んだもの)。キーは "ハブid/mac"。温湿度・重量は巣箱、電柵アラートと蜂場の温湿度センサは蜂場
 $where = [];
 $siteAp = is_array($siteJson['apiaries'] ?? null) ? $siteJson['apiaries'] : [];
-foreach ($siteAp as $aid => $ap) foreach ((array)($ap['fences'] ?? []) as $k) $where[(string)$k] = [(string)($ap['name'] ?? ''), 'apiary.php?' . http_build_query(['a' => (string)$aid]) . '#a-' . $aid];   // sensor.php は hpx_site.php を読まないので apiary_url() は使えない
+foreach ($siteAp as $aid => $ap) foreach (array_merge((array)($ap['fences'] ?? []), (array)($ap['ths'] ?? [])) as $k) $where[(string)$k] = [(string)($ap['name'] ?? ''), 'apiary.php?' . http_build_query(['a' => (string)$aid]) . '#a-' . $aid];   // sensor.php は hpx_site.php を読まないので apiary_url() は使えない
 foreach ((is_array($siteJson['hives'] ?? null) ? $siteJson['hives'] : []) as $hid => $hv) {
     $aid = (string)($hv['apiary'] ?? '');
     foreach ((array)($hv['sensors'] ?? []) as $k) $where[(string)$k] = [(string)($siteAp[$aid]['name'] ?? '') . ' / ' . (string)($hv['name'] ?? ''), 'hive.php?' . http_build_query(['a' => $aid, 'h' => $hid])];

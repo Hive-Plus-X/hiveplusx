@@ -4,7 +4,7 @@
 //   前の記録がどの巣箱のものだったか分からなくなる。そこで、つながりが変わるたびに site/links.json に書き足す。
 //   site/links.json: {"cur": {キー: 今のつながり先}, "log": [{t, time, key, to, to_name, first?}, ...] 古い順}
 //     キー  hv:<巣箱id>          … 巣箱がどの蜂場にあるか       (to = 蜂場id)
-//           s:<HPX-CoreのID>/<MAC> … 温湿度・重量センサの巣箱     (to = 巣箱id)
+//           s:<HPX-CoreのID>/<MAC> … 温湿度・重量センサの巣箱     (to = 巣箱id。蜂場の温湿度センサ=蜂場の気温・湿度なら a:蜂場id)
 //           f:<HPX-CoreのID>/<MAC> … 電柵アラートセンサの蜂場     (to = 蜂場id)
 //           core:<HPX-CoreのID>    … HPX-Core を置いた蜂場       (to = 蜂場id。2つ以上なら「,」でつなぐ)
 //           cam:<カメラID>         … HPX-CAM の巣箱 (巣箱が無ければ蜂場) (to = 巣箱id か a:蜂場id)
@@ -36,6 +36,7 @@ function link_state(string $owner): array
         if (!is_array($a)) continue;
         $aid = (string)$aid;
         foreach ((array)($a['fences'] ?? []) as $v) if (!isset($removed[(string)$v])) $out['f:' . $v] = [$aid, $apName($aid)];
+        foreach ((array)($a['ths'] ?? []) as $v) if (!isset($removed[(string)$v])) $out['s:' . $v] = ['a:' . $aid, $apName($aid) . ' (蜂場の気温・湿度)'];
         foreach ((array)($a['hubs'] ?? []) as $v) $cores[(string)$v][] = $aid;
     }
     foreach ($cores as $hub => $ids) {
