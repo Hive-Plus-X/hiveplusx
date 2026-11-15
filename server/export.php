@@ -46,10 +46,10 @@ $rows = [];
 foreach ($site['apiaries'] as $aid => $a) {
     $rows[] = array_merge([$a['name'] ?? '', $a['address'] ?? '', $a['map_q'] ?? '', isset($a['hive_count']) ? (int)$a['hive_count'] : '', count(hives_of($site, (string)$aid)),
         $a['owner'] ?? '', $a['note'] ?? '', array_map($sname, (array)($a['hubs'] ?? [])), array_map($sname, (array)($a['fences'] ?? [])),
-        $dt($a['created'] ?? 0), $dt($a['updated'] ?? 0)], $team ? [$who($a['_o'])] : [], [(string)$aid]);
+        array_map($sname, (array)($a['ths'] ?? [])), $dt($a['created'] ?? 0), $dt($a['updated'] ?? 0)], $team ? [$who($a['_o'])] : [], [(string)$aid]);
 }
 csv_add($zip, '蜂場.csv', array_merge(['蜂場', '所在地住所', '緯度・経度', '巣箱数 (手入力)', '登録した巣箱', '地主・連絡先', '説明・備考', 'HPX-Core', '電柵',
-    '作成', '更新'], $team ? ['持ち主'] : [], ['蜂場ID']), $rows);
+    '温湿度 (蜂場)', '作成', '更新'], $team ? ['持ち主'] : [], ['蜂場ID']), $rows);
 
 // ---- 巣箱 ----
 $rows = [];

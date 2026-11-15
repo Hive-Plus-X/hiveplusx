@@ -200,7 +200,7 @@ function hub_apiaries(string $owner, string $hubId): array
 {
     $out = [];
     foreach ((array)(owner_site($owner)['apiaries'] ?? []) as $aid => $a) {
-        $keys = array_map('strval', array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? [])));
+        $keys = array_map('strval', array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? []), (array)($a['ths'] ?? [])));
         if (in_array($hubId, $keys, true) || array_filter($keys, fn($k) => str_starts_with($k, $hubId . '/'))) $out[] = (string)$aid;
     }
     return $out;

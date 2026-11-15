@@ -23,6 +23,13 @@ const S_TH_MISSING_S = 3600;
 const S_W_MISSING_S = 5400;
 const S_SOON_DAYS = 3;               // タスクの期限がこの日数以内なら「もうすぐ」
 const S_COLORS = ['#1565c0', '#c62828', '#2e7d32', '#6a1b9a', '#ef6c00', '#00838f', '#5d4037', '#ad1457', '#827717', '#455a64'];   // 10台まで別の色 (HPX-Core v1.19 は最大10台)
+// 蜂場・巣箱ページのグラフの色 (2026-11-16 TARO 指定): 巣箱の温度=赤 (朱色)・湿度=青・重量=黒、蜂場の気温=ピンク・湿度=水色
+//   ピンクは色覚の違いがあっても見分けやすい Okabe-Ito の色 (赤紫)
+const S_C_W = '#222222';
+const S_C_T = '#D55E00';
+const S_C_H = '#1565c0';
+const S_C_AT = '#CC79A7';
+const S_C_AH = '#56B4E9';
 const S_HIVE_STATES = ['健全', '弱群', '要観察', '無王'];   // 「空き箱」は 2026-10-28 に外した(前に選んだ巣箱はそのまま出す)
 const S_MEMO_TYPES = ['内検', 'ミツバチ', 'トラブル', '開花植物', 'その他'];
 // 名前を変えた内容とタグ (前の名前 => 今の名前)。前に書いたメモも、読むときに今の名前にする (2026-10-26)
@@ -584,6 +591,7 @@ JS;
 //   フォームに data-cf を付け、センサの行 (.cf) に data-hub="ハブid"、今の紐づけ先がこのフォームなら data-keep="1"。
 //   どの HPX-Core が選ばれているかは、巣箱フォームは蜂場の選択肢 (option の data-hubs、JSON)、蜂場フォームは hubs[] のチェック。
 //   ほかの HPX-Core のセンサは隠して送らない。前から紐づいているものだけは注意書き付きで残し、外せるようにする。
+//   1つのフォームにセンサの欄が2つ以上あるときは、欄ごとに data-cfg を付ける (「ありません」の文を欄ごとに出す)。
 //   1ページに何度出しても script は1回だけ
 function core_filter_js(): string
 {
@@ -601,17 +609,19 @@ function core_filter_js(): string
     } else {
       f.querySelectorAll('input[name="hubs[]"]').forEach(function(c){ if (c.checked) allow[c.value] = 1; });
     }
-    var n = 0;
     f.querySelectorAll('.cf').forEach(function(r){
       var ok = allow[r.getAttribute('data-hub')] === 1, keep = r.getAttribute('data-keep') === '1';
       var c = r.querySelector('input'), x = r.querySelector('.cf-x');
       r.style.display = (ok || keep) ? 'block' : 'none';
       c.disabled = !(ok || keep);
       if (x) x.style.display = ok ? 'none' : '';
-      if (ok || keep) n++;
     });
-    var none = f.querySelector('.cf-none');
-    if (none) none.style.display = n ? 'none' : '';
+    // 「ありません」の文は、同じ欄 (data-cfg、無ければフォーム全体) に出ているセンサが1つも無いときだけ出す
+    f.querySelectorAll('.cf-none').forEach(function(none){
+      var g = none.closest('[data-cfg]') || f, n = 0;
+      g.querySelectorAll('.cf').forEach(function(r){ if (r.style.display !== 'none') n++; });
+      none.style.display = n ? 'none' : '';
+    });
   }
   function init(){
     document.querySelectorAll('form[data-cf]').forEach(function(f){
@@ -889,7 +899,7 @@ function shared_devices(): array
     foreach ($site['apiaries'] as $a) {
         if ($a['_o'] === $UID) continue;
         $out[$a['_o']] ??= [];
-        foreach (array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? [])) as $k) $out[$a['_o']][(string)$k] = 1;
+        foreach (array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? []), (array)($a['ths'] ?? [])) as $k) $out[$a['_o']][(string)$k] = 1;
         if ($a['_r'] === 'admin') $out[$a['_o']]['*free'] = [];
     }
     foreach ($site['hives'] as $x) {
@@ -900,7 +910,7 @@ function shared_devices(): array
         if (!isset($keys['*free'])) continue;
         $used = [];   // 持ち主のどこかの蜂場・巣箱に紐づいているもの
         $raw = owner_site((string)$o);
-        foreach ((array)($raw['apiaries'] ?? []) as $a) foreach (array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? [])) as $k) $used[(string)$k] = 1;
+        foreach ((array)($raw['apiaries'] ?? []) as $a) foreach (array_merge((array)($a['hubs'] ?? []), (array)($a['fences'] ?? []), (array)($a['ths'] ?? [])) as $k) $used[(string)$k] = 1;
         foreach ((array)($raw['hives'] ?? []) as $x) foreach ((array)($x['sensors'] ?? []) as $k) $used[(string)$k] = 1;
         foreach (glob(account_hubs_dir((string)$o) . '/*/state.json') ?: [] as $p) {
             $hid = basename(dirname($p));
@@ -961,6 +971,21 @@ function hpx_sensors(bool $withRemoved = false): array
 }
 
 function kind_text(string $k): string { return ['th' => '温湿度', 'w' => '重量', 'fa' => '電柵アラート'][$k] ?? $k; }
+
+// 蜂場の温湿度 (蜂場ページで選んだ温湿度センサ = 蜂場の気温・湿度、2026-11-16)。巣箱のセンサとは別に、蜂場の site.json の ths に持つ。
+//   センサごとに ['name' => 名前, 't' => [[epoch, 温度], ...], 'h' => [[epoch, 湿度], ...]]。削除したセンサ (hpx_sensors に無いもの) は出さない
+function apiary_th(array $a, array $sensors, int $since): array
+{
+    $out = [];
+    foreach ((array)($a['ths'] ?? []) as $k) {
+        if (($sensors[$k]['kind'] ?? '') !== 'th') continue;
+        $sn = $sensors[$k];
+        $r = ble_data($sn['hub'], $since)['th'][$sn['mac']] ?? [];
+        $out[] = ['name' => $sn['name'], 't' => array_map(fn($p) => [$p[0], $p[1]], $r),
+            'h' => array_values(array_map(fn($p) => [$p[0], $p[2]], array_filter($r, fn($p) => $p[2] !== null)))];
+    }
+    return $out;
+}
 
 // ble.csv(ハブごと)を1回だけ読む。th: mac => [[epoch, 温度, 湿度, 電池%]]  w: mac => [[epoch, 生の値]]  first: 最古の時刻
 function ble_data(string $hubId, int $since): array
@@ -1055,7 +1080,7 @@ function thin(array $pts, int $from, int $to): array
 
 // 折れ線グラフ(SVG)と凡例。$series: [[名前, 色, [[epoch, 値], ...]], ...]
 // $W・$H・$fs で大きさを変えられる(蜂場ページの小さなグラフ用)
-function chart_svg(array $series, int $from, int $to, string $unit, float $minSpan, int $W = 600, int $H = 240, int $fs = 15, bool $frameIfEmpty = false): string
+function chart_svg(array $series, int $from, int $to, string $unit, float $minSpan, int $W = 600, int $H = 240, int $fs = 15, bool $frameIfEmpty = false, bool $legend = true): string
 {
     $L = (int)round($fs * 3.3); $R = 10; $T = 14; $B = $fs * 2;
     $min = INF; $max = -INF;
@@ -1108,7 +1133,7 @@ function chart_svg(array $series, int $from, int $to, string $unit, float $minSp
         }
     }
     $o .= '</svg>';
-    if (count($series) > 1) {
+    if ($legend && count($series) > 1) {
         $o .= '<p class="muted">';
         foreach ($series as $s) $o .= '<span style="color:' . $s[1] . '">■</span> ' . h($s[0]) . '　';
         $o .= '</p>';

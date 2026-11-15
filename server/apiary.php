@@ -138,6 +138,10 @@ if (is_post()) {
         $before = $id !== '' ? array_map('strval', (array)($site['apiaries'][$id]['fences'] ?? [])) : [];
         $selFences = array_values(array_filter((array)($_POST['fences'] ?? []), fn($v) => ($sensors[(string)$v]['kind'] ?? '') === 'fa' && $sensors[(string)$v]['o'] === $owner
             && (in_array((string)$sensors[(string)$v]['hub'], array_map('strval', $selHubs), true) || in_array((string)$v, $before, true))));
+        // 蜂場の温湿度センサ (蜂場の気温・湿度)。電柵と同じく、この蜂場の HPX-Core に登録されたものか、前からこの蜂場のもの
+        $beforeTh = $id !== '' ? array_map('strval', (array)($site['apiaries'][$id]['ths'] ?? [])) : [];
+        $selThs = array_values(array_filter((array)($_POST['ths'] ?? []), fn($v) => ($sensors[(string)$v]['kind'] ?? '') === 'th' && $sensors[(string)$v]['o'] === $owner
+            && (in_array((string)$sensors[(string)$v]['hub'], array_map('strval', $selHubs), true) || in_array((string)$v, $beforeTh, true))));
         // 新しい蜂場は、選んだチーム(自分が管理者のもの)の全員に共有する
         $share = [];
         if ($id === '') foreach ((array)($_POST['share'] ?? []) as $tid) if (team_role((string)$tid, $UID) === 'admin') $share[(string)$tid] = null;
@@ -159,15 +163,20 @@ if (is_post()) {
             @unlink(site_dir() . '/photos/' . $newId . '_t.jpg');
             $photo = '';
         }
-        site_update('site', function (array $s) use ($newId, $name, $selHubs, $selFences, $photo, $share) {
+        site_update('site', function (array $s) use ($newId, $name, $selHubs, $selFences, $selThs, $photo, $share) {
             $s['apiaries'] = is_array($s['apiaries'] ?? null) ? $s['apiaries'] : [];
             // ハブ・電柵センサは1つの蜂場にだけ紐づける(ほかの蜂場からは外す)
             foreach ($s['apiaries'] as $aid => &$a) {
                 if ($aid === $newId) continue;
                 $a['hubs'] = array_values(array_diff((array)($a['hubs'] ?? []), $selHubs));
                 $a['fences'] = array_values(array_diff((array)($a['fences'] ?? []), $selFences));
+                $a['ths'] = array_values(array_diff((array)($a['ths'] ?? []), $selThs));
             }
             unset($a);
+            // 温湿度センサは1台を1か所 (蜂場か巣箱) にだけ。蜂場に選んだものは巣箱から外す
+            foreach ((array)($s['hives'] ?? []) as $hid => $x) {
+                if (is_array($x)) $s['hives'][$hid]['sensors'] = array_values(array_diff((array)($x['sensors'] ?? []), $selThs));
+            }
             // 新しい蜂場は最後に並べる(並び順は一覧の「並び替え」で変える)
             $old = $s['apiaries'][$newId] ?? ['created' => time(), 'by' => $GLOBALS['UID'], 'share' => $share,
                 'order' => $s['apiaries'] ? max(array_map(fn($x) => (int)($x['order'] ?? 0), $s['apiaries'])) + 1 : 0];
@@ -176,7 +185,7 @@ if (is_post()) {
                 'owner' => str_in('owner', 200),
                 // 巣箱数(手入力)。巣箱を1つずつ登録せずに蜂場単位で管理する人向け。空なら登録した巣箱の数を出す
                 'hive_count' => is_numeric($_POST['hive_count'] ?? '') && (int)$_POST['hive_count'] >= 0 ? min(9999, (int)$_POST['hive_count']) : null,
-                'note' => str_in('note'), 'hubs' => $selHubs, 'fences' => $selFences,
+                'note' => str_in('note'), 'hubs' => $selHubs, 'fences' => $selFences, 'ths' => $selThs,
                 'updated' => time(),
             ]);
             return $s;
@@ -217,9 +226,13 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
     foreach ($site['apiaries'] as $aid => $x) {
         foreach ((array)($x['hubs'] ?? []) as $v) $owner[$v] = $aid;
         foreach ((array)($x['fences'] ?? []) as $v) $owner[$v] = $aid;
+        foreach ((array)($x['ths'] ?? []) as $v) $owner[$v] = $aid;
     }
+    $inHive = [];   // 巣箱に付いている温湿度センサ (蜂場に選ぶと、巣箱から外れる)
+    foreach ($site['hives'] as $hid => $x) foreach ((array)($x['sensors'] ?? []) as $v) $inHive[$v] = target_label($site, (string)($x['apiary'] ?? ''), (string)$hid);
     $other = fn(string $k) => isset($owner[$k]) && $owner[$k] !== $id
-        ? ' <span class="muted">(今は「' . h((string)$site['apiaries'][$owner[$k]]['name']) . '」。選ぶとこちらに移ります)</span>' : '';
+        ? ' <span class="muted">(今は「' . h((string)$site['apiaries'][$owner[$k]]['name']) . '」。選ぶとこちらに移ります)</span>'
+        : (isset($inHive[$k]) ? ' <span class="muted">(今は巣箱「' . h($inHive[$k]) . '」。選ぶと巣箱から外れて、この蜂場の気温・湿度になります)</span>' : '');
     // 地図で選ぶときの最初の中心: この蜂場の位置がなければ、ほかの蜂場のどれかの位置 (なければ日本全体)
     $pickC = '';
     foreach ($site['apiaries'] as $x) if ($ll = apiary_latlng($x)) { $pickC = $ll[0] . ',' . $ll[1]; break; }
@@ -243,7 +256,7 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         $o .= '<span style="display:block"><input type="checkbox" name="hubs[]" value="' . h($hid) . '"' . ($on ? ' checked' : '') . '> '
             . h($hb['name']) . ' <span class="muted">' . h($hid) . ($hb['retired'] ? ' (外した)' : '') . '</span>' . $other($hid) . '</span>';
     }
-    $o .= '</p><p><label>この蜂場の電柵アラートセンサ (上で選んだ HPX-Core に登録されたものだけ出ます)</label>';
+    $o .= '</p><p data-cfg><label>この蜂場の電柵アラートセンサ (上で選んだ HPX-Core に登録されたものだけ出ます)</label>';
     $fa = array_filter($sensors, fn($s) => $s['kind'] === 'fa');
     $o .= '<span class="muted cf-none">' . ($fa ? '上で選んだ HPX-Core に登録された電柵アラートセンサがありません。'
         : '電柵アラートセンサはまだ登録されていません (HPX-Core の管理画面で登録します)。') . '</span>';
@@ -253,6 +266,20 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         if ($s['retired'] && !in_array($k, $mine, true)) continue;   // 外した HPX-Core のセンサは、今付いているときだけ出す
         $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
             . '<input type="checkbox" name="fences[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
+            . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k)
+            . ' <span class="ng cf-x" style="display:none">(この蜂場の HPX-Core のセンサではありません。チェックを外して保存すると、もう選べません)</span></span>';
+    }
+    // 蜂場の温湿度センサ (巣箱の中ではなく、蜂場の気温・湿度を測るもの)。選んだものは蜂場ページと巣箱ページのグラフに出す
+    $o .= '</p><p data-cfg><label>この蜂場の温湿度センサ (蜂場の気温・湿度として、グラフにピンクと水色の線で出します。上で選んだ HPX-Core に登録されたものだけ出ます)</label>';
+    $th = array_filter($sensors, fn($s) => $s['kind'] === 'th');
+    $o .= '<span class="muted cf-none">' . ($th ? '上で選んだ HPX-Core に登録された温湿度センサがありません。'
+        : '温湿度センサはまだ登録されていません (HPX-Core の管理画面で登録します)。') . '</span>';
+    $mine = array_map('strval', (array)($a['ths'] ?? []));
+    foreach ($th as $k => $s) {
+        $k = (string)$k;
+        if ($s['retired'] && !in_array($k, $mine, true)) continue;
+        $o .= '<span class="cf" style="display:block" data-hub="' . h($s['hub']) . '"' . (in_array($k, $mine, true) ? ' data-keep="1"' : '') . '>'
+            . '<input type="checkbox" name="ths[]" value="' . h($k) . '"' . (in_array($k, $mine, true) ? ' checked' : '') . '> '
             . h($s['name']) . ' <span class="muted">(' . h($s['hubName']) . ($s['retired'] ? '・外した' : '') . ')</span>' . $other($k)
             . ' <span class="ng cf-x" style="display:none">(この蜂場の HPX-Core のセンサではありません。チェックを外して保存すると、もう選べません)</span></span>';
     }
@@ -604,9 +631,13 @@ foreach ($tiles as $aid => $a) {
     // 平均のグラフ(小さく、3日分)
     $avg = apiary_avg($hv, $sensors, $since);
     // 記録がないグラフも枠だけ出して、ボックスの大きさをそろえる。高さは巣箱ページのグラフより低く
-    // 上が重量(青)、下が温度(赤)。巣箱ページと同じ色
-    echo '<div class="mini"><p class="muted">巣箱重量 (kg) ／' . $avg['n']['w'] . '群平均</p>' . chart_svg([['平均重量', '#1565c0', $avg['w']]], $since, $now, 'kg', 0.5, 400, 96, 11, true)
-        . '<p class="muted">中心温度 (℃) ／' . $avg['n']['t'] . '群平均</p>' . chart_svg([['平均温度', '#D55E00', $avg['t']]], $since, $now, '℃', 2, 400, 96, 11, true)
+    // 上が重量(黒)、下が温度(赤)。巣箱ページと同じ色。蜂場の温湿度センサがあれば、温度のグラフに蜂場の気温(ピンク)も出す
+    $tSer = [['平均温度', S_C_T, $avg['t']]];
+    foreach (apiary_th($a, $sensors, $since) as $x) $tSer[] = ['蜂場の気温 ' . $x['name'], S_C_AT, $x['t']];
+    echo '<div class="mini"><p class="muted">巣箱重量 (kg) ／' . $avg['n']['w'] . '群平均</p>' . chart_svg([['平均重量', S_C_W, $avg['w']]], $since, $now, 'kg', 0.5, 400, 96, 11, true)
+        . '<p class="muted"><span style="color:' . S_C_T . '">中心温度</span> (℃) ／' . $avg['n']['t'] . '群平均'
+            . (count($tSer) > 1 ? '・<span style="color:' . S_C_AT . '">蜂場の気温</span>' : '') . '</p>'
+        . chart_svg($tSer, $since, $now, '℃', 2, 400, 96, 11, true, false)
         . '<p class="muted">直近3日。巣箱ごとのグラフは<a href="hive.php?' . h(http_build_query(['a' => $aid])) . '">巣箱ページ</a></p></div>';
 
     echo '<div class="bottom"><h3 style="margin-top:.8em">タスク</h3>' . todo_brief($site, $aid, '', true, apiary_url($aid));
@@ -619,6 +650,16 @@ foreach ($tiles as $aid => $a) {
     echo '<dt>地主・連絡先</dt><dd>' . (($a['owner'] ?? '') !== '' ? h((string)$a['owner']) : '<span class="muted">-</span>') . '</dd>';
     echo '<dt>HPX-Core</dt><dd>' . ($hubTxt ? implode('<br>', $hubTxt) : '<span class="muted">未設定</span>') . '</dd>';
     echo '<dt>電柵</dt><dd>' . ($faTxt ? implode('<br>', $faTxt) : '<span class="muted">未設定</span>') . '</dd>';
+    // 蜂場の温湿度センサの今の値
+    $thTxt = [];
+    foreach ((array)($a['ths'] ?? []) as $k) {
+        if (($sensors[$k]['kind'] ?? '') !== 'th') continue;
+        $r = ble_data($sensors[$k]['hub'], $since)['th'][$sensors[$k]['mac']] ?? [];
+        $last = $r ? $r[count($r) - 1] : null;
+        $thTxt[] = h($sensors[$k]['name']) . ' ' . ($last ? h(number_format($last[1], 1) . ' ℃' . ($last[2] !== null ? '・' . number_format($last[2], 1) . ' %' : ''))
+            . ' <span class="muted">' . h(ago_text((int)$last[0], $now)) . '</span>' : '<span class="muted">直近の記録なし</span>');
+    }
+    echo '<dt>蜂場の温湿度</dt><dd>' . ($thTxt ? implode('<br>', $thTxt) : '<span class="muted">未設定</span>') . '</dd>';
     echo '</dl>';
     if (($a['note'] ?? '') !== '') echo '<p>' . nl((string)$a['note']) . '</p>';
 
