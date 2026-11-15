@@ -587,14 +587,17 @@ echo '</div>';
 $st = $hub['st'];
 $dir = $hub['dir'];
 $byKind = ['th' => [], 'w' => [], 'fa' => []];
+$removedSens = [];   // HPX-Core の管理画面で削除したセンサ (receive.php が removed を付ける)。表・グラフに出さない。記録は ble.csv に残す
 foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $s) {
     if (!is_array($s)) continue;
+    if (!empty($s['removed'])) { $removedSens[(string)$mac] = $s; continue; }
     $k = (string)($s['kind'] ?? 'th');
     $byKind[isset($byKind[$k]) ? $k : 'th'][(string)$mac] = $s;
 }
 // 読む範囲: 3つのグラフの期間のうち長いもの(全期間ならすべて)と、電柵の履歴の日数
 $since = in_array(0, $per, true) ? 0 : $now - max(D_FENCE_DAYS, ...array_values($per)) * 86400;
 $data = read_ble($dir . '/ble.csv', $since);
+if ($removedSens) $data['fa'] = array_values(array_filter($data['fa'], fn($r) => !isset($removedSens[(string)$r[2]])));   // 削除した HPX-F の検出の履歴も出さない
 $range = fn(int $p): int => $p === 0 ? ($data['first'] > 0 ? min($data['first'], $now - 3600) : $now - 86400) : $now - $p * 86400;
 $perLinks = function (string $key, string $anchor) use ($per): string {
     $o = '<div class="per">';
@@ -901,6 +904,8 @@ $size = @filesize($dir . '/ble.csv');
 echo '<div class="card"><b>データダウンロード</b><br><span class="muted">' . h($hub['name']) . ' の全期間の記録を CSV で保存します'
     . ($size ? ' (約 ' . h(number_format(max(1, (int)round($size / 1024)))) . ' KB' . ($data['first'] ? '、' . h(date('Y-m-d', $data['first'])) . ' から' : '') . ')' : '')
     . '。日時ごとに1行で、温湿度計・重量・電柵アラートを列に並べます。</span><br>'
+    . ($removedSens ? '<span class="muted">HPX-Core で削除したセンサ (' . h(implode('、', array_map(fn($m) => (string)(($removedSens[$m]['name'] ?? '') !== '' ? $removedSens[$m]['name'] : $m), array_keys($removedSens))))
+        . ') は画面に出しませんが、過去の記録は消さずに残してあり、この CSV に入ります。もう一度登録すると、また画面に出ます。</span><br>' : '')
     . '<a href="' . h(self_url(['download' => 1])) . '"><button type="button">CSV をダウンロード</button></a></div>';
 echo '<details><summary><b>データクリア</b></summary><div class="card danger">'
     . '<p>' . h($hub['name']) . ' の記録 (温湿度・重量・電柵)、状態の履歴、メール送信履歴を消します。<b>先に CSV をダウンロードしてください。</b><br>'

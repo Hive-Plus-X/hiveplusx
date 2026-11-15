@@ -24,12 +24,18 @@ function link_state(string $owner): array
     $hvs = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
     $apName = fn(string $a) => (string)($aps[$a]['name'] ?? '');
     $hvName = fn(string $h) => isset($hvs[$h]) ? trim($apName((string)($hvs[$h]['apiary'] ?? '')) . ' / ' . (string)($hvs[$h]['name'] ?? '')) : '';
+    // HPX-Core の管理画面で削除したセンサ (state.json の removed) は、つながりが外れたとみなす。また登録されたら戻る
+    $removed = [];
+    foreach (glob(account_hubs_dir($owner) . '/*/state.json') ?: [] as $p) {
+        $st = json_load($p);
+        foreach ((is_array($st['sensors'] ?? null) ? $st['sensors'] : []) as $mac => $sn) if (is_array($sn) && !empty($sn['removed'])) $removed[basename(dirname($p)) . '/' . $mac] = 1;
+    }
     $out = [];
     $cores = [];
     foreach ($aps as $aid => $a) {
         if (!is_array($a)) continue;
         $aid = (string)$aid;
-        foreach ((array)($a['fences'] ?? []) as $v) $out['f:' . $v] = [$aid, $apName($aid)];
+        foreach ((array)($a['fences'] ?? []) as $v) if (!isset($removed[(string)$v])) $out['f:' . $v] = [$aid, $apName($aid)];
         foreach ((array)($a['hubs'] ?? []) as $v) $cores[(string)$v][] = $aid;
     }
     foreach ($cores as $hub => $ids) {
@@ -41,7 +47,7 @@ function link_state(string $owner): array
         $hid = (string)$hid;
         $aid = (string)($h['apiary'] ?? '');
         $out['hv:' . $hid] = [$aid, $apName($aid)];
-        foreach ((array)($h['sensors'] ?? []) as $v) $out['s:' . $v] = [$hid, $hvName($hid)];
+        foreach ((array)($h['sensors'] ?? []) as $v) if (!isset($removed[(string)$v])) $out['s:' . $v] = [$hid, $hvName($hid)];
     }
     foreach (glob(cams_dir($owner) . '/*/cam.json') ?: [] as $p) {
         $c = json_load($p);

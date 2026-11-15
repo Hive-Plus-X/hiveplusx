@@ -125,6 +125,7 @@ function hpx_alert_check_missing(array &$sens, int $now, string $hubName, array 
     foreach ($sens as $mac => &$s) {
         $kind = (string)($s['kind'] ?? '');
         if (!in_array($kind, ['fa', 'w', 'th'], true)) continue;
+        if (!empty($s['removed'])) continue;   // HPX-Core の管理画面で削除したセンサは見張らない
         if ($registered && !in_array((string)$mac, $registered, true)) continue;
         $limit = $kind === 'fa' ? (int)($HPX_ALERT_MISSING_S ?? 3600) : (int)($HPX_SENSOR_MISSING_S ?? 86400);
         $last = (int)($s['last_epoch'] ?? 0);
