@@ -1,6 +1,6 @@
 <?php
 // 設定ページ: ログインしている本人のアカウントの設定。
-//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、お知らせメールのオン/オフ、LINE の連携、HPX-Core に入れる機器用トークン、
+//   表示名、パスワード、メールアドレス(=ログインID)の変更、通知メールの送り先、お知らせメールのオン/オフ、プッシュ通知、LINE の連携、HPX-Core に入れる機器用トークン、
 //   データ一括ダウンロード(export.php)、バックアップと復元(backup.php)。
 //   メールアドレスは、新しいアドレスに確認メールを送り、そのリンクを開いた時点で切り替える(打ち間違いでログインできなくなるのを防ぐ)。
 declare(strict_types=1);
@@ -47,6 +47,25 @@ if (is_post()) {
         account_update($UID, function (array $a) use ($off) { $a['mail_off'] = $off; return $a; });
         redirect('account.php#mail', $off === [] ? 'お知らせメールを、すべて受け取るようにしました。'
             : (count($off) === count(A_MAIL_KINDS) ? 'お知らせメールを、すべて止めました。' : '「' . implode('」「', array_map(fn($k) => A_MAIL_KINDS[$k][0], $off)) . '」のメールを止めました。'));
+    }
+    // プッシュ通知を受け取る端末 (hpx_push.php)。端末の登録・外すは、下の画面の JavaScript から送る
+    if (str_starts_with($act, 'push_')) {
+        if (is_demo($ME)) redirect('account.php#push', 'デモ用アカウントでは、プッシュ通知は使えません。');
+        if (!push_on()) redirect('account.php#push', 'このサーバーの PHP では、プッシュ通知が使えません (openssl の機能が足りません)。');
+        if ($act === 'push_add') {
+            $ok = push_add($UID, (string)($_POST['ep'] ?? ''), (string)($_POST['key'] ?? ''), (string)($_POST['auth'] ?? ''), str_in('name', 60));
+            redirect('account.php#push', $ok ? 'この端末でプッシュ通知を受け取るようにしました。「テストの通知を送る」で確かめてください。' : 'この端末を登録できませんでした。');
+        }
+        if ($act === 'push_del') {
+            push_del($UID, (string)($_POST['ep'] ?? ''));
+            redirect('account.php#push', 'その端末には、プッシュ通知を送らないようにしました。');
+        }
+        if ($act === 'push_test') {
+            [$ok, $ng, $err] = push_user($UID, 'テストの通知', 'HPX-note からプッシュ通知が届くことを確かめました。', 'account.php#push');
+            redirect('account.php#push', !$ok && !$ng ? 'プッシュ通知を受け取る端末がありません。'
+                : ($ok ? $ok . '台の端末に送りました。届いたか確かめてください。' : '') . ($ng ? ' ' . $ng . '台には送れませんでした (' . $err . ')。' : ''));
+        }
+        redirect('account.php#push');
     }
     // LINE でお知らせを受け取る (hpx_line.php)
     if (line_on() && str_starts_with($act, 'line_')) {
@@ -120,6 +139,82 @@ foreach (A_MAIL_KINDS as $k => [$label, $desc]) {
 }
 echo ($off !== [] && count($off) === count(A_MAIL_KINDS) ? '<p class="ng">いまは、お知らせメールがすべて止まっています。電柵の電圧低下にも気づけないので、ご注意ください。</p>' : '')
     . '<button type="submit">保存</button></form></div>';
+
+// プッシュ通知を受け取る (hpx_push.php)。登録は端末ごと。iPhone はホーム画面に追加した HPX-note からだけ
+if (push_on() && !is_demo($ME) && ($vapid = push_vapid())) {
+    $devs = push_devices($UID);
+    echo '<h2 id="push">プッシュ通知で受け取る</h2><div class="card form">'
+        . '<p class="muted">電柵・巣箱・センサ・タスク・カメラのお知らせを、メールに加えて、このスマホやパソコンの通知でも受け取れます。'
+        . '上の「お知らせメールのオン/オフ」で止めた種類は、通知も届きません。端末ごとに登録してください。</p>'
+        . '<p>この端末: <b id="push-st">確かめています…</b></p><p id="push-btns"></p>'
+        . '<p class="muted" id="push-note"></p>';
+    if ($devs) {
+        echo '<p style="margin-bottom:2px">登録してある端末 (' . count($devs) . '台)</p><ul style="margin-top:2px">';
+        foreach ($devs as $d) {
+            echo '<li>' . h((string)($d['name'] ?? '端末')) . ' <span class="muted">(' . h(date('Y-m-d', (int)($d['at'] ?? 0))) . ' から)</span> '
+                . '<form method="post" class="inl" onsubmit="return confirm(\'この端末には通知を送らないようにしますか?\')">' . csrf_field()
+                . '<input type="hidden" name="act" value="push_del"><input type="hidden" name="ep" value="' . h((string)$d['ep']) . '"><button type="submit" class="link">外す</button></form></li>';
+        }
+        echo '</ul><form method="post">' . csrf_field() . '<input type="hidden" name="act" value="push_test"><button type="submit">テストの通知を送る</button></form>';
+    }
+    echo '<p class="muted" style="margin-top:10px">iPhone・iPad は iOS 16.4 以上で、ホーム画面に追加した HPX-note から開いたときだけ設定できます。'
+        . '通知が届かないこともあるので、電柵などの大事なお知らせは、メールか LINE も受け取ったままにしてください。</p></div>';
+    $j = JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+    echo '<script>var PUSH_KEY=' . json_encode($vapid['pub'], $j) . ',PUSH_EPS=' . json_encode(array_column($devs, 'ep'), $j) . ',PUSH_CSRF=' . json_encode($csrf, $j) . ';</script>' . <<<'JS'
+<script>
+(function(){
+  var st = document.getElementById('push-st'), btns = document.getElementById('push-btns'), note = document.getElementById('push-note');
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+    st.textContent = '受け取れません';
+    note.textContent = ios && !standalone ? 'iPhone・iPad では、Safari の共有ボタン →「ホーム画面に追加」をして、ホーム画面の HPX-note から開いてください。'
+      : 'このブラウザでは、プッシュ通知が使えません。iPhone・iPad は iOS 16.4 以上が必要です。';
+    return;
+  }
+  function post(act, data){
+    var fd = new FormData(); fd.append('act', act); fd.append('csrf', PUSH_CSRF);
+    for (var k in data) fd.append(k, data[k]);
+    return fetch('account.php', {method: 'POST', body: fd, credentials: 'same-origin'}).then(function(){ location.href = 'account.php#push'; location.reload(); });
+  }
+  function b64u(buf){ return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function keyBytes(s){ s = s.replace(/-/g, '+').replace(/_/g, '/'); s += '===='.slice(s.length % 4 || 4); var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  function devName(){
+    var u = navigator.userAgent;
+    var os = /iPhone/.test(u) ? 'iPhone' : /iPad/.test(u) || ios ? 'iPad' : /Android/.test(u) ? 'Android' : /Windows/.test(u) ? 'Windows' : /Mac/.test(u) ? 'Mac' : 'パソコン';
+    var br = /Edg\//.test(u) ? 'Edge' : /Chrome\//.test(u) && !/Edg\//.test(u) ? 'Chrome' : /Firefox\//.test(u) ? 'Firefox' : 'Safari';
+    return os + (standalone ? ' (ホーム画面)' : ' (' + br + ')');
+  }
+  function button(label, fn){ var b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.onclick = function(){ b.disabled = true; fn().catch(function(e){ b.disabled = false; note.textContent = '設定できませんでした: ' + (e && e.message || e); }); }; btns.appendChild(b); btns.appendChild(document.createTextNode(' ')); }
+  navigator.serviceWorker.register('sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
+    return reg.pushManager.getSubscription().then(function(sub){
+      var known = sub && PUSH_EPS.indexOf(sub.endpoint) >= 0;
+      if (Notification.permission === 'denied') {
+        st.textContent = '通知が許可されていません';
+        note.textContent = ios ? 'iPhone の「設定」→「通知」→「HPX-note」で通知を許可してから、このページを開き直してください。' : 'ブラウザのこのサイトの設定で、通知を「許可」にしてから、このページを開き直してください。';
+        return;
+      }
+      if (sub && !known) {   // 端末では登録してあるのに、サーバーに無い (前に外した・別のアカウントで登録した)。登録し直す
+        return post('push_add', {ep: sub.endpoint, key: b64u(sub.getKey('p256dh')), auth: b64u(sub.getKey('auth')), name: devName()});
+      }
+      if (known) {
+        st.textContent = '受け取っています';
+        button('この端末では受け取らない', function(){ return sub.unsubscribe().then(function(){ return post('push_del', {ep: sub.endpoint}); }); });
+        return;
+      }
+      st.textContent = '受け取っていません';
+      button('この端末で受け取る', function(){
+        return Notification.requestPermission().then(function(p){
+          if (p !== 'granted') throw new Error('通知が許可されませんでした');
+          return reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: keyBytes(PUSH_KEY)});
+        }).then(function(s){ return post('push_add', {ep: s.endpoint, key: b64u(s.getKey('p256dh')), auth: b64u(s.getKey('auth')), name: devName()}); });
+      });
+    });
+  }).catch(function(e){ st.textContent = '確かめられませんでした'; note.textContent = String(e && e.message || e); });
+})();
+</script>
+JS;
+}
 
 // LINE でお知らせを受け取る (config.php に $HPX_LINE_TOKEN・$HPX_LINE_SECRET があるときだけ出す)
 if (line_on()) {
