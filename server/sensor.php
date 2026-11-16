@@ -313,7 +313,7 @@ if (isset($_GET['download']) && $hub) {
     // 定時記録データの最後の行: 今の区切りの5分前まで (送信中の記録を空の行にしない)。外した HPX-Core は最後の記録まで
     $endT = is_file($hub['dir'] . '/.retired') ? 0 : $now - 300;
     [$head, $lines] = ble_wide_csv($data, is_array($hub['st']['sensors'] ?? null) ? $hub['st']['sensors'] : [], cal_load($hub['dir']), $all ? 0 : $step, $endT,
-        ble_link_names($UID, $hubId, ble_macs($data), $data['first']));
+        ble_link_names($UID, $hubId, ble_macs($data)));
 
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="hpx_' . (preg_replace('/[^A-Za-z0-9_-]/', '', $hub['name']) ?: $hubId) . ($all ? '_all_' : '_' . intdiv($step, 60) . 'min_') . date('Ymd_Hi', $now) . '.csv"');
@@ -821,7 +821,7 @@ echo '<h2 id="data">データ</h2>';
 $size = @filesize($dir . '/ble.csv');
 echo '<div class="card"><b>データダウンロード</b><br><span class="muted">' . h($hub['name']) . ' の全期間の記録を CSV で保存します'
     . ($size ? ' (約 ' . h(number_format(max(1, (int)round($size / 1024)))) . ' KB' . ($data['first'] ? '、' . h(date('Y-m-d', $data['first'])) . ' から' : '') . ')' : '')
-    . '。日時ごとに1行で、温湿度計・重量・電柵アラートを列に並べます。見出しの次の行に、紐づけた巣箱・蜂場を書きます (途中で付け替えたときは「→」でつなぎ、付け替えた日時も書きます)。</span><br>'
+    . '。日時ごとに1行で、温湿度計・重量・電柵アラートを列に並べます。見出しの次の行に、紐づけた巣箱・蜂場を書きます (途中で付け替えたセンサは、紐づけ先ごとに列を分けます)。</span><br>'
     . '<span class="muted">「定時記録データ」は保存間隔の区切り (15分なら 00・15・30・45分) ごとに必ず1行で、記録が無い時刻 (センサの不調や HPX-Core の停止など) は日時だけ書いて値は空にします。'
     . 'HPX-Core を入れ直した時や「今すぐ記録」で取った、区切りでない時刻の記録は入れません。「全データ」は記録のあるすべての時刻を出します。</span><br>'
     . ($removedSens ? '<span class="muted">HPX-Core で削除したセンサ (' . h(implode('、', array_map(fn($m) => (string)(($removedSens[$m]['name'] ?? '') !== '' ? $removedSens[$m]['name'] : $m), array_keys($removedSens))))

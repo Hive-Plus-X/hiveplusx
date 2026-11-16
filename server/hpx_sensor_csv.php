@@ -89,7 +89,8 @@ function ble_guess_step(array $data): int
 //   $data: read_ble() の結果   $stSensors: state.json の sensors (列の順と名前)   $cal: 重量の較正 (mac => 較正)
 //   $step: 0 = 全データ (記録のある時刻ごと、分単位)。900・1800・3600 = 定時記録データ (その間隔の区切りごとに必ず1行)
 //   $end:  定時記録データの最後の区切り (この時刻まで空の行も出す)
-//   $linkOf: mac => 紐づけ先の文 (ble_link_names())。あれば見出しの次の行に「紐づけ先」として出す
+//   $linkOf: mac => 紐づけ先の移り変わり (ble_link_names())。あれば見出しの次の行に「紐づけ先」として出し、
+//            途中で付け替えたセンサは紐づけ先ごとに別の列にする (付け替えた日時は書かない)
 //   返り値: [見出しの配列, [[日時, 値, ...], ...]]
 function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, int $end = 0, array $linkOf = []): array
 {
@@ -110,35 +111,56 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
 
     // 行の区切り。全データは分単位でまとめる。定時記録データは区切りちょうどの記録だけ (null = 入れない)
     $slot = $step > 0 ? (fn(int $ep) => ($ep % $step === 0 ? $ep : null)) : (fn(int $ep) => intdiv($ep, 60) * 60);
+    // 紐づけ先: 記録の時刻のときの紐づけ先の名前。途中で付け替えたセンサは、紐づけ先ごとに別の列にする (2026-11-16 TARO)
+    $linkAt = function (string $mac, int $ep) use ($linkOf): string {
+        $nm = '';
+        foreach ($linkOf[$mac] ?? [] as [$from, $name]) { if ($ep < $from) break; $nm = $name; }
+        return $nm;
+    };
+    // センサの記録を紐づけ先ごとに分ける: [紐づけ先 => [記録, ...]] (出てきた順)
+    $split = function (string $mac, array $recs) use ($linkAt): array {
+        $g = [];
+        foreach ($recs as $r) $g[$linkAt($mac, (int)$r[0])][] = $r;
+        if (count($g) > 1 && isset($g[''])) { $x = $g['']; unset($g['']); $g[''] = $x; }   // 紐づけなしの間の記録 (ふつうは無い) は、いちばん後ろの名前の無い列に
+        return $g;
+    };
     $rows = [];
     $head = ['日時'];
     $lk = ['紐づけ先'];
-    foreach ($order['th'] as $i => $mac) {
-        $head[] = $nm($mac) . ' 温度(℃)';
-        $head[] = $nm($mac) . ' 湿度(%)';
-        array_push($lk, $linkOf[$mac] ?? '', $linkOf[$mac] ?? '');
-        foreach ($data['th'][$mac] as $r) {
-            if (($t = $slot($r[0])) === null) continue;
-            $rows[$t][2 * $i] = number_format($r[1], 1, '.', '');
-            $rows[$t][2 * $i + 1] = $r[2] === null ? '' : number_format($r[2], 1, '.', '');
+    $col = 0;
+    foreach ($order['th'] as $mac) {
+        foreach ($split($mac, $data['th'][$mac]) as $ln => $recs) {
+            $head[] = $nm($mac) . ' 温度(℃)';
+            $head[] = $nm($mac) . ' 湿度(%)';
+            array_push($lk, (string)$ln, (string)$ln);
+            foreach ($recs as $r) {
+                if (($t = $slot($r[0])) === null) continue;
+                $rows[$t][$col] = number_format($r[1], 1, '.', '');
+                $rows[$t][$col + 1] = $r[2] === null ? '' : number_format($r[2], 1, '.', '');
+            }
+            $col += 2;
         }
     }
-    $base = 2 * count($order['th']);
-    foreach ($order['w'] as $i => $mac) {
+    foreach ($order['w'] as $mac) {
         $c = $cal[$mac] ?? null;
         $calOk = $c && isset($c['per_kg']);
-        $head[] = $nm($mac) . ($calOk ? ' 重量(kg)' : ' 重量(生の値・未較正)');
-        $lk[] = $linkOf[$mac] ?? '';
-        foreach ($data['w'][$mac] as $r) {
-            if (($t = $slot($r[0])) === null) continue;
-            $v = $calOk ? to_kg($r[1], $c) : null;
-            $rows[$t][$base + $i] = $calOk ? ($v === null ? '' : number_format($v, 2, '.', '')) : (string)$r[1];
+        foreach ($split($mac, $data['w'][$mac]) as $ln => $recs) {
+            $head[] = $nm($mac) . ($calOk ? ' 重量(kg)' : ' 重量(生の値・未較正)');
+            $lk[] = (string)$ln;
+            foreach ($recs as $r) {
+                if (($t = $slot($r[0])) === null) continue;
+                $v = $calOk ? to_kg($r[1], $c) : null;
+                $rows[$t][$col] = $calOk ? ($v === null ? '' : number_format($v, 2, '.', '')) : (string)$r[1];
+            }
+            $col++;
         }
     }
-    $faCol = $base + count($order['w']);
+    $faCol = $col;
     if ($data['fa']) {
         $head[] = '電柵アラート';
-        $lk[] = implode('、', array_unique(array_filter(array_map(fn($m) => $linkOf[$m] ?? '', array_unique(array_column($data['fa'], 2))))));
+        $fnames = [];   // 電柵アラートは1列にまとめるので、紐づけた蜂場を並べる
+        foreach (array_unique(array_column($data['fa'], 2)) as $m) foreach ($linkOf[$m] ?? [] as [, $n]) if ($n !== '') $fnames[$n] = true;
+        $lk[] = implode('、', array_keys($fnames));
         $multi = count(array_unique(array_column($data['fa'], 2))) > 1;
         foreach ($data['fa'] as $r) {
             [$ep, $fname, , $fst] = $r;
@@ -174,28 +196,33 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
     return [$head, $out];
 }
 
-// センサごとの紐づけ先 (巣箱・蜂場) の文。mac => 文
-//   site/links.json の履歴 (2026-11-13 から) で、記録の期間 ($from から) に付け替えたときは
-//   「山の蜂場 / 巣箱1 → 山の蜂場 / 巣箱3 (2026-11-20 10:00 から)」のように順に書く。履歴が無ければ今の紐づけ
+// センサごとの紐づけ先 (巣箱・蜂場) の移り変わり。mac => [[この時刻から, 名前], ...] 古い順 (最初の時刻は PHP_INT_MIN)
+//   名前は「蜂場 / 巣箱」、蜂場の温湿度センサは「蜂場 / 蜂場」、電柵アラートは蜂場名。紐づけなしは ''
+//   site/links.json の履歴 (2026-11-13 から) を使う。履歴の始まりより前は、始まりの時の紐づけ先とみなす。履歴が無ければ今の紐づけ
 //   $owner: HPX-Core の持ち主のアカウント  $macs: mac => 'th'|'w'|'fa'
-function ble_link_names(string $owner, string $hubId, array $macs, int $from): array
+function ble_link_names(string $owner, string $hubId, array $macs): array
 {
     $sj = json_load(account_site_dir($owner) . '/site.json');
     $aps = is_array($sj['apiaries'] ?? null) ? $sj['apiaries'] : [];
     $hvs = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
     $apName = fn(string $a) => (string)($aps[$a]['name'] ?? '');
+    $hvName = fn(string $h) => isset($hvs[$h]) ? trim($apName((string)($hvs[$h]['apiary'] ?? '')) . ' / ' . (string)($hvs[$h]['name'] ?? '')) : '';
     // 今の紐づけ (履歴が無いときに使う)
     $cur = [];
     foreach ($aps as $aid => $a) {
         if (!is_array($a)) continue;
         foreach ((array)($a['fences'] ?? []) as $v) $cur['f:' . $v] = $apName((string)$aid);
-        foreach ((array)($a['ths'] ?? []) as $v) $cur['s:' . $v] = $apName((string)$aid) . ' (蜂場の気温・湿度)';
+        foreach ((array)($a['ths'] ?? []) as $v) $cur['s:' . $v] = $apName((string)$aid) . ' / 蜂場';
     }
-    foreach ($hvs as $h) {
-        if (!is_array($h)) continue;
-        $nm = trim($apName((string)($h['apiary'] ?? '')) . ' / ' . (string)($h['name'] ?? ''));
-        foreach ((array)($h['sensors'] ?? []) as $v) $cur['s:' . $v] = $nm;
-    }
+    foreach ($hvs as $hid => $h) if (is_array($h)) foreach ((array)($h['sensors'] ?? []) as $v) $cur['s:' . $v] = $hvName((string)$hid);
+    // 履歴の名前: 今もある巣箱・蜂場は今の名前 (名前を変えても同じ列にする)、消したものは履歴に書いた名前
+    $name = function (array $e) use ($aps, $hvs, $apName, $hvName): string {
+        $to = (string)($e['to'] ?? '');
+        if ($to === '') return '';
+        if (str_starts_with($to, 'a:')) return isset($aps[substr($to, 2)]) ? $apName(substr($to, 2)) . ' / 蜂場' : preg_replace('/ \(蜂場の気温・湿度\)$/u', '', (string)($e['to_name'] ?? '')) . ' / 蜂場';
+        if (str_starts_with((string)$e['key'], 'f:')) return isset($aps[$to]) ? $apName($to) : (string)($e['to_name'] ?? '');
+        return isset($hvs[$to]) ? $hvName($to) : (string)($e['to_name'] ?? '');
+    };
     $log = json_load(account_site_dir($owner) . '/links.json')['log'] ?? [];
     $byKey = [];
     foreach (is_array($log) ? $log : [] as $e) if (is_array($e) && isset($e['key'], $e['t'])) $byKey[(string)$e['key']][] = $e;
@@ -203,21 +230,11 @@ function ble_link_names(string $owner, string $hubId, array $macs, int $from): a
     foreach ($macs as $mac => $kind) {
         $key = ($kind === 'fa' ? 'f:' : 's:') . $hubId . '/' . $mac;
         $es = $byKey[$key] ?? [];
-        if (!$es) { $out[(string)$mac] = $cur[$key] ?? ''; continue; }
+        if (!$es) { $out[(string)$mac] = [[PHP_INT_MIN, $cur[$key] ?? '']]; continue; }
         usort($es, fn($a, $b) => (int)$a['t'] <=> (int)$b['t']);
-        $name = fn(array $e) => (string)($e['to'] ?? '') === '' ? '紐づけなし' : (string)($e['to_name'] ?? '');
-        // 記録の始まりの時点の紐づけ (それより前の履歴の最後。無ければ最初の履歴)、そのあとの付け替え
-        $start = null; $chg = [];
-        foreach ($es as $e) {
-            if ((int)$e['t'] <= $from || ($start === null && !empty($e['first']))) $start = $e;
-            else $chg[] = $e;
-        }
-        $txt = $start !== null ? $name($start) : '';
-        foreach ($chg as $e) {
-            $n = $name($e) . ' (' . date('Y-m-d H:i', (int)$e['t']) . ' から)';
-            $txt = $txt === '' ? $n : $txt . ' → ' . $n;
-        }
-        $out[(string)$mac] = $txt;
+        $seg = [];
+        foreach ($es as $i => $e) $seg[] = [$i === 0 ? PHP_INT_MIN : (int)$e['t'], $name($e)];
+        $out[(string)$mac] = $seg;
     }
     return $out;
 }
