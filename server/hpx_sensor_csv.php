@@ -89,8 +89,9 @@ function ble_guess_step(array $data): int
 //   $data: read_ble() の結果   $stSensors: state.json の sensors (列の順と名前)   $cal: 重量の較正 (mac => 較正)
 //   $step: 0 = 全データ (記録のある時刻ごと、分単位)。900・1800・3600 = 定時記録データ (その間隔の区切りごとに必ず1行)
 //   $end:  定時記録データの最後の区切り (この時刻まで空の行も出す)
+//   $linkOf: mac => 紐づけ先の文 (ble_link_names())。あれば見出しの次の行に「紐づけ先」として出す
 //   返り値: [見出しの配列, [[日時, 値, ...], ...]]
-function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, int $end = 0): array
+function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, int $end = 0, array $linkOf = []): array
 {
     // 列の順: 状態に登録されている順(=画面の表と同じ)、記録にだけあるセンサーは後ろに付ける
     $names = [];
@@ -111,9 +112,11 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
     $slot = $step > 0 ? (fn(int $ep) => ($ep % $step === 0 ? $ep : null)) : (fn(int $ep) => intdiv($ep, 60) * 60);
     $rows = [];
     $head = ['日時'];
+    $lk = ['紐づけ先'];
     foreach ($order['th'] as $i => $mac) {
         $head[] = $nm($mac) . ' 温度(℃)';
         $head[] = $nm($mac) . ' 湿度(%)';
+        array_push($lk, $linkOf[$mac] ?? '', $linkOf[$mac] ?? '');
         foreach ($data['th'][$mac] as $r) {
             if (($t = $slot($r[0])) === null) continue;
             $rows[$t][2 * $i] = number_format($r[1], 1, '.', '');
@@ -125,6 +128,7 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
         $c = $cal[$mac] ?? null;
         $calOk = $c && isset($c['per_kg']);
         $head[] = $nm($mac) . ($calOk ? ' 重量(kg)' : ' 重量(生の値・未較正)');
+        $lk[] = $linkOf[$mac] ?? '';
         foreach ($data['w'][$mac] as $r) {
             if (($t = $slot($r[0])) === null) continue;
             $v = $calOk ? to_kg($r[1], $c) : null;
@@ -134,6 +138,7 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
     $faCol = $base + count($order['w']);
     if ($data['fa']) {
         $head[] = '電柵アラート';
+        $lk[] = implode('、', array_unique(array_filter(array_map(fn($m) => $linkOf[$m] ?? '', array_unique(array_column($data['fa'], 2))))));
         $multi = count(array_unique(array_column($data['fa'], 2))) > 1;
         foreach ($data['fa'] as $r) {
             [$ep, $fname, , $fst] = $r;
@@ -157,13 +162,71 @@ function ble_wide_csv(array $data, array $stSensors, array $cal, int $step = 0, 
         return $l;
     };
     $out = [];
+    if ($linkOf && count(array_filter(array_slice($lk, 1))) > 0) $out[] = $lk;
     if ($step > 0) {
         // 最初の定時記録から $end まで、区切りごとに必ず1行。記録が無い区切りは日時だけ
-        if (!$rows) return [$head, []];
+        if (!$rows) return [$head, $out];
         $last = max((int)array_key_last($rows), intdiv($end, $step) * $step);
         for ($t = (int)array_key_first($rows); $t <= $last; $t += $step) $out[] = $line($t, $rows[$t] ?? []);
     } else {
         foreach ($rows as $t => $vals) $out[] = $line((int)$t, $vals);
     }
     return [$head, $out];
+}
+
+// センサごとの紐づけ先 (巣箱・蜂場) の文。mac => 文
+//   site/links.json の履歴 (2026-11-13 から) で、記録の期間 ($from から) に付け替えたときは
+//   「山の蜂場 / 巣箱1 → 山の蜂場 / 巣箱3 (2026-11-20 10:00 から)」のように順に書く。履歴が無ければ今の紐づけ
+//   $owner: HPX-Core の持ち主のアカウント  $macs: mac => 'th'|'w'|'fa'
+function ble_link_names(string $owner, string $hubId, array $macs, int $from): array
+{
+    $sj = json_load(account_site_dir($owner) . '/site.json');
+    $aps = is_array($sj['apiaries'] ?? null) ? $sj['apiaries'] : [];
+    $hvs = is_array($sj['hives'] ?? null) ? $sj['hives'] : [];
+    $apName = fn(string $a) => (string)($aps[$a]['name'] ?? '');
+    // 今の紐づけ (履歴が無いときに使う)
+    $cur = [];
+    foreach ($aps as $aid => $a) {
+        if (!is_array($a)) continue;
+        foreach ((array)($a['fences'] ?? []) as $v) $cur['f:' . $v] = $apName((string)$aid);
+        foreach ((array)($a['ths'] ?? []) as $v) $cur['s:' . $v] = $apName((string)$aid) . ' (蜂場の気温・湿度)';
+    }
+    foreach ($hvs as $h) {
+        if (!is_array($h)) continue;
+        $nm = trim($apName((string)($h['apiary'] ?? '')) . ' / ' . (string)($h['name'] ?? ''));
+        foreach ((array)($h['sensors'] ?? []) as $v) $cur['s:' . $v] = $nm;
+    }
+    $log = json_load(account_site_dir($owner) . '/links.json')['log'] ?? [];
+    $byKey = [];
+    foreach (is_array($log) ? $log : [] as $e) if (is_array($e) && isset($e['key'], $e['t'])) $byKey[(string)$e['key']][] = $e;
+    $out = [];
+    foreach ($macs as $mac => $kind) {
+        $key = ($kind === 'fa' ? 'f:' : 's:') . $hubId . '/' . $mac;
+        $es = $byKey[$key] ?? [];
+        if (!$es) { $out[(string)$mac] = $cur[$key] ?? ''; continue; }
+        usort($es, fn($a, $b) => (int)$a['t'] <=> (int)$b['t']);
+        $name = fn(array $e) => (string)($e['to'] ?? '') === '' ? '紐づけなし' : (string)($e['to_name'] ?? '');
+        // 記録の始まりの時点の紐づけ (それより前の履歴の最後。無ければ最初の履歴)、そのあとの付け替え
+        $start = null; $chg = [];
+        foreach ($es as $e) {
+            if ((int)$e['t'] <= $from || ($start === null && !empty($e['first']))) $start = $e;
+            else $chg[] = $e;
+        }
+        $txt = $start !== null ? $name($start) : '';
+        foreach ($chg as $e) {
+            $n = $name($e) . ' (' . date('Y-m-d H:i', (int)$e['t']) . ' から)';
+            $txt = $txt === '' ? $n : $txt . ' → ' . $n;
+        }
+        $out[(string)$mac] = $txt;
+    }
+    return $out;
+}
+
+// read_ble() の結果にあるセンサの mac => 種類
+function ble_macs(array $data): array
+{
+    $m = [];
+    foreach (['th', 'w'] as $k) foreach (array_keys($data[$k]) as $mac) $m[(string)$mac] = $k;
+    foreach ($data['fa'] as $r) $m[(string)$r[2]] = 'fa';
+    return $m;
 }

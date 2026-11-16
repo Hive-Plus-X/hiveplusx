@@ -122,7 +122,7 @@ foreach ($hubs as $hubId => $hb) {
         $step = ble_guess_step($bd);
         $st = json_decode((string)@file_get_contents($hb['dir'] . '/state.json'), true);
         [$head, $lines] = ble_wide_csv($bd, is_array($st['sensors'] ?? null) ? $st['sensors'] : [], cal_load((string)$hubId), $step,
-            is_file($hb['dir'] . '/.retired') ? 0 : $now - 300);
+            is_file($hb['dir'] . '/.retired') ? 0 : $now - 300, ble_link_names($UID, (string)$hubId, ble_macs($bd), $bd['first']));
         csv_add($zip, 'センサ_' . $hbName . '.csv', $head, $lines);
         $stepNote[] = $hb['name'] . ' ' . BLE_STEPS[$step] . 'おき';
         $nSensorFiles++;
@@ -185,7 +185,7 @@ $zip->addFromString('はじめにお読みください.txt', "\xEF\xBB\xBF" . BR
     . "・蜂場・巣箱・メモ・タスク・作業記録は、蜂場ページなどで見られるもの (チームで共有された蜂場の分も含む) です。\r\n"
     . "・センサ_<HPX-Core名>.csv は、自分の HPX-Core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。センサ1台にかかる重さなので、巣箱の重さは重量センサ1台なら2倍、2台なら合計にしてください。\r\n"
     . ($sensorAll ? "・センサの記録は「全データ」です。入れ直した時や「今すぐ記録」の分も含め、1件1行です。\r\n"
-        : "・センサの記録は「定時記録データ」です。保存間隔の区切りごとに必ず1行で、記録が無い時刻は日時だけ書いて値は空です (" . implode('、', $stepNote) . ")。\r\n")
+        : "・センサの記録は「定時記録データ」です。保存間隔の区切りごとに必ず1行で、記録が無い時刻は日時だけ書いて値は空です (" . implode('、', $stepNote) . ")。見出しの次の行は紐づけた巣箱・蜂場で、途中で付け替えたときは「→」でつなぎ、付け替えた日時も書いています。\r\n")
     . (!empty($_POST['photos']) ? "・写真フォルダに、蜂場の写真とメモの写真が入っています。\r\n" : ''));
 $zip->close();
 foreach ($sensorTmp as $t) @unlink($t);
