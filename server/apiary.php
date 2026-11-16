@@ -94,25 +94,25 @@ function weather_icon(int $code): array
     return ['❔', '不明'];
 }
 
-// 天気予報のイラストを押したときに開く Yahoo!天気 のページ
-//   蜂場の情報に「Yahoo!天気のページ」(市区町村のページの URL) を入れていればそこ。
+// 天気予報のイラストを押したときに開くページ
+//   蜂場の情報に「天気予報のページ」(Yahoo!天気・tenki.jp など好きなサービスの、その場所のページの URL) を入れていればそこ。
 //   無ければ Yahoo!天気 の雨雲レーダーを蜂場の緯度・経度で開く (Yahoo!天気 には緯度・経度で予報ページを開く URL が見当たらないため)
-function yahoo_wx_url(array $a, float $lat, float $lng): string
+function wx_link_url(array $a, float $lat, float $lng): string
 {
-    $u = trim((string)($a['yahoo_wx'] ?? ''));
-    if (yahoo_wx_ok($u)) return $u;
+    $u = trim((string)($a['wx_url'] ?? ''));
+    if (wx_url_ok($u)) return $u;
     return 'https://weather.yahoo.co.jp/weather/zoomradar/?' . http_build_query(['lat' => round($lat, 4), 'lon' => round($lng, 4), 'z' => 12]);
 }
-// 受け付けるのは Yahoo!天気 (https://weather.yahoo.co.jp/ ) の URL だけ
-function yahoo_wx_ok(string $u): bool
+// 受け付けるのは http:// か https:// で始まる URL だけ (javascript: などは保存しない)
+function wx_url_ok(string $u): bool
 {
-    return (bool)preg_match('#^https://weather\.yahoo\.co\.jp/[\x21-\x7e]*$#', $u);
+    return (bool)preg_match('#^https?://[^\s"<>]+$#u', $u);
 }
 
 function weather_html(?array $days, string $link = ''): string
 {
     if (!$days) return '<div class="wx"><div class="none" style="grid-column:1/-1">天気予報を取得できませんでした</div></div>';
-    $o = $link !== '' ? '<a class="wx" href="' . h($link) . '" target="_blank" rel="noopener" title="Yahoo!天気で詳しい予報を見る">' : '<div class="wx">';
+    $o = $link !== '' ? '<a class="wx" href="' . h($link) . '" target="_blank" rel="noopener" title="詳しい天気予報を見る">' : '<div class="wx">';
     foreach ($days as $i => [$day, $code, $mx, $mn, $pp]) {
         [$ic, $txt] = weather_icon($code);
         $o .= '<div title="' . h($txt) . '"><span class="d">' . h(['今日', '明日', '明後日'][$i] ?? date('n/j', strtotime($day))) . '</span>'
@@ -197,7 +197,7 @@ if (is_post()) {
                 'order' => $s['apiaries'] ? max(array_map(fn($x) => (int)($x['order'] ?? 0), $s['apiaries'])) + 1 : 0];
             $s['apiaries'][$newId] = array_merge($old, [
                 'name' => $name, 'address' => str_in('address', 200), 'map' => '', 'map_q' => str_in('map_q', 200), 'photo' => $photo,
-                'yahoo_wx' => yahoo_wx_ok(str_in('yahoo_wx', 300)) ? str_in('yahoo_wx', 300) : '',
+                'wx_url' => wx_url_ok(str_in('wx_url', 500)) ? str_in('wx_url', 500) : '',
                 'owner' => str_in('owner', 200),
                 // 巣箱数(手入力)。巣箱を1つずつ登録せずに蜂場単位で管理する人向け。空なら登録した巣箱の数を出す
                 'hive_count' => is_numeric($_POST['hive_count'] ?? '') && (int)$_POST['hive_count'] >= 0 ? min(9999, (int)$_POST['hive_count']) : null,
@@ -258,8 +258,8 @@ function apiary_form(array $a, string $id, array $hubs, array $sensors, array $s
         . '<p><label>緯度・経度 (「地図で選ぶ」を押して地図上の蜂場の場所を押すと入ります。Googleマップでコピーした「35.6812, 139.7671」などを貼り付けてもかまいません)</label>'
         . '<input type="text" name="map_q" placeholder="35.6812, 139.7671" value="' . h((string)($a['map_q'] ?? '')) . '" oninput="mapPickSync(this)">'
         . ' <button type="button" onclick="mapPick(this)" data-c="' . h($pickC) . '">🗺 地図で選ぶ</button></p>'
-        . '<p><label>Yahoo!天気のページ (空でもかまいません。<a href="https://weather.yahoo.co.jp/weather/" target="_blank" rel="noopener">Yahoo!天気</a>で蜂場のある市区町村の予報ページを開き、その URL を貼り付けると、天気予報のイラストを押したときにそのページが開きます。空なら Yahoo!天気の雨雲レーダーが蜂場の場所で開きます)</label>'
-        . '<input type="url" name="yahoo_wx" maxlength="300" placeholder="https://weather.yahoo.co.jp/weather/jp/..." pattern="https://weather\\.yahoo\\.co\\.jp/.*" value="' . h((string)($a['yahoo_wx'] ?? '')) . '"></p>'
+        . '<p><label>天気予報のページ (空でもかまいません。Yahoo!天気・tenki.jp など好きな天気予報サービスで蜂場のある場所のページを開き、その URL を貼り付けると、天気予報のイラストを押したときにそのページが開きます。空なら Yahoo!天気の雨雲レーダーが蜂場の場所で開きます)</label>'
+        . '<input type="url" name="wx_url" maxlength="500" placeholder="https://..." value="' . h((string)($a['wx_url'] ?? '')) . '"></p>'
         . '<p><label>蜂場の写真</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp" onchange="shrinkPhoto(this)">'
         . (($a['photo'] ?? '') !== '' ? ' <label style="display:inline"><input type="checkbox" name="photo_del" value="1"> 写真を外す</label>' : '') . '</p>'
         . '<p><label>巣箱数 (空なら巣箱ページで登録した巣箱の数を出す)</label><input type="number" name="hive_count" min="0" max="9999" value="'
@@ -626,7 +626,7 @@ foreach ($tiles as $aid => $a) {
     echo '<div class="pm">' . $pm . '</div>';
     // 天気予報(今日・明日・明後日)。緯度,経度が無ければ、同じ高さで案内だけ出す
     $ll = apiary_latlng($a);
-    echo $ll ? weather_html(weather_get($aid, $ll[0], $ll[1], site_dir_of($a['_o'])), yahoo_wx_url($a, $ll[0], $ll[1]))
+    echo $ll ? weather_html(weather_get($aid, $ll[0], $ll[1], site_dir_of($a['_o'])), wx_link_url($a, $ll[0], $ll[1]))
         : '<div class="wx"><div class="none" style="grid-column:1/-1">地図の場所に緯度,経度を入れると天気予報が出ます</div></div>';
 
     // HPX-Core と電柵(詳細の中に入れる。異常のときだけ上にも出す)
