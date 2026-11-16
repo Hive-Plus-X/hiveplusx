@@ -9,6 +9,7 @@
 //   重量センサの較正(生の値 → kg)は HPX-Core の管理画面で行い、ここではゼロリセットと差し引く重さだけ入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
+require_once __DIR__ . '/hpx_sensor_csv.php';   // read_ble() と CSV の形 (定時記録データ・全データ)
 
 const D_TITLE = 'センサ - ' . BRAND_NAME;
 const D_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
@@ -85,56 +86,6 @@ function lte_rssi_text(?int $rssi): string
     if ($rssi === null || $rssi === 0) return '';
     $lv = $rssi >= -75 ? ['ok', '強い'] : ($rssi >= -90 ? ['ok', 'ふつう'] : ($rssi >= -100 ? ['warn', '弱い'] : ['ng', 'とても弱い']));
     return '、電波 ' . h($rssi . ' dBm') . ' <span class="' . $lv[0] . '">' . $lv[1] . '</span>';
-}
-
-// ble.csv から $since 以降の記録を、種類ごと・センサーごとに古い順で返す
-//   th: mac => [[epoch, 温度, 湿度, 電池%, 電池V, HPX-TH本体温度], ...]
-//       温度は HPX-TH ならサーミスターの温度 (無いときは SHT40)。本体温度 (SHT40) はサーミスターがあるときだけ。電池V は HPX-TH だけ
-//   w : mac => [[epoch, 生の値, ばらつき, ノード内温度, 電池V], ...]
-//   fa: [[epoch, 名前, mac, 状態, 通算回数], ...]
-//   first: いちばん古い記録の時刻(全期間のグラフの左端に使う)
-function read_ble(string $csv, int $since): array
-{
-    $out = ['th' => [], 'w' => [], 'fa' => [], 'first' => 0];
-    $fh = @fopen($csv, 'rb');
-    if (!$fh) return $out;
-    $hd = fgetcsv($fh);
-    if (!is_array($hd)) { fclose($fh); return $out; }
-    $col = array_flip($hd);
-    foreach (['epoch', 'temp_c', 'humidity_pct', 'sensor', 'mac', 'kind'] as $k) {
-        if (!isset($col[$k])) { fclose($fh); return $out; }
-    }
-    $g = fn(array $r, string $k) => isset($col[$k]) ? (string)($r[$col[$k]] ?? '') : '';
-    $num = fn(string $v) => is_numeric($v) ? (float)$v : null;
-    while (($r = fgetcsv($fh)) !== false) {
-        if (count($r) < count($hd)) continue;
-        $ep = (int)$r[$col['epoch']];
-        if ($ep <= 0) continue;
-        if ($out['first'] === 0 || $ep < $out['first']) $out['first'] = $ep;
-        if ($ep < $since) continue;
-        $mac = $g($r, 'mac');
-        $kind = $g($r, 'kind');
-        if ($kind === 'w') {
-            if (!is_numeric($g($r, 'raw'))) continue;
-            $out['w'][$mac][] = [$ep, (int)$g($r, 'raw'), $num($g($r, 'spread')), $num($g($r, 'temp_c')), $num($g($r, 'batt_v'))];
-        } elseif ($kind === 'fa') {
-            if ($g($r, 'fence_state') === '') continue;
-            $out['fa'][] = [$ep, $g($r, 'sensor') !== '' ? $g($r, 'sensor') : $mac, $mac, (int)$g($r, 'fence_state'), (int)$g($r, 'fence_events')];
-        } else {
-            $sht = $num($g($r, 'temp_c'));
-            $t2 = $num($g($r, 'temp2_c'));   // HPX-TH のサーミスター(巣箱の中の温度)
-            $t = $t2 ?? $sht;
-            if ($t === null) continue;
-            $ink = $t2 === null && $num($g($r, 'batt_v')) === null;   // Inkbird の形(HPX-TH でない)
-            $t += th_temp_corr(dirname($csv), $mac, $ink);   // 機種ごとの補正(Inkbird・HPX-TH)と温湿度計ごとの補正
-            $out['th'][$mac][] = [$ep, $t, th_hum_fix($num($g($r, 'humidity_pct')), dirname($csv), $mac, $ink), $num($g($r, 'battery_pct')), $num($g($r, 'batt_v')), $t2 !== null ? $sht : null];
-        }
-    }
-    fclose($fh);
-    foreach (['th', 'w'] as $k) foreach ($out[$k] as &$rows) usort($rows, fn($a, $b) => $a[0] <=> $b[0]);
-    unset($rows);
-    usort($out['fa'], fn($a, $b) => $a[0] <=> $b[0]);
-    return $out;
 }
 
 // 点が多すぎるときは、時間で区切って平均する
@@ -349,81 +300,26 @@ function self_url(array $change = [], string $anchor = ''): string
 // ====================================================================
 
 if (isset($_GET['download']) && $hub) {
-    // 日時ごとに1行。列は 温湿度計(温度・湿度)を台ごとに → 重量センサ(kg)を台ごとに → 電柵アラート(正常/異常)
+    // 日時ごとに1行。列は 温湿度計(温度・湿度)を台ごとに → 重量センサ(kg)を台ごとに → 電柵アラート(正常/異常) (hpx_sensor_csv.php)
+    //   kind=all … 全データ (記録のあるすべての時刻)。それ以外は 定時記録データ (step の区切りごとに必ず1行、無い区切りは日時だけ)
     $data = read_ble($hub['dir'] . '/ble.csv', 0);
     if (!$data['th'] && !$data['w'] && !$data['fa']) {
         page_head(D_TITLE);
         echo '<p>この機器の記録はまだありません。 <a href="' . h(self_url()) . '">戻る</a></p></body></html>';
         exit;
     }
-    $cal = cal_load($hub['dir']);
-    // 列の順: 状態に登録されている順(=画面の表と同じ)、記録にだけあるセンサーは後ろに付ける
-    $names = [];
-    $order = ['th' => [], 'w' => []];
-    foreach ((is_array($hub['st']['sensors'] ?? null) ? $hub['st']['sensors'] : []) as $mac => $s) {
-        if (!is_array($s)) continue;
-        $names[(string)$mac] = (string)($s['name'] ?? '');
-        $k = (string)($s['kind'] ?? 'th');
-        if (isset($order[$k])) $order[$k][] = (string)$mac;
-    }
-    foreach (['th', 'w'] as $k) {
-        foreach (array_keys($data[$k]) as $mac) if (!in_array((string)$mac, $order[$k], true)) $order[$k][] = (string)$mac;
-        $order[$k] = array_values(array_filter($order[$k], fn($m) => isset($data[$k][$m])));
-    }
-    $nm = fn(string $mac) => ($names[$mac] ?? '') !== '' ? $names[$mac] : $mac;
-
-    // 同じ区切りの記録を1行にまとめる(分単位)
-    $rows = [];
-    $slot = fn(int $ep) => intdiv($ep, 60) * 60;
-    $head = ['日時'];
-    foreach ($order['th'] as $i => $mac) {
-        $head[] = $nm($mac) . ' 温度(℃)';
-        $head[] = $nm($mac) . ' 湿度(%)';
-        foreach ($data['th'][$mac] as $r) {
-            $rows[$slot($r[0])][2 * $i] = number_format($r[1], 1, '.', '');
-            $rows[$slot($r[0])][2 * $i + 1] = $r[2] === null ? '' : number_format($r[2], 1, '.', '');
-        }
-    }
-    $base = 2 * count($order['th']);
-    foreach ($order['w'] as $i => $mac) {
-        $c = $cal[$mac] ?? null;
-        $calOk = $c && isset($c['per_kg']);
-        $head[] = $nm($mac) . ($calOk ? ' 重量(kg)' : ' 重量(生の値・未較正)');
-        foreach ($data['w'][$mac] as $r) {
-            $v = $calOk ? to_kg($r[1], $c) : null;
-            $rows[$slot($r[0])][$base + $i] = $calOk ? ($v === null ? '' : number_format($v, 2, '.', '')) : (string)$r[1];
-        }
-    }
-    $faCol = $base + count($order['w']);
-    if ($data['fa']) {
-        $head[] = '電柵アラート';
-        $multi = count(array_unique(array_column($data['fa'], 2))) > 1;
-        foreach ($data['fa'] as $r) {
-            [$ep, $fname, , $fst] = $r;
-            $t = $slot($ep);
-            $cur = $rows[$t][$faCol] ?? '';
-            if ($fst !== 0) {
-                $add = $multi ? $fname : '';
-                $rows[$t][$faCol] = $cur === '' || $cur === '正常' ? '異常' . ($add !== '' ? ' (' . $add . ')' : '')
-                    : ($add !== '' ? rtrim($cur, ')') . '・' . $add . ')' : $cur);
-            } elseif ($cur === '') {
-                $rows[$t][$faCol] = '正常';
-            }
-        }
-    }
-    ksort($rows);
+    $all = ($_GET['kind'] ?? '') === 'all';
+    $step = isset(BLE_STEPS[(int)($_GET['step'] ?? 0)]) ? (int)$_GET['step'] : ble_guess_step($data);
+    // 定時記録データの最後の行: 今の区切りの5分前まで (送信中の記録を空の行にしない)。外した HPX-Core は最後の記録まで
+    $endT = is_file($hub['dir'] . '/.retired') ? 0 : $now - 300;
+    [$head, $lines] = ble_wide_csv($data, is_array($hub['st']['sensors'] ?? null) ? $hub['st']['sensors'] : [], cal_load($hub['dir']), $all ? 0 : $step, $endT);
 
     header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="hpx_' . (preg_replace('/[^A-Za-z0-9_-]/', '', $hub['name']) ?: $hubId) . '_' . date('Ymd_Hi', $now) . '.csv"');
+    header('Content-Disposition: attachment; filename="hpx_' . (preg_replace('/[^A-Za-z0-9_-]/', '', $hub['name']) ?: $hubId) . ($all ? '_all_' : '_' . intdiv($step, 60) . 'min_') . date('Ymd_Hi', $now) . '.csv"');
     $out = fopen('php://output', 'wb');
     fwrite($out, "\xEF\xBB\xBF");   // Excel で文字化けしないように(UTF-8 の印)
     fputcsv($out, $head);
-    $n = count($head) - 1;
-    foreach ($rows as $t => $vals) {
-        $line = [date('Y-m-d H:i', $t)];
-        for ($j = 0; $j < $n; $j++) $line[] = $vals[$j] ?? '';
-        fputcsv($out, $line);
-    }
+    foreach ($lines as $line) fputcsv($out, $line);
     fclose($out);
     exit;
 }
@@ -908,15 +804,28 @@ if ($vbRow !== '') {   // 有線LAN＋電圧チェック版のときだけ
     echo $vS ? chart_svg($vS, $fv, $now, 'V', 2, 2) : '<p class="muted">この期間の記録はありません。</p>';
 }
 
+// データダウンロードの選択 (定時記録データ / 全データ と間隔)。GET で sensor.php?download=1 を開く
+function dl_form(string $hubId, int $guess): string
+{
+    $o = '<form method="get" action="sensor.php" style="margin-top:6px"><input type="hidden" name="hub" value="' . h($hubId) . '"><input type="hidden" name="download" value="1">'
+        . '<label style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><input type="radio" name="kind" value="fixed" checked> 定時記録データ</label>'
+        . '<select name="step" aria-label="間隔">';
+    foreach (BLE_STEPS as $s => $lb) $o .= '<option value="' . $s . '"' . ($s === $guess ? ' selected' : '') . '>' . h($lb) . 'おき' . ($s === $guess ? ' (保存間隔)' : '') . '</option>';
+    return $o . '</select><br><label style="display:inline-flex;align-items:center;gap:4px"><input type="radio" name="kind" value="all"> 全データ</label>'
+        . '<p><button type="submit">CSV をダウンロード</button></p></form>';
+}
+
 // ---- データダウンロード・データクリア ----
 echo '<h2 id="data">データ</h2>';
 $size = @filesize($dir . '/ble.csv');
 echo '<div class="card"><b>データダウンロード</b><br><span class="muted">' . h($hub['name']) . ' の全期間の記録を CSV で保存します'
     . ($size ? ' (約 ' . h(number_format(max(1, (int)round($size / 1024)))) . ' KB' . ($data['first'] ? '、' . h(date('Y-m-d', $data['first'])) . ' から' : '') . ')' : '')
     . '。日時ごとに1行で、温湿度計・重量・電柵アラートを列に並べます。</span><br>'
+    . '<span class="muted">「定時記録データ」は保存間隔の区切り (15分なら 00・15・30・45分) ごとに必ず1行で、記録が無い時刻 (センサの不調や HPX-Core の停止など) は日時だけ書いて値は空にします。'
+    . 'HPX-Core を入れ直した時や「今すぐ記録」で取った、区切りでない時刻の記録は入れません。「全データ」は記録のあるすべての時刻を出します。</span><br>'
     . ($removedSens ? '<span class="muted">HPX-Core で削除したセンサ (' . h(implode('、', array_map(fn($m) => (string)(($removedSens[$m]['name'] ?? '') !== '' ? $removedSens[$m]['name'] : $m), array_keys($removedSens))))
         . ') は画面に出しませんが、過去の記録は消さずに残してあり、この CSV に入ります。もう一度登録すると、また画面に出ます。</span><br>' : '')
-    . '<a href="' . h(self_url(['download' => 1])) . '"><button type="button">CSV をダウンロード</button></a></div>';
+    . dl_form($hubId, ble_guess_step($data)) . '</div>';
 echo '<details><summary><b>データクリア</b></summary><div class="card danger">'
     . '<p>' . h($hub['name']) . ' の記録 (温湿度・重量・電柵)、状態の履歴、メール送信履歴を消します。<b>先に CSV をダウンロードしてください。</b><br>'
     . '<span class="muted">消したファイルは、サーバーのデータフォルダの中の cleared/ に日時の名前で残ります。重量の較正と機器の設定は消えません。</span></p>'

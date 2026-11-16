@@ -189,6 +189,9 @@ echo '<h2 id="consent">データの利用について</h2><div class="card form"
 echo '<h2 id="export">データ一括ダウンロード</h2><div class="card form">'
     . '<p class="muted">蜂場・巣箱・メモ・タスク・作業記録・センサの記録を、Excel で開ける CSV にまとめて ZIP で保存します。手元への保管や、ほかのソフトへの移行に使えます。</p>'
     . '<form method="post" action="export.php">' . csrf_field()
+    . '<p>センサの記録: <label style="display:inline-flex;align-items:center;gap:4px;margin-right:12px"><input type="radio" name="sensor" value="fixed" checked> 定時記録データ</label>'
+    . '<label style="display:inline-flex;align-items:center;gap:4px"><input type="radio" name="sensor" value="all"> 全データ</label><br>'
+    . '<span class="muted">定時記録データは、HPX-Core の保存間隔 (15分など) ごとに必ず1行で、記録が無い時刻は日時だけです。全データは、入れ直した時や「今すぐ記録」の分も含むすべての記録を、電池や電波も付けて1件1行で出します。</span></p>'
     . '<p><label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox" name="photos" value="1"> 写真も入れる (蜂場とメモの写真。ファイルが大きくなります)</label></p>'
     . '<p><button type="submit">データ一括ダウンロード</button></p></form></div>';
 

@@ -2,10 +2,12 @@
 // データ一括ダウンロード: 蜂場・巣箱・メモ・タスク・作業記録・センサの記録を、Excel で開ける CSV にして1つの ZIP で返す。
 //   設定ページ(account.php)のボタンから POST で呼ぶ。見えるのは、蜂場ページなどで見られるものと同じ(共有された蜂場の分も入る)。
 //   センサの記録は自分の HPX-Core の分だけ(ble.csv の全期間。重量は較正があれば kg も付ける)。
+//     定時記録データ (既定) … センサページの CSV と同じ形 (保存間隔の区切りごとに必ず1行、無い時刻は日時だけ)。sensor=all なら 1件1行の全データ
 //   写真は「写真も入れる」にしたときだけ(蜂場の写真と、メモの写真)。
 //   CSV は UTF-8 (BOM付き)。ZIP はデータフォルダの tmp/ に作り、送ったら消す。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
+require_once __DIR__ . '/hpx_sensor_csv.php';   // 定時記録データ (read_ble・ble_wide_csv)
 
 if (!is_post()) redirect('account.php#export');
 @set_time_limit(300);
@@ -109,8 +111,23 @@ $label = ['time' => '日時', 'epoch' => 'epoch', 'seq' => 'seq', 'temp_c' => '�
     'fence_state' => '電柵', 'fence_events' => '電柵 検出の通算回数', 'fence_ago' => '電柵 検出からの秒数', 'temp2_c' => 'サーミスター温度 (℃)'];
 $nSensorFiles = 0;
 $sensorTmp = [];
+$sensorAll = ($_POST['sensor'] ?? '') === 'all';
+$stepNote = [];   // 定時記録データの間隔 (はじめにお読みください 用)
 foreach ($hubs as $hubId => $hb) {
     if ($hb['o'] !== $UID || !is_file($hb['dir'] . '/ble.csv')) continue;
+    $hbName = preg_replace('#[\\\\/:*?"<>|]#u', '_', $hb['name']) ?: $hubId;
+    if (!$sensorAll) {
+        $bd = read_ble($hb['dir'] . '/ble.csv', 0);
+        if (!$bd['th'] && !$bd['w'] && !$bd['fa']) continue;
+        $step = ble_guess_step($bd);
+        $st = json_decode((string)@file_get_contents($hb['dir'] . '/state.json'), true);
+        [$head, $lines] = ble_wide_csv($bd, is_array($st['sensors'] ?? null) ? $st['sensors'] : [], cal_load((string)$hubId), $step,
+            is_file($hb['dir'] . '/.retired') ? 0 : $now - 300);
+        csv_add($zip, 'センサ_' . $hbName . '.csv', $head, $lines);
+        $stepNote[] = $hb['name'] . ' ' . BLE_STEPS[$step] . 'おき';
+        $nSensorFiles++;
+        continue;
+    }
     $in = @fopen($hb['dir'] . '/ble.csv', 'rb');
     $hd = $in ? fgetcsv($in) : false;
     if (!is_array($hd)) { if ($in) fclose($in); continue; }
@@ -142,7 +159,7 @@ foreach ($hubs as $hubId => $hb) {
     }
     fclose($in);
     fclose($out);
-    $zip->addFile($tmp, 'センサ_' . (preg_replace('#[\\\\/:*?"<>|]#u', '_', $hb['name']) ?: $hubId) . '.csv');
+    $zip->addFile($tmp, 'センサ_' . $hbName . '.csv');
     $sensorTmp[] = $tmp;
     $nSensorFiles++;
 }
@@ -167,6 +184,8 @@ $zip->addFromString('はじめにお読みください.txt', "\xEF\xBB\xBF" . BR
     . "・CSV は Excel でそのまま開けます (UTF-8)。\r\n"
     . "・蜂場・巣箱・メモ・タスク・作業記録は、蜂場ページなどで見られるもの (チームで共有された蜂場の分も含む) です。\r\n"
     . "・センサ_<HPX-Core名>.csv は、自分の HPX-Core の全期間の記録です。重量 (kg) は較正を入れたセンサだけ出ます。センサ1台にかかる重さなので、巣箱の重さは重量センサ1台なら2倍、2台なら合計にしてください。\r\n"
+    . ($sensorAll ? "・センサの記録は「全データ」です。入れ直した時や「今すぐ記録」の分も含め、1件1行です。\r\n"
+        : "・センサの記録は「定時記録データ」です。保存間隔の区切りごとに必ず1行で、記録が無い時刻は日時だけ書いて値は空です (" . implode('、', $stepNote) . ")。\r\n")
     . (!empty($_POST['photos']) ? "・写真フォルダに、蜂場の写真とメモの写真が入っています。\r\n" : ''));
 $zip->close();
 foreach ($sensorTmp as $t) @unlink($t);
