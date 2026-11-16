@@ -28,7 +28,7 @@ function page_head(string $title, bool $refresh = false): void
 {
     echo '<!doctype html><html lang="ja"><head><meta charset="utf-8">'
         . '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        . '<title>' . h($title) . '</title>' . brand_head() . '<style>'
+        . '<title>' . h($title) . '</title>' . brand_head() . offline_head() . '<style>'
         . 'body{font-family:system-ui,sans-serif;margin:0 auto;padding:12px 16px;background:#f6f7f8;color:#222;max-width:900px}'
         . 'h1{font-size:1.3em}h2{font-size:1.15em;margin-top:1.8em;border-bottom:2px solid #ccd;padding-bottom:4px}'
         . 'table{border-collapse:collapse;width:100%;background:#fff;font-size:.92em}'

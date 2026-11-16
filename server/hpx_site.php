@@ -122,7 +122,24 @@ function is_post(): bool
         http_response_code(400);
         exit('画面を開き直してから、もう一度送ってください。');
     }
+    offline_once();
     return true;
+}
+
+// 電波が無いときに書いて、あとから送られてきた記録には、端末で付けた番号 oid がある (js/hpx_offline.js)。
+// 同じ記録が2回届いたとき (送る途中で電波が切れて送り直したときなど) は、2回目は保存しない
+function offline_once(): void
+{
+    $oid = (string)($_POST['oid'] ?? '');
+    if (!preg_match('/^[0-9a-f]{16,40}$/', $oid)) return;
+    $seen = false;
+    site_update_of($GLOBALS['UID'], 'offline_ids', function (array $v) use ($oid, &$seen) {
+        if (isset($v[$oid])) { $seen = true; return $v; }
+        $v[$oid] = time();
+        if (count($v) > 1000) { asort($v); $v = array_slice($v, -800, null, true); }   // 古い番号は忘れる
+        return $v;
+    });
+    if ($seen) redirect(safe_back((string)($_POST['back'] ?? ''), basename($GLOBALS['selfPage'])), 'この記録は、もう届いていました。');
 }
 
 // 保存した後は、同じページを GET で開き直す(再読み込みで二重に登録しないように)
@@ -744,7 +761,7 @@ function page_head(string $title, string $active): void
 {
     echo '<!doctype html><html lang="ja"><head><meta charset="utf-8">'
         . '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        . '<title>' . h($title) . '</title>' . brand_head() . '<style>'
+        . '<title>' . h($title) . '</title>' . brand_head() . offline_head() . '<style>'
         . 'body{font-family:system-ui,sans-serif;margin:0 auto;padding:0 16px 24px;background:#f6f7f8;color:#222;max-width:900px}'
         . 'h1{font-size:1.3em;margin:.6em 0}h2{font-size:1.15em;margin-top:1.6em;border-bottom:2px solid #ccd;padding-bottom:4px}h3{font-size:1.05em;margin:.2em 0 .4em}'
         . 'table{border-collapse:collapse;width:100%;background:#fff;font-size:.92em}'
