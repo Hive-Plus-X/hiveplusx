@@ -616,7 +616,18 @@ LINE を連携した人 (13章) が、LINE公式アカウントのトークに�
 
 ## 16. 情報サイトの AI ヘルプ — 2026-11-16 追加
 
-情報サイト (hiveplusx.com) の `help.php` で、見た人の質問に AI (Claude) が答えます。答えの材料は、サイトのページ (機器・設置ガイド・HPX-note の紹介など) と `help_knowledge.md` (よくある質問と使い方) です。
+情報サイト (hiveplusx.com) の `help.php` で、見た人の質問に AI (Claude) が答えます。答えの材料は次のとおりです。
+- サイトのページ (機器・設置ガイド・HPX-note の紹介など)
+- `help_knowledge.md` (よくある質問。管理者が書き足す)
+- `help_note_guide.md` (HPX-note の画面ごとの使い方。HPX-note の画面を変えたら、ここも直す)
+- GitHub のリポジトリの説明書 (`docs/`・`firmware/`・`hardware/`・`server/` の .md、README、`server/config.sample.php`)。ファイルの一覧と見出しだけを毎回渡し、AI が要ると判断したときに、その章だけを読む。GitHub には6時間に1回だけ「変わったか」を聞き、変わったファイルだけ取り直す (`hpx/data/help/github.json`)。どのファイルを読んだかは `log.jsonl` の `use.github` に残る
+
+### GitHub のリポジトリが非公開の間 (トークン)
+非公開のリポジトリは、トークンが無いと読めません (読めなくても、ほかの材料で答える)。公開したら `$HPX_HELP_GITHUB_TOKEN` は空に戻してかまいません。非公開の間は、回答に GitHub の URL を書かないようにしています (見る人が開けないため)。
+1. GitHub で、右上の自分のアイコン → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token
+2. Resource owner: Hive-Plus-X、Repository access: Only select repositories → hiveplusx、Permissions: Contents を Read-only、有効期限は1年など
+3. 作ったトークンを `config.php` の `$HPX_HELP_GITHUB_TOKEN` に入れる (人に見せない。GitHub には上げない)
+4. Organization の設定によっては、トークンを Organization の持ち主が承認するまで使えない
 
 ### 置き方
 - サイトのフォルダ (`www/hiveplusx/`) に `help.php` と `help_knowledge.md` を置く (サイトの全部入り zip に入っている)。お問い合わせフォームと同じく、`hpx/config.php` を読む

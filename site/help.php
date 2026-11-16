@@ -1,7 +1,12 @@
 <?php
 // hiveplusx.com の AI ヘルプ。サイトに置いて (www/hiveplusx/help.php)、利用者の質問に AI (Claude) が答える。
-//   答えの材料は、同じフォルダにあるサイトのページ (HPX_PAGES) と help_knowledge.md (よくある質問・使い方。管理者が書き足せる)。
-//     ページを直すと、次の質問のときに材料を自動で作り直す (hpx/data/help/knowledge.txt)。
+//   答えの材料は、同じフォルダにあるサイトのページ (HPX_PAGES)、help_knowledge.md (よくある質問。管理者が書き足せる)、
+//     help_note_guide.md (HPX-note の画面ごとの使い方)。ページを直すと、次の質問のときに材料を自動で作り直す (hpx/data/help/knowledge.txt)。
+//   GitHub のリポジトリの説明書 (docs/・firmware/・hardware/ の .md、README、config.sample.php) も使う。
+//     ファイルの一覧と見出しだけを材料に入れ、AI が要ると判断したときに、その章だけを GitHub から読む (道具 read_github_doc)。
+//     GitHub からは6時間に1回まで取りに行き、hpx/data/help/github.json に保存する。取れないときは前に取ったものを使う。
+//     $HPX_HELP_GITHUB       リポジトリ (既定 'Hive-Plus-X/hiveplusx'。'' なら GitHub は使わない)
+//     $HPX_HELP_GITHUB_TOKEN リポジトリが非公開の間だけ要る、読み取り専用のトークン (公開したら空でよい)
 //   材料はプロンプトキャッシュに置く。続けて質問が来ると、材料の分の料金が約10分の1になる。
 //   設定はアプリ (hpx/) の config.php:
 //     $HPX_HELP_KEY      Claude の API キー。空なら AIメモと同じ $HPX_AI_KEY を使う (どちらも空ならヘルプは「準備中」)
@@ -106,6 +111,7 @@ function h_knowledge(string $dir): string
 {
     $files = HPX_PAGES;
     $files[] = 'help_knowledge.md';
+    $files[] = 'help_note_guide.md';
     $sig = [];
     foreach ($files as $f) { $p = __DIR__ . '/' . $f; $sig[] = $f . ':' . (is_file($p) ? filemtime($p) . ':' . filesize($p) : '-'); }
     $sig = md5(implode('|', $sig));
@@ -114,6 +120,8 @@ function h_knowledge(string $dir): string
     $parts = [];
     $md = __DIR__ . '/help_knowledge.md';
     if (is_file($md)) $parts[] = "# よくある質問と使い方 (管理者が書いたもの。サイトのページより新しい情報のことがある)\n" . trim((string)file_get_contents($md));
+    $md = __DIR__ . '/help_note_guide.md';
+    if (is_file($md)) $parts[] = trim((string)file_get_contents($md));
     foreach (HPX_PAGES as $f) {
         $p = __DIR__ . '/' . $f;
         if (is_file($p)) $parts[] = h_page_text($f, (string)file_get_contents($p));
@@ -131,10 +139,11 @@ function h_system(): string
 サイトを見た人 (養蜂家が多く、電子工作やプログラミングは初めての人も多い) の質問に答えます。
 
 答え方:
-- 下の <site> にある、サイトのページと「よくある質問と使い方」の内容をもとに答えてください。
-- <site> に書かれていないこと、はっきりしないことは、推測で答えないでください。「サイトには載っていないため、分かりません」と正直に言い、お問い合わせフォーム (https://hiveplusx.com/contact.php) か LINE公式アカウント (https://line.me/R/ti/p/@222xdxtk) で人に聞けることを案内してください。
+- 下の <site> にある、サイトのページ・「よくある質問と使い方」・「HPX-note の画面ごとの使い方」の内容をもとに答えてください。
+- <site> に答えが無く、<github> の一覧にある説明書 (サーバーの設置手順・設定、ファームウェア、配線、部品表など) に答えがありそうなときは、道具 read_github_doc でその章を読んでから答えてください。
+- <site> にも GitHub の説明書にも書かれていないこと、はっきりしないことは、推測で答えないでください。「サイトには載っていないため、分かりません」と正直に言い、お問い合わせフォーム (https://hiveplusx.com/contact.php) か LINE公式アカウント (https://line.me/R/ti/p/@222xdxtk) で人に聞けることを案内してください。
 - やさしい日本語で、短く答えてください。専門用語には短い説明を添えてください。手順は 1. 2. 3. の番号で書いてください。
-- 関係するページがあれば、最後に URL を書いてください (例 https://hiveplusx.com/device-th.html)。<site> にある URL だけを使い、URL を作らないでください。
+- 関係するページがあれば、最後に URL を書いてください (例 https://hiveplusx.com/device-th.html)。<site> と read_github_doc の結果にある URL だけを使い、URL を作らないでください。
 - 書式は、**太字** と、行頭の「- 」「1. 」だけにしてください。表・見出し (#)・コードブロックは使わないでください。
 - 漢字は日本の常用漢字・新字体を使ってください。
 - 一般的な養蜂の質問には、分かる範囲で簡単に答えてよいですが、Hive Plus X の情報でないことを一言添えてください。
@@ -209,28 +218,131 @@ function h_count_use(string $dir, string $dev, string $ip): string
 }
 
 // ====================================================================
+// GitHub のリポジトリの説明書
+// ====================================================================
+
+function h_gh_repo(): string
+{
+    $r = $GLOBALS['HPX_HELP_GITHUB'] ?? 'Hive-Plus-X/hiveplusx';
+    return preg_match('#^[\w.-]+/[\w.-]+$#', (string)$r) ? (string)$r : '';
+}
+function h_gh_private(): bool { return trim((string)($GLOBALS['HPX_HELP_GITHUB_TOKEN'] ?? '')) !== ''; }
+
+// 材料にするファイルか (サイトのページは上で入れているので除く)
+function h_gh_want(string $path, int $size): bool
+{
+    if ($size > 300000) return false;
+    if ($path === 'server/config.sample.php') return true;
+    if (!str_ends_with($path, '.md')) return false;
+    if (in_array($path, ['README.md', 'CONTRIBUTING.md'], true)) return true;
+    return (bool)preg_match('#^(docs|firmware|hardware|server)/#', $path);
+}
+
+// GitHub の API を呼ぶ。[HTTP コード, 本文]
+function h_gh_get(string $url, bool $raw = false): array
+{
+    $head = ['User-Agent: hiveplusx-help', 'Accept: ' . ($raw ? 'application/vnd.github.raw' : 'application/vnd.github+json')];
+    $tok = trim((string)($GLOBALS['HPX_HELP_GITHUB_TOKEN'] ?? ''));
+    if ($tok !== '') $head[] = 'Authorization: Bearer ' . $tok;
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_HTTPHEADER => $head, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_CONNECTTIMEOUT => 5]);
+    $res = curl_exec($ch);
+    $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return [$code, $res === false ? '' : (string)$res];
+}
+
+// {path: text} を返す。6時間に1回だけ GitHub に変わったかを聞き、変わったファイルだけ取り直す
+function h_gh_files(string $dir): array
+{
+    $repo = h_gh_repo();
+    if ($repo === '') return [];
+    $f = $dir . '/github.json';
+    $d = json_decode((string)@file_get_contents($f), true) ?: [];
+    if (($d['repo'] ?? '') !== $repo) $d = ['repo' => $repo, 'files' => []];
+    if (time() - (int)($d['checked'] ?? 0) >= 6 * 3600) {
+        $d['checked'] = time();   // 失敗しても、6時間は聞き直さない
+        [$code, $res] = h_gh_get('https://api.github.com/repos/' . $repo . '/git/trees/HEAD?recursive=1');
+        $tree = json_decode($res, true);
+        if ($code === 200 && is_array($tree['tree'] ?? null)) {
+            $new = [];
+            foreach ($tree['tree'] as $t) {
+                $p = (string)($t['path'] ?? '');
+                if (($t['type'] ?? '') !== 'blob' || !h_gh_want($p, (int)($t['size'] ?? 0))) continue;
+                $old = $d['files'][$p] ?? null;
+                if (is_array($old) && ($old['sha'] ?? '') === ($t['sha'] ?? '')) { $new[$p] = $old; continue; }
+                [$c2, $text] = h_gh_get('https://api.github.com/repos/' . $repo . '/contents/' . implode('/', array_map('rawurlencode', explode('/', $p))), true);
+                if ($c2 === 200) $new[$p] = ['sha' => (string)$t['sha'], 'text' => $text];
+                elseif (is_array($old)) $new[$p] = $old;   // 取れなかったら前のもの
+            }
+            ksort($new);
+            $d['files'] = $new;
+            $d['ok'] = time();
+        } else {
+            $d['err'] = date('c') . ' HTTP ' . $code;
+        }
+        @file_put_contents($f, json_encode($d, JSON_UNESCAPED_UNICODE), LOCK_EX);
+    }
+    $out = [];
+    foreach ((array)($d['files'] ?? []) as $p => $v) $out[$p] = (string)($v['text'] ?? '');
+    return $out;
+}
+
+// 見出しの一覧 [[深さ, 見出し], ...] (# 〜 ###)
+function h_gh_heads(string $text): array
+{
+    preg_match_all('/^(#{1,3})\s+(.+)$/m', $text, $m, PREG_SET_ORDER);
+    return array_map(fn($x) => [strlen($x[1]), trim($x[2])], $m);
+}
+
+// AI に渡すファイルの一覧 (材料の最後に入れる)
+function h_gh_index(array $files): string
+{
+    if (!$files) return '';
+    $o = "# GitHub のリポジトリにある説明書 (https://github.com/" . h_gh_repo() . ")\n"
+        . "ここには一覧と見出しだけがあります。中身が要るときは、道具 read_github_doc で、ファイルと章を指定して読んでください。\n";
+    foreach ($files as $p => $t) {
+        $o .= "\n- " . $p . ' (' . mb_strlen($t) . "字)";
+        $hs = array_filter(h_gh_heads($t), fn($x) => $x[0] <= 2);
+        if (str_ends_with($p, '.php')) $o .= ': サーバーの設定ファイルの見本。設定項目ごとに説明のコメントがある';
+        elseif ($hs) $o .= ': ' . implode(' / ', array_map(fn($x) => $x[1], $hs));
+    }
+    return $o;
+}
+
+// read_github_doc の中身。章 (見出しの一部) を指定すると、その章だけ
+function h_gh_read(array $files, string $path, string $section): string
+{
+    if (!isset($files[$path])) return 'そのファイルはありません。一覧にあるファイル名を指定してください。';
+    $t = $files[$path];
+    $url = 'https://github.com/' . h_gh_repo() . '/blob/HEAD/' . $path;
+    $section = trim($section);
+    if ($section !== '' && !str_ends_with($path, '.php')) {
+        $lines = explode("\n", $t);
+        $start = null; $lv = 0;
+        foreach ($lines as $i => $ln) {
+            if (!preg_match('/^(#{1,4})\s+(.+)$/', $ln, $m)) continue;
+            if ($start === null && mb_stripos($m[2], $section) !== false) { $start = $i; $lv = strlen($m[1]); continue; }
+            if ($start !== null && strlen($m[1]) <= $lv) { $end = $i; break; }
+        }
+        if ($start === null) return '「' . $section . '」という章は見つかりませんでした。この ファイルの見出し: '
+            . implode(' / ', array_map(fn($x) => $x[1], h_gh_heads($t)));
+        $t = implode("\n", array_slice($lines, $start, ($end ?? count($lines)) - $start));
+    }
+    if (mb_strlen($t) > 14000) {
+        $t = mb_substr($t, 0, 14000) . "\n…(長いので、ここまで。続きは章を指定して読んでください。見出し: "
+            . implode(' / ', array_map(fn($x) => $x[1], h_gh_heads($files[$path]))) . ')';
+    }
+    return "ファイル: $path ($url)\n\n" . $t;
+}
+
+// ====================================================================
 // Claude に聞く
 // ====================================================================
 
-// [回答の文 または null, エラーの説明, 使ったトークン数]
-function h_ask(string $knowledge, array $messages): array
+function h_api(array $body): array
 {
-    global $HPX_HELP_MODEL, $HPX_HELP_CACHE_TTL, $HPX_AI_API;
-    $cc = ['type' => 'ephemeral'];
-    if (($HPX_HELP_CACHE_TTL ?? '') === '1h') $cc['ttl'] = '1h';
-    $body = [
-        'model' => trim((string)($HPX_HELP_MODEL ?? '')) ?: 'claude-haiku-5-5',
-        'max_tokens' => 4000,
-        // 決まりと材料は毎回同じ文なので、その終わりにキャッシュの印を付ける
-        'system' => [
-            ['type' => 'text', 'text' => h_system()],
-            ['type' => 'text', 'text' => "<site>\n" . $knowledge . "\n</site>", 'cache_control' => $cc],
-        ],
-        // 対話の続き (前のやりとり) も、自動でキャッシュする
-        'cache_control' => $cc,
-        'output_config' => ['effort' => 'low'],
-        'messages' => $messages,
-    ];
+    global $HPX_AI_API;
     $head = ['Content-Type: application/json', 'x-api-key: ' . h_key(), 'anthropic-version: 2026-10-21'];
     $url = rtrim((string)($HPX_AI_API ?? '') ?: 'https://api.anthropic.com', '/') . '/v1/messages';   // $HPX_AI_API は試験用
     $ch = curl_init($url);
@@ -240,18 +352,84 @@ function h_ask(string $knowledge, array $messages): array
     $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $err = curl_error($ch);
     curl_close($ch);
-    if ($res === false) return [null, '接続できませんでした (' . $err . ')', []];
+    if ($res === false) return [null, '接続できませんでした (' . $err . ')'];
     $r = json_decode((string)$res, true);
-    if ($code !== 200 || !is_array($r)) return [null, 'HTTP ' . $code . ' ' . mb_substr((string)($r['error']['message'] ?? $res), 0, 200), []];
-    $use = $r['usage'] ?? [];
-    $u = ['in' => (int)($use['input_tokens'] ?? 0), 'cache_write' => (int)($use['cache_creation_input_tokens'] ?? 0),
-          'cache_read' => (int)($use['cache_read_input_tokens'] ?? 0), 'out' => (int)($use['output_tokens'] ?? 0)];
-    if (($r['stop_reason'] ?? '') === 'refusal') return [null, 'refusal', $u];
-    $t = '';
-    foreach ((array)($r['content'] ?? []) as $b) if (($b['type'] ?? '') === 'text') $t .= (string)($b['text'] ?? '');
-    $t = trim($t);
-    if ($t === '') return [null, '回答が空でした (' . ($r['stop_reason'] ?? '') . ')', $u];
-    return [$t, '', $u];
+    if ($code !== 200 || !is_array($r)) return [null, 'HTTP ' . $code . ' ' . mb_substr((string)($r['error']['message'] ?? $res), 0, 200)];
+    return [$r, ''];
+}
+
+// [回答の文 または null, エラーの説明, 使ったトークン数 (合計)・GitHub から読んだファイル]
+function h_ask(string $knowledge, array $messages, array $gh): array
+{
+    global $HPX_HELP_MODEL, $HPX_HELP_CACHE_TTL;
+    $cc = ['type' => 'ephemeral'];
+    if (($HPX_HELP_CACHE_TTL ?? '') === '1h') $cc['ttl'] = '1h';
+    $site = "<site>\n" . $knowledge . "\n</site>";
+    if ($gh) {
+        $site .= "\n\n<github>\n" . h_gh_index($gh) . "\n</github>\n"
+            . (h_gh_private() ? 'GitHub のリポジトリはまだ非公開なので、回答に GitHub の URL は書かないでください (中身は答えに使ってよい)。'
+                              : 'GitHub の説明書を使って答えたときは、そのファイルの URL (read_github_doc の結果にある) を書いてください。');
+    }
+    $body = [
+        'model' => trim((string)($HPX_HELP_MODEL ?? '')) ?: 'claude-haiku-5-5',
+        'max_tokens' => 4000,
+        // 決まりと材料は毎回同じ文なので、その終わりにキャッシュの印を付ける
+        'system' => [
+            ['type' => 'text', 'text' => h_system()],
+            ['type' => 'text', 'text' => $site, 'cache_control' => $cc],
+        ],
+        // 対話の続き (前のやりとり) も、自動でキャッシュする
+        'cache_control' => $cc,
+        'output_config' => ['effort' => 'low'],
+        'messages' => $messages,
+    ];
+    if ($gh) {
+        $body['tools'] = [[
+            'name' => 'read_github_doc',
+            'description' => 'Hive Plus X の GitHub リポジトリにある説明書を読む。<site> に答えが無く、<github> の一覧にある説明書に答えがありそうなときに使う。長いファイルは section に章の見出し (の一部) を入れて、その章だけを読む。',
+            'input_schema' => ['type' => 'object', 'additionalProperties' => false, 'required' => ['path'], 'properties' => [
+                'path' => ['type' => 'string', 'enum' => array_keys($gh), 'description' => 'ファイル名 (一覧にあるもの)'],
+                'section' => ['type' => 'string', 'description' => '読みたい章の見出しの一部 (例「14. AIメモ」)。空ならファイル全体 (長いときは途中まで)'],
+            ]],
+        ]];
+    }
+    $u = ['in' => 0, 'cache_write' => 0, 'cache_read' => 0, 'out' => 0, 'github' => []];
+    for ($round = 0; $round < 4; $round++) {
+        if ($round === 3) {   // 読みすぎないよう、4回目は道具を使わずに答えてもらう
+            $body['tool_choice'] = ['type' => 'none'];
+            $body['messages'][count($body['messages']) - 1]['content'][] = ['type' => 'text', 'text' => 'ここまでに読んだ内容で答えてください。'];
+        }
+        [$r, $err] = h_api($body);
+        if ($r === null) return [null, $err, $u];
+        $use = $r['usage'] ?? [];
+        $u['in'] += (int)($use['input_tokens'] ?? 0);
+        $u['cache_write'] += (int)($use['cache_creation_input_tokens'] ?? 0);
+        $u['cache_read'] += (int)($use['cache_read_input_tokens'] ?? 0);
+        $u['out'] += (int)($use['output_tokens'] ?? 0);
+        $stop = (string)($r['stop_reason'] ?? '');
+        if ($stop === 'refusal') return [null, 'refusal', $u];
+        if ($stop === 'tool_use') {
+            // AI の返事 (考えた跡も) をそのまま戻し、道具の結果を足して続ける
+            $body['messages'][] = ['role' => 'assistant', 'content' => $r['content']];
+            $results = [];
+            foreach ((array)$r['content'] as $b) {
+                if (($b['type'] ?? '') !== 'tool_use') continue;
+                $in = (array)($b['input'] ?? []);
+                $p = (string)($in['path'] ?? '');
+                $u['github'][] = $p . (($in['section'] ?? '') !== '' ? '#' . $in['section'] : '');
+                $results[] = ['type' => 'tool_result', 'tool_use_id' => (string)$b['id'],
+                    'content' => ($b['name'] ?? '') === 'read_github_doc' ? h_gh_read($gh, $p, (string)($in['section'] ?? '')) : 'その道具はありません。', ];
+            }
+            $body['messages'][] = ['role' => 'user', 'content' => $results];
+            continue;
+        }
+        $t = '';
+        foreach ((array)($r['content'] ?? []) as $b) if (($b['type'] ?? '') === 'text') $t .= (string)($b['text'] ?? '');
+        $t = trim($t);
+        if ($t === '') return [null, '回答が空でした (' . $stop . ')', $u];
+        return [$t, '', $u];
+    }
+    return [null, '回答をまとめられませんでした', $u];
 }
 
 // ====================================================================
@@ -285,7 +463,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $why = h_count_use($dir, $dev, $ip);
     if ($why !== '') $out(['error' => $why, 'left' => 0]);
 
-    [$ans, $err, $use] = h_ask(h_knowledge($dir), $msgs);
+    [$ans, $err, $use] = h_ask(h_knowledge($dir), $msgs, h_gh_files($dir));
     $log = ['time' => date('c'), 'dev' => substr($dev, 0, 8), 'turn' => $turns, 'q' => end($msgs)['content'], 'a' => $ans, 'err' => $err, 'use' => $use];
     @file_put_contents($dir . '/log.jsonl', json_encode($log, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
     $left = max(0, h_day_max() - h_count_read($dir, $dev, $ip)[0]);
