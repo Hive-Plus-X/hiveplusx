@@ -620,7 +620,7 @@ LINE を連携した人 (13章) が、LINE公式アカウントのトークに�
 情報サイト (hiveplusx.com) の `help.php` で、見た人の質問に AI (Claude) が答えます。答えの材料は次のとおりです。
 - サイトのページ (機器・設置ガイド・HPX-note の紹介など)
 - `help_knowledge.md` (よくある質問。管理者が書き足す)
-- `help_note_guide.md` (HPX-note の画面ごとの使い方。HPX-note の画面を変えたら、ここも直す)
+- HPX-note の画面ごとの使い方は、サイトの `app.html` の「使い方ガイド」(HPX-note の画面を変えたら、ここも直す)
 - GitHub のリポジトリの説明書 (`docs/`・`firmware/`・`hardware/`・`server/` の .md、README、`server/config.sample.php`)。ファイルの一覧と見出しだけを毎回渡し、AI が要ると判断したときに、その章だけを読む。GitHub には6時間に1回だけ「変わったか」を聞き、変わったファイルだけ取り直す (`hpx/data/help/github.json`)。どのファイルを読んだかは `log.jsonl` の `use.github` に残る
 
 ### GitHub のリポジトリが非公開の間 (トークン)
