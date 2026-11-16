@@ -1,0 +1,16 @@
+{
+  "name": "HPX-note",
+  "short_name": "HPX-note",
+  "description": "Hive Plus X の蜂場管理 (メモ・作業記録・タスク・センサ)",
+  "lang": "ja",
+  "start_url": "apiary.php",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f8",
+  "theme_color": "#2F5D45",
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

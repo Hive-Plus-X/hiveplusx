@@ -41,7 +41,18 @@ function brand_head(): string
 {
     // iPhone で「ホーム画面に追加」したときのアイコン(180px の PNG。角は iPhone が丸める)と名前
     return '<link rel="icon" href="img/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="img/apple-touch-icon.png">'
-        . '<meta name="apple-mobile-web-app-title" content="HPX-note"><meta name="theme-color" content="#2F5D45">';
+        . '<meta name="apple-mobile-web-app-title" content="HPX-note"><meta name="theme-color" content="#2F5D45">'
+        . '<link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">';
+}
+
+// オフライン対応 (sw.js・js/hpx_offline.js)。ログインした後のページの <head> に入れる。
+// hpx-u はアカウントごとの目印 (別のアカウントでログインしたら、この端末の控えを消すため)。hpx-csrf は送信待ちを送るときの合言葉
+function offline_head(): string
+{
+    global $UID, $csrf;
+    if (($UID ?? '') === '') return '';
+    return '<meta name="hpx-u" content="' . h(substr(hash('sha256', 'hpx-u:' . $UID), 0, 16)) . '"><meta name="hpx-csrf" content="' . h((string)$csrf) . '">'
+        . '<script src="js/hpx_offline.js?v=1" defer></script>';
 }
 
 // メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)
@@ -883,14 +894,14 @@ function wcal_with_inherit(string $dir): array
 // ログイン後に戻るページ(自分のページだけ許す)
 function auth_next(string $next): string
 {
-    return preg_match('/^(apiary|hive|memo|task|work|sensor|camera|team|account|admin)\.php(\?[^\s<>"]*)?$/', $next) ? $next : 'apiary.php';
+    return preg_match('/^(apiary|hive|memo|task|work|sensor|camera|team|account|admin|offline)\.php(\?[^\s<>"]*)?$/', $next) ? $next : 'apiary.php';
 }
 
 // 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・サーバー管理(サーバー管理者だけ)が出る。蜂場ページとセンサページで共通
 function auth_nav_right(string $active): string
 {
     global $ME;
-    $items = ['sensor.php' => 'センサ', 'camera.php' => 'カメラ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント'];
+    $items = ['sensor.php' => 'センサ', 'camera.php' => 'カメラ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント', 'offline.php' => 'オフライン'];
     $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' ? ' class="on"' : '') . '>'
         . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>'
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
