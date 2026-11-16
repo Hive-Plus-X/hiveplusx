@@ -17,9 +17,10 @@
 //   メールは Gmail のアカウントにログインして(SMTP認証、アプリパスワード)送る。さくらのサーバーからの直接送信(mb_send_mail)は
 //   届いたり届かなかったりしたので使わない。設定は config.php の $HPX_SMTP_*。
 //   送信の結果は データフォルダの mail.log に残る。
-//   LINE を連携した人には LINE にも送る (hpx_line.php)。
+//   LINE を連携した人には LINE にも送る (hpx_line.php)。プッシュ通知の端末を登録した人には、その端末にも出す (hpx_push.php)。
 declare(strict_types=1);
 require_once __DIR__ . '/hpx_line.php';
+require_once __DIR__ . '/hpx_push.php';
 
 $HPX_ALERT_QUEUE = [];
 
@@ -236,6 +237,7 @@ function hpx_alert_flush(string $logDir, ?string $to = null): void
     $useSmtp = (string)($HPX_SMTP_HOST ?? '') !== '';
     // LINE を連携した人には LINE にも送る。LINE だけにしている人のアドレスはメールの送り先から外す (hpx_line.php)
     [$lineTo, $mailList, $lineOnly] = line_split($toList);
+    $pushTo = push_targets($toList);   // プッシュ通知も送る人 (メール・LINE はそのまま)
     $log = fn(string $line) => @file_put_contents(rtrim($logDir, '/') . '/mail.log', date('Y-m-d H:i:s') . ' ' . $line . "\n", FILE_APPEND);
     $send = function (array $list, string $subject, string $text) use ($from, $useSmtp, $to): array {
         if (!$list || !filter_var($from, FILTER_VALIDATE_EMAIL) || $to === 'you@example.com') return [false, '送り先・送り元のアドレスが設定されていません'];
@@ -244,6 +246,10 @@ function hpx_alert_flush(string $logDir, ?string $to = null): void
     };
     foreach ($HPX_ALERT_QUEUE as [$subject, $body]) {
         $text = $body . "\n-- \nHive Plus X\n";
+        foreach ($pushTo as $puid) {
+            [$pok, $png, $perr] = push_user($puid, trim(str_replace('【HPX】', '', $subject)), trim($body), push_url($subject));
+            if ($pok || $png) $log('PUSH ' . ($png ? 'FAILED' : 'sent') . ' ' . $subject . ' (' . user_name($puid) . ' ' . $pok . '台' . ($png ? ', 送れなかった ' . $png . '台 | ' . $perr : '') . ')');
+        }
         $fallback = [];   // LINE で送れなかった「LINE だけ」の人のアドレス
         foreach ($lineTo as $lto => $luid) {
             [$lok, , $lres] = line_push((string)$lto, line_text($subject, $body));

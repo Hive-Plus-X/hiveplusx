@@ -224,3 +224,22 @@ async function idb(store, mode, fn) {
     t.onerror = t.onabort = () => { d.close(); ng(t.error); };
   });
 }
+
+// ---------------------------------------------------------------- プッシュ通知 (hpx_push.php が送る)
+self.addEventListener('push', e => {
+  let m = {};
+  try { m = e.data ? e.data.json() : {}; } catch (err) { m = { b: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(m.t || 'HPX-note のお知らせ', {
+    body: m.b || '', icon: 'img/icon-192.png', badge: 'img/icon-192.png', lang: 'ja',
+    data: { u: new URL(m.u || 'apiary.php', self.registration.scope).toString() }
+  }));
+});
+// 通知を押したら、そのページを開く (開いていればそこへ移る)
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.u) || self.registration.scope;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+    for (const c of list) if (c.url.startsWith(self.registration.scope) && 'navigate' in c) return c.navigate(url).then(w => (w || c).focus());
+    return self.clients.openWindow(url);
+  }));
+});
