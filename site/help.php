@@ -1,7 +1,7 @@
 <?php
 // hiveplusx.com の AI ヘルプ。サイトに置いて (www/hiveplusx/help.php)、利用者の質問に AI (Claude) が答える。
-//   答えの材料は、同じフォルダにあるサイトのページ (HPX_PAGES)、help_knowledge.md (よくある質問。管理者が書き足せる)、
-//     help_note_guide.md (HPX-note の画面ごとの使い方)。ページを直すと、次の質問のときに材料を自動で作り直す (hpx/data/help/knowledge.txt)。
+//   答えの材料は、同じフォルダにあるサイトのページ (HPX_PAGES。HPX-note の画面ごとの使い方は app.html の「使い方ガイド」) と
+//     help_knowledge.md (よくある質問。管理者が書き足せる)。ページを直すと、次の質問のときに材料を自動で作り直す (hpx/data/help/knowledge.txt)。
 //   GitHub のリポジトリの説明書 (docs/・firmware/・hardware/ の .md、README、config.sample.php) も使う。
 //     ファイルの一覧と見出しだけを材料に入れ、AI が要ると判断したときに、その章だけを GitHub から読む (道具 read_github_doc)。
 //     GitHub からは6時間に1回まで取りに行き、hpx/data/help/github.json に保存する。取れないときは前に取ったものを使う。
@@ -76,6 +76,11 @@ function h_page_text(string $file, string $html): string
         if ($n->hasAttribute('hidden') || $n->getAttribute('aria-hidden') === 'true') return;
         if (preg_match('/(^|\s)pt(\s|$)/', $n->getAttribute('class'))) return;   // 画面の図の上の番号
         $id = $n->getAttribute('id');
+        if ($tag === 'summary') {   // 押すと開く項目 (details) の見出し
+            $pid = $n->parentNode instanceof DOMElement ? $n->parentNode->getAttribute('id') : '';
+            $out .= "\n\n#### " . trim(preg_replace('/\s+/u', ' ', $n->textContent)) . ($pid !== '' ? '  (' . H_SITE . $file . '#' . $pid . ')' : '') . "\n";
+            return;
+        }
         if (preg_match('/^h([1-4])$/', $tag, $m)) {
             $out .= "\n\n" . str_repeat('#', (int)$m[1] + 1) . ' ' . trim(preg_replace('/\s+/u', ' ', $n->textContent))
                 . ($id !== '' ? '  (' . H_SITE . $file . '#' . $id . ')' : '') . "\n";
@@ -101,6 +106,7 @@ function h_page_text(string $file, string $html): string
     $out = preg_replace('/[ \t\x{3000}]+/u', ' ', $out);
     $out = preg_replace('/ *\n */u', "\n", $out);
     $out = preg_replace('/\n{3,}/', "\n\n", $out);
+    $out = preg_replace('/：\s*[:：]\s*/u', '：', $out);   // 太字のあとにもともと「:」があったとき
     $out = preg_replace('/\|\s*\n/', "|\n", $out);
     return '# ' . $title . '  (' . H_SITE . $file . ")\n" . trim($out);
 }
@@ -110,7 +116,6 @@ function h_knowledge(string $dir): string
 {
     $files = HPX_PAGES;
     $files[] = 'help_knowledge.md';
-    $files[] = 'help_note_guide.md';
     $sig = [];
     foreach ($files as $f) { $p = __DIR__ . '/' . $f; $sig[] = $f . ':' . (is_file($p) ? filemtime($p) . ':' . filesize($p) : '-'); }
     $sig = md5(implode('|', $sig));
@@ -119,8 +124,6 @@ function h_knowledge(string $dir): string
     $parts = [];
     $md = __DIR__ . '/help_knowledge.md';
     if (is_file($md)) $parts[] = "# よくある質問と使い方 (管理者が書いたもの。サイトのページより新しい情報のことがある)\n" . trim((string)file_get_contents($md));
-    $md = __DIR__ . '/help_note_guide.md';
-    if (is_file($md)) $parts[] = trim((string)file_get_contents($md));
     foreach (HPX_PAGES as $f) {
         $p = __DIR__ . '/' . $f;
         if (is_file($p)) $parts[] = h_page_text($f, (string)file_get_contents($p));
@@ -138,7 +141,7 @@ function h_system(): string
 サイトを見た人 (養蜂家が多く、電子工作やプログラミングは初めての人も多い) の質問に答えます。
 
 答え方:
-- 下の <site> にある、サイトのページ・「よくある質問と使い方」・「HPX-note の画面ごとの使い方」の内容をもとに答えてください。
+- 下の <site> にある、サイトのページ (HPX-note の「使い方ガイド」を含む) と「よくある質問と使い方」の内容をもとに答えてください。
 - <site> に答えが無く、<github> の一覧にある説明書 (サーバーの設置手順・設定、ファームウェア、配線、部品表など) に答えがありそうなときは、道具 read_github_doc でその章を読んでから答えてください。
 - <site> にも GitHub の説明書にも書かれていないこと、はっきりしないことは、推測で答えないでください。「サイトには載っていないため、分かりません」と正直に言い、お問い合わせフォーム (https://hiveplusx.com/contact.php) かフォーラム (https://github.com/Hive-Plus-X/hiveplusx/discussions) で人に聞けることを案内してください。LINE公式アカウントでは質問を受け付けていないので、質問先として案内しないでください。
 - やさしい日本語で、短く答えてください。専門用語には短い説明を添えてください。手順は 1. 2. 3. の番号で書いてください。
