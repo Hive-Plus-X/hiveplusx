@@ -24,7 +24,6 @@ require $APP . '/config.php';
 
 const H_SITE = 'https://hiveplusx.com/';
 const H_CONTACT = 'contact.php';
-const H_LINE = 'https://line.me/R/ti/p/@222xdxtk';
 // 材料にするページ (この順でつなぐ。順を変えるとキャッシュが作り直しになるだけで、困ることはない)
 const HPX_PAGES = ['index-new.html', 'system.html', 'app.html', 'devices.html', 'device-core.html', 'device-w.html', 'device-th.html',
     'device-f.html', 'device-b.html', 'device-cam.html', 'device-solar.html', 'install.html'];
@@ -141,7 +140,7 @@ function h_system(): string
 答え方:
 - 下の <site> にある、サイトのページ・「よくある質問と使い方」・「HPX-note の画面ごとの使い方」の内容をもとに答えてください。
 - <site> に答えが無く、<github> の一覧にある説明書 (サーバーの設置手順・設定、ファームウェア、配線、部品表など) に答えがありそうなときは、道具 read_github_doc でその章を読んでから答えてください。
-- <site> にも GitHub の説明書にも書かれていないこと、はっきりしないことは、推測で答えないでください。「サイトには載っていないため、分かりません」と正直に言い、お問い合わせフォーム (https://hiveplusx.com/contact.php) か LINE公式アカウント (https://line.me/R/ti/p/@222xdxtk) で人に聞けることを案内してください。
+- <site> にも GitHub の説明書にも書かれていないこと、はっきりしないことは、推測で答えないでください。「サイトには載っていないため、分かりません」と正直に言い、お問い合わせフォーム (https://hiveplusx.com/contact.php) かフォーラム (https://github.com/Hive-Plus-X/hiveplusx/discussions) で人に聞けることを案内してください。LINE公式アカウントでは質問を受け付けていないので、質問先として案内しないでください。
 - やさしい日本語で、短く答えてください。専門用語には短い説明を添えてください。手順は 1. 2. 3. の番号で書いてください。
 - 関係するページがあれば、最後に URL を書いてください (例 https://hiveplusx.com/device-th.html)。<site> と read_github_doc の結果にある URL だけを使い、URL を作らないでください。
 - 書式は、**太字** と、行頭の「- 」「1. 」だけにしてください。表・見出し (#)・コードブロックは使わないでください。
@@ -468,7 +467,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     @file_put_contents($dir . '/log.jsonl', json_encode($log, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
     $left = max(0, h_day_max() - h_count_read($dir, $dev, $ip)[0]);
     if ($ans === null) {
-        $msg = $err === 'refusal' ? 'この質問には AI ではお答えできません。お問い合わせフォームか LINE でお聞きください。'
+        $msg = $err === 'refusal' ? 'この質問には AI ではお答えできません。お問い合わせフォームでお聞きください。'
             : 'いま AI が答えられませんでした。少したってからもう一度お試しください。';
         $out(['error' => $msg, 'left' => $left]);
     }
@@ -546,8 +545,8 @@ $left = max(0, h_day_max() - h_count_read($dir, $dev, substr(hash('sha256', (str
     <p class="lead">機器の作り方、設置のしかた、養蜂記録アプリ HPX-note の使い方などを、このサイトの内容をもとに AI がお答えします。</p>
     <p class="notice">回答は <b>AI (Claude) によるもの</b>で、まちがうことがあります。大事なことは、回答にあるページで確かめてください。解決しないときは、下の「人に聞く」からどうぞ。</p>
 <?php if (!$on): ?>
-    <div class="human"><h2>AI ヘルプは準備中です</h2><p>いまは、お問い合わせフォームか LINE でお聞きください。</p>
-      <ul><li><a href="<?= h(H_CONTACT) ?>">お問い合わせフォーム</a></li><li><a href="<?= h(H_LINE) ?>">LINE公式アカウント</a></li></ul></div>
+    <div class="human"><h2>AI ヘルプは準備中です</h2><p>いまは、お問い合わせフォームかフォーラムでお聞きください。</p>
+      <ul><li><a href="<?= h(H_CONTACT) ?>">お問い合わせフォーム</a></li><li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a> (GitHub)</li></ul></div>
 <?php else: ?>
     <div class="log" id="log" aria-live="polite"></div>
     <div class="examples" id="examples">
@@ -572,7 +571,6 @@ $left = max(0, h_day_max() - h_count_read($dir, $dev, substr(hash('sha256', (str
       <h2>人に聞く</h2>
       <ul>
         <li><a href="<?= h(H_CONTACT) ?>">お問い合わせフォーム</a> (メールでお返事します)</li>
-        <li><a href="<?= h(H_LINE) ?>">LINE公式アカウント</a> のトーク</li>
         <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a> (GitHub。ほかの方の参考にもなります)</li>
       </ul>
     </div>
