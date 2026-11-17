@@ -1018,6 +1018,12 @@ function ble_data(string $hubId, int $since): array
     $col = is_array($hd) ? array_flip($hd) : [];
     if (!isset($col['epoch'], $col['temp_c'], $col['mac'], $col['kind'])) { fclose($fh); return $cache[$key] = $out; }
     $g = fn(array $r, string $k) => isset($col[$k]) ? (string)($r[$col[$k]] ?? '') : '';
+    // いちばん古い記録の時刻は最初の行で見る。$since より前の記録は読み飛ばす (ble_seek、hpx_auth.php)
+    $pos = ftell($fh);
+    $r0 = fgetcsv($fh);
+    if (is_array($r0) && (int)($r0[$col['epoch']] ?? 0) > 0) $out['first'] = (int)$r0[$col['epoch']];
+    fseek($fh, $pos);
+    ble_seek($fh, $col['epoch'], $since);
     while (($r = fgetcsv($fh)) !== false) {
         if (count($r) < count($hd)) continue;
         $ep = (int)$r[$col['epoch']];

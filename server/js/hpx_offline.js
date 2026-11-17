@@ -14,6 +14,18 @@
   var HPX = window.HPX_OFFLINE = {};
 
   navigator.serviceWorker.register('sw.js').catch(function () {});
+  // 控えを先に出したページに、遅れて最新が届いた (sw.js)。書きかけでなければ入れ替える。書きかけなら、帯から選べるようにする
+  var typed = false;
+  document.addEventListener('input', function () { typed = true; }, true);
+  navigator.serviceWorker.addEventListener('message', function (ev) {
+    var d = ev.data || {};
+    if (d.type !== 'hpx-fresh' || !SAVED) return;
+    var here = location.href.split('#')[0];
+    if (d.url !== here) return;
+    if (!typed) { location.reload(); return; }
+    msgs.push('🔄 最新の内容が届きました。<a href="' + esc(here) + '">表示する</a> (書きかけの内容は消えます)');
+    render();
+  });
 
   // ------------------------------------------------------------ IndexedDB (sw.js と同じ)
   function idbOpen() {
@@ -62,7 +74,9 @@
     return myQueue().then(function (q) {
       var h = [];
       if (SAVED) {
-        h.push('📴 ' + (window.HPX_WHY === 'slow' ? '電波が弱いため、' : '電波が無いため、') + '<b>' + fmt(SAVED) + '</b> に保存した内容を表示しています。'
+        h.push(window.HPX_WHY === 'slow'
+          ? '⏳ 読み込みに時間がかかっているため、<b>' + fmt(SAVED) + '</b> に保存した内容を先に表示しています。最新の内容が届いたら入れ替えます。'
+          : '📴 電波が無いため、<b>' + fmt(SAVED) + '</b> に保存した内容を表示しています。'
           + (window.HPX_NEAR ? 'この表示は保存されていないので、近い表示を出しています。' : ''));
       }
       msgs.forEach(function (m) { h.push(m); });

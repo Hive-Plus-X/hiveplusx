@@ -14,6 +14,7 @@ require __DIR__ . '/hpx_hive_alert.php';
 require __DIR__ . '/hpx_cam.php';
 require __DIR__ . '/hpx_links.php';
 require __DIR__ . '/hpx_dl_remind.php';
+require __DIR__ . '/hpx_weather.php';
 if (PHP_SAPI !== 'cli') {
     // URL から呼ぶときは、機器用とは別のトークンで確かめる(定期実行サービスにURLを預けるため)
     $cronTok = (string)($HPX_CRON_TOKEN ?? '');
@@ -68,6 +69,9 @@ foreach ($places as [$hubsDir, , $notifyTo, $owner]) {
 
 // ---- 機器と巣箱のつながりの履歴 (hpx_links.php。画面の保存で書き漏れたものもここで拾う) ----
 foreach ($places as [, , , $owner]) if ($owner !== '') link_log_sync($owner);
+
+// ---- 蜂場の天気予報を先に取っておく (蜂場ページを開いたときに待たないように。hpx_weather.php) ----
+if (users_exist()) echo 'weather: ' . weather_refresh_all() . " apiaries\n";
 
 // ---- サーバー管理者へ、全アカウントのデータのダウンロードを促すメール (hpx_dl_remind.php) ----
 if (users_exist()) dl_remind_mail();

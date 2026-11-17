@@ -506,6 +506,9 @@ function auth_require(string $selfPage, bool $adminOnly = false): array
     }
     if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16));
     $csrf = (string)$_SESSION['csrf'];
+    // オフライン用にまとめて保存するときの読み込み (js/hpx_offline.js)。ログインの情報 (セッション) をすぐ手放し、
+    // 同時に開いたページを待たせない。保存後のお知らせ (flash) も、この読み込みでは消さない (手放した後の変更は残らない)
+    if (($_SERVER['HTTP_X_HPX_CRAWL'] ?? '') === '1' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') session_write_close();
     $ME = $u;
     $UID = (string)$u['id'];
     return $u;
@@ -809,6 +812,30 @@ const TH_MODEL_OFFSET_C = ['inkbird' => TH_INKBIRD_OFFSET_C, 'hpx_th' => TH_HPXT
 // 湿度(%)の機種ごとの補正(2026-11 TARO 指定)。温湿度計ごとの補正(th_cal.json の offset_h)をさらに足す
 const TH_MODEL_OFFSET_H = ['switchbot' => -2.5, 'switchbot_outdoor' => 3.0, 'hpx_th' => -0.5];
 const TH_MODEL_NAMES = ['inkbird' => 'Inkbird', 'switchbot' => 'SwitchBot 温湿度計', 'switchbot_outdoor' => 'SwitchBot 防水温湿度計', 'hpx_th' => 'HPX-TH'];
+
+// ble.csv (古い順に書き足していくファイル) で、$since より前の記録を読み飛ばす位置を探す (2026-11-17、ページを速く出すため)。
+//   ファイルの途中を二分探索して、epoch が ($since - $margin) より前の行の次の行頭に移る。記録が少し前後して届くことがあるので、
+//   余裕 ($margin、初期 3日) をとって手前から読む (読んだ後は呼び出し側で $since より前を飛ばす)。
+//   $fh は見出しの行を読み終えた位置で渡す。返り値: 読み始める位置 (fseek 済み)。1MB より小さいファイルは先頭から
+function ble_seek($fh, int $epochCol, int $since, int $margin = 3 * 86400): int
+{
+    $start = (int)ftell($fh);
+    $target = $since - $margin;
+    $size = (int)(fstat($fh)['size'] ?? 0);
+    if ($since <= 0 || $size - $start < 1048576) return $start;
+    $lo = $start; $hi = $size;
+    while ($hi - $lo > 65536) {
+        $mid = intdiv($lo + $hi, 2);
+        fseek($fh, $mid);
+        fgets($fh);   // 途中の行の残りを飛ばす
+        $r = fgetcsv($fh);
+        $ep = is_array($r) ? (int)($r[$epochCol] ?? 0) : 0;
+        if ($ep > 0 && $ep < $target) $lo = $mid; else $hi = $mid;
+    }
+    fseek($fh, $lo);
+    if ($lo > $start) fgets($fh);
+    return (int)ftell($fh);
+}
 
 function th_cal_load(string $dir): array
 {

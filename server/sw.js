@@ -11,7 +11,8 @@ const C_PAGES = 'hpx-pages';     // ページの控え
 const C_PHOTOS = 'hpx-photos';   // 写真の控え
 const C_STATIC = 'hpx-static';   // 画像・JS など
 const PHOTO_MAX = 300;           // 写真の控えはこの枚数まで (古いものから消す)
-const WAIT_MS = 12000;           // この時間返事が無ければ、控えがあれば控えを出す (電波が弱いとき)
+const WAIT_MS = 15000;           // この時間返事が無ければ、控えがあれば先に出す (電波が弱い・サーバーの返事が遅いとき)。最新が届いたら入れ替える
+const FRESH = new Map();         // 遅れて届いた最新のページ (URL => 時刻)。入れ替えるときの読み直しで、もう一度待たずにそれを出す
 // 控えるページ
 const PAGES = ['apiary.php', 'hive.php', 'memo.php', 'task.php', 'work.php', 'sensor.php', 'offline.php'];
 // 電波が無くても「送信待ち」にできる操作 (それ以外の削除・設定の変更などはオフラインではできない)
@@ -41,11 +42,17 @@ self.addEventListener('fetch', e => {
   if (/^(img|js)\//.test(name) || name === 'manifest.json') { e.respondWith(staticGet(req)); return; }
   if (!PAGES.includes(name)) return;
   if (url.searchParams.has('photo') || url.searchParams.has('img')) { e.respondWith(photoGet(req)); return; }
-  e.respondWith(pageGet(req, req.headers.get('X-HPX-Crawl') === '1'));
+  e.respondWith(pageGet(req, req.headers.get('X-HPX-Crawl') === '1', e));
 });
 
 // ---------------------------------------------------------------- ページ
-async function pageGet(req, crawl) {
+async function pageGet(req, crawl, ev) {
+  const key = stripHash(req.url);
+  if (!crawl && Date.now() - (FRESH.get(key) || 0) < 60000) {   // 遅れて届いた最新を、すぐ出す (1回だけ)
+    FRESH.delete(key);
+    const c = await cachedPage(req.url, 'fresh');
+    if (c) return c;
+  }
   const net = fetch(req).then(async res => {
     // ログイン画面へ飛ばされたもの・エラー・HTML 以外は控えない
     if (res.ok && !res.redirected && res.type === 'basic' && (res.headers.get('content-type') || '').includes('text/html')) {
@@ -61,7 +68,15 @@ async function pageGet(req, crawl) {
     const first = await Promise.race([net.then(r => ({ r })), slow.then(() => null)]);
     if (first) { clearTimeout(timer); return first.r; }
     const c = await cachedPage(req.url, 'slow');
-    return c || await net;
+    if (!c) return await net;
+    // 控えを出したあとも待ち、最新が届いたらページに知らせる (js/hpx_offline.js が入れ替える)
+    const done = net.then(async r => {
+      if (!r.ok || r.redirected) return;
+      FRESH.set(key, Date.now());
+      for (const w of await self.clients.matchAll({ type: 'window' })) w.postMessage({ type: 'hpx-fresh', url: key });
+    }).catch(() => {});
+    if (ev) ev.waitUntil(done);
+    return c;
   } catch (err) {
     clearTimeout(timer);
     return (await cachedPage(req.url, 'off')) || offlineList(req.url);
@@ -98,6 +113,7 @@ async function cachedPage(url, why) {
     if (best) hit = await c.match(best);
   }
   if (!hit) return null;
+  if (why === 'fresh') return hit;   // 今届いた最新なので、帯は出さない
   const text = await hit.text();
   const info = '<script>window.HPX_SAVED=' + (Number(hit.headers.get('X-HPX-Saved')) || 0) + ';window.HPX_NEAR=' + (near ? 1 : 0)
     + ';window.HPX_WHY=' + JSON.stringify(why) + ';</script>';
