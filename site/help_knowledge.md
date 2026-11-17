@@ -34,6 +34,6 @@ HPX-note は、HPX-Server を置いたサーバーで動くウェブアプリで
 
 ## 困ったときに人に聞くには
 - お問い合わせフォーム: https://hiveplusx.com/contact.php (メールでお返事します)
-- LINE公式アカウント: https://line.me/R/ti/p/@222xdxtk (トークで質問できます)
 - フォーラム: https://github.com/Hive-Plus-X/hiveplusx/discussions (GitHub のアカウントが必要。ほかの方の参考にもなります)
 - 不具合の報告や改良の提案: GitHub の Issue (https://github.com/Hive-Plus-X/hiveplusx/issues)
+- LINE公式アカウント (https://line.me/R/ti/p/@222xdxtk) では、トークでの質問は受け付けていません (新しい機器や更新のお知らせと、HPX-note と連携した人のお知らせ・記録に使います)
