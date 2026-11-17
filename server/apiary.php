@@ -26,57 +26,8 @@ function photo_thumb(string $aid, string $src): string
     if (is_file($dst) && filemtime($dst) >= filemtime($src)) return $dst;
     return img_resize_jpeg($src, $dst, A_THUMB_PX) ? $dst : '';
 }
-// ====================================================================
-// 天気予報(Open-Meteo の無料 API。キー不要。気象庁などのモデルの予報を緯度・経度で返す)
-//   「緯度・経度」(map_q) が緯度,経度のときだけ出す。3時間はデータフォルダの site/weather/ に取っておく
-// ====================================================================
-const A_WX_CACHE_S = 3 * 3600;
-
-function apiary_latlng(array $a): ?array
-{
-    if (!preg_match('/^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/', (string)($a['map_q'] ?? ''), $m)) return null;
-    $lat = (float)$m[1]; $lng = (float)$m[2];
-    return abs($lat) <= 90 && abs($lng) <= 180 ? [$lat, $lng] : null;
-}
-
-// 今日から3日分: [[日付, 天気コード, 最高, 最低, 降水確率], ...]。取れなければ null
-function weather_get(string $aid, float $lat, float $lng, string $siteDir): ?array
-{
-    $dir = $siteDir . '/weather';
-    $path = $dir . '/' . $aid . '.json';
-    $c = json_decode((string)@file_get_contents($path), true);
-    $same = is_array($c) && abs((float)($c['lat'] ?? 999) - $lat) < 1e-4 && abs((float)($c['lng'] ?? 999) - $lng) < 1e-4;
-    if (!$same || time() - (int)($c['fetched'] ?? 0) >= A_WX_CACHE_S || ($c['date'] ?? '') !== date('Y-m-d')) {
-        $url = 'https://api.open-meteo.com/v1/forecast?' . http_build_query([
-            'latitude' => round($lat, 4), 'longitude' => round($lng, 4), 'timezone' => 'Asia/Tokyo', 'forecast_days' => 3,
-            'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max']);
-        $body = false;
-        if (function_exists('curl_init')) {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5, CURLOPT_CONNECTTIMEOUT => 3]);
-            $body = curl_exec($ch);
-            if (curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) $body = false;
-            curl_close($ch);
-        } else {
-            $body = @file_get_contents($url, false, stream_context_create(['http' => ['timeout' => 5]]));
-        }
-        $d = is_string($body) ? json_decode($body, true) : null;
-        if (is_array($d['daily']['time'] ?? null)) {
-            $c = ['lat' => $lat, 'lng' => $lng, 'fetched' => time(), 'date' => date('Y-m-d'), 'daily' => $d['daily']];
-            @mkdir($dir, 0755, true);
-            @file_put_contents($path, json_encode($c));
-            $same = true;
-        }
-    }
-    if (!$same || !is_array($c['daily']['time'] ?? null)) return null;
-    $out = [];
-    foreach ($c['daily']['time'] as $i => $day) {
-        if ($day < date('Y-m-d')) continue;   // 古い取り置きのときは今日より前を飛ばす
-        $out[] = [(string)$day, (int)($c['daily']['weather_code'][$i] ?? -1), $c['daily']['temperature_2m_max'][$i] ?? null,
-            $c['daily']['temperature_2m_min'][$i] ?? null, $c['daily']['precipitation_probability_max'][$i] ?? null];
-    }
-    return $out ? array_slice($out, 0, 3) : null;
-}
+// 天気予報 (Open-Meteo) の取り置きと取得は hpx_weather.php (定期実行 hpx_cron.php でも先に取っておく)
+require_once __DIR__ . '/hpx_weather.php';
 
 // WMO の天気コード → マークと短い言葉
 function weather_icon(int $code): array
@@ -438,6 +389,8 @@ if (isset($_GET['v']) && ($_COOKIE['hpx_av'] ?? '') !== $view) {
 $one = (string)($_GET['a'] ?? '');
 if ($one !== '' && !isset($site['apiaries'][$one])) $one = '';
 
+// 天気予報: 古くなった蜂場の分だけ、全部まとめて同時に取り直す (取り置きがあればそれを使う。hpx_weather.php)
+weather_prefetch(array_map(fn($x) => [(string)$x, site_dir_of((string)($site['apiaries'][$x]['_o'] ?? $UID)), $site['apiaries'][$x]], array_keys($site['apiaries'])));
 page_head('蜂場 - ' . S_TITLE, 'apiary.php');
 echo flash_html();
 if (!$site['apiaries']) echo '<p class="muted" style="margin-top:1em">まだ蜂場が登録されていません。「＋ 蜂場を追加」から登録してください。</p>';
