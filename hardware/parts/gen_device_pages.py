@@ -169,9 +169,9 @@ def page_parts():
     return base + hero + sec, foot, header, footer, js
 
 
-CSS = '''  section { margin-top:200px; scroll-margin-top:80px; }
+CSS = '''  section { margin-top:140px; scroll-margin-top:80px; }
   main { padding-bottom:300px; }
-  @media (max-width:760px) { section { margin-top:140px; } main { padding-bottom:200px; } }
+  @media (max-width:760px) { section { margin-top:98px; } main { padding-bottom:200px; } }
   .tag { display:inline-block; font-size:12px; font-weight:700; color:var(--forest); background:var(--honey-soft); padding:2px 10px; border-radius:999px; }
   @media (prefers-color-scheme: dark) { .tag { color:var(--honey); } }
   h2 { font-size:clamp(22px, 3vw, 28px); margin-top:6px; line-height:1.4; }
