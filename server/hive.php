@@ -65,11 +65,11 @@ if (is_post()) {
         });
         redirect('hive.php?' . http_build_query(['a' => $to, 'h' => $newId, 'p' => $per]), '巣箱「' . $name . '」を保存しました。');
     }
-    // 警報の設定(温度の上限・下限、基準日と重量の増減)。空の項目は見ない
+    // お知らせ(警報)の設定(温度の上限・下限、基準日と重量の増減)。空の項目は見ない
     if ($act === 'alert_save') {
         $id = (string)($_POST['id'] ?? '');
         if (!isset($site['hives'][$id])) redirect($selfUrl());
-        if (!apiary_can_edit($site, (string)$site['hives'][$id]['apiary'])) redirect($selfUrl(), '警報を設定できるのは、蜂場の持ち主とチーム管理者だけです。');
+        if (!apiary_can_edit($site, (string)$site['hives'][$id]['apiary'])) redirect($selfUrl(), 'お知らせを設定できるのは、蜂場の持ち主とチーム管理者だけです。');
         $num = function (string $k, float $lo, float $hi): ?float {
             $v = trim(str_replace(',', '.', (string)($_POST[$k] ?? '')));
             return is_numeric($v) && (float)$v >= $lo && (float)$v <= $hi ? round((float)$v, 2) : null;
@@ -77,12 +77,22 @@ if (is_post()) {
         $al = ['t_hi' => $num('t_hi', -30, 80), 't_lo' => $num('t_lo', -30, 80), 'base' => date_in('base'),
             'w_up' => $num('w_up', 0.1, 200), 'w_dn' => $num('w_dn', 0.1, 200)];
         if ($al['t_hi'] !== null && $al['t_lo'] !== null && $al['t_lo'] >= $al['t_hi']) redirect($selfUrl([], 'alert'), '下限温度は上限温度より低くしてください。');
+        // 「同じ蜂場の他の巣箱も同じ設定にする」にチェックがあれば、同じ蜂場の巣箱すべてに同じ設定を入れる
+        $all = !empty($_POST['all_hives']);
+        $ap = (string)$site['hives'][$id]['apiary'];
         site_use($site['hives'][$id]['_o']);
-        site_update('site', function (array $s) use ($id, $al) {
-            if (isset($s['hives'][$id])) $s['hives'][$id]['alert'] = array_filter($al, fn($v) => $v !== null && $v !== '');
+        $n = 0;
+        site_update('site', function (array $s) use ($id, $al, $all, $ap, &$n) {
+            $al = array_filter($al, fn($v) => $v !== null && $v !== '');
+            foreach ($s['hives'] as $k => &$x) {
+                if ((string)$k !== $id && !($all && (string)($x['apiary'] ?? '') === $ap)) continue;
+                $x['alert'] = $al;
+                $n++;
+            }
+            unset($x);
             return $s;
         });
-        redirect($selfUrl([], 'h-' . $id), '警報の設定を保存しました。');
+        redirect($selfUrl([], 'h-' . $id), $all && $n > 1 ? 'お知らせの設定を、この蜂場の巣箱 ' . $n . ' 箱すべてに保存しました。' : 'お知らせの設定を保存しました。');
     }
     if ($act === 'hive_delete') {
         $id = (string)($_POST['id'] ?? '');
@@ -353,15 +363,19 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // センサの表はセンサページで見られるので、ここには出さない
     if (!$rows) echo '<p class="muted">センサは紐づいていません。' . ($canEdit ? '下の「巣箱の情報を変更」で選べます。' : '') . '</p>';
 
-    // 警報の設定(メールで知らせる)
+    // お知らせの設定(メールで知らせる)
     $sum = [];
     if ($conf['base'] !== '' && ($conf['w_up'] !== null || $conf['w_dn'] !== null)) {
         $sum[] = '重量' . ($conf['w_up'] !== null ? ' +' . h((string)$conf['w_up']) . 'kg' : '') . ($conf['w_dn'] !== null ? ' -' . h((string)$conf['w_dn']) . 'kg' : '');
     }
     if ($tl) $sum[] = '温度 ' . implode('・', $tl);
-    echo '<details class="alertset" id="alert"><summary>警報 (変更): ' . ($sum ? '現在の設定　' . implode('　', $sum) : '<span class="muted">設定なし</span>') . '</summary>';
+    echo '<details class="alertset" id="alert"><summary>お知らせ: ' . ($sum ? '現在の設定　' . implode('　', $sum) : '<span class="muted">設定なし</span>') . '</summary>';
     if ($canEdit) {
         $v = fn($k) => h($conf[$k] === null ? '' : (string)$conf[$k]);
+        // 同じ蜂場に他の巣箱があるときだけ「同じ蜂場の他の巣箱も同じ設定にする」を出す
+        $others = 0;
+        foreach ($site['hives'] as $k => $x) if ((string)$k !== (string)$hid && (string)($x['apiary'] ?? '') === (string)$hv['apiary']) $others++;
+        $allBox = $others > 0 ? '<p><label style="display:inline-flex;align-items:center;gap:4px;color:#1F2328"><input type="checkbox" name="all_hives" value="1"> 同じ蜂場の他の巣箱 (' . $others . ' 箱) も同じ設定にする</label></p>' : '';
         echo '<form method="post" class="form">' . csrf_field() . '<input type="hidden" name="act" value="alert_save"><input type="hidden" name="id" value="' . h($hid) . '">'
             . '<p class="muted" style="font-size:.85em">空欄の項目は通知しません。15分ごとの見回りで超えたときにメールを送ります。</p>'
             // 1行目が重量、2行目が温度(グラフの並び)。上限・下限の欄は2行でそろえる
@@ -373,9 +387,9 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
             . '<b>温度</b>'
             . '<label>上限<i></i><input type="number" name="t_hi" step="0.1" value="' . $v('t_hi') . '"> ℃</label>'
             . '<label>下限<i></i><input type="number" name="t_lo" step="0.1" value="' . $v('t_lo') . '"> ℃</label><span></span></div>'
-            . '<p><button type="submit">警報を保存</button></p></form>';
+            . $allBox . '<p><button type="submit">お知らせを保存</button></p></form>';
     } else {
-        echo '<p class="muted">警報を変えられるのは、蜂場の持ち主とチーム管理者だけです。</p>';
+        echo '<p class="muted">お知らせを変えられるのは、蜂場の持ち主とチーム管理者だけです。</p>';
     }
     echo '</details>';
 
