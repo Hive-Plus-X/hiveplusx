@@ -163,6 +163,8 @@
 <details class="qa"><summary><span class="q">Q</span><span>おすすめの ESP32 ボードは何ですか？</span></summary><div class="a"><span class="amark">A</span><div><p>DFRobotの<b>FireBeetle 2 ESP32-E</b>です。少し高いですが、低消費電力パッドを切るとさらに省電力になります。<b>Olimex ESP32-DevKit-LiPo</b>も省電力で良いですが、USB端子がmicro-USBで、他の機器のUSB-Cと異なるので注意が必要です。ELEGOOや Freenoveの開発ボードは、LEDランプが点灯したままで消費電力が大きいです。常時電源が使えるなら問題ないです。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>巣箱の重さはどう計算されますか？</span></summary><div class="a"><span class="amark">A</span><div><p>重量センサの台数で計算が変わります。</p>
 <ul><li>1 台のとき: 巣箱の片側を持ち上げて計るので、センサ値の 2 倍を巣箱の重さにします。</li><li>同じ巣箱に 2 台のとき: 自動で2 台の値を足します。より正確な重量を知りたい場合に有効です。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>重量センサの校正はどうやりますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で行います。</p>
+<ol><li>何も載せない状態で「ゼロ点」を取ります。</li><li>重さが分かっているものを載せて記録します。「10 秒お待ちください」と出たら、そのまま待ちます。</li></ol></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>電柵アラート (HPX-F) は、電柵に電気的につなぐのですか？</span></summary><div class="a"><span class="amark">A</span><div><p>つなぎません。市販のフェンスアラート (StaFIX) は、電圧が下がると LED が点滅します。HPX-F は、その点滅を光センサで読み取ります。電柵に触れないので安全です。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>HPX-TH (温湿度センサ) は校正が必要ですか？</span></summary><div class="a"><span class="amark">A</span><div><p>基本的には必要ありません。</p>
 <ul><li>SHT40: 誤差は ±0.2℃・±2% ほどです。</li><li>サーミスタ（プローブ）: 誤差は ±0.5℃ ほどです。</li></ul>
@@ -235,8 +237,6 @@
 <details class="qa"><summary><span class="q">Q</span><span>天気予報はどこから出していますか？</span></summary><div class="a"><span class="amark">A</span><div><p>予報は Open-Meteo の情報です。天気のイラストを押すと、Yahooの雨雲レーダーのページが開きます。蜂場の情報入力欄で好きな天気予報サービスの URLに変更できます。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>センサを別の巣箱や別の HPX-Core に移したら、前のデータはどうなる？</span></summary><div class="a"><span class="amark">A</span><div><p>前のデータは消えません。</p>
 <ul><li>移す前のデータは、移す前の巣箱のグラフに残ります。</li><li>重量センサの校正値は、センサについて回ります。</li></ul></div></div></details>
-<details class="qa"><summary><span class="q">Q</span><span>重量センサの校正はどうやりますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で行います。</p>
-<ol><li>何も載せない状態で「ゼロ点」を取ります。</li><li>重さが分かっているものを載せて記録します。「10 秒お待ちください」と出たら、そのまま待ちます。</li></ol></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>センサのデータを CSV で取り出せますか？</span></summary><div class="a"><span class="amark">A</span><div><p>センサページから取り出せます。種類は 2 つあります。</p>
 <ul><li>「定時記録データ」: 保存の間隔ごとに 1 行です。データが欠損し時刻は空白行（日時だけ）が入ります。</li><li>「全データ」: 届いた記録すべてです。</li></ul></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>電波の届かない蜂場でも使えますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-note をスマホのホーム画面に追加することで、アプリのように使えて、オフラインでも使えます。</p>
