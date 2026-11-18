@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>オープンソース方針 | Hive Plus X</title>
+<meta name="description" content="Hive Plus X のオープンソース方針。公開しているソフトウェア・回路・文書のライセンス、名前とロゴの扱い、免責と安全、貢献のしかた、行動規範、データの扱いをまとめています。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 315px、スマホ 210px。2026-11-17 に 450・300px の約70%へ) */
+  section { padding:0; margin-top:315px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:210px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* しくみページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  .hero.sub h1 { font-size:clamp(28px, 5vw, 40px); margin-top:0; }
+  /* オープンソース方針 */
+  section { scroll-margin-top:72px; margin-top:140px; }
+  @media (max-width:760px) { section { margin-top:98px; } }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { main { padding-bottom:200px; } }
+  .narrow { max-width:820px; }
+  .cats { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:36px; }
+  .cats a { display:inline-block; padding:8px 18px; border-radius:999px; border:1.5px solid var(--forest); text-decoration:none; font-size:14px; font-weight:700; }
+  .cats a:hover { background:var(--honey-soft); }
+  @media (prefers-color-scheme: dark) { .cats a { border-color:var(--honey); } }
+  .body { margin-top:20px; }
+  .body p + p, .body p + ul, .body p + ol, .body ul + p, .body ol + p, .body .tbl + p, .body p + .tbl { margin-top:14px; }
+  .body ul, .body ol { padding-left:1.4em; }
+  .body li + li { margin-top:6px; }
+  .body a { color:var(--forest); text-decoration:underline; }
+  @media (prefers-color-scheme: dark) { .body a { color:var(--honey); } }
+  .tbl { overflow-x:auto; margin-top:14px; }
+  .body table { border-collapse:collapse; width:100%; font-size:15px; background:var(--panel); }
+  .body th, .body td { border:1px solid var(--line); padding:10px 14px; text-align:left; vertical-align:top; }
+  .body th { background:var(--honey-soft); white-space:nowrap; }
+  .note { font-size:14px; color:var(--sub); }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 20px; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+<main>
+  <div class="hero wrap sub">
+    <p class="eyebrow">Open Source Policy</p>
+    <h1>オープンソース方針</h1>
+    <p>Hive Plus X は、養蜂の IoT 化を実現するためのソフトウェア・回路・文書を、誰でも使えるように公開しています。</p>
+    <ul class="cats">
+<li><a href="#license">ライセンス</a></li>
+<li><a href="#name">名前とロゴ</a></li>
+<li><a href="#safety">免責と安全</a></li>
+<li><a href="#contribute">貢献のしかた</a></li>
+<li><a href="#conduct">行動規範</a></li>
+<li><a href="#data">版の管理とデータ</a></li>
+    </ul>
+  </div>
+
+<section id="intro"><div class="reveal wrap narrow"><p class="eyebrow">Introduction</p><h2>はじめに</h2><div class="body">
+<p>自作する人には独自運用の土台として、学生や研究者には仕組みを学び改良する材料として使ってもらい、養蜂家と研究開発者がフィードバックし合うことで、技術開発と普及が促進していくことを目指します。</p>
+<p>このページは、公開している物をどの条件で使えるか、名前とロゴの扱い、安全上の注意、参加のしかたをまとめたものです。正式なライセンス文は <a href="https://github.com/Hive-Plus-X/hiveplusx" target="_blank" rel="noopener">GitHub のリポジトリ</a> の <a href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/LICENSES" target="_blank" rel="noopener">LICENSES フォルダ</a>にあり、食い違いがあればそちらが優先します。</p>
+</div></div></section>
+
+<section id="license"><div class="reveal wrap narrow"><p class="eyebrow">License</p><h2>ライセンス</h2><div class="body">
+<p>公開物は3種類に分け、それぞれ定番の「自由に使える」ライセンスを適用します。どれも、改造・再配布・販売を含めて自由です。条件は「元の著作権表示とライセンスの表示を残すこと」だけです。</p>
+<div class="tbl"><table>
+<tr><th>対象</th><th>ライセンス</th><th>含まれるもの</th></tr>
+<tr><td>ソフトウェア</td><td><a href="https://opensource.org/license/mit" target="_blank" rel="noopener">MIT</a></td><td>ハブ機能をもった HPX-Core と、各種センサ HPX シリーズのファームウェア、養蜂記録アプリ HPX-note、HPX-Server、hiveplusx.com のウェブサイト</td></tr>
+<tr><td>ハードウェア</td><td><a href="https://ohwr.org/cern_ohl_p_v2.txt" target="_blank" rel="noopener">CERN-OHL-P v2</a></td><td>回路図、基板のデータ、ケースの図面・3Dデータ、部品表</td></tr>
+<tr><td>文書・写真</td><td><a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener">CC BY 4.0</a></td><td>説明書、作り方の解説、検討メモ、サイトの文章・写真・図</td></tr>
+</table></div>
+<p>著作権表示: Copyright (c) 2026 Taro Maeda and Hive Plus X contributors</p>
+<div class="box"><p><b>表示の例</b></p>
+<ul style="margin-top:8px">
+<li>ソフトや回路を使うとき: 配布物に LICENSE ファイルをそのまま同梱する。製品なら説明書の末尾に「この製品は Hive Plus X (https://hiveplusx.com) をもとにしています。MIT / CERN-OHL-P v2」と書く</li>
+<li>文書や写真を使うとき: 「出典: Hive Plus X (https://hiveplusx.com)、CC BY 4.0」。手を加えたら「をもとに作成」と添える</li>
+</ul></div>
+<p>寄せられた改良も、同じライセンスで公開します (<a href="#contribute">貢献のしかた</a>を参照)。</p>
+</div></div></section>
+
+<section id="name"><div class="reveal wrap narrow"><p class="eyebrow">Name &amp; Logo</p><h2>名前とロゴの扱い</h2><div class="body">
+<p>「Hive Plus X」「hive+x」の名前とロゴは、上のライセンスの対象外です。コードや図面は自由に使えますが、名前を使うと「公式のもの」と受け取られるため、利用者が迷わないように次のルールをお願いしています。</p>
+<div class="tbl"><table>
+<tr><th>自由にどうぞ</th><th>避けてほしいこと</th></tr>
+<tr><td>「Hive Plus X をもとに作りました」「Hive Plus X 互換」と書く</td><td>改造したものを「Hive Plus X」の名前で配る・売る</td></tr>
+<tr><td>記事・発表・授業で Hive Plus X を紹介する、ロゴを載せる</td><td>自分の製品やサービスの名前・ロゴとして使う</td></tr>
+<tr><td>作った機器をそのまま使う (改造していなければ名前もそのままでよい)</td><td>ロゴの色・形を変える、公式の認定や推薦を受けたように見せる</td></tr>
+</table></div>
+<p>ロゴの配色と余白のルールは <a href="https://github.com/Hive-Plus-X/hiveplusx/blob/main/brand/logo/README.md" target="_blank" rel="noopener">ロゴの使い方</a> にあります。迷ったときは <a href="contact.php">お問い合わせフォーム</a> へどうぞ。</p>
+</div></div></section>
+
+<section id="safety"><div class="reveal wrap narrow"><p class="eyebrow">Disclaimer</p><h2>免責と安全</h2><div class="body">
+<p>公開物は「現状のまま」提供するもので、動作や結果は保証しません。計測値やアラートは養蜂の判断を助けるものですが、届かないことや遅れることがあるため、自己責任でお願いします。</p>
+<p>公開物を使って起きた損害について、作者と貢献者は責任を負いません (各ライセンスの無保証の条項のとおり)。</p>
+</div></div></section>
+
+<section id="contribute"><div class="reveal wrap narrow"><p class="eyebrow">Contribute</p><h2>貢献のしかた</h2><div class="body">
+<p>不具合の報告、使ってみた感想、改良の提案は、どれも歓迎です。プログラムを書かない人の「ここが分かりにくい」も大事な貢献です。</p>
+<ol>
+<li><b>質問・アイデア・使ってみた報告</b>: <a href="https://github.com/Hive-Plus-X/hiveplusx/discussions" target="_blank" rel="noopener">フォーラム (GitHub Discussions)</a> に書く。GitHub を使わない人は <a href="contact.php">お問い合わせフォーム</a> へ</li>
+<li><b>不具合の報告</b>: GitHub の <a href="https://github.com/Hive-Plus-X/hiveplusx/issues" target="_blank" rel="noopener">Issues</a> に書く。何をしたら、どうなったかを書く</li>
+<li><b>直したものを送る</b>: GitHub でプルリクエストを送る。何を、なぜ直したかを一言添える</li>
+<li><b>確認と取り込み</b>: 管理者が内容を見て、問題がなければ取り込む。機器に関わる変更は、できる範囲で実機で試してから取り込む</li>
+</ol>
+<p><b>権利の扱い (DCO)</b>: プルリクエストの変更には、「Signed-off-by: 名前 &lt;メールアドレス&gt;」の一行を付けてください。これは「自分が書いたもの (または公開してよいもの) で、このプロジェクトと同じライセンスで公開されることに同意します」という宣言です (<a href="https://developercertificate.org/" target="_blank" rel="noopener">Developer Certificate of Origin</a>)。著作権は書いた人に残り、譲渡してもらうことはありません。</p>
+<p class="note">くわしい手順は GitHub の <a href="https://github.com/Hive-Plus-X/hiveplusx/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> にあります。</p>
+</div></div></section>
+
+<section id="conduct"><div class="reveal wrap narrow"><p class="eyebrow">Code of Conduct</p><h2>行動規範</h2><div class="body">
+<p>Hive Plus X には、趣味の養蜂家、プロの養蜂家、学生や研究者など、経験も立場も違う人が集まります。気持ちよく参加できる場にするため、次のことを約束してください。</p>
+<ul>
+<li>相手の経験や立場に関係なく、敬意を持って接する</li>
+<li>初めての人の質問を歓迎し、分かりやすく答える</li>
+<li>意見の違いは、人ではなく内容について話す</li>
+<li>個人攻撃、差別的な発言、嫌がらせ、他人の個人情報を勝手に出すことはしない</li>
+<li>他人の蜂場の場所やデータを、本人の同意なく公開しない</li>
+</ul>
+<p>守られていないと感じたときは <a href="contact.php">お問い合わせフォーム</a> へ連絡してください。管理者が内容を確かめ、注意、投稿の削除、参加の停止などの対応をとります。連絡した人の名前は、本人の同意なく明かしません。</p>
+<p class="note">この規範は <a href="https://www.contributor-covenant.org/" target="_blank" rel="noopener">Contributor Covenant</a> を参考に、Hive Plus X 向けに短くまとめたものです (GitHub の <a href="https://github.com/Hive-Plus-X/hiveplusx/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">CODE_OF_CONDUCT.md</a>)。</p>
+</div></div></section>
+
+<section id="data"><div class="reveal wrap narrow"><p class="eyebrow">Versions &amp; Data</p><h2>版の管理とデータの扱い</h2><div class="body">
+<p><b>版番号</b>: 機器のプログラムは「v1.14」のように版番号を付けます。小さな修正は小数点以下 (v1.14 → v1.15)、それまでの設定や機器と互換性がなくなる大きな変更は先頭の数字 (v1 → v2) を上げます。サーバーとサイトも、まとめて公開するときに版番号を付けます。</p>
+<p><b>変更履歴</b>: 何がいつ変わったかは GitHub の履歴に残し、主な変更は版ごとの「変更点」としてまとめます。古い版も GitHub から取り出せます。</p>
+<p><b>公開するものと、しないもの</b></p>
+<div class="tbl"><table>
+<tr><th>公開する</th><th>公開しない</th></tr>
+<tr><td>機器のプログラム、回路図、部品表</td><td>利用者のアカウント情報</td></tr>
+<tr><td>サーバーのプログラム (設定ファイルを除く)</td><td>蜂場の場所、巣箱の記録、センサの計測データ</td></tr>
+<tr><td>説明書、作り方、ロゴ</td><td>パスワード、トークンなどの鍵</td></tr>
+</table></div>
+<p><b>利用者のデータ</b>: 利用者向けサーバーに集まったデータは非公開で、運営者 (養蜂産業振興会) が管理します。Hive Plus X は、個人や蜂場が特定できない形にしたうえで、養蜂の研究や AI の学習にデータを使うことがあります。データの扱いの細かい決まりは、利用者向けサーバーの利用規約で定めます。この方針は「コードをどう公開するか」を決めるもので、データの扱いは利用規約が優先します。</p>
+<p>自分で用意したサーバーに Hive Plus X のプログラムを入れて使う場合、データはそのサーバーの持ち主のもので、Hive Plus X には送られません。</p>
+</div></div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="https://line.me/R/ti/p/@222xdxtk">LINE</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="faq.html">よくある質問</a></li>
+      <li><a href="help.php">AI ヘルプ</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
