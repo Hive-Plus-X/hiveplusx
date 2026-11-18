@@ -468,5 +468,6 @@ A. 巣箱ごとに QR コードのラベルを印刷できます。スマホで�
 
 A. 次のどれかで聞いてください。
 
-- サイトのお問い合わせフォーム
-- GitHub の Discussions (質問・相談) と Issues (不具合の報告)
+- [AI ヘルプ](https://hiveplusx.com/help.php)
+- [サイトのお問い合わせフォーム](https://hiveplusx.com/contact.php)
+- GitHub の [Discussions](https://github.com/Hive-Plus-X/hiveplusx/discussions) (質問・相談) と [Issues](https://github.com/Hive-Plus-X/hiveplusx/issues) (不具合の報告)
