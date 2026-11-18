@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>よくある質問 | Hive Plus X</title>
+<meta name="description" content="Hive Plus X のよくある質問。しくみ、機器の作り方、HPX-Core の設定、電池と電波、ファームウェア、サーバー、HPX-note の使い方についての質問と答えです。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 315px、スマホ 210px。2026-11-17 に 450・300px の約70%へ) */
+  section { padding:0; margin-top:315px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:210px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* しくみページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  .hero.sub h1 { font-size:clamp(28px, 5vw, 40px); margin-top:0; }
+  /* よくある質問 */
+  section { scroll-margin-top:72px; margin-top:140px; }
+  @media (max-width:760px) { section { margin-top:98px; } }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { main { padding-bottom:200px; } }
+  .narrow { max-width:820px; }
+  .cats { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:36px; }
+  .cats a { display:inline-block; padding:8px 18px; border-radius:999px; border:1.5px solid var(--forest); text-decoration:none; font-size:14px; font-weight:700; }
+  .cats a:hover { background:var(--honey-soft); }
+  @media (prefers-color-scheme: dark) { .cats a { border-color:var(--honey); } }
+  .qas { margin-top:24px; display:grid; gap:12px; }
+  .qa { background:var(--panel); border:1px solid var(--line); border-radius:14px; }
+  .qa[open] { border-color:var(--honey); }
+  .qa summary { list-style:none; cursor:pointer; display:flex; gap:14px; align-items:flex-start; padding:16px 20px; font-weight:700; }
+  .qa summary::-webkit-details-marker { display:none; }
+  .qa summary::after { content:"＋"; margin-left:auto; color:var(--honey); font-weight:700; flex:none; }
+  .qa[open] summary::after { content:"−"; }
+  .q, .amark { flex:none; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; }
+  .q { background:var(--honey); color:#1F2328; }
+  .amark { background:var(--forest); color:#fff; }
+  @media (prefers-color-scheme: dark) { .amark { background:#16291F; } }
+  .a { display:flex; gap:14px; padding:0 20px 18px; }
+  .a > div { min-width:0; flex:1; color:var(--text); }
+  .a p + p, .a p + ul, .a p + ol, .a ul + p, .a ol + p, .a .tbl + p, .a p + .tbl { margin-top:10px; }
+  .a ul, .a ol { padding-left:1.3em; margin-top:6px; }
+  .a li + li { margin-top:4px; }
+  .a a { color:var(--forest); text-decoration:underline; }
+  @media (prefers-color-scheme: dark) { .a a { color:var(--honey); } }
+  .tbl { overflow-x:auto; }
+  .a table { border-collapse:collapse; font-size:14px; margin-top:6px; }
+  .a th, .a td { border:1px solid var(--line); padding:6px 10px; text-align:left; vertical-align:top; }
+  .a th { background:var(--honey-soft); }
+  .ask { text-align:center; }
+  .ask .entry { display:flex; justify-content:center; gap:12px; margin-top:28px; flex-wrap:wrap; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px; text-decoration:none; font-weight:600; font-size:15px; border:1.5px solid var(--forest); }
+  .btn.primary { background:var(--honey); border-color:var(--honey); color:#1F2328; }
+  .btn.ghost { color:var(--text); }
+  @media (prefers-color-scheme: dark) { .btn.ghost { border-color:rgba(255,255,255,.5); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index-new.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap sub">
+    <p class="eyebrow">FAQ</p>
+    <h1>よくある質問</h1>
+    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (36 問)。<br>質問を押すと答えが開きます。</p>
+    <ul class="cats">
+<li><a href="#c1">Hive Plus X の全体</a></li>
+<li><a href="#c2">機器の作り方・部品</a></li>
+<li><a href="#c3">HPX-Core の設定・動き</a></li>
+<li><a href="#c4">通信 (ルーター・LAN)</a></li>
+<li><a href="#c5">BLE・通信距離・電池</a></li>
+<li><a href="#c6">ファームの書き込み・エラー</a></li>
+<li><a href="#c7">サーバー (HPX-Server)</a></li>
+<li><a href="#c8">HPX-note の使い方・データ</a></li>
+<li><a href="#c9">困ったとき</a></li>
+    </ul>
+  </div>
+
+<section id="c1"><div class="reveal wrap narrow"><p class="eyebrow">Category 1</p><h2>Hive Plus X の全体</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>Hive Plus X はどんなしくみですか？</span></summary><div class="a"><span class="amark">A</span><div><p>巣箱・蜂場に設置したセンサが、計った値を BLE (Bluetooth の電波) で送ります。センサは温湿度の HPX-TH、重量の HPX-W、電柵アラートの HPX-F、バッテリー電圧の HPX-B です。</p>
+<p>蜂場のハブ HPX-Core がその値を集めて、インターネット経由でサーバー (HPX-Server) へ送ります。インターネットには Wi-Fi・有線LAN・LTE-M のどれかでつなぎます。</p>
+<p>送られた値は、養蜂管理アプリ HPX-note でグラフやお知らせとして見られます。</p>
+<p>センサとハブ以外に、カメラHPX-CAMと小型ソーラー電源 HPX-Solar も開発中です。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>ライセンスは？ 自由に使ってよいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>自由に使えることを重視したライセンスにしています。</p>
+<ul><li>プログラム: MIT</li><li>回路・基板: CERN-OHL-P</li><li>文章・図: CC BY</li></ul>
+<p>改造や販売もできます。その場合は「Hive Plus X をもとにした」と表示してください。詳しくはMIT、CERN-OHL-P、CC BYのルールを参照してください。</p></div></div></details>
+</div></div></section>
+
+<section id="c2"><div class="reveal wrap narrow"><p class="eyebrow">Category 2</p><h2>機器の作り方・部品</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>電子工作は初めてですが、作れますか？</span></summary><div class="a"><span class="amark">A</span><div><p>はんだ付けができれば作れるように、配線図・部品表・書き込み手順を用意しています。基板はユニバーサル基板を使い、部品は表、線は裏のすずめっき線で配線する形にそろえています。<br>電子機器のサイズや配線によって、掲載している配線図が適用できない場合がありますので、必ず使用機器の詳細を確認して配線を調整してください。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>おすすめの ESP32 ボードは何ですか？</span></summary><div class="a"><span class="amark">A</span><div><p>DFRobotの<b>FireBeetle 2 ESP32-E</b>です。少し高いですが、低消費電力パッドを切るとさらに省電力になります。<b>Olimex ESP32-DevKit-LiPo</b>も省電力で良いですが、USB端子がmicro-USBで、他の機器のUSB-Cと異なるので注意が必要です。ELEGOOや Freenoveの開発ボードは、LEDランプが点灯したままで消費電力が大きいです。常時電源が使えるなら問題ないです。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>巣箱の重さはどう計算されますか？</span></summary><div class="a"><span class="amark">A</span><div><p>重量センサの台数で計算が変わります。</p>
+<ul><li>1 台のとき: 巣箱の片側を持ち上げて計るので、センサ値の 2 倍を巣箱の重さにします。</li><li>同じ巣箱に 2 台のとき: 自動で2 台の値を足します。より正確な重量を知りたい場合に有効です。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>電柵アラート (HPX-F) は、電柵に電気的につなぐのですか？</span></summary><div class="a"><span class="amark">A</span><div><p>つなぎません。市販のフェンスアラート (StaFIX) は、電圧が下がると LED が点滅します。HPX-F は、その点滅を光センサで読み取ります。電柵に触れないので安全です。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>HPX-TH (温湿度センサ) は校正が必要ですか？</span></summary><div class="a"><span class="amark">A</span><div><p>基本的には必要ありません。</p>
+<ul><li>SHT40: 誤差は ±0.2℃・±2% ほどです。</li><li>サーミスタ（プローブ）: 誤差は ±0.5℃ ほどです。</li></ul>
+<p>必要なら、HPX-noteの設定＞センサから、各温湿度計の補正ができますので、設定してください。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>HPX-TH のサーミスタ（プローブ）はどこに置きますか？</span></summary><div class="a"><span class="amark">A</span><div><p>先端を育児圏のまん中あたりに置きます。</p>
+<p>針金を使って、巣枠の上部から20cmの位置にセンサが来るようにしています。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>HPX-Solar (小型ソーラー電源) は何をしますか？</span></summary><div class="a"><span class="amark">A</span><div><p>市販の小型ソーラーパネルからの電力を、小型リチウムイオン充電池に充電し、HPX-CoreやHPX-CAMに電力供給します。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>HPX-B (バッテリー見守り) は何をしますか？</span></summary><div class="a"><span class="amark">A</span><div><p>ソーラーパネルで充電するカーバッテリーの電圧と、パネルの電圧を計って知らせます。</p>
+<ul><li>バッテリーが 12.0V を下回るとお知らせメールが届きます。12.6V に戻ると、戻ったことも知らせます。</li><li>バッテリーの残りは、夜明け前の電圧で見るのが目安です。12.7V で満充電、12.2V で半分、11.8V で空です。</li><li>パネルの電圧を見ると、発電しているか、線が外れていないかが分かります。</li><li>金属の箱に入れると電波が届きにくくなるので注意してください。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>アルカリ電池やマンガン電池、リチウムイオン電池は使えますか？</span></summary><div class="a"><span class="amark">A</span><div><p>使えなくはないですがおすすめしません。電池の持ちが悪く、交換頻度が多くなります。アルカリ電池やマンガン電池は徐々に電力が低下するため、センサ類に必要な電圧を維持することができず、すぐに機器が停止します。リチウムイオン電池は充電できるという利点がありますが、使い切りタイプのリチウム電池に比べて暑さ寒さに弱いため、HPXシステムではリチウム電池を採用しています。</p></div></div></details>
+</div></div></section>
+
+<section id="c3"><div class="reveal wrap narrow"><p class="eyebrow">Category 3</p><h2>HPX-Core の設定・動き</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>保存の間隔はどう決めますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で、15 分・30 分・60 分から選びます。</p>
+<ul><li>選んだ間隔の区切りの時刻 (たとえば 15 分なら 0 分・15 分・30 分・45 分) に記録して送ります。</li><li>送る間隔だけを別に決める設定はありません。</li><li>BLE の受信はいつもオンです。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>電柵アラートは、すぐ知らせてくれますか？</span></summary><div class="a"><span class="amark">A</span><div><p>保存の間隔ごとに送るので、そのぶん遅れます。15 分にしておけば、遅れは最大 15 分くらいです。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>インターネットが切れたら、データは消えますか？</span></summary><div class="a"><span class="amark">A</span><div><p>消えません。送れなかった記録は HPX-Core の中に最大 3 日分ためておきます。つながったら 50 件ずつまとめて送ります。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>「常時稼働」と「ディープスリープ」はどちらがよいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>電源で決めます。</p>
+<div class="tbl"><table><thead><tr><th>電源</th><th>選ぶもの</th><th>動き方</th></tr></thead><tbody><tr><td>USB や家庭のコンセント</td><td>常時稼働</td><td>いつも Wi-Fi につながっていて、管理画面をいつでも開けます</td></tr><tr><td>電池</td><td>ディープスリープ</td><td>決められた時刻だけ起動します。管理画面は、電源を入れてから 10 分だけ開けます</td></tr></tbody></table></div>
+<p>電池のもちは 10〜30 倍くらい違います (見込み)。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>HPX-CoreのLTE-M 版なら、ルーターは要りませんか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX システムだけなら要りません。Wi-Fi の機能はHPX-CAMを使うときだけ使用します。カメラを使う場合は通信料が多くなるので注意が必要です。</p>
+<ul><li>月の通信量の目安: センサ 7 台・30 分間隔で月 15MB くらい</li><li>カメラも使う場合: 昼間だけ VGA〜SVGA の写真を送ると、月 50〜80MB くらい増えます</li><li>電波状況が悪い場合はアンテナの延長ケーブル: SMA (RP-SMA は不可)、長さ 1〜3m の太めのものを選んでください（技適に適合するかをご確認ください）</li></ul></div></div></details>
+</div></div></section>
+
+<section id="c4"><div class="reveal wrap narrow"><p class="eyebrow">Category 4</p><h2>通信 (ルーター・LAN)</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>蜂場で使う LTE ルーターのおすすめは？</span></summary><div class="a"><span class="amark">A</span><div><p>電源に常時接続して使えて、暑さに強い機器がおすすめです。Wi-Fi機能が必要な場合は、Wi-Fi機能を備えた機器を使うか、小型のWi-Fi機器を接続すると良いと思います。LTE-M対応だと通信費を低く抑えられるかもしれません。</p>
+<p>◆Wi-Fi機能付きLTEルーター<br>・<a href="https://prtimes.jp/main/html/rd/p/000000004.000125509.html" target="_blank" rel="noopener">TC700／ユニ電子</a>（60℃対応、nanoSIM、DC6V、<a href="https://item.rakuten.co.jp/blue-century/tc700/" target="_blank" rel="noopener">21,800円</a>）</p>
+<p>・<a href="https://www.iodata.jp/product/lan/appliance/ud-lt2/index.htm" target="_blank" rel="noopener">UD-LT2／ IO-DATA</a>(60℃対応、標準SIM、DC12V、ネットワークトラブル時の自動リカバリ機能あり、<a href="https://www.amazon.co.jp/IODATA-%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89-Wi-Fi%E5%AF%BE%E5%BF%9C-%E6%97%A5%E6%9C%AC%E3%83%A1%E3%83%BC%E3%82%AB%E3%83%BC-UD-LT2/dp/B0B4VSMFQR/ref=sr_1_3?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&amp;crid=39DU4YSXMF55J&amp;dib=eyJ2IjoiMSJ9.PqaVYDWouChY2ypcM9d3dWkumLm2MghUauXYWfylzV0I_gMZm62Cn9mGqSdjgTKOZiLr8PIzLFfQCeHUBpQUfcAd-YeswoCMxRWY3tRdW_4.uUQxI83Rd1eaAZbiCDY3wmehFDv9KGUjGKu5kjCt294&amp;dib_tag=se&amp;keywords=UD-LT2&amp;qid=1790946687&amp;sprefix=ud-lt2%2Caps%2C401&amp;sr=8-3&amp;th=1" target="_blank" rel="noopener">32,000円ぐらい</a>）※動作確認ずみ</p>
+<p>・<a href="https://www.necmagnus.com/products/iotm2m/um310r.html" target="_blank" rel="noopener">uM310R／NECマグナスコミュニケーションズ</a>（60℃対応、標準SIM、楽天非対応、販売終了　中古で3,000円ぐらい～）後継は<a href="https://www.necmagnus.com/products/iotm2m/um350r.html" target="_blank" rel="noopener">uM350</a></p>
+<p>◆Wi-FiなしLTEルーター</p>
+<p>第一候補は Rooster RX220 です。</p>
+<ul><li>Rooster RX220 ：docomo・au・SoftBank 回線対応。電源 DC5〜27.4V。 −20〜60℃ 。</li><li>Rooster RX230：docomo だけ。DHCP あり、LAN 口 2 つ。</li><li>Rooster RX280：SoftBank だけ。</li><li>NSX7002: 電気を多く使う (12W) ので、ソーラーには向きません。</li></ul>
+<p>◆小型 Wi-Fi 機</p>
+<ul><li>GL-MT300N-V2</li><li>TL-WR802N　など</li></ul></div></div></details>
+</div></div></section>
+
+<section id="c5"><div class="reveal wrap narrow"><p class="eyebrow">Category 5</p><h2>BLE・通信距離・電池</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>センサの電波はどれくらい届きますか？</span></summary><div class="a"><span class="amark">A</span><div><p>BLE電波の強さは 最大値+8 dBmで、電波を出す間隔 は 2 秒です。</p>
+<p>届く距離の目安 (計算上の見込みで、実測ではありません):</p>
+<ul><li>見通しのよい屋外: 40〜60m くらい</li><li>巣箱・木・地面の起伏など、さえぎるものがある蜂場: 15〜20m くらい</li><li>金属の箱や建物の壁をへだてるとき: これより短くなります</li></ul>
+<p>確実に受信するため、センサと HPX-Core は 10m 以内に置くのがおすすめです。設置したら、HPX-Core の管理画面でセンサが届いているか確かめてください。</p>
+<p>HPX-Core が起動すると最大 10 秒間、センサからの信号を受信します。全部のセンサが見つかった時点で再びスリープ状態に戻るので、センサとHPX-Coreはできるだけ近くにおいて、早く確実に受信できるようにすると電池の持ちがよくなります。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>電池はどれくらいもちますか？</span></summary><div class="a"><span class="amark">A</span><div><p>計算上の見込みです (実測ではありません)。</p>
+<div class="tbl"><table><thead><tr><th>機器</th><th>平均の電流 (見込み)</th></tr></thead><tbody><tr><td>HPX-TH</td><td>約 25µA</td></tr><tr><td>HPX-W</td><td>約 30〜60µA</td></tr><tr><td>HPX-F</td><td>約 50〜100µA</td></tr></tbody></table></div>
+<p>単三リチウム 2 本 (約 3,000〜3,500mAh) なら、計算上は数年もつことになりますが、現在実測中です。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>CR123A と単三リチウム電池、どちらがよいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>長くもたせたいなら単三リチウムです。</p>
+<ul><li>CR123A 1 本は 1,300〜1,500mAh くらいです。</li><li>単三リチウム電池は約 3,000mAh 〜3,500mAhなので、単純計算で2倍程度長く使えます。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>Inkbird やSwitchbotの温湿度計に単四リチウム電池を使うと、長もちしますか？</span></summary><div class="a"><span class="amark">A</span><div><p>暖かい時期で 1.2〜1.5 倍、冬は 2 倍以上もつ見込みです。ただしリチウム電池は残りの % が長い間ほぼ 100% のまま出るので、表示はあてになりません。決まった時期に替えてください。</p></div></div></details>
+</div></div></section>
+
+<section id="c6"><div class="reveal wrap narrow"><p class="eyebrow">Category 6</p><h2>ファームの書き込み・エラー</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>ファームウェアの書き込みはどうやったらできますか？</span></summary><div class="a"><span class="amark">A</span><div><p>パソコンにArduino IDEをインストールして、センサとパソコンをUSBケーブルでつなぐと書き込めます。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>ファームウェア更新 (OTA) はどうやってやりますか？</span></summary><div class="a"><span class="amark">A</span><div><p>サーバー経由で自動更新が可能です。HPX-Coreがサーバーにアクセスした際に新しいファームウェアがあったら自動的に更新します。サーバーには案内ファイル(manifest.txt)を次の 2 行で書き、同じフォルダにino.binファイルを置きます。</p>
+<ul><li>1 行目: ビルド番号</li><li>2 行目: ファームの bin ファイルの URL (https://…/firmware/HPX_Core_ビルド番号.ino.bin)</li></ul>
+<p>HPX-Core は、今のビルド番号より大きいときだけ更新します。</p>
+<p>USBでPCと接続して更新もできます。</p></div></div></details>
+</div></div></section>
+
+<section id="c7"><div class="reveal wrap narrow"><p class="eyebrow">Category 7</p><h2>サーバー (HPX-Server)</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>自分でサーバーを立てるには？</span></summary><div class="a"><span class="amark">A</span><div><p>GitHub の server/ 一式を、レンタルサーバーに置きます。</p>
+<ul><li>手順は README と設置ガイドにあります。</li><li>設定ファイル config.php は自分で作ります (見本は config.sample.php)。</li><li>データのフォルダ data には、外から見られないよう .htaccess (deny) を入れてください。</li></ul></div></div></details>
+</div></div></section>
+
+<section id="c8"><div class="reveal wrap narrow"><p class="eyebrow">Category 8</p><h2>HPX-note の使い方・データ</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>HPX-note を試してみたいです。</span></summary><div class="a"><span class="amark">A</span><div><p>デモ用アカウントで、見本のデータを見られます。ログインは要りません。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>蜂場を地図に出すには？</span></summary><div class="a"><span class="amark">A</span><div><p>蜂場の情報に緯度・経度を入れると、地図に点が出ます。</p>
+<ul><li>「地図で選ぶ」ボタンで、地図を押して決めることもできます。</li><li>Google マップで場所を長押ししても、緯度・経度を調べられます。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>地図の点の色の意味は？</span></summary><div class="a"><span class="amark">A</span><div><p>次の意味です。両方当てはまるときは赤になります。</p>
+<ul><li>青: 正常</li><li>黄: タスクがある</li><li>赤 (「！」付き): センサに異常がある</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>天気予報はどこから出していますか？</span></summary><div class="a"><span class="amark">A</span><div><p>予報は Open-Meteo の情報です。天気のイラストを押すと、Yahooの雨雲レーダーのページが開きます。蜂場の情報入力欄で好きな天気予報サービスの URLに変更できます。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>センサを別の巣箱や別の HPX-Core に移したら、前のデータはどうなる？</span></summary><div class="a"><span class="amark">A</span><div><p>前のデータは消えません。</p>
+<ul><li>移す前のデータは、移す前の巣箱のグラフに残ります。</li><li>重量センサの校正値は、センサについて回ります。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>重量センサの校正はどうやりますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で行います。</p>
+<ol><li>何も載せない状態で「ゼロ点」を取ります。</li><li>重さが分かっているものを載せて記録します。「10 秒お待ちください」と出たら、そのまま待ちます。</li></ol></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>センサのデータを CSV で取り出せますか？</span></summary><div class="a"><span class="amark">A</span><div><p>センサページから取り出せます。種類は 2 つあります。</p>
+<ul><li>「定時記録データ」: 保存の間隔ごとに 1 行です。データが欠損し時刻は空白行（日時だけ）が入ります。</li><li>「全データ」: 届いた記録すべてです。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>電波の届かない蜂場でも使えますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-note をスマホのホーム画面に追加することで、アプリのように使えて、オフラインでも使えます。</p>
+<ul><li>電波のない所で書いた記録は、スマホの中にためておきます。</li><li>インターネットにつながったら、まとめて送ります。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>作業のメモを声で入れられますか？</span></summary><div class="a"><span class="amark">A</span><div><p>メモ欄の🎤ボタンで、声を文字にできます。声はサーバーに送らず、ブラウザの中で文字にします。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>LINE で何ができますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-note と LINE を紐づけることで、LINEから各種記録ができ、アラートもLINEで受け取れます。</p>
+<ul><li><b>話し言葉で記録</b>: 話すように書いて送ると、AI が読み取って記録にします。</li><li><b>手書きの記録を写真で取り込む</b>: AI が文字を読み取ります。読めなかった所には〔?〕の印が付くので、内容を確かめてから記録してください。</li></ul></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>巣箱を QR コードで管理できますか？</span></summary><div class="a"><span class="amark">A</span><div><p>巣箱ごとに QR コードのラベルを印刷できます。スマホで読むと、その巣箱の内検メモが開きます。</p></div></div></details>
+</div></div></section>
+
+<section id="c9"><div class="reveal wrap narrow"><p class="eyebrow">Category 9</p><h2>困ったとき</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>分からないことはどこで聞けますか？</span></summary><div class="a"><span class="amark">A</span><div><p>次のどれかで聞いてください。</p>
+<ul><li>サイトのお問い合わせフォーム</li><li>GitHub の Discussions (質問・相談) と Issues (不具合の報告)</li></ul></div></div></details>
+</div></div></section>
+
+  <section id="ask">
+    <div class="reveal wrap narrow ask">
+      <p class="eyebrow">Ask</p>
+      <h2>ここにない質問は</h2>
+      <p class="lead" style="margin:8px auto 0">AI ヘルプなら、サイトや GitHub の説明書をもとにすぐにお答えします。<br>人に聞きたいときは、お問い合わせやフォーラムをお使いください。</p>
+      <div class="entry">
+        <a class="btn primary" href="help.php">AI ヘルプで聞く</a>
+        <a class="btn ghost" href="contact.php">お問い合わせ</a>
+        <a class="btn ghost" href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="https://line.me/R/ti/p/@222xdxtk">LINE</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="faq.html">よくある質問</a></li>
+      <li><a href="help.php">AI ヘルプ</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
