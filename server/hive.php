@@ -65,11 +65,11 @@ if (is_post()) {
         });
         redirect('hive.php?' . http_build_query(['a' => $to, 'h' => $newId, 'p' => $per]), '巣箱「' . $name . '」を保存しました。');
     }
-    // お知らせ(警報)の設定(温度の上限・下限、基準日と重量の増減)。空の項目は見ない
+    // アラート設定(温度の上限・下限、基準日と重量の増減)。空の項目は見ない
     if ($act === 'alert_save') {
         $id = (string)($_POST['id'] ?? '');
         if (!isset($site['hives'][$id])) redirect($selfUrl());
-        if (!apiary_can_edit($site, (string)$site['hives'][$id]['apiary'])) redirect($selfUrl(), 'お知らせを設定できるのは、蜂場の持ち主とチーム管理者だけです。');
+        if (!apiary_can_edit($site, (string)$site['hives'][$id]['apiary'])) redirect($selfUrl(), 'アラートを設定できるのは、蜂場の持ち主とチーム管理者だけです。');
         $num = function (string $k, float $lo, float $hi): ?float {
             $v = trim(str_replace(',', '.', (string)($_POST[$k] ?? '')));
             return is_numeric($v) && (float)$v >= $lo && (float)$v <= $hi ? round((float)$v, 2) : null;
@@ -92,7 +92,7 @@ if (is_post()) {
             unset($x);
             return $s;
         });
-        redirect($selfUrl([], 'h-' . $id), $all && $n > 1 ? 'お知らせの設定を、この蜂場の巣箱 ' . $n . ' 箱すべてに保存しました。' : 'お知らせの設定を保存しました。');
+        redirect($selfUrl([], 'h-' . $id), $all && $n > 1 ? 'アラート設定を、この蜂場の巣箱 ' . $n . ' 箱すべてに保存しました。' : 'アラート設定を保存しました。');
     }
     if ($act === 'hive_delete') {
         $id = (string)($_POST['id'] ?? '');
@@ -363,13 +363,13 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // センサの表はセンサページで見られるので、ここには出さない
     if (!$rows) echo '<p class="muted">センサは紐づいていません。' . ($canEdit ? '下の「巣箱の情報を変更」で選べます。' : '') . '</p>';
 
-    // お知らせの設定(メールで知らせる)
+    // アラート設定(メールで知らせる)
     $sum = [];
     if ($conf['base'] !== '' && ($conf['w_up'] !== null || $conf['w_dn'] !== null)) {
         $sum[] = '重量' . ($conf['w_up'] !== null ? ' +' . h((string)$conf['w_up']) . 'kg' : '') . ($conf['w_dn'] !== null ? ' -' . h((string)$conf['w_dn']) . 'kg' : '');
     }
     if ($tl) $sum[] = '温度 ' . implode('・', $tl);
-    echo '<details class="alertset" id="alert"><summary>お知らせ: ' . ($sum ? '現在の設定　' . implode('　', $sum) : '<span class="muted">設定なし</span>') . '</summary>';
+    echo '<details class="alertset" id="alert"><summary>アラート設定: ' . ($sum ? implode('　', $sum) : '<span class="muted">設定なし</span>') . '</summary>';
     if ($canEdit) {
         $v = fn($k) => h($conf[$k] === null ? '' : (string)$conf[$k]);
         // 同じ蜂場に他の巣箱があるときだけ「同じ蜂場の他の巣箱も同じ設定にする」を出す
@@ -387,9 +387,9 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
             . '<b>温度</b>'
             . '<label>上限<i></i><input type="number" name="t_hi" step="0.1" value="' . $v('t_hi') . '"> ℃</label>'
             . '<label>下限<i></i><input type="number" name="t_lo" step="0.1" value="' . $v('t_lo') . '"> ℃</label><span></span></div>'
-            . $allBox . '<p><button type="submit">お知らせを保存</button></p></form>';
+            . $allBox . '<p><button type="submit">アラート設定を保存</button></p></form>';
     } else {
-        echo '<p class="muted">お知らせを変えられるのは、蜂場の持ち主とチーム管理者だけです。</p>';
+        echo '<p class="muted">アラート設定を変えられるのは、蜂場の持ち主とチーム管理者だけです。</p>';
     }
     echo '</details>';
 
