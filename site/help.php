@@ -25,7 +25,7 @@ require $APP . '/config.php';
 const H_SITE = 'https://hiveplusx.com/';
 const H_CONTACT = 'contact.php';
 // 材料にするページ (この順でつなぐ。順を変えるとキャッシュが作り直しになるだけで、困ることはない)
-const HPX_PAGES = ['index-new.html', 'system.html', 'app.html', 'devices.html', 'device-core.html', 'device-w.html', 'device-th.html',
+const HPX_PAGES = ['index.html', 'system.html', 'app.html', 'devices.html', 'device-core.html', 'device-w.html', 'device-th.html',
     'device-f.html', 'device-b.html', 'device-cam.html', 'device-solar.html', 'install.html'];
 const H_Q_MAX = 1000;        // 質問の文字数の上限
 const H_A_MAX = 6000;        // 送り返されてくる回答の文字数の上限 (対話の続きのため)
