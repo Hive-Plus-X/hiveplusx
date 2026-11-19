@@ -664,3 +664,22 @@ LINE を連携した人 (13章) が、LINE公式アカウントのトークに�
 - 重量の単位: 公式には書いていない。公開されている受信プログラム (Home Assistant 用 sandersmeenk/home_assistant-broodminder、brood-flow) はどれも kg として扱っているので、HPX も kg とした。
 - 巣箱の重さ: HPX-W と同じく「センサ1台なら2倍、2台以上なら合計」。BroodMinder-W・W2 は巣箱の片側に置く使い方なので合う。巣箱全体を乗せる W3/W4 などでは2倍にならないよう、巣箱に2台以上を紐づけるか、差し引く重さで調整が要る (未対応)。
 - 確認したこと: arduino-esp32 3.3.12 + NimBLE-Arduino 2.3.6 で警告なしにコンパイルできる (1,659,022 バイト、84%)。解読部分は PC で単体テスト (公式の例の W で 23.69℃・0.06kg、TH 25.00℃/60%、W2 の合計、SubHub と Inkbird の9バイトを読まないこと)。実機の BroodMinder での受信は未確認。
+
+## 18. サーバーの設定を画面で変える — 2026-11-20 追加
+
+config.php に書いていた設定の多くを、HPX-note の右上の歯車 →「サーバーの設定」(`settings.php`、サーバー管理者だけ) で変えられるようにしました。サーバー管理ページの上にもリンクがあります。
+
+- 画面で保存した値は、データフォルダの `server_settings.json` に置きます (data/.htaccess で外から開けません)。config.php の値より優先します。
+- 画面で変えていない項目は config.php の値のままです。今のサーバーは何もしなくても今まで通り動きます。
+- 変えた項目には「画面で変更」の印が付きます。「config.php の値に戻す」にチェックして保存すると、config.php の値に戻ります (config.php と同じ値を入れたときも自動で戻ります)。
+- メールの欄には「テストメールを送る」ボタンがあります (自分のログインのメールアドレスに送ります)。
+- 読み込みは `hpx_config.php` (config.php を読んだあと、画面の値で上書きする)。サイト (hiveplusx.com) のお問い合わせ・レポート・AI ヘルプ・訪問者カウンターも、hpx/ に hpx_config.php があればそれを読みます。
+
+画面で変えられるもの: メールの送信 (送り元・SMTP のサーバー/ポート/ユーザー/暗号化・お問い合わせとレポートの送り先)、お知らせの基準 (届かないときの時間・電池電圧・12V バッテリー・タスクメールの時刻)、アカウントと利用者 (HPX-note の URL・台数の上限・ファーム更新の URL・同意の文・利用規約の URL・ダウンロードを促す日数)、HPX-CAM、LINE の友だち追加 URL、AIメモ (モデル・回数・用語集)、AI ヘルプ (モデル・回数・キャッシュ・リポジトリ)、デモ用アカウント。
+
+config.php に残すもの (画面では変えられない):
+
+- `$HPX_DATA_DIR` (画面の設定ファイルの置き場所そのもの)
+- 前の版からの引き継ぎ用の `$HPX_TOKEN`・`$HPX_VIEW_PASSWORD`・`$HPX_MAIL_TO` (初期設定のときだけ使う)
+- 時刻の地域 (`date_default_timezone_set`)
+- 秘密 (2026-11-20 TARO 決定): `$HPX_SMTP_PASS`・`$HPX_CRON_TOKEN`・`$HPX_REPORT_ADMIN_PW`・`$HPX_LINE_TOKEN`・`$HPX_LINE_SECRET`・`$HPX_AI_KEY`・`$HPX_CAM_AI_KEY`・`$HPX_HELP_KEY`・`$HPX_HELP_GITHUB_TOKEN`。管理者のアカウントが乗っ取られても漏れないように、画面には「設定済み / 未設定」だけ出します。

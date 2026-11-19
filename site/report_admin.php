@@ -6,7 +6,7 @@
 declare(strict_types=1);
 
 $APP = __DIR__ . '/hpx';
-require $APP . '/config.php';
+require $APP . (is_file($APP . '/hpx_config.php') ? '/hpx_config.php' : '/config.php');   // config.php と、サーバーの設定画面で保存した値
 require_once $APP . '/hpx_report.php';
 
 if (!function_exists('h')) { function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); } }

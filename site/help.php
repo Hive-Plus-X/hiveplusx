@@ -20,7 +20,7 @@
 declare(strict_types=1);
 
 $APP = __DIR__ . '/hpx';
-require $APP . '/config.php';
+require $APP . (is_file($APP . '/hpx_config.php') ? '/hpx_config.php' : '/config.php');   // config.php と、サーバーの設定画面で保存した値
 
 const H_SITE = 'https://hiveplusx.com/';
 const H_CONTACT = 'contact.php';

@@ -16,7 +16,7 @@
 //       hubs/<HPX-CoreのID>/  HPX-Core 1台分の記録(前の data/<ID>/ と同じ中身)
 //   アカウントIDは内部の名前で変わらない。メールアドレスを変えてもIDはそのままなので、記録の記入者(by)などはそのまま。
 declare(strict_types=1);
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/hpx_config.php';   // config.php と、サーバーの設定画面で保存した値
 require_once __DIR__ . '/hpx_alert.php';
 require_once __DIR__ . '/hpx_team.php';
 
@@ -548,7 +548,7 @@ function demo_guard(string $page): void
 {
     global $HPX_DEMO_READONLY;
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || $page === 'export.php') return;
-    if ((!empty($HPX_DEMO_READONLY) && !demo_editing()) || in_array($page, ['account.php', 'team.php', 'admin.php', 'sensor.php', 'camera.php'], true)) {
+    if ((!empty($HPX_DEMO_READONLY) && !demo_editing()) || in_array($page, ['account.php', 'team.php', 'admin.php', 'settings.php', 'sensor.php', 'camera.php'], true)) {
         $_SESSION['flash'] = 'デモ用アカウントでは、この変更はできません。';
         header('Location: ' . $page);
         exit;
@@ -929,12 +929,13 @@ function auth_nav_right(string $active): string
 {
     global $ME;
     $items = ['sensor.php' => 'センサ', 'camera.php' => 'カメラ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント', 'offline.php' => 'オフライン'];
-    $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' ? ' class="on"' : '') . '>'
+    $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' || $active === 'settings.php' ? ' class="on"' : '') . '>'
         . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>'
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
     foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
     $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
     if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>サーバー管理</a>';
+    if (!empty($ME['admin'])) $o .= '<a href="settings.php"' . ($active === 'settings.php' ? ' class="on"' : '') . '>サーバーの設定</a>';
     // 外を押したら閉じる
     return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';
 }
