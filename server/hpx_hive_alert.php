@@ -25,23 +25,29 @@ function hive_alert_conf(array $hv): array
 // 巣箱の重さ: 重量センサが1台なら巣箱の片側に置く使い方 (巣箱の半分の重さがかかる) なので、センサの値の2倍。
 //   2台以上なら (巣箱の両側に1台ずつなど、全体の重さがセンサにかかる) センサの値の合計。どれかのセンサの値が無ければ null
 const HW_PAIR_S = 600;        // 2台以上のとき、同じ時刻の記録とみなす幅(前後この秒数まで)
-function hive_kg(array $kgs): ?float
+//   $full: その1台が巣箱全体を乗せる重量計 (BroodMinder-W3/W4。weight_cal.json の full_hive) なら2倍にしない
+function hive_kg(array $kgs, bool $full = false): ?float
 {
     if (!$kgs || in_array(null, $kgs, true)) return null;
-    return count($kgs) === 1 ? 2 * (float)reset($kgs) : (float)array_sum($kgs);
+    return count($kgs) === 1 ? ($full ? 1 : 2) * (float)reset($kgs) : (float)array_sum($kgs);
 }
 // 巣箱の重さの出し方の説明
-function hive_weight_how(int $n): string
+function hive_weight_how(int $n, bool $full = false): string
 {
-    return $n <= 1 ? '重量センサ1台の値の2倍' : '重量センサ' . $n . '台の合計';
+    return $n <= 1 ? ($full ? '巣箱全体を量る重量センサ1台の値' : '重量センサ1台の値の2倍') : '重量センサ' . $n . '台の合計';
+}
+// 巣箱に紐づいた重量センサの較正の一覧から、「巣箱全体を量る1台だけ」か (2倍にしない) を返す
+function hive_full_single(array $cals): bool
+{
+    return count($cals) === 1 && !empty(reset($cals)['full_hive']);
 }
 // センサごとの重さの記録 [[[epoch, kg], ...], ...] (それぞれ古い順) から、巣箱の重さの記録 [[epoch, kg], ...] を作る。
 //   1台なら2倍。2台以上なら、1台目の記録の時刻に、ほかのセンサのいちばん近い記録 (前後 HW_PAIR_S 秒まで) を足す。どれかが無い時刻は出さない
-function hive_kg_series(array $series): array
+function hive_kg_series(array $series, bool $full = false): array
 {
     $series = array_values($series);
     if (!$series) return [];
-    if (count($series) === 1) return array_map(fn($p) => [$p[0], 2 * $p[1]], $series[0]);
+    if (count($series) === 1) return array_map(fn($p) => [$p[0], ($full ? 1 : 2) * $p[1]], $series[0]);
     $out = [];
     $idx = array_fill(0, count($series), 0);
     foreach ($series[0] as $p) {
@@ -112,7 +118,7 @@ function hive_weight_base(string $owner, array $hv): array
         [$hub, $mac] = array_pad(explode('/', (string)$k, 2), 2, '');
         if ($hub !== '' && $mac !== '') $byHub[$hub][] = $mac;
     }
-    $kgs = []; $bkgs = []; $eps = []; $beps = [];
+    $kgs = []; $bkgs = []; $eps = []; $beps = []; $cals = [];
     foreach ($byHub as $hub => $macs) {
         $dir = account_hubs_dir($owner) . '/' . $hub;
         $st = json_load($dir . '/state.json');
@@ -128,6 +134,7 @@ function hive_weight_base(string $owner, array $hv): array
         $base = $at ? ha_scan($dir, $at)['at'] : [];
         foreach ($macs as $m) {
             $l = $now['latest'][$m] ?? null;
+            $cals[] = is_array($cal[$m] ?? null) ? $cal[$m] : [];
             $kgs[] = $l ? ha_kg((int)$l[1], $cal[$m] ?? null) : null;
             $b = $base[$m] ?? null;
             $bkgs[] = $b ? ha_kg($b[1], $cal[$m] ?? null) : null;
@@ -135,10 +142,11 @@ function hive_weight_base(string $owner, array $hv): array
             $beps[] = $b ? (int)$b[0] : (int)($at[$m][1] ?? 0);
         }
     }
-    $kg = hive_kg($kgs);
+    $full = hive_full_single($cals);
+    $kg = hive_kg($kgs, $full);
     if ($kg === null) return [];
-    $bkg = hive_kg($bkgs);
-    return [['hive', hive_weight_how(count($kgs)), $kg, $bkg, $bkg !== null ? $kg - $bkg : null, min($eps), min($beps)]];
+    $bkg = hive_kg($bkgs, $full);
+    return [['hive', hive_weight_how(count($kgs), $full), $kg, $bkg, $bkg !== null ? $kg - $bkg : null, min($eps), min($beps)]];
 }
 
 // すべてのアカウントの巣箱の警報を見て、超えた・戻ったときにメールを送る(hpx_cron.php から)
