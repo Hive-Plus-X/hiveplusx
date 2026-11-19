@@ -545,7 +545,7 @@ $left = max(0, h_day_max() - h_count_read($dir, $dev, substr(hash('sha256', (str
   <div class="wrap">
     <p class="eyebrow">Help</p>
     <h1>AI ヘルプ</h1>
-    <p class="lead">機器の作り方、設置のしかた、養蜂記録アプリ HPX-note の使い方などを、このサイトの内容をもとに AI がお答えします。</p>
+    <p class="lead">機器の作り方、設置のしかた、養蜂管理アプリ HPX-note の使い方などを、このサイトの内容をもとに AI がお答えします。</p>
     <p class="notice">回答は <b>AI (Claude) によるもの</b>で、まちがうことがあります。大事なことは、回答にあるページで確かめてください。解決しないときは、下の「人に聞く」からどうぞ。</p>
 <?php if (!$on): ?>
     <div class="human"><h2>AI ヘルプは準備中です</h2><p>いまは、お問い合わせフォームかフォーラムでお聞きください。</p>
