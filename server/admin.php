@@ -117,6 +117,7 @@ if (is_post()) {
 
 page_head('サーバー管理', 'admin.php');
 echo flash_html();
+echo '<p><a href="settings.php">⚙ サーバーの設定 (メールの送信・お知らせの基準・AI・デモなど) を変える</a></p>';
 $link = $_SESSION['admin_link'] ?? null;
 unset($_SESSION['admin_link']);
 if (is_array($link)) {

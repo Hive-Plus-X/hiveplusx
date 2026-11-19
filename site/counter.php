@@ -12,7 +12,7 @@ declare(strict_types=1);
 date_default_timezone_set('Asia/Tokyo');
 
 $APP = __DIR__ . '/hpx';
-if (is_file($APP . '/config.php')) { require $APP . '/config.php'; }
+if (is_file($APP . '/config.php')) { require $APP . (is_file($APP . '/hpx_config.php') ? '/hpx_config.php' : '/config.php'); }
 $dir = rtrim((string)($HPX_DATA_DIR ?? ($APP . '/data')), '/');
 $file = $dir . '/site_counter.json';
 
