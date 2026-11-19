@@ -11,7 +11,7 @@
 //         SubHub(52)などのハブは、ほかの機器の値を代わりに流すので読まない
 //       - 温度: 機種 41・42・43 は 値÷65536×165−40 ℃、ほかは (値−5000)÷100 ℃。湿度は % そのまま
 //       - 重量: 各チャンネル (値−32767)÷100。BroodMinder の中で較正済みの値(コミュニティの受信プログラムはどれも kg として扱う。
-//         公式には単位の記載がない)。HPX-Core はチャンネルの合計を 0.01kg 単位の整数で記録し、"raw" として送る
+//         公式には単位の記載がない)。W5 は機種番号 57 で届き、L だけを使う(R は 0x7FFF、L2・R2 は 0x0000)。HPX-Core はチャンネルの合計を 0.01kg 単位の整数で記録し、"raw" として送る
 //         (サーバーは機種 "bm" の重量センサを「ゼロ点0・1kgあたり100」として自動で kg にする。HPX-W のような較正は要らない)
 //   * 周辺検索で [BroodMinder 温湿度計] [BroodMinder 重量計] と出る。登録は今までと同じ画面で、名前を付けて登録する
 //   * 記録には新しい印 BLE_F_BM を付ける(重量は BLE_F_WGT と一緒)。電池は % のまま。サーバーへは機種 "m":"bm" を送る
@@ -1361,13 +1361,14 @@ static bool bleIsBM(const std::string& md)
   return md.length() >= 7 && (uint8_t)md[0] == 0x8D && (uint8_t)md[1] == 0x02;
 }
 
-// BroodMinder の重量の1チャンネル(0.01kg 単位)。値なし(0xFFFF)は false。追加のチャンネルは 0x7FFF もつながっていない印
+// BroodMinder の重量の1チャンネル(0.01kg 単位)。値なし(0xFFFF)は false。
+//   追加のチャンネルは 0x7FFF と 0x0000 もつながっていない印(W5 はロードセル1個で、L2・R2 に 0x0000 が入る。TARO の実機 2026-11-20)
 static bool bleBmWeight(const std::string& md, size_t lo, bool extra, int32_t& out)
 {
   if (md.length() < lo + 2) return false;
   const uint16_t v = (uint16_t)((uint16_t)(uint8_t)md[lo] | ((uint16_t)(uint8_t)md[lo + 1] << 8));
   if (v == 0xFFFF) return false;
-  if (extra && v == 0x7FFF) return false;
+  if (extra && (v == 0x7FFF || v == 0x0000)) return false;
   out = (int32_t)v - 32767;
   return true;
 }
@@ -1414,6 +1415,7 @@ static bool bleParseBM(const std::string& md, BleSample& s)
       if (bleBmWeight(md, 17, true, l2)) sum += l2;
       if (bleBmWeight(md, 19, true, r2)) sum += r2;
     }
+    if (sum < -50000 || sum > 100000) return false;   // −500kg〜1000kg の外は読み違いとして捨てる
     s.raw = sum;
     s.flags |= BLE_F_WGT;
     return true;
