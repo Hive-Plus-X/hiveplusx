@@ -152,7 +152,8 @@
   .js .reveal .visual { transition-delay:.15s; }
   @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
   /* 画面写真のスライドショー (フェードで切り替え) */
-  .slides { position:relative; aspect-ratio:4/3; }
+  /* スマホの画面 (縦長) の上の部分を見せる。2026-11-19 から img/app/ の各カテゴリーの最初の画面 */
+  .slides { position:relative; aspect-ratio:3/4; max-width:340px; margin:0 auto; }
   .slide { position:absolute; inset:0; opacity:0; transition:opacity 1.2s ease; }
   .slide.shown { opacity:1; }
   .slide img, .slide .shot { width:100%; height:100%; object-fit:cover; border-radius:14px; display:flex; }
@@ -232,13 +233,16 @@
         </div>
       </div>
       <div class="visual">
-        <!-- 画面写真のスライドショー (デモアカウントの画面、img/app_1.png〜app_5.png) -->
+        <!-- 画面写真のスライドショー (デモアカウントのスマホ画面、img/app/ の各カテゴリーの最初の画面) -->
         <div class="slides" aria-label="HPX-note の画面">
-          <div class="slide shown"><img src="img/app_1.png" alt="蜂場の画面: 蜂場ごとの写真、3日間の天気、巣箱の重さと温度のグラフ"></div>
-          <div class="slide"><img src="img/app_2.png" alt="巣箱の画面: 巣箱ごとの重さ・温度・湿度のグラフ"></div>
-          <div class="slide"><img src="img/app_3.png" alt="センサの画面: HPX-Core の受信状況と、温湿度計・重量計の最新の値"></div>
-          <div class="slide"><img src="img/app_4.png" alt="メモの画面: 内検の記録や写真を蜂場・巣箱ごとに残せる"></div>
-          <div class="slide"><img src="img/app_5.png" alt="記録の画面: 作業時間を月ごとのグラフで集計"></div>
+          <div class="slide shown"><img src="img/app/00_apiary_tile.webp" alt="蜂場の画面: 蜂場ごとの写真・地図、3日間の天気、巣箱の重さと温度のグラフ"></div>
+          <div class="slide"><img src="img/app/03_hive.webp" alt="巣箱の画面: 巣箱ごとの重さ・温度・湿度のグラフ" loading="lazy"></div>
+          <div class="slide"><img src="img/app/04_memo_search.webp" alt="メモの画面: メモの検索とヘギイタダニの寄生率のグラフ" loading="lazy"></div>
+          <div class="slide"><img src="img/app/08_task.webp" alt="タスクの画面: 期限つきのタスクと月のカレンダー" loading="lazy"></div>
+          <div class="slide"><img src="img/app/09_work_month.webp" alt="記録の画面: 作業時間を月ごとのグラフで集計" loading="lazy"></div>
+          <div class="slide"><img src="img/app/12_ai.webp" alt="AI の画面: 話し言葉や手書きの写真から記録を読み取る" loading="lazy"></div>
+          <div class="slide"><img src="img/app/13_camera_month.webp" alt="カメラの画面: HPX-CAM の写真を月のカレンダーで見る" loading="lazy"></div>
+          <div class="slide"><img src="img/app/15_settings.webp" alt="設定の画面: 設定メニューとセンサのデータダウンロード" loading="lazy"></div>
           <div class="dots"></div>
         </div>
       </div>
