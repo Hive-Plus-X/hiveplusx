@@ -1,5 +1,5 @@
 <?php
-// hiveplusx.com の「作った・使ったレポート」。機器を作ったり、サーバーや養蜂記録アプリを使った人が、写真とひとことで報告するページ。
+// hiveplusx.com の「作った・使ったレポート」。機器を作ったり、サーバーや養蜂管理アプリを使った人が、写真とひとことで報告するページ。
 //   サイトに置いて (www/hiveplusx/report.php)、アプリ (hpx/) の config.php・hpx_report.php を使う。
 //   ・投稿は「確認待ち」で保存し、管理者にメールで知らせる。管理者が report_admin.php (サイトの一番下の歯車) で「公開する」を押したものだけ出す
 //   ・写真はサーバーで作り直して保存する (撮影場所などの写真の中の情報は消える。長辺 1200px に小さくする)
@@ -109,7 +109,7 @@ if ($isPost && !$_POST && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
                         . "次のページで写真を確かめて、「公開する」を押してください (管理用のパスワードが要ります)。\n"
                         . r_admin_url() . '#' . $id . "\n\n"
                         . "ニックネーム: {$v['nick']}\n"
-                        . '作った機器・サーバー・養蜂記録アプリ: ' . implode('・', array_map('r_device_label', $v['devices'])) . "\n写真: {$n}枚\n\n----\n{$v['comment']}\n";
+                        . '作った機器・サーバー・養蜂管理アプリ: ' . implode('・', array_map('r_device_label', $v['devices'])) . "\n写真: {$n}枚\n\n----\n{$v['comment']}\n";
                     [$ok, $res] = ($to && (string)($HPX_SMTP_HOST ?? '') !== '')
                         ? hpx_smtp_send($to, (string)$HPX_MAIL_FROM, '【hiveplusx.com】作った・使ったレポートが届きました', $body)
                         : [false, '送り先かSMTPが設定されていません'];
@@ -136,7 +136,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>作った・使ったレポート - Hive Plus X</title>
-<meta name="description" content="Hive Plus X の機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。">
+<meta name="description" content="Hive Plus X の機器を作ったり、サーバーや養蜂管理アプリを使った方からの報告です。">
 <?php if ($isPost): ?><meta name="robots" content="noindex"><?php endif; ?>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
@@ -274,7 +274,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
   <section class="wrap" id="list">
     <p class="eyebrow">Reports</p>
     <h1>作った・使ったレポート</h1>
-    <p class="lead">機器を作ったり、サーバーや養蜂記録アプリを使った方からの報告です。</p>
+    <p class="lead">機器を作ったり、サーバーや養蜂管理アプリを使った方からの報告です。</p>
     <a class="btn" href="#post">報告をする</a>
 <?php if (!$shown): ?>
     <div class="empty">まだ報告はありません。最初の報告をお待ちしています。</div>
@@ -334,7 +334,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
       <div><label for="nick">ニックネーム<small>サイトに載ります</small></label>
         <input type="text" id="nick" name="nick" required maxlength="<?= R_NICK_MAX ?>" value="<?= h($v['nick']) ?>" placeholder="例: はちみつ太郎"></div>
       <div>
-        <span class="lbl">作った機器・サーバー・養蜂記録アプリ<small>いくつでも</small></span>
+        <span class="lbl">作った機器・サーバー・養蜂管理アプリ<small>いくつでも</small></span>
         <div class="checks"><?php foreach (array_keys(R_DEVICES) as $d) echo '<label><input type="checkbox" name="devices[]" value="' . h($d) . '"' . (in_array($d, $v['devices'], true) ? ' checked' : '') . '><span>' . h(r_device_label($d)) . '</span></label>'; ?></div>
       </div>
       <div><label for="comment">ひとこと<small><?= R_COMMENT_MAX ?>文字まで</small></label>
