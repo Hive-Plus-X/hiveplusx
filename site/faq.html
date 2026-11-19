@@ -134,7 +134,7 @@
   <div class="hero wrap sub">
     <p class="eyebrow">FAQ</p>
     <h1>よくある質問</h1>
-    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (36 問)。<br>質問を押すと答えが開きます。</p>
+    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (38 問)。<br>質問を押すと答えが開きます。</p>
     <ul class="cats">
 <li><a href="#c1">Hive Plus X の全体</a></li>
 <li><a href="#c2">機器の作り方・部品</a></li>
@@ -153,9 +153,10 @@
 <p>蜂場のハブ HPX-Core がその値を集めて、インターネット経由でサーバー (HPX-Server) へ送ります。インターネットには Wi-Fi・有線LAN・LTE-M のどれかでつなぎます。</p>
 <p>送られた値は、養蜂管理アプリ HPX-note でグラフやお知らせとして見られます。</p>
 <p>センサとハブ以外に、カメラHPX-CAMと小型ソーラー電源 HPX-Solar も開発中です。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>オープンソースIoTとはどういうことですか？</span></summary><div class="a"><span class="amark">A</span><div><p>機器の作り方（回路図・部品表）やプログラムをすべて公開していて、誰でも無料で見て、作って、直して、使えるIoTのことです。HPX では巣箱の重さや温湿度を測る機器とアプリを、みんなで育てられる形で公開しています。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>ライセンスは？ 自由に使ってよいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>自由に使えることを重視したライセンスにしています。</p>
 <ul><li>プログラム: MIT</li><li>回路・基板: CERN-OHL-P</li><li>文章・図: CC BY</li></ul>
-<p>改造や販売もできます。その場合は「Hive Plus X をもとにした」と表示してください。詳しくはMIT、CERN-OHL-P、CC BYのルールを参照してください。</p></div></div></details>
+<p>改造や販売もできます。その場合は「Hive Plus X をもとにした」と表示してください。詳しくは<a href="policy.html">オープンソース方針</a>を参照してください。</p></div></div></details>
 </div></div></section>
 
 <section id="c2"><div class="reveal wrap narrow"><p class="eyebrow">Category 2</p><h2>機器の作り方・部品</h2><div class="qas">
@@ -184,11 +185,11 @@
 <details class="qa"><summary><span class="q">Q</span><span>「常時稼働」と「ディープスリープ」はどちらがよいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>電源で決めます。</p>
 <div class="tbl"><table><thead><tr><th>電源</th><th>選ぶもの</th><th>動き方</th></tr></thead><tbody><tr><td>USB や家庭のコンセント</td><td>常時稼働</td><td>いつも Wi-Fi につながっていて、管理画面をいつでも開けます</td></tr><tr><td>電池</td><td>ディープスリープ</td><td>決められた時刻だけ起動します。管理画面は、電源を入れてから 10 分だけ開けます</td></tr></tbody></table></div>
 <p>電池のもちは 10〜30 倍くらい違います (見込み)。</p></div></div></details>
-<details class="qa"><summary><span class="q">Q</span><span>HPX-CoreのLTE-M 版なら、ルーターは要りませんか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX システムだけなら要りません。Wi-Fi の機能はHPX-CAMを使うときだけ使用します。カメラを使う場合は通信料が多くなるので注意が必要です。</p>
-<ul><li>月の通信量の目安: センサ 7 台・30 分間隔で月 15MB くらい</li><li>カメラも使う場合: 昼間だけ VGA〜SVGA の写真を送ると、月 50〜80MB くらい増えます</li><li>電波状況が悪い場合はアンテナの延長ケーブル: SMA (RP-SMA は不可)、長さ 1〜3m の太めのものを選んでください（技適に適合するかをご確認ください）</li></ul></div></div></details>
 </div></div></section>
 
 <section id="c4"><div class="reveal wrap narrow"><p class="eyebrow">Category 4</p><h2>通信 (ルーター・LAN)</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>HPX-CoreのLTE-M 版なら、ルーターは要りませんか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX システムだけなら要りません。Wi-Fi の機能はHPX-CAMを使うときだけ使用します。カメラを使う場合は通信料が多くなるので注意が必要です。</p>
+<ul><li>月の通信量の目安: センサ 7 台・30 分間隔で月 15MB くらい</li><li>カメラも使う場合: 昼間だけ VGA〜SVGA の写真を送ると、月 50〜80MB くらい増えます</li><li>電波状況が悪い場合はアンテナの延長ケーブル: SMA (RP-SMA は不可)、長さ 1〜3m の太めのものを選んでください（技適に適合するかをご確認ください）</li></ul></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>蜂場で使う LTE ルーターのおすすめは？</span></summary><div class="a"><span class="amark">A</span><div><p>電源に常時接続して使えて、暑さに強い機器がおすすめです。Wi-Fi機能が必要な場合は、Wi-Fi機能を備えた機器を使うか、小型のWi-Fi機器を接続すると良いと思います。LTE-M対応だと通信費を低く抑えられるかもしれません。</p>
 <p>◆Wi-Fi機能付きLTEルーター<br>・<a href="https://prtimes.jp/main/html/rd/p/000000004.000125509.html" target="_blank" rel="noopener">TC700／ユニ電子</a>（60℃対応、nanoSIM、DC6V、<a href="https://item.rakuten.co.jp/blue-century/tc700/" target="_blank" rel="noopener">21,800円</a>）</p>
 <p>・<a href="https://www.iodata.jp/product/lan/appliance/ud-lt2/index.htm" target="_blank" rel="noopener">UD-LT2／ IO-DATA</a>(60℃対応、標準SIM、DC12V、ネットワークトラブル時の自動リカバリ機能あり、<a href="https://www.amazon.co.jp/IODATA-%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89-Wi-Fi%E5%AF%BE%E5%BF%9C-%E6%97%A5%E6%9C%AC%E3%83%A1%E3%83%BC%E3%82%AB%E3%83%BC-UD-LT2/dp/B0B4VSMFQR/ref=sr_1_3?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&amp;crid=39DU4YSXMF55J&amp;dib=eyJ2IjoiMSJ9.PqaVYDWouChY2ypcM9d3dWkumLm2MghUauXYWfylzV0I_gMZm62Cn9mGqSdjgTKOZiLr8PIzLFfQCeHUBpQUfcAd-YeswoCMxRWY3tRdW_4.uUQxI83Rd1eaAZbiCDY3wmehFDv9KGUjGKu5kjCt294&amp;dib_tag=se&amp;keywords=UD-LT2&amp;qid=1790946687&amp;sprefix=ud-lt2%2Caps%2C401&amp;sr=8-3&amp;th=1" target="_blank" rel="noopener">32,000円ぐらい</a>）※動作確認ずみ</p>
@@ -224,6 +225,7 @@
 </div></div></section>
 
 <section id="c7"><div class="reveal wrap narrow"><p class="eyebrow">Category 7</p><h2>サーバー (HPX-Server)</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>どんなサーバーがいいですか？</span></summary><div class="a"><span class="amark">A</span><div><p>PHP 8 以上が動き、HTTPS (SSL) が使えるレンタルサーバーなら使えます。データはテキストファイルに保存するので、データベースは要りません。月数百円の安いプランでも動きます。HPX ではさくらのレンタルサーバーを利用しています。定期実行 (CRON) が無いプランでも、外部の無料サービスで代わりができます。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>自分でサーバーを立てるには？</span></summary><div class="a"><span class="amark">A</span><div><p>GitHub の server/ 一式を、レンタルサーバーに置きます。</p>
 <ul><li>手順は README と設置ガイドにあります。</li><li>設定ファイル config.php は自分で作ります (見本は config.sample.php)。</li><li>データのフォルダ data には、外から見られないよう .htaccess (deny) を入れてください。</li></ul></div></div></details>
 </div></div></section>
