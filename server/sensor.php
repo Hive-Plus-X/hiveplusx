@@ -666,6 +666,7 @@ if (!$byKind['w']) {
         $nm = (string)(($s['name'] ?? '') !== '' ? $s['name'] : $mac);
         $c = $cal[$mac] ?? null;
         $calOk = $c && isset($c['per_kg']);
+        $isBm = ($c['src'] ?? '') === 'BroodMinder';   // BroodMinder の重量計 (HPX-Core v1.29 以降、機器の中で較正済み)
         $r = $data['w'][$mac] ?? [];
         $last = $r ? $r[count($r) - 1] : null;
         $color = D_COLORS[$i++ % count(D_COLORS)];
@@ -691,7 +692,7 @@ if (!$byKind['w']) {
         echo '<tr><td style="white-space:nowrap"><span style="color:' . $color . '">■</span> ' . h($nm) . $note . '</td>'
             . $whereTd((string)$mac)
             . '<td class="n">' . ($last ? ($calOk ? '<b>' . h(kg_text($kg)) . '</b>' : '<span class="warn">較正前</span>')
-                . '<br><span class="muted">生の値 ' . h((string)$last[1]) . '</span>' : '-') . '</td>'
+                . '<br><span class="muted">' . ($isBm ? 'BroodMinder' : '生の値 ' . h((string)$last[1])) . '</span>' : '-') . '</td>'
             . '<td class="n">' . ($diff === null ? '-' : '<span class="' . ($diff >= 0 ? 'ok' : 'warn') . '">' . h(($diff >= 0 ? '+' : '') . number_format($diff, 2)) . ' kg</span>') . '</td>'
             . '<td class="n">' . h($last && $last[4] !== null ? number_format($last[4], 2) . ' V' : '-') . '</td>'
             . '<td>' . h($le ? date('m-d H:i', $le) . ' (' . ago_text($le, $now) . ')' : '-')
@@ -702,7 +703,10 @@ if (!$byKind['w']) {
             . '<input type="hidden" name="mac" value="' . h($mac) . '">';
         foreach ($per as $k => $v) $hid .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
         $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
-        if ($calOk) {
+        if ($calOk && $isBm) {
+            $f .= '<p class="muted">BroodMinder の重量計です。BroodMinder の中で較正した重さがそのまま届くので、HPX-Core での較正は要りません。'
+                . (!empty($c['offset_kg']) ? ' 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg。' : '') . '</p>';
+        } elseif ($calOk) {
             $f .= '<p class="muted">今の較正値: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
                 . (isset($c['cal_g']) ? ' (' . h(number_format((float)$c['cal_g'])) . 'g で較正)' : (!empty($c['common']) ? ' (全台共通の値)' : ''))
                 . (($c['src'] ?? '') === 'HPX-core' ? ' ・ HPX-Core の管理画面で較正' : '')
