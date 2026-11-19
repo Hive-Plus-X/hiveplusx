@@ -156,6 +156,7 @@
   .map .box .icons { display:flex; justify-content:center; gap:6px; }
   .map .box b { display:block; font-size:15px; margin-top:10px; line-height:1.4; }
   .map .box small { display:block; font-size:12px; color:var(--sub); line-height:1.5; margin-top:2px; }
+  .mapnote { font-size:14px; color:var(--sub); text-align:center; margin-top:28px; }
   .map .box.shop { background:#F0EFEB; }
   @media (prefers-color-scheme: dark) { .map .box.shop { background:rgba(0,0,0,.18); } }
   .map .arrow { width:104px; text-align:center; font-size:11px; color:var(--sub); line-height:1.4; padding:0 6px; }
@@ -234,12 +235,13 @@
   <div class="hero wrap sub">
     <p class="eyebrow">System</p>
     <h1>しくみ</h1>
-    <p>巣箱のセンサで測った値が、アプリに届くまでのしくみです。</p>
+    <p>巣箱のセンサやカメラで集めた情報が、アプリに届くまでのしくみです。蜂場に置く機器は、場所に合わせて Wi-Fi・有線 LAN・LTE-M (携帯電話の電波) からつなぎ方を選べます。</p>
   </div>
 
   <section id="map">
     <div class="reveal wrap">
-      <div class="map"><a class="box" href="#sensor"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="3"/><path d="M16 22v-6h8v6M40 22v-6h8v6"/><path d="M16 38h8M20 34v8M40 38h8"/><path d="M33 26l-5 10h7l-4 10" class="accent"/></svg></span><b>センサ</b><small>HPX-W・HPX-TH・HPX-F・HPX-B</small></a><div class="arrow"><em>Bluetooth</em><i></i><span>1秒ごとに発信</span></div><a class="box" href="#hub"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></span><b>ハブ</b><small>HPX-Core</small></a><div class="arrow"><em>Wi-Fi</em><i></i><span>15〜60分ごと</span></div><a class="box shop" href="#router"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></span><b>ルーター</b><small>市販品</small></a><div class="arrow"><em>ネット</em><i></i><span>暗号化して送信</span></div><a class="box" href="#server"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></span><b>サーバー</b><small>HPX-Server</small></a><div class="arrow"><em>ブラウザ</em><i></i><span>いつでも</span></div><a class="box" href="#note"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></span><b>アプリ</b><small>HPX-note</small></a></div>
+      <div class="map"><a class="box" href="#sensor"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="3"/><path d="M16 22v-6h8v6M40 22v-6h8v6"/><path d="M16 38h8M20 34v8M40 38h8"/><path d="M33 26l-5 10h7l-4 10" class="accent"/></svg></span><b>センサ</b><small>HPX-W・HPX-TH・HPX-F・HPX-B</small></a><div class="arrow"><em>Bluetooth</em><i></i><span>2秒ごとに発信</span></div><a class="box" href="#hub"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></span><b>ハブ</b><small>HPX-Core</small></a><div class="arrow"><em>Wi-Fi・有線 LAN<br>LTE-M</em><i></i><span>15〜60分ごと</span></div><a class="box shop" href="#router"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></span><b>ルーター</b><small>市販品<br>(LTE-M では不要)</small></a><div class="arrow"><em>ネット</em><i></i><span>暗号化して送信</span></div><a class="box" href="#server"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></span><b>サーバー</b><small>HPX-Server</small></a><div class="arrow"><em>ブラウザ</em><i></i><span>いつでも</span></div><a class="box" href="#note"><span class="icons"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></span><b>アプリ</b><small>HPX-note</small></a></div>
+      <p class="mapnote">巣門カメラ HPX-CAM の写真も、同じサーバーへ送って HPX-note で見られます (ファームウェアは準備中)。</p>
     </div>
   </section>
 
@@ -250,11 +252,11 @@
       <p class="lead">センサで測った値が、HPX-note に表示されるまでの順番です。</p>
       <ol class="steps">
         <li><div><b>測る</b><span>センサが、巣箱の重さ・温度・湿度や、電柵のフェンスアラートの点滅、ソーラーで充電するバッテリーの電圧を測ります。</span><span class="when">HPX-W 30分ごと / HPX-TH 10分ごと / HPX-F 0.02秒ごと (光を読む)</span></div></li>
-        <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">1秒ごと</span></div></li>
+        <li><div><b>発信する</b><span>センサは、最新の値と電池の電圧を Bluetooth で発信し続けます。決まった相手につなぐのではなく、周りに知らせるだけなので電池が長持ちします。</span><span class="when">2秒ごと</span></div></li>
         <li><div><b>集める</b><span>HPX-Core は、記録の時刻になるとセンサからの情報をとらえ、各センサの最新の値を本体に記録します。</span><span class="when">15分・30分・1時間ごと (設定で選ぶ。初期は30分)</span></div></li>
-        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi でルーターからインターネットを通じてサーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
-        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、お知らせメールを出したり、データを補正したりします。</span><span class="when">届いたとき</span></div></li>
-        <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。</span><span class="when">いつでも</span></div></li>
+        <li><div><b>送る</b><span>記録したらすぐに、Wi-Fi・有線 LAN・LTE-M のどれかでインターネットを通じてサーバーまで暗号化して送ります。送れなかった記録は貯めておき、次に送ります。</span><span class="when">記録のたびに</span></div></li>
+        <li><div><b>保存する</b><span>サーバーは届いた記録を保存し、データを換算・補正したり、お知らせをメール・LINE・プッシュ通知で出したりします。</span><span class="when">届いたとき</span></div></li>
+        <li><div><b>見る</b><span>HPX-note を開くと、サーバーの記録がグラフや表になって表示されます。電波の弱い蜂場でも、前に開いた画面は見られます。</span><span class="when">いつでも</span></div></li>
       </ol>
     </div>
   </section>
@@ -264,53 +266,81 @@
       <div class="text">
         <p class="eyebrow">Sensors</p>
         <h2>センサ　HPXシリーズ</h2>
-        <p class="lead">巣箱や電柵、バッテリーのそばに置く小さな機器です。測った値を Bluetooth で1秒ごとに発信し続けます。ハブとの接続やペアリングはいりません。</p><p class="note">電池で動くセンサは、電池の電圧をいっしょに発信します。電池が少なくなると、アプリに交換の目安が出ます。</p><a class="more" href="devices.html">機器の作り方を見る</a>
+        <p class="lead">巣箱や電柵、バッテリーのそばに置く小さな機器です。測った値を Bluetooth で2秒ごとに発信し続けます。ハブとの接続やペアリングは不要です。</p><p class="note">電池で動くセンサは、電池の電圧をいっしょに発信します。電池が少なくなると、アプリに交換の目安が出ます。</p><a class="more" href="devices.html">機器の作り方を見る</a>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="14" width="32" height="24" rx="2"/><path d="M16 22h32"/><path d="M28 30h8"/><path d="M8 46h48"/><path d="M14 46v-4h36v4"/><path d="M20 52h24"/><path d="M32 46v6"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 12a6 6 0 0 1 12 0v26a10 10 0 1 1-12 0z"/><circle cx="30" cy="46" r="4" class="fill"/><path d="M30 42V24"/><path d="M48 20c0 0-7 8-7 13a7 7 0 0 0 14 0c0-5-7-13-7-13z"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 54V22M54 54V22"/><path d="M10 30h44M10 42h44"/><path d="M35 8l-8 16h9l-6 14" class="accent"/></svg><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="3"/><path d="M16 22v-6h8v6M40 22v-6h8v6"/><path d="M16 38h8M20 34v8M40 38h8"/><path d="M33 26l-5 10h7l-4 10" class="accent"/></svg></div>
-        <dl class="spec"><div><dt>HPX-W (重さ)</dt><dd>巣箱の重さを30分ごとに測ります</dd></div><div><dt>HPX-TH (温湿度)</dt><dd>巣箱の温度と湿度を10分ごとに測ります</dd></div><div><dt>HPX-F (電柵)</dt><dd>電柵のフェンスアラートの点滅を光で読み取り、電圧の低下を知らせます</dd></div><div><dt>HPX-B (蓄電池)</dt><dd>ソーラーパネルで充電する 12V バッテリーとパネルの電圧を測ります。電源は見守るバッテリーから取ります (ファームウェアは準備中)</dd></div><div><dt>市販温湿度計</dt><dd>市販の Bluetooth センサも使えます。現在は、SwitchBot の温湿度センサと、Inkbird の温湿度センサに対応済みです</dd></div><div><dt>拡張性</dt><dd>Bluetooth で発信するセンサであれば HPX-Core で受信できるので、様々な拡張機器の開発・利用が可能です</dd></div><div><dt>電源</dt><dd>単三リチウム電池2本、または CR123A 1本 (HPX-B は見守る 12V バッテリーから)</dd></div></dl>
+        <dl class="spec"><div><dt>HPX-W (重さ)</dt><dd>巣箱の重さを30分ごとに測ります。重さの変化から、蜜の入り具合や分蜂のような急な減少もわかります</dd></div><div><dt>HPX-TH (温湿度)</dt><dd>巣箱の温度と湿度を10分ごとに測ります。蜂場の気温・湿度を測るのにも使えます</dd></div><div><dt>HPX-F (電柵)</dt><dd>電柵のフェンスアラートの点滅を光で読み取り、電圧の低下を知らせます</dd></div><div><dt>HPX-B (蓄電池)</dt><dd>ソーラーパネルで充電する 12V バッテリーとパネルの電圧を測ります。電源は見守るバッテリーから取ります (ファームウェアは準備中)</dd></div><div><dt>市販温湿度計</dt><dd>市販の Bluetooth センサも使えます。現在は、SwitchBot の温湿度センサと、Inkbird の温湿度センサに対応済みです</dd></div><div><dt>拡張性</dt><dd>Bluetooth で発信するセンサであれば HPX-Core で受信できるので、様々な拡張機器の開発・利用が可能です</dd></div><div><dt>電源</dt><dd>単三リチウム電池2本、または CR123A 1本 (HPX-B は見守る 12V バッテリーから)</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="camera">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">Camera</p>
+        <h2>巣門カメラ　HPX-CAM</h2>
+        <p class="lead">蜂場や巣門の様子を写真で記録するカメラです。写真はデータ量が多いので、Bluetooth ではなく Wi-Fi でサーバーへ送ります。ファームウェアは準備中です。</p><a class="more" href="device-cam.html">機器の作り方を見る</a>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 22a4 4 0 0 1 4-4h8l4-6h16l4 6h8a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4z"/><circle cx="32" cy="34" r="9"/><circle cx="47" cy="25" r="2" class="fill"/></svg></div>
+        <dl class="spec"><div><dt>撮る</dt><dd>10分ごとに写真を撮ります</dd></div><div><dt>送る</dt><dd>ルーターのある蜂場では、カメラから直接サーバーへ送ります。LTE-M だけの蜂場では、HPX-Core が受け取って送ります</dd></div><div><dt>見る</dt><dd>HPX-note の「カメラ」で、日ごとの写真を並べて見たり、パラパラ再生したりできます</dd></div><div><dt>知らせ</dt><dd>前の写真と大きく変わったときだけ AI が確かめて、お知らせします (スズメバチや盗難の証拠など)</dd></div><div><dt>電源</dt><dd>単三リチウム電池3本</dd></div></dl>
       </div>
     </div>
   </section>
 
   <section id="hub">
-    <div class="reveal wrap topic role rev">
+    <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">Hub</p>
         <h2>ハブ　HPX-Core</h2>
-        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi でサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで (センサ10台・15分ごとの記録では約2日分) 保存し、つながったときにまとめて送ります。HPX-Core のファームウェアプログラムのアップデートも、サーバーから自動で行えます。</p>
+        <p class="lead">蜂場に1台置く、中心になる機器です。まわりのセンサの Bluetooth を拾って記録し、Wi-Fi・有線 LAN・LTE-M のどれかでサーバーへ送ります。</p><p class="note">サーバーへの通信が途切れた場合は、記録を本体に3日分まで (センサ10台・15分ごとの記録では約2日分) 保存し、つながったときにまとめて送ります。HPX-Core のファームウェアのアップデートも、サーバーから自動で行えます。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="24" width="36" height="28" rx="4"/><circle cx="24" cy="38" r="2.5" class="fill"/><path d="M32 38h10"/><path d="M32 24V14"/><path d="M24 10a11 11 0 0 1 16 0"/><path d="M19 5a18 18 0 0 1 26 0"/></svg></div>
-        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (10台まで)</dd></div><div><dt>重量センサの初期校正</dt><dd>おもりを乗せない0kgと、重量のわかるものを乗せた時の値の2点校正を行います。</dd></div><div><dt>ルーターの設定</dt><dd>初めは HPX-Core が自分の Wi-Fiアドレス を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (初期は30分。毎時00分・30分のような時計の区切り)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。ソーラーパネルとバッテリーで使用するときは、ディープスリープを活用した省電力モードを選べます</dd></div></dl>
+        <dl class="spec"><div><dt>センサの登録</dt><dd>周りのセンサを Bluetooth で探して一覧にし、使うものを選んで登録します (10台まで)。登録から外したセンサは HPX-note にも出なくなります</dd></div><div><dt>重量センサの初期校正</dt><dd>おもりを乗せない0kgと、重量のわかるものを乗せた時の値の2点校正を行います</dd></div><div><dt>通信の設定</dt><dd>初めは HPX-Core が自分の Wi-Fi のSSID を出すので、スマートフォンでつないで、使うルーターの SSID とパスワードを設定します。有線 LAN 版はケーブルをつなぐだけ、LTE-M 版は SIM を入れて使います</dd></div><div><dt>記録の間隔</dt><dd>15分・30分・1時間から選べます (初期設定は30分。毎時00分・30分のような時計の区切り)</dd></div><div><dt>管理画面</dt><dd>HPX-note のセンサのページから、HPX-Core の管理画面を開けます。(HPX-Core と同じルーターにつながっているときだけ)</dd></div><div><dt>電源</dt><dd>商用電源がある場所では USB (5V) で常に動かします。電池やソーラーで使うときは、ディープスリープを活用した省電力モードを選べます。LTE-M 版には小さなソーラー電源 HPX-Solar を組み合わせられます</dd></div><div><dt>種類</dt><dd>基本モデル (Wi-Fi、USB 給電) に、有線 LAN・防水・電池駆動・LTE-M などの機能を足して選びます。有線 LAN 版には 12V バッテリーの電圧を測る「ソーラーシステムチェック」付きもあります</dd></div></dl>
       </div>
     </div>
   </section>
 
   <section id="router">
-    <div class="reveal wrap topic role">
+    <div class="reveal wrap topic role rev">
       <div class="text">
-        <p class="eyebrow">Router</p>
-        <h2>ルーター</h2>
-        <p class="lead">HPX-Core をインターネットにつなぐための機器です。家の近くなら家の Wi-Fi ルーター、離れた蜂場なら市販の LTE ルーターなどを使います。</p><p class="note">ルーターは市販品をご準備ください。</p>
+        <p class="eyebrow">Connection</p>
+        <h2>つなぎ方</h2>
+        <p class="lead">HPX-Core をインターネットにつなぐ方法は3つあります。蜂場の場所と電源に合わせて選びます。</p><p class="note">ルーターを使うときは市販品をご準備ください。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="34" width="48" height="16" rx="3"/><path d="M18 34V18M46 34V18"/><circle cx="18" cy="42" r="2" class="fill"/><circle cx="26" cy="42" r="2" class="fill"/><path d="M36 42h12"/><path d="M26 22a9 9 0 0 1 12 0"/><path d="M22 16a15 15 0 0 1 20 0"/></svg></div>
-        <dl class="spec"><div><dt>家の近く</dt><dd>自宅の Wi-Fi ルーター</dd></div><div><dt>離れた蜂場</dt><dd>SIM を入れて使う LTE ルーター、モバイル Wi-Fi など</dd></div></dl>
+        <dl class="spec"><div><dt>Wi-Fi</dt><dd>家の近くなら自宅の Wi-Fi ルーター、離れた蜂場なら SIM を入れて使う LTE ルーターやモバイル Wi-Fi など</dd></div><div><dt>有線 LAN</dt><dd>ルーターの LAN 接続口にケーブルでつなぎます。電波を使わないので、Bluetooth との競合を避けられます</dd></div><div><dt>LTE-M</dt><dd>HPX-Core に小さな通信モジュールと SIM を入れて、携帯電話の電波で直接インターネットにデータを送ります。ルーターが不要なのでルーターへの電力供給が不要になります</dd></div></dl>
       </div>
     </div>
   </section>
 
   <section id="server">
-    <div class="reveal wrap topic role rev">
+    <div class="reveal wrap topic role">
       <div class="text">
         <p class="eyebrow">Server</p>
         <h2>サーバー　HPX-Server</h2>
-        <p class="lead">HPX-Server は、HPX-Core から届いた記録を受け取り、保存します。重さの換算や温湿度の補正、電柵の電圧低下などの知らせもサーバーが行います。</p><p class="note">記録は文字だけのファイルで保存するので、データベースを用意しなくても動きます。PHP が使えるレンタルサーバーに置けます。</p>
+        <p class="lead">HPX-Server は、HPX-Core や HPX-CAM から届いた記録を受け取り、保存します。重さの換算や温湿度の補正、電柵の電圧低下などの知らせもサーバーが行います。</p><p class="note">記録は文字だけのファイルで保存するので、データベースを用意しなくても動きます。PHP が使えるレンタルサーバーに、ご自分で置いて使います (置き方は<a href="install.html">設置ガイド</a>)。</p>
       </div>
       <div class="visual">
         <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="14" rx="2"/><rect x="12" y="25" width="40" height="14" rx="2"/><rect x="12" y="42" width="40" height="14" rx="2"/><circle cx="20" cy="15" r="2" class="fill"/><circle cx="20" cy="32" r="2" class="fill"/><circle cx="20" cy="49" r="2" class="fill"/><path d="M30 15h14M30 32h14M30 49h14"/></svg></div>
-        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、メモ、作業の記録</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メールで送ります (下のお知らせメール一覧)</dd></div></dl>
+        <dl class="spec"><div><dt>保存</dt><dd>センサの記録、カメラの写真、メモ、作業の記録</dd></div><div><dt>補正</dt><dd>温湿度計ごとに温度・湿度の補正値を決められます。重量センサは「風袋引き」で今の重さを 0 にできます</dd></div><div><dt>知らせ</dt><dd>電柵の電圧低下や巣箱・機器の異常を、メール・LINE・プッシュ通知で送ります (下のお知らせ一覧)</dd></div><div><dt>アカウント</dt><dd>サーバーの管理者が、招待・申請→承認・自由登録のどれでアカウントを作るか選べます</dd></div><div><dt>AI (使うときだけ)</dt><dd>管理者が AI のキーを設定すると、話し言葉や手書きの写真からの記録、カメラの変化の確認に AI を使えます</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="note">
+    <div class="reveal wrap topic role rev">
+      <div class="text">
+        <p class="eyebrow">App</p>
+        <h2>養蜂管理アプリ　HPX-note</h2>
+        <p class="lead">サーバーの記録を、スマートフォンやパソコンのブラウザで見るウェブアプリです。重さや温湿度のグラフに加えて、内検のメモや作業の記録も残せます。スマートフォンのホーム画面に追加してアプリのように使うPWA（プログレッシブウェブアプリ）化されているので、オフラインでも使えます。</p><div class="entry"><a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a><a class="btn ghost" href="app.html">詳しく見る</a></div>
+      </div>
+      <div class="visual">
+        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
+        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、蜂場の気温・湿度、天気予報、蜂場の地図、カメラの写真、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真 (音声入力も可)、ダニ寄生率、作業の予定 (タスク) と記録。巣箱の QR コードを読むと、その巣箱のメモが開きます</dd></div><div><dt>AIメモ・記録</dt><dd>話し言葉や手書きの記録の写真を、AI が読み取ってメモや作業の記録にします。画面からも LINE からも送れます</dd></div><div><dt>電波が弱いとき</dt><dd>前に開いた画面は電波がなくても見られます。メモや記録は一旦端末に貯めて、つながったときに送ります</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます。アカウントごとのバックアップと復元もできます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
       </div>
     </div>
   </section>
@@ -318,40 +348,29 @@
   <section id="alerts">
     <div class="reveal wrap">
       <p class="eyebrow">Alerts</p>
-      <h2>お知らせメール一覧</h2>
-      <p class="lead">サーバーは、次のようなときにメールで知らせます。件名の頭には【HPX】が付きます。</p>
+      <h2>お知らせ一覧</h2>
+      <p class="lead">サーバーは、次のようなときにお知らせします。受け取り方はメール・LINE・プッシュ通知から、マイアカウントで選べます。メールの件名の頭には【HPX】が付きます。</p>
       <table class="alerts">
         <thead><tr><th>分類</th><th>件名</th><th>送るとき</th></tr></thead>
         <tbody>
           <tr><td class="k">電柵</td><td><b>電柵の電圧が下がっています</b></td><td>フェンスアラートの点滅を HPX-F が続けて見つけたとき</td></tr>
-          <tr><td class="k">電柵</td><td><b>電柵の電圧が一時的に下がりました</b></td><td>記録と記録の間に電圧低下があって、もう戻っているとき</td></tr>
-          <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>点滅が止まり、元に戻ったとき</td></tr>
-          <tr><td class="k">電柵</td><td><b>光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる)</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が一時的に下がりました</b></td><td>一時的に電圧低下があったがすぐに復帰したとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵の電圧が戻りました</b></td><td>フェンスアラートの点滅が止まり、元に戻ったとき</td></tr>
+          <tr><td class="k">電柵</td><td><b>電柵アラートの光センサが点灯したままです</b></td><td>光センサがずっと明るいとき (日光が入っているなど、遮光を確かめる必要があるとき)</td></tr>
           <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-F の電池を交換してください</b></td><td>電池の電圧が下がったとき (HPX-W 2.8V・HPX-TH 2.7V・HPX-F 2.6V 未満)。センサページに交換が出るときと同じです</td></tr>
           <tr><td class="k">センサ</td><td><b>HPX-W / HPX-TH / HPX-F / 温湿度計 から受信できていません</b></td><td>センサの記録が来ないとき (HPX-F は1時間、ほかは24時間)</td></tr>
-          <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を外れたとき</td></tr>
+          <tr><td class="k">巣箱</td><td><b>温度が上限を超えました / 下限を下回りました</b></td><td>巣箱ごとに決めた温度の上限・下限を超えたとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>温度が戻りました</b></td><td>上限・下限の内側に戻ったとき</td></tr>
           <tr><td class="k">巣箱</td><td><b>重量が基準日から増えました / 減りました</b></td><td>採蜜した日などの基準日から、決めた重さ以上に増えた・減ったとき</td></tr>
-          <tr><td class="k">バッテリー</td><td><b>バッテリーの電圧が下がっています</b></td><td>ソーラー用の 12V バッテリーの電圧が、知らせる電圧 (初期は 12.0V) より下がったとき (HPX-Core ＋有線LAN＆ソーラーシステムチェック。HPX-B は準備中)</td></tr><tr><td class="k">バッテリー</td><td><b>バッテリーの電圧が戻りました</b></td><td>バッテリーの電圧が戻ったとき (初期は 12.6V 以上)</td></tr><tr><td class="k">ハブ</td><td><b>ハブから届いていません</b></td><td>HPX-Core からの記録が1時間届かないとき (電源・Wi-Fi・ルーターを確かめる)</td></tr>
-          <tr><td class="k">ハブ</td><td><b>ハブからの受信が戻りました</b></td><td>HPX-Core からまた届くようになったとき</td></tr>
-          <tr><td class="k">タスク</td><td><b>タスクのお知らせ</b></td><td>通知をオンにしたタスクの期限の前日・当日と、期限を過ぎて終わっていないとき (1日1回、人ごとに1通にまとめる)</td></tr>
+          <tr><td class="k">カメラ</td><td><b>カメラ画像に大きな変化がありました</b></td><td>HPX-CAM の写真が前と大きく変わり、AI が確かめて知らせたほうがよいと判断したとき</td></tr>
+          <tr><td class="k">バッテリー</td><td><b>バッテリーの電圧が下がっています</b></td><td>ソーラー用の 12V バッテリーの電圧が、知らせる電圧 (初期は 12.0V) より下がったとき (HPX-Core ＋有線LAN＆ソーラーシステムチェック。HPX-B は準備中)</td></tr>
+          <tr><td class="k">バッテリー</td><td><b>バッテリーの電圧が戻りました</b></td><td>バッテリーの電圧が戻ったとき (初期は 12.6V 以上)</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブから届いていません</b></td><td>HPX-Core からの記録が1時間届かないとき (電源・通信・ルーターを確かめる必要があるとき)</td></tr>
+          <tr><td class="k">ハブ</td><td><b>ハブからの受信が戻りました</b></td><td>HPX-Core からの記録がまた届くようになったとき</td></tr>
+          <tr><td class="k">タスク</td><td><b>タスクのお知らせ</b></td><td>通知をオンにしたタスクの期限の前日・当日と、期限を過ぎても完了していないとき (1日1回、1通にまとめて)</td></tr>
         </tbody>
       </table>
-      <p class="note">巣箱の温度と重量の知らせは、巣箱のページで値を決めたものだけ送ります。電柵の知らせは、HPX-Core が記録する間隔 (15分〜1時間) ごとに届きます。</p>
-    </div>
-  </section>
-
-  <section id="note">
-    <div class="reveal wrap topic role">
-      <div class="text">
-        <p class="eyebrow">App</p>
-        <h2>養蜂管理アプリ　HPX-note</h2>
-        <p class="lead">サーバーの記録を、スマートフォンやパソコンのブラウザで見るウェブアプリです。重さや温湿度のグラフに加えて、内検のメモや作業の記録も残せます。</p><div class="entry"><a class="btn primary" href="https://hiveplusx.com/hpx/login.php?demo=1"><span class="hex"></span>デモを開く</a><a class="btn ghost" href="app.html">詳しく見る</a></div>
-      </div>
-      <div class="visual">
-        <div class="pict"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="6" width="28" height="52" rx="4"/><path d="M28 51h8"/><path d="M24 38l6-8 5 4 6-10" class="accent"/><path d="M24 16h16"/></svg></div>
-        <dl class="spec"><div><dt>見られるもの</dt><dd>蜂場・巣箱ごとの重さと温湿度のグラフ、センサの状態</dd></div><div><dt>残せるもの</dt><dd>内検のメモと写真、作業の予定と記録</dd></div><div><dt>書き出し</dt><dd>センサの記録と、蜂場・巣箱・メモ・タスク・作業の記録をすべて CSV (Excel で開ける形) にして、まとめてダウンロードできます。写真も入れられます</dd></div><div><dt>チーム</dt><dd>複数のメンバーで同じ蜂場を管理できます</dd></div></dl>
-      </div>
+      <p class="note">巣箱の温度と重量の知らせは、巣箱のページの「アラート設定」で値を決めたものだけ送ります。同じ蜂場のほかの巣箱にも、同じ設定をまとめて使えます。電柵の知らせは、HPX-Core が記録する間隔 (15分〜1時間) ごとに届きます。</p>
     </div>
   </section>
 </main>
