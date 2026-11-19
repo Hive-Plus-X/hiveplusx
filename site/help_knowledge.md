@@ -215,7 +215,7 @@ A. ソーラーパネルで充電するカーバッテリーの電圧と、パ�
 
 ### Q. 市販の Bluetooth センサは使えますか？
 
-A. はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5) に対応済みです。
+A. はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5・W+・W3・W4) に対応済みです。W3・W4 は巣箱全体を乗せるので、巣箱の重量を正確に測れます。
 
 ## 3. HPX-Core の設定・動き
 

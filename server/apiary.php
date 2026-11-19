@@ -287,7 +287,7 @@ function apiary_avg(array $hv, array $sensors, int $since): array
     $sum = ['t' => [], 'h' => [], 'w' => []];
     $n = ['t' => [], 'h' => [], 'w' => []];
     foreach ($hv as $hid => $x) {
-        $wSer = []; $nw = 0;
+        $wSer = []; $nw = 0; $wCals = [];
         foreach ((array)($x['sensors'] ?? []) as $k) {
             if (!isset($sensors[$k])) continue;
             $sn = $sensors[$k];
@@ -309,11 +309,12 @@ function apiary_avg(array $hv, array $sensors, int $since): array
                     if ($v !== null) $pts[] = [$r[0], $v];
                 }
                 $wSer[] = $pts;
+                $wCals[] = $c;
             }
         }
-        // 巣箱の重さ (重量センサ1台なら2倍、2台以上なら合計)。較正していないセンサがある巣箱は入れない
+        // 巣箱の重さ (重量センサ1台なら2倍 (巣箱全体を量る BroodMinder-W3/W4 1台ならそのまま)、2台以上なら合計)。較正していないセンサがある巣箱は入れない
         if ($nw > 0 && count($wSer) === $nw) {
-            foreach (hive_kg_series($wSer) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
+            foreach (hive_kg_series($wSer, hive_full_single($wCals)) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
         }
     }
     $out = [];

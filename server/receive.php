@@ -96,7 +96,8 @@ $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以
 //         fa=電柵アラート(temp_c はノード内部の温度、fence_state は 0=正常 1=電圧低下 2=常時点灯、
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
 //   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot / switchbot_outdoor。HPX-Core v1.18 以降、broodminder は v1.29 以降)。
-//   BroodMinder の重量計は kind=w で、raw は 0.01kg 単位の重さ、battery_pct は電池%(batt_v は空)。sensors[mac].model = broodminder
+//   BroodMinder の重量計は kind=w で、raw は 0.01kg 単位の重さ、battery_pct は電池%(batt_v は空)。sensors[mac].model = broodminder、
+//   sensors[mac].bm_model = 機種番号 (HPX-Core v1.30 以降)。機種 49 (W3/W4) は weight_cal.json に full_hive=1
 //   HPX-TH は kind=th のまま。temp_c・humidity_pct は SHT40、temp2_c はサーミスターの温度、batt_v は電池電圧(battery_pct は空)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
               'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c'];
@@ -201,7 +202,10 @@ if (is_array($ble) && count($ble) > 0) {
                 $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor', 'bm' => 'broodminder'][$r['m']];
             if ($isW && ($r['m'] ?? '') === 'bm') {   // BroodMinder の重量計: raw は 0.01kg 単位の重さ (機器の中で較正済み)
                 $s['model'] = 'broodminder';
-                $bmWeight[$key] = true;
+                // 機種番号 (HPX-Core v1.30 以降が "bmm" で送る)。49 = W3/W4 (巣箱全体を量る) は巣箱の重さを2倍にしない
+                $bmm = isset($r['bmm']) && is_numeric($r['bmm']) ? (int)$r['bmm'] : 0;
+                if ($bmm > 0) $s['bm_model'] = $bmm;
+                $bmWeight[$key] = $bmm;
             }
             if ($isA) hpx_alert_record($s, $r, $epoch, $name, $nm !== '' ? $nm : $key);
             elseif (isset($r['bv']) && is_numeric($r['bv']))   // HPX-W・HPX-TH の電池電圧
@@ -244,16 +248,21 @@ if ($bmWeight) {
     $cal = json_decode((string)@file_get_contents($calPath), true);
     if (!is_array($cal)) $cal = [];
     $changed = false;
-    foreach (array_keys($bmWeight) as $mac) {
+    foreach ($bmWeight as $mac => $bmm) {
         $mac = (string)$mac;
-        if ($mac === '' || isset($cal[$mac]['per_kg'])) continue;
+        if ($mac === '') continue;
         $c = is_array($cal[$mac] ?? null) ? $cal[$mac] : [];
-        $c['zero'] = 0;
-        $c['per_kg'] = 100.0;
-        $c['src'] = 'BroodMinder';
-        $c['ts'] = $now;
-        $cal[$mac] = $c;
-        $changed = true;
+        $was = $c;
+        if (!isset($c['per_kg'])) {
+            $c['zero'] = 0;
+            $c['per_kg'] = 100.0;
+            $c['src'] = 'BroodMinder';
+            $c['ts'] = $now;
+        }
+        // full_hive: 巣箱全体を乗せる重量計 (BroodMinder-W3/W4 = 機種 49)。巣箱にこの1台だけでも重さを2倍にしない (hive_kg・hive_kg_series)
+        if ($bmm === 49) $c['full_hive'] = 1;
+        elseif ($bmm > 0) unset($c['full_hive']);
+        if ($c !== $was) { $cal[$mac] = $c; $changed = true; }
     }
     if ($changed) file_put_contents($calPath, json_encode($cal, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
 }

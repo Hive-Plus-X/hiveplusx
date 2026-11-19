@@ -258,6 +258,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     $tS = []; $hS = []; $wS = []; $rows = [];
     $first = 0; $nt = 0; $nw = 0;
     $wSer = [];   // 重量センサごとの記録(kg)。あとで巣箱の重さ(1台なら2倍、2台以上なら合計)にまとめる
+    $wCals = [];  // 重量センサごとの較正 (巣箱全体を量る1台なら2倍にしない、hive_full_single)
     foreach ((array)($hv['sensors'] ?? []) as $k) {
         if (!isset($sensors[$k])) continue;
         $sn = $sensors[$k];
@@ -300,6 +301,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
                 $pts = [];
                 foreach ($r as $p) { $v = to_kg($p[1], $c); if ($v !== null) $pts[] = [$p[0], $v]; }
                 $wSer[] = $pts;
+                $wCals[] = $c;
             }
         }
     }
@@ -307,8 +309,9 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // 巣箱の重さ: 重量センサ1台なら2倍、2台以上なら合計。較正していないセンサがあるときは出さない
     $wHow = '';
     if ($nw > 0 && count($wSer) === $nw) {
-        $wS[] = ['巣箱重量', H_C_W, hive_kg_series($wSer), ''];
-        $wHow = ' <span class="muted" style="font-size:.7em">' . h(hive_weight_how($nw)) . '</span>';
+        $wFull = hive_full_single($wCals);
+        $wS[] = ['巣箱重量', H_C_W, hive_kg_series($wSer, $wFull), ''];
+        $wHow = ' <span class="muted" style="font-size:.7em">' . h(hive_weight_how($nw, $wFull)) . '</span>';
     } elseif ($nw > 0) {
         $wHow = ' <span class="muted" style="font-size:.7em">較正していない重量センサがあるため、巣箱の重さを出せません</span>';
     }

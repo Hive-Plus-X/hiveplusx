@@ -657,7 +657,7 @@ $cal = cal_load($dir);
 if (!$byKind['w']) {
     echo '<p class="muted">重量センサの記録はまだありません。</p>';
 } else {
-    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台ならその2倍 (巣箱の片側に置く使い方)、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。</p>';
+    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台ならその2倍 (巣箱の片側に置く使い方。巣箱全体を乗せる BroodMinder-W3/W4 は1台でもそのまま)、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。</p>';
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>重さ</th><th>24時間</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
     $calForms = '';
@@ -705,6 +705,7 @@ if (!$byKind['w']) {
         $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
         if ($calOk && $isBm) {
             $f .= '<p class="muted">BroodMinder の重量計です。BroodMinder の中で較正した重さがそのまま届くので、HPX-Core での較正は要りません。'
+                . (!empty($c['full_hive']) ? ' 巣箱全体を量る機種 (W3/W4) なので、巣箱の重さは2倍にしません。' : '')
                 . (!empty($c['offset_kg']) ? ' 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg。' : '') . '</p>';
         } elseif ($calOk) {
             $f .= '<p class="muted">今の較正値: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
