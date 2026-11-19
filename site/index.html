@@ -340,6 +340,7 @@
     <div>
       <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
       <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+      <small id="vcount" style="margin-top:4px" hidden>これまでの訪問者 <b id="vtotal"></b> 人 (今日 <span id="vtoday"></span> 人)</small>
     </div>
     <ul>
       <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
@@ -378,6 +379,18 @@
   }
   function restart() { clearInterval(timer); timer = setInterval(function () { go((i + 1) % slides.length); }, 4500); }
   go(0); restart();
+})();
+</script>
+<script>
+// 訪問者カウンター (counter.php が同じブラウザを1日1回だけ数える。読めなければ何も出さない)
+(function () {
+  if (!window.fetch) return;
+  fetch('counter.php', { method: 'POST', credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d || typeof d.total !== 'number' || d.total < 1) return;
+    document.getElementById('vtotal').textContent = d.total.toLocaleString('ja-JP');
+    document.getElementById('vtoday').textContent = (d.today || 0).toLocaleString('ja-JP');
+    document.getElementById('vcount').hidden = false;
+  }).catch(function () {});
 })();
 </script>
 <script>
