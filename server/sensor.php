@@ -407,18 +407,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
             $c = $all[$mac] ?? [];
             $num = fn(string $k) => is_numeric(trim((string)($_POST[$k] ?? ''))) ? (float)trim((string)$_POST[$k]) : null;
             if ($act === 'zero') {
-                // ゼロリセット: 最新の記録の生の値をゼロ点にする(較正は HPX-Core の管理画面で行う)
+                // 風袋引き (ゼロリセット): 最新の記録の生の値をゼロ点にする(較正は HPX-Core の管理画面で行う)
                 $wr = read_ble($hub['dir'] . '/ble.csv', $now - 7 * 86400)['w'][$mac] ?? [];
                 if (!isset($c['per_kg'])) $err = '先に HPX-Core の管理画面で較正してください。';
-                elseif (!$wr) $err = 'この1週間の記録がないので、ゼロリセットできません。';
+                elseif (!$wr) $err = 'この1週間の記録がないので、風袋引きできません。';
                 else {
                     if (!isset($c['zero_before'])) $c['zero_before'] = $c['zero'];   // 解除で戻すゼロ点(何度リセットしても最初の値)
                     $c['zero'] = (int)$wr[count($wr) - 1][1];
                     $c['zero_reset'] = $now;   // receive.php: これより前に較正した HPX-Core の値でゼロ点を戻さない
                 }
             } elseif ($act === 'zero_undo') {
-                // ゼロリセット解除: リセットする前のゼロ点に戻す
-                if (!isset($c['zero_before'])) $err = 'ゼロリセットしていません。';
+                // 風袋引きの解除: リセットする前のゼロ点に戻す
+                if (!isset($c['zero_before'])) $err = '風袋引きしていません。';
                 else {
                     $c['zero'] = (int)$c['zero_before'];
                     unset($c['zero_before'], $c['zero_reset']);
@@ -712,10 +712,10 @@ if (!$byKind['w']) {
         if (!$calOk) $f .= '<p>較正は HPX-Core の管理画面で行います。較正すると、次の送信でここに届いて kg で表示します。</p>';
         if ($calOk) {
             $f .= '<form method="post" onsubmit="return confirm(' . h(json_encode($nm . ' の今の重さを 0 kg にしますか?', JSON_UNESCAPED_UNICODE)) . ')"><input type="hidden" name="action" value="zero">' . $hid
-                . '<p><b>1. ゼロリセット</b> <span class="muted">現在の状態を0kgとします。</span><br>'
-                . '<button type="submit">ゼロリセット</button></p></form>'
-                . (isset($c['zero_before']) ? '<form method="post" onsubmit="return confirm(' . h(json_encode($nm . ' のゼロリセットを解除して、リセットする前に戻しますか?', JSON_UNESCAPED_UNICODE)) . ')"><input type="hidden" name="action" value="zero_undo">' . $hid
-                    . '<p style="margin-top:-.4em"><button type="submit" style="background:#fff;color:#2F5D45;border:1px solid #2F5D45">ゼロリセット解除</button> <span class="muted">' . h(date('m-d H:i', (int)($c['zero_reset'] ?? 0))) . ' にリセットしました</span></p></form>' : '')
+                . '<p><b>1. 風袋引き</b> <span class="muted">現在の状態を0kgとします。</span><br>'
+                . '<button type="submit">風袋引き</button></p></form>'
+                . (isset($c['zero_before']) ? '<form method="post" onsubmit="return confirm(' . h(json_encode($nm . ' の風袋引きを解除して、前の状態に戻しますか?', JSON_UNESCAPED_UNICODE)) . ')"><input type="hidden" name="action" value="zero_undo">' . $hid
+                    . '<p style="margin-top:-.4em"><button type="submit" style="background:#fff;color:#2F5D45;border:1px solid #2F5D45">風袋引きを解除</button> <span class="muted">' . h(date('m-d H:i', (int)($c['zero_reset'] ?? 0))) . ' に風袋引きしました</span></p></form>' : '')
                 . '<form method="post"><input type="hidden" name="action" value="offset">' . $hid
                 . '<p><b>2. 差し引く重さ</b> <span class="muted">巣箱に乗せる重しなどの重さを入れると、巣箱だけの重さを表示できます。</span><br>'
                 . '<input type="number" step="0.01" name="offset_kg" value="' . h(isset($c['offset_kg']) ? (string)$c['offset_kg'] : '0') . '"> kg '
