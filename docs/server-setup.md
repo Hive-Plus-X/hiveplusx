@@ -649,3 +649,18 @@ LINE を連携した人 (13章) が、LINE公式アカウントのトークに�
 - `help_knowledge.md` に「## 質問」と答えを書き足す (サイトに無いこと、よく聞かれること)
 - `hpx/data/help/log.jsonl` に質問と回答が残る (端末は番号の頭8文字だけ、接続元は残さない)。まちがった答えがあれば、`help_knowledge.md` に正しいことを書く
 
+
+## 17. BroodMinder のセンサを HPX-Core で受け取る — 2026-11-20 追加
+
+| ファイル | 内容 |
+|---|---|
+| `firmware/hpx-core/HPX_Core_v1_29/` | HPX-Core v1.29。v1.28 に BroodMinder の温湿度計・重量計の受信を追加 |
+| `server/receive.php` | 機種 `"m":"bm"` を受け取る。BroodMinder の重量計には `weight_cal.json` に「ゼロ点 0・1kg あたり 100」を自動で入れる |
+| `server/sensor.php`・`server/hpx_auth.php` | センサページで「BroodMinder」と表示 (重量計は較正の説明の代わりに「機器の中で較正済み」) |
+
+- 使い方: HPX-Core の管理画面「温湿度計の登録」→「周辺のセンサを探す」→ `[BroodMinder 温湿度計]` か `[BroodMinder 重量計]` と出た行に名前を付けて登録。接続 (ペアリング) はしない。重量計は HPX-Core での較正は要らない (BroodMinder の中で較正した重さが届く)。センサページの「風袋引き」「差し引く重さ」は使える。
+- 読める機種: T (41・47)、TH (42・56)、W (43)、W2 (57)、W3/W4 (49)、DIY (58)。SubHub (52) などのハブは、ほかの機器の値を代わりに流すので読まない。
+- 広告の読み方 (公式: [BroodMinder ユーザーガイド「BLE Advertising Information」](https://github.com/broodminder/userguide/blob/master/docs/en/87_physics_and_tech_stuff.md)): メーカーデータの会社ID 0x028D (IF, LLC)。会社IDの後ろの [0] 機種、[4] 電池%、[7..8] 温度、[10..13] 重量 L・R、[14] 湿度%、[15..18] 重量 L2・R2。温度は 機種 41・42・43 が 値÷65536×165−40 ℃、ほかは (値−5000)÷100 ℃。重量は各チャンネル (値−32767)÷100 を足したもの。
+- 重量の単位: 公式には書いていない。公開されている受信プログラム (Home Assistant 用 sandersmeenk/home_assistant-broodminder、brood-flow) はどれも kg として扱っているので、HPX も kg とした。
+- 巣箱の重さ: HPX-W と同じく「センサ1台なら2倍、2台以上なら合計」。BroodMinder-W・W2 は巣箱の片側に置く使い方なので合う。巣箱全体を乗せる W3/W4 などでは2倍にならないよう、巣箱に2台以上を紐づけるか、差し引く重さで調整が要る (未対応)。
+- 確認したこと: arduino-esp32 3.3.12 + NimBLE-Arduino 2.3.6 で警告なしにコンパイルできる (1,659,022 バイト、84%)。解読部分は PC で単体テスト (公式の例の W で 23.69℃・0.06kg、TH 25.00℃/60%、W2 の合計、SubHub と Inkbird の9バイトを読まないこと)。実機の BroodMinder での受信は未確認。

@@ -811,7 +811,7 @@ const TH_HPXTH_OFFSET_C = -0.5;
 const TH_MODEL_OFFSET_C = ['inkbird' => TH_INKBIRD_OFFSET_C, 'hpx_th' => TH_HPXTH_OFFSET_C];
 // 湿度(%)の機種ごとの補正(2026-11 TARO 指定)。温湿度計ごとの補正(th_cal.json の offset_h)をさらに足す
 const TH_MODEL_OFFSET_H = ['switchbot' => -2.5, 'switchbot_outdoor' => 3.0, 'hpx_th' => -0.5];
-const TH_MODEL_NAMES = ['inkbird' => 'Inkbird', 'switchbot' => 'SwitchBot 温湿度計', 'switchbot_outdoor' => 'SwitchBot 防水温湿度計', 'hpx_th' => 'HPX-TH'];
+const TH_MODEL_NAMES = ['inkbird' => 'Inkbird', 'switchbot' => 'SwitchBot 温湿度計', 'switchbot_outdoor' => 'SwitchBot 防水温湿度計', 'hpx_th' => 'HPX-TH', 'broodminder' => 'BroodMinder'];
 
 // ble.csv (古い順に書き足していくファイル) で、$since より前の記録を読み飛ばす位置を探す (2026-11-17、ページを速く出すため)。
 //   ファイルの途中を二分探索して、epoch が ($since - $margin) より前の行の次の行頭に移る。記録が少し前後して届くことがあるので、

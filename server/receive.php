@@ -95,12 +95,14 @@ $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以
 //   kind: th=温湿度計 / w=重量センサ(temp_c はノード内部の温度、raw は重量の生の値、spread は読み取りのばらつき、batt_v は電池電圧)
 //         fa=電柵アラート(temp_c はノード内部の温度、fence_state は 0=正常 1=電圧低下 2=常時点灯、
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
-//   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot / switchbot_outdoor。HPX-Core v1.18 以降)。
+//   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot / switchbot_outdoor。HPX-Core v1.18 以降、broodminder は v1.29 以降)。
+//   BroodMinder の重量計は kind=w で、raw は 0.01kg 単位の重さ、battery_pct は電池%(batt_v は空)。sensors[mac].model = broodminder
 //   HPX-TH は kind=th のまま。temp_c・humidity_pct は SHT40、temp2_c はサーミスターの温度、batt_v は電池電圧(battery_pct は空)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
               'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c'];
 
 // --- BLE温湿度計の記録 ---
+$bmWeight = [];   // 届いた BroodMinder の重量計 (mac => true)。あとで weight_cal.json に較正値を入れる
 $ble = $d['sensors']['ble'] ?? [];
 if (is_array($ble) && count($ble) > 0) {
     $csv = $dir . '/ble.csv';
@@ -193,9 +195,14 @@ if (is_array($ble) && count($ble) > 0) {
             $s['kind'] = $isW ? 'w' : ($isA ? 'fa' : 'th');
             // 温湿度計の機種(HPX-Core v1.18 以降が送る。"ink"=Inkbird "sb"=SwitchBot 温湿度計 "sbw"=SwitchBot 防水温湿度計)。機種ごとに温度・湿度を補正する(th_temp_corr・th_hum_corr)
             //   防水かどうかはスキャン応答を取りこぼすと分からず "sb" で届くので、一度 "sbw" が届いたら防水のままにする
-            if (!$isW && !$isA && in_array($r['m'] ?? '', ['ink', 'sb', 'sbw'], true)
+            //   "bm"=BroodMinder (HPX-Core v1.29 以降)。温湿度計にも重量計にも付く
+            if (!$isW && !$isA && in_array($r['m'] ?? '', ['ink', 'sb', 'sbw', 'bm'], true)
                 && !($r['m'] === 'sb' && ($s['model'] ?? '') === 'switchbot_outdoor'))
-                $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor'][$r['m']];
+                $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor', 'bm' => 'broodminder'][$r['m']];
+            if ($isW && ($r['m'] ?? '') === 'bm') {   // BroodMinder の重量計: raw は 0.01kg 単位の重さ (機器の中で較正済み)
+                $s['model'] = 'broodminder';
+                $bmWeight[$key] = true;
+            }
             if ($isA) hpx_alert_record($s, $r, $epoch, $name, $nm !== '' ? $nm : $key);
             elseif (isset($r['bv']) && is_numeric($r['bv']))   // HPX-W・HPX-TH の電池電圧
                 hpx_sensor_batt_record($s, (float)$r['bv'], false, $epoch, $name, $nm !== '' ? $nm : $key);
@@ -228,6 +235,28 @@ if (isset($d['sensors']['ble_sensors']) && is_array($d['sensors']['ble_sensors']
 
 // センサの記録が途切れていないか (HPX-F は1時間、HPX-W・HPX-TH・温湿度計は24時間)。ハブに登録中のセンサだけ見る
 hpx_alert_check_missing($sens, $now, $name, array_values(array_map(fn($e) => $e['mac'], $sidMap)));
+
+// --- BroodMinder の重量計 (HPX-Core v1.29 以降) ---
+//   raw は 0.01kg 単位の重さで届く (BroodMinder の中で較正済み) ので、weight_cal.json に「ゼロ点 0・1kg あたり 100」を入れて、
+//   HPX-W と同じしくみで kg にする。すでに較正値があれば変えない (センサページの「風袋引き」・差し引く重さもそのまま使える)
+if ($bmWeight) {
+    $calPath = $dir . '/weight_cal.json';
+    $cal = json_decode((string)@file_get_contents($calPath), true);
+    if (!is_array($cal)) $cal = [];
+    $changed = false;
+    foreach (array_keys($bmWeight) as $mac) {
+        $mac = (string)$mac;
+        if ($mac === '' || isset($cal[$mac]['per_kg'])) continue;
+        $c = is_array($cal[$mac] ?? null) ? $cal[$mac] : [];
+        $c['zero'] = 0;
+        $c['per_kg'] = 100.0;
+        $c['src'] = 'BroodMinder';
+        $c['ts'] = $now;
+        $cal[$mac] = $c;
+        $changed = true;
+    }
+    if ($changed) file_put_contents($calPath, json_encode($cal, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+}
 
 // --- 重量センサの較正(HPX-Core v1.14 以降の管理画面で較正したもの) ---
 //   "wcal": [{mac, zero, per_kg, cal_raw?, cal_g?, common(0/1), ts}] を weight_cal.json に書く。
