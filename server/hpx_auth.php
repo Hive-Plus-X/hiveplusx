@@ -58,7 +58,7 @@ function offline_head(): string
 // サーバー管理者が「サーバーの設定」で入れた組織名・団体名 (無ければ '')
 function brand_org_name(): string
 {
-    return mb_substr(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 0, 8);   // 8文字まで (config.php に長く書いても切る)
+    return mb_strimwidth(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 0, 16, '', 'UTF-8');   // 全角8文字・半角16文字まで (config.php に長く書いても切る)
 }
 
 // メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)。組織名があれば「ロゴ × 組織名」にする
@@ -79,7 +79,7 @@ function brand_css(): string
         . 'nav .logo img{width:166px;height:auto;display:block}@media(max-width:600px){nav .logo img{width:132px}}'
         // 組織名 (ロゴの右)。長い名前は「…」で切り、スマホでは歯車の左までに収める
         . 'nav .org{color:#fff;font-size:.95rem;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16em;min-width:0;margin-left:-10px;margin-right:10px}nav .org .x{color:#F2A900;font-weight:normal;margin-right:.45em}'
-        . '@media(max-width:600px){nav .org{flex:1 1 0;max-width:none;font-size:.85rem;margin-left:-8px;margin-right:6px}}'
+        . '@media(max-width:600px){nav .org{flex:1 1 0;max-width:none;font-size:.8rem;margin-left:-20px;margin-right:4px}nav .org .x{margin-right:.3em}}'
         . 'nav .setm{margin-left:auto;position:relative}nav .setm>summary{list-style:none;cursor:pointer;color:#fff;display:flex;align-items:center;padding:4px 2px;border-bottom:2px solid transparent}'
         . 'nav .setm>summary::-webkit-details-marker{display:none}nav .setm>summary.on{border-bottom-color:#F2A900}nav .setm svg{background:none;border:0;width:22px;height:22px;display:block}nav .nl{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}@media(max-width:600px){nav{flex-wrap:wrap!important;row-gap:0!important;padding-top:4px!important;padding-bottom:2px!important}nav .setm{flex-shrink:0}nav .logo img{width:120px}nav .nl{order:3;flex-basis:100%;gap:0 12px}nav .nl a{word-break:keep-all;white-space:nowrap}}nav .setm .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
         . 'nav .setmenu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #c5cec8;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:160px;padding:4px 0;z-index:20}'
