@@ -110,6 +110,6 @@ function dl_remind_mail(): void
         account_mail($addr, '【HPX】全アカウントのデータを保存してください',
             "全アカウントのデータを" . ($last > 0 ? ' ' . date('Y-m-d', $last) . ' から' : 'まだ一度も') . "ダウンロードしていません。\n"
             . "センサの記録・メモ・作業記録・写真など、研究用のデータをなくさないように、定期的に全部を手元へ保存してください。\n" . dlr_cam_note() . "\n\n"
-            . "サーバー管理のページ: " . site_url('admin.php#export_all') . "\n");
+            . "ユーザー管理のページ: " . site_url('admin.php#export_all') . "\n");
     }
 }

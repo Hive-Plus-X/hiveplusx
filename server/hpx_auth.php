@@ -5,7 +5,7 @@
 //     users.json     アカウント一覧 {"users": {"u_3f9a1c7e": {email, name, pw, pwv, admin, status, created, last_login}}}
 //                      status: active=使える / invited=招待中(まだパスワードを決めていない) / stopped=停止中 / pending=登録の申請中(承認待ち)
 //                      consent: データ利用に同意した日時 (epoch。登録のときにチェックする)
-//     server.json    サーバーの設定 {"signup": "invite" | "apply" | "open"} (アカウントの登録方法。サーバー管理ページで切り替える)
+//     server.json    サーバーの設定 {"signup": "invite" | "apply" | "open"} (アカウントの登録方法。ユーザー管理ページで切り替える)
 //     tokens.json    機器用トークンの sha256 → アカウントID
 //     ical_keys.json タスクのカレンダー配信の合言葉の sha256 → アカウントID
 //     links.json     招待・パスワード再設定・メールアドレス変更のリンク(コードの sha256 → 内容。期限付き、1回だけ使える)
@@ -383,7 +383,7 @@ function account_mail(string $to, string $subject, string $body): array
 }
 
 // ====================================================================
-// アカウントの登録方法 (サーバー管理ページで切り替える。data/server.json の signup)
+// アカウントの登録方法 (ユーザー管理ページで切り替える。data/server.json の signup)
 //   invite: サーバー管理者が招待する (前からのやり方。初期値)
 //   apply : 本人が登録を申請し、サーバー管理者が承認すると招待メールが届く
 //   open  : 本人がメールアドレスを入れると招待メールが届き、すぐ使える (自由登録)
@@ -949,7 +949,7 @@ function auth_next(string $next): string
     return preg_match('/^(apiary|hive|memo|task|work|sensor|camera|team|account|admin|offline)\.php(\?[^\s<>"]*)?$/', $next) ? $next : 'apiary.php';
 }
 
-// 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・サーバー管理(サーバー管理者だけ)が出る。蜂場ページとセンサページで共通
+// 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・ユーザー管理(サーバー管理者だけ)が出る。蜂場ページとセンサページで共通
 function auth_nav_right(string $active): string
 {
     global $ME;
@@ -959,7 +959,7 @@ function auth_nav_right(string $active): string
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
     foreach ($items as $f => $lb) $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb) . '</a>';
     $o .= '<a href="' . h($active !== '' ? $active : 'apiary.php') . '?logout=1">ログアウト</a>';
-    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>サーバー管理</a>';
+    if (!empty($ME['admin'])) $o .= '<a href="admin.php"' . ($active === 'admin.php' ? ' class="on"' : '') . '>ユーザー管理</a>';
     if (!empty($ME['admin'])) $o .= '<a href="settings.php"' . ($active === 'settings.php' ? ' class="on"' : '') . '>サーバーの設定</a>';
     // 外を押したら閉じる
     return $o . '</div></details><script>document.addEventListener("click",function(e){document.querySelectorAll("details.setm[open]").forEach(function(d){if(!d.contains(e.target))d.open=false;});});</script>';

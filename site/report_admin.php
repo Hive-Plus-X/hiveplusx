@@ -218,7 +218,7 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
 <?php if ($HAS_SETTINGS): foreach (HPX_SITE_GROUPS as $g): $editable = array_filter(hpx_settings_def(), fn($d) => $d['g'] === $g && hpx_setting_editable($d)); ?>
     <h2 id="g_<?= h($g) ?>"><?= h(hpx_settings_groups()[$g]) ?></h2>
 <?php if ($g === 'help'): ?>    <p class="lead">サイトの <a href="help.php">AI ヘルプ</a> の設定です。API キーは hpx/config.php に書きます (下の「秘密」の欄)。</p>
-<?php elseif ($g === 'demo'): ?>    <p class="lead">HPX-note のデモ用アカウント (誰でも試せる) の設定です。先に HPX-note のサーバー管理で、このメールアドレスのアカウントを発行してください。</p>
+<?php elseif ($g === 'demo'): ?>    <p class="lead">HPX-note のデモ用アカウント (誰でも試せる) の設定です。先に HPX-note のユーザー管理で、このメールアドレスのアカウントを発行してください。</p>
 <?php else: ?>    <p class="lead">秘密は、乗っ取られたときに漏れないよう画面では変えません。サーバーの hpx/config.php を直接書き換えてください。</p>
 <?php endif; ?>
     <div class="box">
@@ -229,7 +229,7 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
 <?php endif; ?>
 <?php if ($g === 'demo' && demo_email() !== ''): $seedAt = is_dir(demo_seed_dir()) ? date('Y-m-d H:i', (int)filemtime(demo_seed_dir())) : ''; ?>
       <h3 style="margin-top:20px;font-size:16px">初期状態</h3>
-<?php if (demo_uid() === ''): ?>      <p class="muted" style="color:var(--err)"><?= h(demo_email()) ?> のアカウントがありません。HPX-note のサーバー管理で発行してください。</p>
+<?php if (demo_uid() === ''): ?>      <p class="muted" style="color:var(--err)"><?= h(demo_email()) ?> のアカウントがありません。HPX-note のユーザー管理で発行してください。</p>
 <?php else: ?>
       <p class="muted">毎日 <?= (int)($HPX_DEMO_RESET_HOUR ?? 3) ?>時ごろに、保存した初期状態へ戻します<?= !empty($HPX_DEMO_READONLY) ? ' (今は見るだけなので書き込みもできません)' : '' ?>。初期状態: <?= $seedAt !== '' ? h($seedAt) . ' に保存' : 'まだ保存していません (保存するまでは戻しません)' ?></p>
 <?php if (demo_editing()): ?>      <p class="muted">見本の準備中です (写真も追加でき、毎日の初期化は止めています)。HPX-note でデモ用アカウントの見本を直したら「今の状態を初期状態として保存」を押してください。準備中は終わります。</p>

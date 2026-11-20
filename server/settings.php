@@ -62,4 +62,4 @@ foreach ($GROUPS as $g => $gl) {
     }
     echo '</div>';
 }
-echo '<p><a href="admin.php">← サーバー管理へ戻る</a></p></body></html>';
+echo '<p><a href="admin.php">← ユーザー管理へ戻る</a></p></body></html>';

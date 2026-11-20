@@ -1,5 +1,5 @@
 <?php
-// 設定の読み込み。config.php を読んだあと、サーバー管理の「サーバーの設定」画面 (settings.php) で保存した値で上書きする。
+// 設定の読み込み。config.php を読んだあと、歯車の「サーバーの設定」画面 (settings.php) で保存した値で上書きする。
 //   画面で保存した値は データフォルダの server_settings.json {"HPX_MAIL_FROM": "...", ...} に置く (data/.htaccess で外から開けない)。
 //   画面で保存していない項目は config.php の値のまま。config.php の値は「既定値」として残る (画面の「config.php の値に戻す」で戻せる)。
 //   config.php に残すもの (画面では変えない): $HPX_DATA_DIR (この設定ファイルの置き場所)、前の版からの引き継ぎ用の
