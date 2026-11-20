@@ -55,10 +55,23 @@ function offline_head(): string
         . '<script src="js/hpx_offline.js?v=1" defer></script>';
 }
 
+// 全角なら $zen 文字・半角なら $han 文字までに収まるように先頭から切る (混ぜてもよい。全角1文字は 1/$zen、半角1文字は 1/$han と数える)
+function text_fit_zh(string $s, int $zen, int $han): string
+{
+    $out = '';
+    $used = 0;   // 全角 $han 点・半角 $zen 点で数え、$zen*$han 点まで
+    foreach (mb_str_split($s) as $c) {
+        $used += mb_strwidth($c) >= 2 ? $han : $zen;
+        if ($used > $zen * $han) break;
+        $out .= $c;
+    }
+    return $out;
+}
+
 // サーバー管理者が「サーバーの設定」で入れた組織名・団体名 (無ければ '')
 function brand_org_name(): string
 {
-    return mb_strimwidth(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 0, 16, '', 'UTF-8');   // 全角8文字・半角16文字まで (config.php に長く書いても切る)
+    return text_fit_zh(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 8, 12);   // 全角8文字・半角12文字まで (config.php に長く書いても切る)
 }
 
 // メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)。組織名があれば「ロゴ × 組織名」にする

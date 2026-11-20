@@ -57,7 +57,7 @@ function st_parse(array $d, string $raw): array
             if (preg_match('/[\x00-\x1f]/', $raw)) return [null, '1行で入れてください'];
             $len = (int)($d['len'] ?? 300);
             if (mb_strlen($raw) > $len) return [null, $len . '文字までにしてください'];
-            if (isset($d['wid']) && mb_strwidth($raw) > (int)$d['wid']) return [null, '全角なら' . intdiv((int)$d['wid'], 2) . '文字、半角なら' . (int)$d['wid'] . '文字までにしてください (全角1文字を半角2文字と数えます)'];
+            if (isset($d['zen'], $d['han']) && text_fit_zh($raw, (int)$d['zen'], (int)$d['han']) !== $raw) return [null, '全角なら' . (int)$d['zen'] . '文字、半角なら' . (int)$d['han'] . '文字までにしてください'];
             return [$raw, ''];
     }
 }
