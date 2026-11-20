@@ -18,6 +18,7 @@ const HPX_SECRETS_ON_SCREEN = false;
 function hpx_settings_groups(): array
 {
     return [
+        'look' => 'HPX-note の表示',
         'mail' => 'メールの送信',
         'notify' => 'お知らせの基準',
         'users' => 'アカウントと利用者',
@@ -34,6 +35,8 @@ function hpx_settings_def(): array
 {
     $ai = ['claude-opus-5-5' => 'Opus 5.5 (いちばん正確・高い)', 'claude-sonnet-5-5' => 'Sonnet 5.5 (中くらい)', 'claude-haiku-5-5' => 'Haiku 5.5 (いちばん安い)'];
     return [
+        // 表示
+        'HPX_ORG_NAME' => ['g' => 'look', 'l' => 'このサーバーを運営する組織名・団体名', 't' => 'str', 'd' => '', 'len' => 12, 'zen' => 8, 'han' => 12, 'hp' => '入れると、上のバーのロゴの横に「× 組織名」と出ます (誰が導入したサーバーかわかるように)。空なら出しません。全角なら8文字、半角の英数字なら12文字まで (混ぜてもよく、全角2文字が半角3文字ぶんです)。'],
         // メール
         'HPX_MAIL_FROM' => ['g' => 'mail', 'l' => '送り元のメールアドレス', 't' => 'email', 'd' => '', 'hp' => '下の「Gmail のアドレス」と同じにします。'],
         'HPX_SMTP_USER' => ['g' => 'mail', 'l' => 'Gmail のアドレス (SMTP のユーザー)', 't' => 'str', 'd' => '', 'hp' => 'アプリパスワードは config.php の $HPX_SMTP_PASS に書きます。'],

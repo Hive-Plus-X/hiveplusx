@@ -55,7 +55,9 @@ function st_parse(array $d, string $raw): array
             return [$out, ''];
         default:
             if (preg_match('/[\x00-\x1f]/', $raw)) return [null, '1行で入れてください'];
-            if (mb_strlen($raw) > 300) return [null, '300文字までにしてください'];
+            $len = (int)($d['len'] ?? 300);
+            if (mb_strlen($raw) > $len) return [null, $len . '文字までにしてください'];
+            if (isset($d['zen'], $d['han']) && text_fit_zh($raw, (int)$d['zen'], (int)$d['han']) !== $raw) return [null, '全角なら' . (int)$d['zen'] . '文字、半角なら' . (int)$d['han'] . '文字までにしてください'];
             return [$raw, ''];
     }
 }
@@ -170,7 +172,7 @@ foreach ($GROUPS as $g => $gl) {
                     . (isset($d['min']) ? ' min="' . $d['min'] . '"' : '') . (isset($d['max']) ? ' max="' . $d['max'] . '"' : '') . ' style="width:9em"> ' . h((string)($d['u'] ?? ''));
                 break;
             default:
-                echo '<input type="text"' . $id . ' name="' . $name . '" value="' . h(st_show($d, $cur)) . '"' . ($d['t'] === 'email' ? ' inputmode="email"' : ($d['t'] === 'url' ? ' inputmode="url"' : '')) . '>';
+                echo '<input type="text"' . $id . ' name="' . $name . '" value="' . h(st_show($d, $cur)) . '"' . ($d['t'] === 'email' ? ' inputmode="email"' : ($d['t'] === 'url' ? ' inputmode="url"' : '')) . (isset($d['len']) ? ' maxlength="' . (int)$d['len'] . '"' : '') . '>';
         }
         if (!empty($d['hp'])) echo '<div class="muted">' . h($d['hp']) . '</div>';
         $cfgShow = st_show($d, $cfg);

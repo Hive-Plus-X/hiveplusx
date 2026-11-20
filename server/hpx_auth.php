@@ -55,10 +55,32 @@ function offline_head(): string
         . '<script src="js/hpx_offline.js?v=1" defer></script>';
 }
 
-// メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)
+// 全角なら $zen 文字・半角なら $han 文字までに収まるように先頭から切る (混ぜてもよい。全角1文字は 1/$zen、半角1文字は 1/$han と数える)
+function text_fit_zh(string $s, int $zen, int $han): string
+{
+    $out = '';
+    $used = 0;   // 全角 $han 点・半角 $zen 点で数え、$zen*$han 点まで
+    foreach (mb_str_split($s) as $c) {
+        $used += mb_strwidth($c) >= 2 ? $han : $zen;
+        if ($used > $zen * $han) break;
+        $out .= $c;
+    }
+    return $out;
+}
+
+// サーバー管理者が「サーバーの設定」で入れた組織名・団体名 (無ければ '')
+function brand_org_name(): string
+{
+    return text_fit_zh(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 8, 12);   // 全角8文字・半角12文字まで (config.php に長く書いても切る)
+}
+
+// メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)。組織名があれば「ロゴ × 組織名」にする
 function brand_nav_logo(): string
 {
-    return '<a href="apiary.php" class="logo" title="' . BRAND_NAME . '"><img src="img/hivex_note_reverse.svg" alt="' . BRAND_NAME . ' note" width="166" height="27"></a>';
+    $o = '<a href="apiary.php" class="logo" title="' . BRAND_NAME . '"><img src="img/hivex_note_reverse.svg" alt="' . BRAND_NAME . ' note" width="166" height="27"></a>';
+    $org = brand_org_name();
+    if ($org !== '') $o .= '<span class="org" title="' . h($org) . '"><span class="x" aria-hidden="true">×</span>' . h($org) . '</span>';
+    return $o;
 }
 
 // 各ページの <style> の最後に足す、ロゴの配色に合わせた色の指定(前の色の指定を上書きする)
@@ -68,6 +90,9 @@ function brand_css(): string
         . 'nav{background:#2F5D45;min-height:40px}nav a{color:#fff}nav a.on{border-bottom-color:#F2A900}'
         . 'nav .logo{display:flex;align-items:center;padding:4px 12px 4px 0;margin-right:2px;border:0}'
         . 'nav .logo img{width:166px;height:auto;display:block}@media(max-width:600px){nav .logo img{width:132px}}'
+        // 組織名 (ロゴの右)。長い名前は「…」で切り、スマホでは歯車の左までに収める
+        . 'nav .org{color:#fff;font-size:.95rem;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16em;min-width:0;margin-left:-10px;margin-right:10px}nav .org .x{color:#F2A900;font-weight:normal;margin-right:.45em}'
+        . '@media(max-width:600px){nav .org{flex:1 1 0;max-width:none;font-size:.8rem;margin-left:-20px;margin-right:4px}nav .org .x{margin-right:.3em}}'
         . 'nav .setm{margin-left:auto;position:relative}nav .setm>summary{list-style:none;cursor:pointer;color:#fff;display:flex;align-items:center;padding:4px 2px;border-bottom:2px solid transparent}'
         . 'nav .setm>summary::-webkit-details-marker{display:none}nav .setm>summary.on{border-bottom-color:#F2A900}nav .setm svg{background:none;border:0;width:22px;height:22px;display:block}nav .nl{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}@media(max-width:600px){nav{flex-wrap:wrap!important;row-gap:0!important;padding-top:4px!important;padding-bottom:2px!important}nav .setm{flex-shrink:0}nav .logo img{width:120px}nav .nl{order:3;flex-basis:100%;gap:0 12px}nav .nl a{word-break:keep-all;white-space:nowrap}}nav .setm .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
         . 'nav .setmenu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #c5cec8;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:160px;padding:4px 0;z-index:20}'
