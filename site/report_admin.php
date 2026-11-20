@@ -12,6 +12,7 @@ require $APP . (is_file($APP . '/hpx_config.php') ? '/hpx_config.php' : '/config
 require_once $APP . '/hpx_report.php';
 $HAS_SETTINGS = is_file($APP . '/hpx_config.php') && is_file($APP . '/hpx_auth.php');
 if ($HAS_SETTINGS) require_once $APP . '/hpx_auth.php';   // デモ用アカウントの初期状態の保存・戻し (demo_*)
+$HAS_SETTINGS = $HAS_SETTINGS && function_exists('hpx_settings_save') && defined('HPX_SITE_GROUPS');   // hpx/ が古いときは設定の欄を出さない
 
 if (!function_exists('h')) { function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); } }
 function nlh(string $s): string { return nl2br(h($s), false); }
