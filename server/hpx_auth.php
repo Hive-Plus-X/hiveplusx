@@ -58,7 +58,7 @@ function offline_head(): string
 // サーバー管理者が「サーバーの設定」で入れた組織名・団体名 (無ければ '')
 function brand_org_name(): string
 {
-    return trim((string)($GLOBALS['HPX_ORG_NAME'] ?? ''));
+    return mb_substr(trim((string)($GLOBALS['HPX_ORG_NAME'] ?? '')), 0, 8);   // 8文字まで (config.php に長く書いても切る)
 }
 
 // メニュー左端のロゴ「hive+x note」(蜂場ページへ戻る)。組織名があれば「ロゴ × 組織名」にする
