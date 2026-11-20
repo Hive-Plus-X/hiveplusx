@@ -3,11 +3,16 @@
 //   届いたレポートを確かめて、公開する・非公開にする・削除する。管理者からのひとこと (お礼など) も付けられる。
 //   HPX-note のアカウントとは別に、config.php の $HPX_REPORT_ADMIN_PW のパスワードで入る。
 //   サイトの一番下の歯車マークから開く。続けて5回間違えると、15分ログインできない。
+//   情報サイトの運営 (HPX の管理者) が決める設定もここで変える (2026-11-20 TARO 決定。HPX-note の「サーバーの設定」からは外した):
+//     AI ヘルプ (help.php) の設定、デモ用アカウントの設定と初期状態の保存・戻し。値は hpx/data/server_settings.json (hpx_config.php)
 declare(strict_types=1);
 
 $APP = __DIR__ . '/hpx';
 require $APP . (is_file($APP . '/hpx_config.php') ? '/hpx_config.php' : '/config.php');   // config.php と、サーバーの設定画面で保存した値
 require_once $APP . '/hpx_report.php';
+$HAS_SETTINGS = is_file($APP . '/hpx_config.php') && is_file($APP . '/hpx_auth.php');
+if ($HAS_SETTINGS) require_once $APP . '/hpx_auth.php';   // デモ用アカウントの初期状態の保存・戻し (demo_*)
+$HAS_SETTINGS = $HAS_SETTINGS && function_exists('hpx_settings_save') && defined('HPX_SITE_GROUPS');   // hpx/ が古いときは設定の欄を出さない
 
 if (!function_exists('h')) { function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); } }
 function nlh(string $s): string { return nl2br(h($s), false); }
@@ -28,6 +33,24 @@ if (!$ok && $isPost && ($_POST['act'] ?? '') === 'login') {
     if ($wait > 0) $msg = '続けて間違えたため、しばらくログインできません。あと' . (int)ceil($wait / 60) . '分ほど待ってください。';
     elseif (r_admin_login((string)($_POST['pw'] ?? ''))) go('report_admin.php');
     else $msg = 'パスワードが違います。';
+}
+
+// サイトの設定 (AI ヘルプ・デモ用アカウント)
+if ($ok && $isPost && $HAS_SETTINGS) {
+    $act = (string)($_POST['act'] ?? '');
+    if ($act === 'settings_save') {
+        $g = (string)($_POST['g'] ?? '');
+        if (!in_array($g, HPX_SITE_GROUPS, true)) go('report_admin.php');
+        $errs = hpx_settings_save($g, is_array($_POST['v'] ?? null) ? $_POST['v'] : [], is_array($_POST['reset'] ?? null) ? $_POST['reset'] : []);
+        go('report_admin.php#g_' . $g, $errs ? '保存しましたが、次の項目は直してください (前の値のままです)。 ' . implode(' / ', $errs) : '「' . hpx_settings_groups()[$g] . '」を保存しました。');
+    }
+    if ($act === 'demo_save') {
+        if (!demo_seed_save()) go('report_admin.php#g_demo', 'デモ用アカウントが見つかりません (メールアドレスと、HPX-note でそのアカウントを発行したかを確かめてください)。');
+        demo_set_editing(false);
+        go('report_admin.php#g_demo', '今の状態をデモ用アカウントの初期状態として保存しました。');
+    }
+    if ($act === 'demo_edit_on') { demo_set_editing(true); go('report_admin.php#g_demo', '見本の準備中にしました。HPX-note にデモ用アカウントでログインして見本を直し、終わったらここで「初期状態として保存」を押してください。'); }
+    if ($act === 'demo_reset') go('report_admin.php#g_demo', demo_reset() ? 'デモ用アカウントを初期状態に戻しました。' : '初期状態がまだ保存されていません。');
 }
 
 if ($ok && $isPost) {
@@ -55,7 +78,7 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>レポートの管理 - Hive Plus X</title>
+<title>サイトの管理 - Hive Plus X</title>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
   :root { --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
@@ -113,6 +136,12 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
   .ops form { margin:0; }
   details { margin-top:10px; }
   summary { cursor:pointer; font-size:14px; color:var(--sub); }
+  .st-row { border-top:1px solid var(--line); padding:12px 0; } .st-row:first-of-type { border-top:0; }
+  .st-row label { display:block; } .st-ch { display:inline-block; font-size:12px; background:var(--honey); color:#1F2328; border-radius:10px; padding:0 8px; margin-left:6px; }
+  .st-row input[type=text], .st-row input[type=number], .st-row select { font:inherit; color:var(--text); background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin-top:6px; max-width:100%; }
+  .st-row input[type=text] { width:100%; } .st-cf { font-size:12px; color:var(--sub); margin-top:4px; } .st-row .muted { margin-top:4px; }
+  .ok { color:var(--forest); font-weight:600; } @media (prefers-color-scheme: dark) { .ok { color:var(--honey); } }
+  .toc a { margin-right:14px; font-size:14px; }
   footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
   footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
   footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
@@ -152,8 +181,11 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
       <button class="main" type="submit">ログイン</button></form>
 <?php endif; ?>
 <?php else: ?>
-    <div class="top"><h1>作った・使ったレポートの管理</h1><a href="report_admin.php?logout=1">ログアウト</a></div>
+    <div class="top"><h1>サイトの管理</h1><a href="report_admin.php?logout=1">ログアウト</a></div>
+<?php if ($HAS_SETTINGS): ?>    <p class="toc" style="margin-top:10px"><a href="#reports">作った・使ったレポート</a><?php foreach (HPX_SITE_GROUPS as $g): ?><a href="#g_<?= h($g) ?>"><?= h(hpx_settings_groups()[$g]) ?></a><?php endforeach; ?></p>
+<?php endif; ?>
 <?php if ($flash !== ''): ?><div class="box ok"><?= h($flash) ?></div><?php endif; ?>
+    <h2 id="reports" style="margin-top:32px">作った・使ったレポート</h2>
     <p class="lead">「公開する」を押したレポートだけが、<a href="report.php">作った・使ったレポート</a>のページとトップページに出ます。顔・車のナンバー・蜂場の場所がわかるものが写っていないか確かめてから公開してください。メールアドレスは公開されません。</p>
 <?php
     $groups = ['pending' => [], 'public' => [], 'hidden' => []];
@@ -183,6 +215,35 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
       </div>
     </div>
 <?php endforeach; endforeach; ?>
+<?php if ($HAS_SETTINGS): foreach (HPX_SITE_GROUPS as $g): $editable = array_filter(hpx_settings_def(), fn($d) => $d['g'] === $g && hpx_setting_editable($d)); ?>
+    <h2 id="g_<?= h($g) ?>"><?= h(hpx_settings_groups()[$g]) ?></h2>
+<?php if ($g === 'help'): ?>    <p class="lead">サイトの <a href="help.php">AI ヘルプ</a> の設定です。API キーは hpx/config.php に書きます (下の「秘密」の欄)。</p>
+<?php elseif ($g === 'demo'): ?>    <p class="lead">HPX-note のデモ用アカウント (誰でも試せる) の設定です。先に HPX-note のサーバー管理で、このメールアドレスのアカウントを発行してください。</p>
+<?php else: ?>    <p class="lead">秘密は、乗っ取られたときに漏れないよう画面では変えません。サーバーの hpx/config.php を直接書き換えてください。</p>
+<?php endif; ?>
+    <div class="box">
+<?php if ($editable): ?>      <form method="post" action="report_admin.php"><?= $csrf ?><input type="hidden" name="act" value="settings_save"><input type="hidden" name="g" value="<?= h($g) ?>">
+<?php endif; ?>
+      <?= hpx_settings_rows($g) ?>
+<?php if ($editable): ?>      <div class="ops"><button class="main" type="submit">「<?= h(hpx_settings_groups()[$g]) ?>」を保存</button></div></form>
+<?php endif; ?>
+<?php if ($g === 'demo' && demo_email() !== ''): $seedAt = is_dir(demo_seed_dir()) ? date('Y-m-d H:i', (int)filemtime(demo_seed_dir())) : ''; ?>
+      <h3 style="margin-top:20px;font-size:16px">初期状態</h3>
+<?php if (demo_uid() === ''): ?>      <p class="muted" style="color:var(--err)"><?= h(demo_email()) ?> のアカウントがありません。HPX-note のサーバー管理で発行してください。</p>
+<?php else: ?>
+      <p class="muted">毎日 <?= (int)($HPX_DEMO_RESET_HOUR ?? 3) ?>時ごろに、保存した初期状態へ戻します<?= !empty($HPX_DEMO_READONLY) ? ' (今は見るだけなので書き込みもできません)' : '' ?>。初期状態: <?= $seedAt !== '' ? h($seedAt) . ' に保存' : 'まだ保存していません (保存するまでは戻しません)' ?></p>
+<?php if (demo_editing()): ?>      <p class="muted">見本の準備中です (写真も追加でき、毎日の初期化は止めています)。HPX-note でデモ用アカウントの見本を直したら「今の状態を初期状態として保存」を押してください。準備中は終わります。</p>
+<?php endif; ?>
+      <div class="ops">
+<?php if (!demo_editing()): ?>        <form method="post" action="report_admin.php"><?= $csrf ?><input type="hidden" name="act" value="demo_edit_on"><button type="submit">見本を直す (準備中にする)</button></form>
+<?php endif; ?>
+        <form method="post" action="report_admin.php" onsubmit="return confirm('デモ用アカウントの今の状態を初期状態にしますか？')"><?= $csrf ?><input type="hidden" name="act" value="demo_save"><button type="submit">今の状態を初期状態として保存</button></form>
+<?php if ($seedAt !== ''): ?>        <form method="post" action="report_admin.php" onsubmit="return confirm('デモ用アカウントを初期状態に戻しますか？')"><?= $csrf ?><input type="hidden" name="act" value="demo_reset"><button type="submit">今すぐ初期状態に戻す</button></form>
+<?php endif; ?>
+      </div>
+<?php endif; endif; ?>
+    </div>
+<?php endforeach; endif; ?>
 <?php endif; ?>
   </div>
 </main>

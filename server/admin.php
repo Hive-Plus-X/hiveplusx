@@ -50,13 +50,6 @@ if (is_post()) {
         server_conf_set(['signup' => $m]);
         redirect('admin.php#signup', 'アカウントの登録方法を「' . A_SIGNUP_MODES[$m] . '」にしました。');
     }
-    if ($act === 'demo_save') {
-        if (!demo_seed_save()) redirect('admin.php#demo', 'デモ用アカウントが見つかりません (config.php の $HPX_DEMO_EMAIL)。');
-        demo_set_editing(false);
-        redirect('admin.php#demo', 'デモ用アカウントの今の状態を、初期状態として保存しました。');
-    }
-    if ($act === 'demo_edit_on') { demo_set_editing(true); redirect('admin.php#demo', '見本の準備中にしました。デモ用アカウントでログインして見本を直し、終わったらここで「初期状態として保存」を押してください。'); }
-    if ($act === 'demo_reset') redirect('admin.php#demo', demo_reset() ? 'デモ用アカウントを初期状態に戻しました。' : '初期状態がまだ保存されていません。');
     $u = user_get((string)($_POST['uid'] ?? ''));
     if (!$u) redirect('admin.php');
     $self = $u['id'] === $UID;
@@ -225,20 +218,6 @@ echo '<h2 id="export_all">全アカウントのデータのダウンロード</h
     . '<p class="muted">カメラの写真はとても大きくなります (1台で1年に数GBになることがあります)。' . h(dlr_cam_note()) . '「前回入れた日から」で少しずつ保存すると軽くすみます。カメラの設定と、機器と巣箱のつながりの履歴はいつも入ります。</p>'
     . '<p><button type="submit"' . ($nOk === 0 ? ' disabled' : '') . '>全アカウントのデータをダウンロード</button></p></form></div>';
 
-// デモ用アカウント
-if (demo_email() !== '') {
-    $seedAt = is_dir(demo_seed_dir()) ? date('Y-m-d H:i', (int)filemtime(demo_seed_dir())) : '';
-    echo '<h2 id="demo">デモ用アカウント</h2><div class="card form">'
-        . (demo_uid() === '' ? '<p class="ng">' . h(demo_email()) . ' のアカウントがありません。先に発行してください。</p>'
-            : '<p>' . h(demo_email()) . ' は誰でも試せるデモ用です。設定・チームの変更、写真の追加、メールの送信はできません。'
-              . (!empty($HPX_DEMO_READONLY) ? '書き込みもできません ($HPX_DEMO_READONLY)。' : '毎日 ' . (int)($HPX_DEMO_RESET_HOUR ?? 3) . '時ごろに初期状態へ戻します。') . '</p>'
-              . (demo_editing() ? '<p class="warn">見本の準備中です (写真も追加でき、毎日の初期化は止めています)。デモ用アカウントで見本を直したら「今の状態を初期状態として保存」を押してください。準備中は終わります。</p>' : '')
-              . '<p class="muted">初期状態: ' . ($seedAt !== '' ? h($seedAt) . ' に保存' : 'まだ保存していません (保存するまでは戻しません)') . '</p>'
-              . (!demo_editing() ? '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="demo_edit_on"><button type="submit">見本を直す (準備中にする)</button></form> ' : '')
-              . '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="demo_save"><button type="submit" onclick="return confirm(\'デモ用アカウントの今の状態を初期状態にしますか？\')">今の状態を初期状態として保存</button></form> '
-              . ($seedAt !== '' ? '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="demo_reset"><button type="submit" onclick="return confirm(\'デモ用アカウントを初期状態に戻しますか？\')">今すぐ初期状態に戻す</button></form>' : ''))
-        . '</div>';
-}
 $log = @file(data_dir() . '/account_mail.log', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 if (is_array($log) && $log) {
     echo '<details><summary>アカウントのメールの送信履歴</summary><div class="wrap"><table>';

@@ -11,104 +11,16 @@ if (empty($ME['admin'])) {
 }
 
 $DEFS = hpx_settings_def();
-$GROUPS = hpx_settings_groups();
-
-// 入力を項目の種類に合わせて確かめる。[値, エラーの文 (なければ '')]
-function st_parse(array $d, string $raw): array
-{
-    $raw = str_replace("\r\n", "\n", $raw);
-    $t = $d['t'];
-    if ($t !== 'text' && $t !== 'terms') $raw = trim($raw);
-    switch ($t) {
-        case 'int':
-        case 'float':
-            if ($raw === '' || !is_numeric($raw)) return [null, '数を入れてください'];
-            $v = $t === 'int' ? (int)$raw : (float)$raw;
-            if ($t === 'int' && (string)(int)$raw !== ltrim($raw, '+')) return [null, '整数を入れてください'];
-            if (isset($d['min']) && $v < $d['min']) return [null, $d['min'] . ' 以上にしてください'];
-            if (isset($d['max']) && $v > $d['max']) return [null, $d['max'] . ' 以下にしてください'];
-            return [$v, ''];
-        case 'bool': return [$raw === '1', ''];
-        case 'sel': return isset($d['o'][$raw]) ? [$raw, ''] : [null, '選びなおしてください'];
-        case 'email':
-            if ($raw !== '' && !filter_var($raw, FILTER_VALIDATE_EMAIL)) return [null, 'メールアドレスの形になっていません'];
-            return [$raw, ''];
-        case 'url':
-            $raw = rtrim($raw, '/') === '' ? '' : $raw;
-            if ($raw !== '' && !preg_match('#^https?://[^\s"\'<>]+$#', $raw)) return [null, 'http:// か https:// で始まる URL にしてください'];
-            return [$raw, ''];
-        case 'text':
-            $raw = trim($raw);
-            if (mb_strlen($raw) > 3000) return [null, '3000文字までにしてください'];
-            return [$raw, ''];
-        case 'terms':
-            $out = [];
-            foreach (explode("\n", $raw) as $i => $ln) {
-                $ln = trim($ln);
-                if ($ln === '') continue;
-                $p = preg_split('/\s*[=＝]\s*/u', $ln, 2);
-                $word = trim((string)$p[0]);
-                if ($word === '') return [null, ($i + 1) . '行目: 正しい言葉がありません'];
-                $alts = isset($p[1]) ? preg_split('/\s*[,、，]\s*/u', trim($p[1])) : [];
-                $out[$word] = array_values(array_filter(array_map('trim', $alts), fn($s) => $s !== ''));
-            }
-            return [$out, ''];
-        default:
-            if (preg_match('/[\x00-\x1f]/', $raw)) return [null, '1行で入れてください'];
-            $len = (int)($d['len'] ?? 300);
-            if (mb_strlen($raw) > $len) return [null, $len . '文字までにしてください'];
-            if (isset($d['zen'], $d['han']) && text_fit_zh($raw, (int)$d['zen'], (int)$d['han']) !== $raw) return [null, '全角なら' . (int)$d['zen'] . '文字、半角なら' . (int)$d['han'] . '文字までにしてください'];
-            return [$raw, ''];
-    }
-}
-
-// 画面に出す形
-function st_show(array $d, $v): string
-{
-    switch ($d['t']) {
-        case 'bool': return $v ? 'オン' : 'オフ';
-        case 'sel': return (string)($d['o'][(string)$v] ?? (string)$v);
-        case 'terms':
-            $ls = [];
-            foreach ((array)$v as $w => $alts) $ls[] = $w . ' = ' . implode(', ', (array)$alts);
-            return implode("\n", $ls);
-        default:
-            $s = is_float($v) ? rtrim(rtrim(sprintf('%.2f', $v), '0'), '.') : (string)$v;
-            return $s;
-    }
-}
-
-function st_same(array $d, $a, $b): bool
-{
-    if ($d['t'] === 'float') return abs((float)$a - (float)$b) < 1e-9;
-    if ($d['t'] === 'int') return (int)$a === (int)$b;
-    if ($d['t'] === 'bool') return (bool)$a === (bool)$b;
-    return st_show($d, $a) === st_show($d, $b);
-}
+$GROUPS = array_diff_key(hpx_settings_groups(), array_flip(HPX_SITE_GROUPS));   // AI ヘルプ・デモは情報サイトの管理ページで
 
 if (is_post()) {
     $act = (string)($_POST['act'] ?? '');
     if ($act === 'save') {
         $g = (string)($_POST['g'] ?? '');
-        if (!isset($GROUPS[$g])) redirect('settings.php');
+        if (!isset($GROUPS[$g])) redirect('settings.php');   // 情報サイトの欄はここでは保存しない
         $in = is_array($_POST['v'] ?? null) ? $_POST['v'] : [];
         $reset = is_array($_POST['reset'] ?? null) ? $_POST['reset'] : [];
-        $errs = [];
-        $set = [];
-        $unset = [];
-        foreach ($DEFS as $k => $d) {
-            if ($d['g'] !== $g || !hpx_setting_editable($d)) continue;
-            if (!empty($reset[$k])) { $unset[] = $k; continue; }
-            if ($d['t'] !== 'bool' && !array_key_exists($k, $in)) continue;
-            [$v, $err] = st_parse($d, (string)($in[$k] ?? ''));
-            if ($err !== '') { $errs[] = $d['l'] . ': ' . $err; continue; }
-            if (st_same($d, $v, $HPX_CONFIG_FILE[$k])) $unset[] = $k;
-            else $set[$k] = $v;
-        }
-        json_update(hpx_settings_path(), function (array $c) use ($set, $unset) {
-            foreach ($unset as $k) unset($c[$k]);
-            return array_merge($c, $set);
-        });
+        $errs = hpx_settings_save($g, $in, $reset);
         redirect('settings.php#g_' . $g, $errs ? '保存しましたが、次の項目は直してください (前の値のままです)。 ' . implode(' / ', $errs) : '「' . $GROUPS[$g] . '」を保存しました。');
     }
     if ($act === 'testmail') {
@@ -139,47 +51,7 @@ foreach ($GROUPS as $g => $gl) {
     $editable = array_filter($items, 'hpx_setting_editable');
     echo '<h2 id="g_' . $g . '">' . h($gl) . '</h2><div class="card form">';
     if ($editable) echo '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="save"><input type="hidden" name="g" value="' . $g . '">';
-    foreach ($items as $k => $d) {
-        $cur = $GLOBALS[$k] ?? $d['d'];
-        $cfg = $HPX_CONFIG_FILE[$k];
-        $changed = array_key_exists($k, $saved) && hpx_setting_editable($d);
-        echo '<div class="st-row st-in"><label for="f_' . $k . '"><b>' . h($d['l']) . '</b>' . ($changed ? '<span class="st-ch">画面で変更</span>' : '') . '</label>';
-        if (!hpx_setting_editable($d)) {
-            $has = trim((string)(is_scalar($cur) ? $cur : '')) !== '';
-            echo '<div>' . ($has ? '<span class="ok">設定済み</span>' : '<span class="muted">未設定</span>') . ' <span class="st-cf">config.php の $' . h($k) . ' に書きます</span></div></div>';
-            continue;
-        }
-        $name = 'v[' . $k . ']';
-        $id = ' id="f_' . $k . '"';
-        switch ($d['t']) {
-            case 'bool':
-                echo '<label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox"' . $id . ' name="' . $name . '" value="1"' . ($cur ? ' checked' : '') . '> オン</label>';
-                break;
-            case 'sel':
-                echo '<select' . $id . ' name="' . $name . '">';
-                $opts = $d['o'];
-                if (!isset($opts[(string)$cur])) $opts = [(string)$cur => (string)$cur] + $opts;
-                foreach ($opts as $ov => $ol) echo '<option value="' . h((string)$ov) . '"' . ((string)$ov === (string)$cur ? ' selected' : '') . '>' . h((string)$ol) . '</option>';
-                echo '</select>';
-                break;
-            case 'text':
-            case 'terms':
-                echo '<textarea' . $id . ' name="' . $name . '">' . h(st_show($d, $cur)) . '</textarea>';
-                break;
-            case 'int':
-            case 'float':
-                echo '<input type="number"' . $id . ' name="' . $name . '" value="' . h(st_show($d, $cur)) . '"' . ($d['t'] === 'float' ? ' step="0.01"' : ' step="1"')
-                    . (isset($d['min']) ? ' min="' . $d['min'] . '"' : '') . (isset($d['max']) ? ' max="' . $d['max'] . '"' : '') . ' style="width:9em"> ' . h((string)($d['u'] ?? ''));
-                break;
-            default:
-                echo '<input type="text"' . $id . ' name="' . $name . '" value="' . h(st_show($d, $cur)) . '"' . ($d['t'] === 'email' ? ' inputmode="email"' : ($d['t'] === 'url' ? ' inputmode="url"' : '')) . (isset($d['len']) ? ' maxlength="' . (int)$d['len'] . '"' : '') . '>';
-        }
-        if (!empty($d['hp'])) echo '<div class="muted">' . h($d['hp']) . '</div>';
-        $cfgShow = st_show($d, $cfg);
-        echo '<div class="st-cf">config.php の値: ' . ($cfgShow === '' ? '(空)' : h(mb_strimwidth(str_replace("\n", ' / ', $cfgShow), 0, 80, '…')))
-            . ($changed ? ' <label style="display:inline-flex;align-items:center;gap:4px;margin-left:8px"><input type="checkbox" name="reset[' . $k . ']" value="1"> config.php の値に戻す</label>' : '')
-            . '</div></div>';
-    }
+    echo hpx_settings_rows($g);
     if ($editable) echo '<p><button type="submit">「' . h($gl) . '」を保存</button></p></form>';
     if ($g === 'mail') {
         echo '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="testmail">'
