@@ -25,11 +25,16 @@ function hpx_settings_groups(): array
         'cam' => 'HPX-CAM (蜂場カメラ)',
         'line' => 'LINE',
         'ai' => 'AIメモ・記録',
-        'help' => '情報サイトの AI ヘルプ',
-        'demo' => 'デモ用アカウント',
+        'help' => '情報サイトの AI ヘルプ',      // 情報サイトの管理ページ (report_admin.php) で変える
+        'demo' => 'デモ用アカウント',            // 同上
         'secret' => 'パスワード・トークン・API キー (秘密)',
+        'site_secret' => '情報サイトのパスワード・API キー (秘密)',   // 情報サイトの管理ページに出す
     ];
 }
+
+// 情報サイト (hiveplusx.com) の運営 (HPX の管理者) が決める欄。HPX-note の「サーバーの設定」には出さず、
+// サイトの一番下の歯車から開く管理ページ (report_admin.php) で変える (2026-11-20 TARO 決定)
+const HPX_SITE_GROUPS = ['help', 'demo', 'site_secret'];
 
 function hpx_settings_def(): array
 {
@@ -38,10 +43,10 @@ function hpx_settings_def(): array
         // 表示
         'HPX_ORG_NAME' => ['g' => 'look', 'l' => 'このサーバーを運営する組織名・団体名', 't' => 'str', 'd' => '', 'len' => 12, 'zen' => 8, 'han' => 12, 'hp' => '入れると、上のバーのロゴの横に「× 組織名」と出ます (誰が導入したサーバーかわかるように)。空なら出しません。全角なら8文字、半角の英数字なら12文字まで (混ぜてもよく、全角2文字が半角3文字ぶんです)。'],
         // メール
-        'HPX_MAIL_FROM' => ['g' => 'mail', 'l' => '送り元のメールアドレス', 't' => 'email', 'd' => '', 'hp' => '下の「Gmail のアドレス」と同じにします。'],
-        'HPX_SMTP_USER' => ['g' => 'mail', 'l' => 'Gmail のアドレス (SMTP のユーザー)', 't' => 'str', 'd' => '', 'hp' => 'アプリパスワードは config.php の $HPX_SMTP_PASS に書きます。'],
-        'HPX_SMTP_HOST' => ['g' => 'mail', 'l' => 'SMTP サーバー', 't' => 'str', 'd' => 'smtp.gmail.com', 'hp' => 'Gmail なら smtp.gmail.com のまま。'],
-        'HPX_SMTP_PORT' => ['g' => 'mail', 'l' => 'SMTP のポート番号', 't' => 'int', 'd' => 587, 'min' => 1, 'max' => 65535, 'hp' => 'Gmail なら 587。'],
+        'HPX_SMTP_USER' => ['g' => 'mail', 'l' => 'メールサーバーのログイン名 (ユーザー名)', 't' => 'str', 'd' => '', 'hp' => '送信に使うメールアカウントのログイン名。ふつうはそのメールアドレスです (Gmail なら xxx@gmail.com)。パスワードは config.php の $HPX_SMTP_PASS に書きます。'],
+        'HPX_MAIL_FROM' => ['g' => 'mail', 'l' => '送り元のメールアドレス (差出人)', 't' => 'email', 'd' => '', 'hp' => '受け取った人に見える差出人。空ならログイン名を使うので、ふつうは空のままで大丈夫です (Gmail ではログイン名と違うアドレスにしても、ログイン名に書き換えられます)。'],
+        'HPX_SMTP_HOST' => ['g' => 'mail', 'l' => 'メールサーバー (SMTP サーバー)', 't' => 'str', 'd' => 'smtp.gmail.com', 'hp' => 'メールの会社の案内の「送信サーバー」「SMTP サーバー」。Gmail なら smtp.gmail.com、さくらのメールなら 初期ドメイン (例 xxx.sakura.ne.jp)。'],
+        'HPX_SMTP_PORT' => ['g' => 'mail', 'l' => 'SMTP のポート番号', 't' => 'int', 'd' => 587, 'min' => 1, 'max' => 65535, 'hp' => 'ふつうは 587 (暗号化は tls)。465 のときは暗号化を ssl にします。'],
         'HPX_SMTP_SECURE' => ['g' => 'mail', 'l' => '暗号化の方法', 't' => 'sel', 'd' => 'tls', 'o' => ['tls' => 'tls (ポート587)', 'ssl' => 'ssl (ポート465)']],
         'HPX_CONTACT_TO' => ['g' => 'mail', 'l' => 'サイトのお問い合わせの送り先', 't' => 'email', 'd' => '', 'hp' => '空なら support@hiveplusx.com。'],
         'HPX_REPORT_TO' => ['g' => 'mail', 'l' => '「作った・使ったレポート」が届いたときの知らせ先', 't' => 'email', 'd' => '', 'hp' => '空ならお問い合わせの送り先。'],
@@ -89,15 +94,15 @@ function hpx_settings_def(): array
         'HPX_DEMO_RESET_HOUR' => ['g' => 'demo', 'l' => '毎日初期状態に戻す時刻', 't' => 'int', 'd' => 3, 'min' => 0, 'max' => 23, 'u' => '時'],
         'HPX_DEMO_DUMMY' => ['g' => 'demo', 'l' => 'センサの記録を見本の値で作る', 't' => 'bool', 'd' => true, 'hp' => 'オフなら届いた記録を使います。'],
         // 秘密
-        'HPX_SMTP_PASS' => ['g' => 'secret', 'l' => 'Gmail のアプリパスワード', 't' => 'secret', 'd' => ''],
+        'HPX_SMTP_PASS' => ['g' => 'secret', 'l' => 'メールサーバーのパスワード (Gmail ならアプリパスワード)', 't' => 'secret', 'd' => ''],
         'HPX_CRON_TOKEN' => ['g' => 'secret', 'l' => 'hpx_cron.php を URL から呼ぶときのトークン', 't' => 'secret', 'd' => ''],
-        'HPX_REPORT_ADMIN_PW' => ['g' => 'secret', 'l' => '「作った・使ったレポート」の管理ページのパスワード', 't' => 'secret', 'd' => ''],
+        'HPX_REPORT_ADMIN_PW' => ['g' => 'site_secret', 'l' => '「作った・使ったレポート」の管理ページのパスワード', 't' => 'secret', 'd' => ''],
         'HPX_LINE_TOKEN' => ['g' => 'secret', 'l' => 'LINE のチャネルアクセストークン', 't' => 'secret', 'd' => ''],
         'HPX_LINE_SECRET' => ['g' => 'secret', 'l' => 'LINE のチャネルシークレット', 't' => 'secret', 'd' => ''],
         'HPX_AI_KEY' => ['g' => 'secret', 'l' => 'Claude の API キー (AIメモ・記録)', 't' => 'secret', 'd' => ''],
         'HPX_CAM_AI_KEY' => ['g' => 'secret', 'l' => 'Claude の API キー (カメラ。空なら AIメモのキー)', 't' => 'secret', 'd' => ''],
-        'HPX_HELP_KEY' => ['g' => 'secret', 'l' => 'Claude の API キー (AI ヘルプ。空なら AIメモのキー)', 't' => 'secret', 'd' => ''],
-        'HPX_HELP_GITHUB_TOKEN' => ['g' => 'secret', 'l' => 'GitHub の読み取り用トークン (非公開リポジトリのときだけ)', 't' => 'secret', 'd' => ''],
+        'HPX_HELP_KEY' => ['g' => 'site_secret', 'l' => 'Claude の API キー (AI ヘルプ。空なら AIメモのキー)', 't' => 'secret', 'd' => ''],
+        'HPX_HELP_GITHUB_TOKEN' => ['g' => 'site_secret', 'l' => 'GitHub の読み取り用トークン (非公開リポジトリのときだけ)', 't' => 'secret', 'd' => ''],
     ];
 }
 
@@ -140,6 +145,160 @@ function hpx_setting_cast(array $d, $v)
     }
 }
 
+// 入力を項目の種類に合わせて確かめる。[値, エラーの文 (なければ '')]
+function hpx_st_parse(array $d, string $raw): array
+{
+    $raw = str_replace("\r\n", "\n", $raw);
+    $t = $d['t'];
+    if ($t !== 'text' && $t !== 'terms') $raw = trim($raw);
+    switch ($t) {
+        case 'int':
+        case 'float':
+            if ($raw === '' || !is_numeric($raw)) return [null, '数を入れてください'];
+            $v = $t === 'int' ? (int)$raw : (float)$raw;
+            if ($t === 'int' && (string)(int)$raw !== ltrim($raw, '+')) return [null, '整数を入れてください'];
+            if (isset($d['min']) && $v < $d['min']) return [null, $d['min'] . ' 以上にしてください'];
+            if (isset($d['max']) && $v > $d['max']) return [null, $d['max'] . ' 以下にしてください'];
+            return [$v, ''];
+        case 'bool': return [$raw === '1', ''];
+        case 'sel': return isset($d['o'][$raw]) ? [$raw, ''] : [null, '選びなおしてください'];
+        case 'email':
+            if ($raw !== '' && !filter_var($raw, FILTER_VALIDATE_EMAIL)) return [null, 'メールアドレスの形になっていません'];
+            return [$raw, ''];
+        case 'url':
+            $raw = rtrim($raw, '/') === '' ? '' : $raw;
+            if ($raw !== '' && !preg_match('#^https?://[^\s"\'<>]+$#', $raw)) return [null, 'http:// か https:// で始まる URL にしてください'];
+            return [$raw, ''];
+        case 'text':
+            $raw = trim($raw);
+            if (mb_strlen($raw) > 3000) return [null, '3000文字までにしてください'];
+            return [$raw, ''];
+        case 'terms':
+            $out = [];
+            foreach (explode("\n", $raw) as $i => $ln) {
+                $ln = trim($ln);
+                if ($ln === '') continue;
+                $p = preg_split('/\s*[=＝]\s*/u', $ln, 2);
+                $word = trim((string)$p[0]);
+                if ($word === '') return [null, ($i + 1) . '行目: 正しい言葉がありません'];
+                $alts = isset($p[1]) ? preg_split('/\s*[,、，]\s*/u', trim($p[1])) : [];
+                $out[$word] = array_values(array_filter(array_map('trim', $alts), fn($s) => $s !== ''));
+            }
+            return [$out, ''];
+        default:
+            if (preg_match('/[\x00-\x1f]/', $raw)) return [null, '1行で入れてください'];
+            $len = (int)($d['len'] ?? 300);
+            if (mb_strlen($raw) > $len) return [null, $len . '文字までにしてください'];
+            if (isset($d['zen'], $d['han']) && function_exists('text_fit_zh') && text_fit_zh($raw, (int)$d['zen'], (int)$d['han']) !== $raw) return [null, '全角なら' . (int)$d['zen'] . '文字、半角なら' . (int)$d['han'] . '文字までにしてください'];
+            return [$raw, ''];
+    }
+}
+
+// 画面に出す形
+function hpx_st_show(array $d, $v): string
+{
+    switch ($d['t']) {
+        case 'bool': return $v ? 'オン' : 'オフ';
+        case 'sel': return (string)($d['o'][(string)$v] ?? (string)$v);
+        case 'terms':
+            $ls = [];
+            foreach ((array)$v as $w => $alts) $ls[] = $w . ' = ' . implode(', ', (array)$alts);
+            return implode("\n", $ls);
+        default:
+            $s = is_float($v) ? rtrim(rtrim(sprintf('%.2f', $v), '0'), '.') : (string)$v;
+            return $s;
+    }
+}
+
+function hpx_st_same(array $d, $a, $b): bool
+{
+    if ($d['t'] === 'float') return abs((float)$a - (float)$b) < 1e-9;
+    if ($d['t'] === 'int') return (int)$a === (int)$b;
+    if ($d['t'] === 'bool') return (bool)$a === (bool)$b;
+    return hpx_st_show($d, $a) === hpx_st_show($d, $b);
+}
+
+
+// 1つの欄 ($g) の入力を保存する。$in = $_POST['v']、$reset = $_POST['reset']。直してほしい項目の文の一覧を返す
+//   config.php と同じ値のとき・「config.php の値に戻す」のときは、保存した値を消す
+function hpx_settings_save(string $g, array $in, array $reset): array
+{
+    $errs = [];
+    $set = [];
+    $unset = [];
+    foreach (hpx_settings_def() as $k => $d) {
+        if ($d['g'] !== $g || !hpx_setting_editable($d)) continue;
+        if (!empty($reset[$k])) { $unset[] = $k; continue; }
+        if ($d['t'] !== 'bool' && !array_key_exists($k, $in)) continue;
+        [$v, $err] = hpx_st_parse($d, (string)($in[$k] ?? ''));
+        if ($err !== '') { $errs[] = $d['l'] . ': ' . $err; continue; }
+        if (hpx_st_same($d, $v, $GLOBALS['HPX_CONFIG_FILE'][$k] ?? $d['d'])) $unset[] = $k;
+        else $set[$k] = $v;
+    }
+    $path = hpx_settings_path();
+    if (!is_dir(dirname($path))) @mkdir(dirname($path), 0755, true);
+    $lock = @fopen($path . '.lock', 'c');
+    if ($lock) flock($lock, LOCK_EX);
+    $c = hpx_settings_saved();
+    foreach ($unset as $k) unset($c[$k]);
+    $c = array_merge($c, $set);
+    $tmp = $path . '.tmp';
+    if (@file_put_contents($tmp, json_encode($c, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) !== false) @rename($tmp, $path);
+    if ($lock) { flock($lock, LOCK_UN); fclose($lock); }
+    return $errs;
+}
+
+function hpx_h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+
+// 1つの欄 ($g) の項目の入力欄 (HPX-note の settings.php と、情報サイトの report_admin.php で使う)
+function hpx_settings_rows(string $g): string
+{
+    $o = '';
+    $saved = hpx_settings_saved();
+    foreach (array_filter(hpx_settings_def(), fn($d) => $d['g'] === $g) as $k => $d) {
+        $cur = array_key_exists($k, $GLOBALS['HPX_SETTINGS_SHOWN'] ?? []) ? $GLOBALS['HPX_SETTINGS_SHOWN'][$k] : ($GLOBALS[$k] ?? $d['d']);
+        $cfg = ($GLOBALS['HPX_CONFIG_FILE'][$k] ?? $d['d']);
+        $changed = array_key_exists($k, $saved) && hpx_setting_editable($d);
+        $o .= '<div class="st-row st-in"><label for="f_' . $k . '"><b>' . hpx_h($d['l']) . '</b>' . ($changed ? '<span class="st-ch">画面で変更</span>' : '') . '</label>';
+        if (!hpx_setting_editable($d)) {
+            $has = trim((string)(is_scalar($cur) ? $cur : '')) !== '';
+            $o .= '<div>' . ($has ? '<span class="ok">設定済み</span>' : '<span class="muted">未設定</span>') . ' <span class="st-cf">config.php の $' . hpx_h($k) . ' に書きます</span></div></div>';
+            continue;
+        }
+        $name = 'v[' . $k . ']';
+        $id = ' id="f_' . $k . '"';
+        switch ($d['t']) {
+            case 'bool':
+                $o .= '<label style="display:inline-flex;align-items:center;gap:4px"><input type="checkbox"' . $id . ' name="' . $name . '" value="1"' . ($cur ? ' checked' : '') . '> オン</label>';
+                break;
+            case 'sel':
+                $o .= '<select' . $id . ' name="' . $name . '">';
+                $opts = $d['o'];
+                if (!isset($opts[(string)$cur])) $opts = [(string)$cur => (string)$cur] + $opts;
+                foreach ($opts as $ov => $ol) $o .= '<option value="' . hpx_h((string)$ov) . '"' . ((string)$ov === (string)$cur ? ' selected' : '') . '>' . hpx_h((string)$ol) . '</option>';
+                $o .= '</select>';
+                break;
+            case 'text':
+            case 'terms':
+                $o .= '<textarea' . $id . ' name="' . $name . '">' . hpx_h(hpx_st_show($d, $cur)) . '</textarea>';
+                break;
+            case 'int':
+            case 'float':
+                $o .= '<input type="number"' . $id . ' name="' . $name . '" value="' . hpx_h(hpx_st_show($d, $cur)) . '"' . ($d['t'] === 'float' ? ' step="0.01"' : ' step="1"')
+                    . (isset($d['min']) ? ' min="' . $d['min'] . '"' : '') . (isset($d['max']) ? ' max="' . $d['max'] . '"' : '') . ' style="width:9em"> ' . hpx_h((string)($d['u'] ?? ''));
+                break;
+            default:
+                $o .= '<input type="text"' . $id . ' name="' . $name . '" value="' . hpx_h(hpx_st_show($d, $cur)) . '"' . ($d['t'] === 'email' ? ' inputmode="email"' : ($d['t'] === 'url' ? ' inputmode="url"' : '')) . (isset($d['len']) ? ' maxlength="' . (int)$d['len'] . '"' : '') . '>';
+        }
+        if (!empty($d['hp'])) $o .= '<div class="muted">' . hpx_h($d['hp']) . '</div>';
+        $cfgShow = hpx_st_show($d, $cfg);
+        $o .= '<div class="st-cf">config.php の値: ' . ($cfgShow === '' ? '(空)' : hpx_h(mb_strimwidth(str_replace("\n", ' / ', $cfgShow), 0, 80, '…')))
+            . ($changed ? ' <label style="display:inline-flex;align-items:center;gap:4px;margin-left:8px"><input type="checkbox" name="reset[' . $k . ']" value="1"> config.php の値に戻す</label>' : '')
+            . '</div></div>';
+    }
+    return $o;
+}
+
 // config.php に書いてある値 (画面で上書きする前)。画面の「config.php の値」に出す
 $HPX_CONFIG_FILE = [];
 foreach (hpx_settings_def() as $__hk => $__hd) {
@@ -153,3 +312,8 @@ foreach (hpx_settings_saved() as $__hk => $__hv) {
     if ($__hv !== null) $GLOBALS[$__hk] = $__hv;
 }
 unset($__hk, $__hd, $__hv);
+// 送り元が空なら、メールサーバーのログイン名 (メールアドレスの形のとき) を使う。画面には空のまま出す (HPX_SETTINGS_SHOWN)
+$HPX_SETTINGS_SHOWN = ['HPX_MAIL_FROM' => $GLOBALS['HPX_MAIL_FROM'] ?? ''];
+if (trim((string)($GLOBALS['HPX_MAIL_FROM'] ?? '')) === '' && filter_var(trim((string)($GLOBALS['HPX_SMTP_USER'] ?? '')), FILTER_VALIDATE_EMAIL)) {
+    $GLOBALS['HPX_MAIL_FROM'] = trim((string)$GLOBALS['HPX_SMTP_USER']);
+}
