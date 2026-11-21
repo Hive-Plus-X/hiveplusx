@@ -699,7 +699,8 @@ if (!$byKind['w']) {
             . '<td class="n">' . ($last ? ($calOk ? '<b>' . h(kg_text($kg)) . '</b>' : '<span class="warn">較正前</span>')
                 . '<br><span class="muted">' . ($isBm ? 'BroodMinder' : '生の値 ' . h((string)$last[1])) . '</span>' : '-') . '</td>'
             . '<td class="n">' . ($diff === null ? '-' : '<span class="' . ($diff >= 0 ? 'ok' : 'warn') . '">' . h(($diff >= 0 ? '+' : '') . number_format($diff, 2)) . ' kg</span>') . '</td>'
-            . '<td class="n">' . h($last && $last[4] !== null ? number_format($last[4], 2) . ' V' : '-') . '</td>'
+            . '<td class="n">' . h($last && $last[4] !== null ? number_format($last[4], 2) . ' V'
+                : ($last && ($last[5] ?? null) !== null ? (int)$last[5] . ' %' : '-')) . '</td>'   // BroodMinder は電池% (電圧は届かない)
             . '<td>' . h($le ? date('m-d H:i', $le) . ' (' . ago_text($le, $now) . ')' : '-')
             . ($seen > 0 && $now - $seen >= D_W_MISSING_S ? '<br><span class="ng">受信できていません</span>' : '') . '</td></tr>';
 

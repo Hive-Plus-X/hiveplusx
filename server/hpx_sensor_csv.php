@@ -48,7 +48,7 @@ function read_ble(string $csv, int $since): array
         $kind = $g($r, 'kind');
         if ($kind === 'w') {
             if (!is_numeric($g($r, 'raw'))) continue;
-            $out['w'][$mac][] = [$ep, (int)$g($r, 'raw'), $num($g($r, 'spread')), $num($g($r, 'temp_c')), $num($g($r, 'batt_v'))];
+            $out['w'][$mac][] = [$ep, (int)$g($r, 'raw'), $num($g($r, 'spread')), $num($g($r, 'temp_c')), $num($g($r, 'batt_v')), $num($g($r, 'battery_pct'))];   // [5] 電池% (BroodMinder)
         } elseif ($kind === 'fa') {
             if ($g($r, 'fence_state') === '') continue;
             $out['fa'][] = [$ep, $g($r, 'sensor') !== '' ? $g($r, 'sensor') : $mac, $mac, (int)$g($r, 'fence_state'), (int)$g($r, 'fence_events')];
