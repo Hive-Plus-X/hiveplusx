@@ -219,11 +219,14 @@ A. ソーラーパネルで充電するカーバッテリーの電圧と、パ�
 
 A. はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5・W+・W3・W4) に対応済みです。W3・W4 は巣箱全体を乗せるので、巣箱の重量を正確に測れます。
 
-### Q. BroodMinder のセンサを HPX で使っても問題ありませんか？
+### Q. 市販のセンサ (BroodMinder・SwitchBot・Inkbird) を HPX で使っても問題ありませんか？
 
-A. 問題ありません。BroodMinder の公式サイトで、自分で受信機を作る人向けに、センサが出す電波 (BLE) の形式と換算の式が公開されています。HPX-Core はその公開情報にもとづいて受信しています。
+A. それぞれ、電波 (BLE) の形式が公開されている情報にもとづいて受信しています。
 
-公開しているページ (英語): https://doc.mybroodminder.com/87_physics_and_tech_stuff/
+- BroodMinder (温湿度センサ TH2、重量センサ W5・W+・W3・W4): 問題ありません。公式サイトで、自分で受信機を作る人向けに、電波の形式と換算の式が公開されています。 https://doc.mybroodminder.com/87_physics_and_tech_stuff/
+- BroodMinder-BeeDar (巣門の活動量): 活動量が電波のどこに入っているかは公開されていないため、使えません。
+- SwitchBot (温湿度計・防水温湿度計): SwitchBot の開発元 (Wonder Labs) が、GitHub で電波の形式を「BLE open API」として公開しています。 https://github.com/OpenWonderLabs/SwitchBotAPI-BLE/blob/latest/devicetypes/meter.md
+- Inkbird (IBS-TH2 / TH2 PLUS): メーカーからの公式な公開資料は見つかっていません。電波の読み方は、オープンソースの ESPHome などが公開している方法と同じです。 https://esphome.io/components/sensor/inkbird_ibsth1_mini.html
 
 ## 3. HPX-Core の設定・動き
 
