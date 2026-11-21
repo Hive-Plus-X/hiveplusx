@@ -97,7 +97,7 @@ $legacyMac = strtoupper((string)($d['sensors']['ble_mac'] ?? ''));   // v1.09以
 //            fence_events は電圧低下になった通算回数、fence_blink_ago_s は最後の点滅からの秒数、batt_v は電池電圧)
 //   温湿度計の機種は state.json の sensors[mac].model (inkbird / switchbot / switchbot_outdoor。HPX-Core v1.18 以降、broodminder は v1.29 以降)。
 //   BroodMinder の重量計は kind=w で、raw は 0.01kg 単位の重さ、battery_pct は電池%(batt_v は空)。sensors[mac].model = broodminder、
-//   sensors[mac].bm_model = 機種番号 (HPX-Core v1.30 以降)。機種 49 (W3/W4) は weight_cal.json に full_hive=1
+//   sensors[mac].bm_model = 機種番号 (HPX-Core v1.30 以降)。機種 49 (W3/W4)・57 (W5・W+) は weight_cal.json に full_hive=1
 //   HPX-TH は kind=th のまま。temp_c・humidity_pct は SHT40、temp2_c はサーミスターの温度、batt_v は電池電圧(battery_pct は空)
 $csvHeader = ['time', 'epoch', 'seq', 'temp_c', 'humidity_pct', 'battery_pct', 'rssi_dbm', 'ts_known', 'sensor', 'mac', 'kind', 'raw', 'spread', 'batt_v',
               'fence_state', 'fence_events', 'fence_blink_ago_s', 'temp2_c'];
@@ -202,7 +202,7 @@ if (is_array($ble) && count($ble) > 0) {
                 $s['model'] = ['ink' => 'inkbird', 'sb' => 'switchbot', 'sbw' => 'switchbot_outdoor', 'bm' => 'broodminder'][$r['m']];
             if ($isW && ($r['m'] ?? '') === 'bm') {   // BroodMinder の重量計: raw は 0.01kg 単位の重さ (機器の中で較正済み)
                 $s['model'] = 'broodminder';
-                // 機種番号 (HPX-Core v1.30 以降が "bmm" で送る)。49 = W3/W4 (巣箱全体を量る) は巣箱の重さを2倍にしない
+                // 機種番号 (HPX-Core v1.30 以降が "bmm" で送る)。49 = W3/W4 (巣箱全体を量る)・57 = W5/W+ (機器の中で巣箱全体の重さに換算して送る) は巣箱の重さを2倍にしない
                 $bmm = isset($r['bmm']) && is_numeric($r['bmm']) ? (int)$r['bmm'] : 0;
                 if ($bmm > 0) $s['bm_model'] = $bmm;
                 $bmWeight[$key] = $bmm;
@@ -259,8 +259,10 @@ if ($bmWeight) {
             $c['src'] = 'BroodMinder';
             $c['ts'] = $now;
         }
-        // full_hive: 巣箱全体を乗せる重量計 (BroodMinder-W3/W4 = 機種 49)。巣箱にこの1台だけでも重さを2倍にしない (hive_kg・hive_kg_series)
-        if ($bmm === 49) $c['full_hive'] = 1;
+        // full_hive: 巣箱全体の重さが届く重量計。巣箱にこの1台だけでも重さを2倍にしない (hive_kg・hive_kg_series)
+        //   49 = W3/W4 (巣箱全体を乗せる)。57 = W5/W+ (片側に置くが、機器の中で巣箱全体の重さに換算して送ってくる。
+        //   TARO の W5 実機 2026-11-21: 重さのわかった物を乗せると約2倍の値)
+        if ($bmm === 49 || $bmm === 57) $c['full_hive'] = 1;
         elseif ($bmm > 0) unset($c['full_hive']);
         if ($c !== $was) { $cal[$mac] = $c; $changed = true; }
     }

@@ -710,6 +710,7 @@ if (!$byKind['w']) {
         $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
         if ($calOk && $isBm) {
             $f .= '<p class="muted">BroodMinder の重量計です。BroodMinder の中で較正した重さがそのまま届くので、HPX-Core での較正は要りません。'
+                . (!empty($c['full_hive']) ? ' この機種は巣箱全体の重さ (片側に置く W5・W+ は BroodMinder の中で換算した重さ) を送ってくるので、巣箱の重さは2倍にしません。' : '')
                 . (!empty($c['offset_kg']) ? ' 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg。' : '') . '</p>';
         } elseif ($calOk) {
             $f .= '<p class="muted">今の較正値: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))

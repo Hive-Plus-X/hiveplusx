@@ -25,7 +25,7 @@ function hive_alert_conf(array $hv): array
 // 巣箱の重さ: 重量センサが1台なら巣箱の片側に置く使い方 (巣箱の半分の重さがかかる) なので、センサの値の2倍。
 //   2台以上なら (巣箱の両側に1台ずつなど、全体の重さがセンサにかかる) センサの値の合計。どれかのセンサの値が無ければ null
 const HW_PAIR_S = 600;        // 2台以上のとき、同じ時刻の記録とみなす幅(前後この秒数まで)
-//   $full: その1台が巣箱全体を乗せる重量計 (BroodMinder-W3/W4。weight_cal.json の full_hive) なら2倍にしない
+//   $full: その1台が巣箱全体の重さが届く重量計 (BroodMinder-W3/W4・W5・W+。weight_cal.json の full_hive) なら2倍にしない
 function hive_kg(array $kgs, bool $full = false): ?float
 {
     if (!$kgs || in_array(null, $kgs, true)) return null;
