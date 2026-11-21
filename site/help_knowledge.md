@@ -219,6 +219,12 @@ A. ソーラーパネルで充電するカーバッテリーの電圧と、パ�
 
 A. はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5・W+・W3・W4) に対応済みです。W3・W4 は巣箱全体を乗せるので、巣箱の重量を正確に測れます。
 
+### Q. BroodMinder のセンサを HPX で使っても問題ありませんか？
+
+A. 問題ありません。BroodMinder の公式サイトで、自分で受信機を作る人向けに、センサが出す電波 (BLE) の形式と換算の式が公開されています。HPX-Core はその公開情報にもとづいて受信しています。
+
+公開しているページ (英語): https://doc.mybroodminder.com/87_physics_and_tech_stuff/
+
 ## 3. HPX-Core の設定・動き
 
 ### Q. HPX-Coreに何台のセンサを追加できますか。
