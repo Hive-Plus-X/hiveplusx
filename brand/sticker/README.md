@@ -17,6 +17,17 @@ hive+x ロゴ (brand/logo/) と機器名ロゴ (brand/note-and-devices/) をそ�
 機器名は HPX-Core / HPX-TH / HPX-W / HPX-F の4種類です。PNG (1000px) は png/、一覧は preview_all.png です。
 作り直すときは `python3 mk_sticker.py` を実行します (fonttools と cairosvg が必要)。
 
+## 採用したステッカー (2026-11-21)
+D 白 (D_white) を採用しました。サイトのダウンロードページ (site/download.html) から、この7種類の SVG・PNG をまとめた zip (site/download/hiveplusx_stickers_YYYYMMDD.zip) をダウンロードできます。
+
+| 機器 | ファイル | 大きさ |
+|---|---|---|
+| HPX-Core / HPX-TH / HPX-F | svg/D_white_HPX-Core.svg など | 50mm 角 |
+| HPX-B / HPX-CAM / HPX-Solar (2026-11-21 追加) | svg/D_white_HPX-B.svg など | 50mm 角 |
+| HPX-W (横長、左に hive+x・右の緑に HPX-W) | svg/D_white_HPX-W_wide.svg | 100mm × 30mm (PNG は 2000×600px) |
+
+HPX-B・HPX-CAM・HPX-Solar の機器名は note-and-devices に無いので、mk_sticker.py が同じ書体 (Inter ExtraBold) から作ります。
+
 ## 印刷のヒント
 - 印刷屋さんには SVG を渡してください。白背景の案 (B・C 白・D・D 白・F 白) の灰色の線は、切り取り位置の目安です。
 - 屋外の巣箱に貼るなら、耐候性 (UVカット・防水) の用紙かラミネートがおすすめです。

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ダウンロード | Hive Plus X</title>
+<meta name="description" content="Hive Plus X のダウンロード。ファームウェア・サーバーのプログラム (HPX-Server)・回路図・部品表は GitHub で公開しています。機器に貼るステッカー (SVG・PNG) もダウンロードできます。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
+    --forest:#2F5D45; --line:rgba(31,35,40,.12); --on-forest:#FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1E3B2C; --panel:#2F5D45; --text:#FFFFFF; --sub:rgba(255,255,255,.72); --honey-soft:rgba(242,169,0,.16);
+            --line:rgba(255,255,255,.18); --forest:#16291F; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text); line-height:1.75;
+    font-family:"Inter","Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ヘッダー */
+  header { background:var(--forest); color:var(--on-forest); position:sticky; top:0; z-index:10; }
+  header .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px; }
+  header .brand img { height:26px; display:block; }
+  nav ul { list-style:none; display:flex; gap:22px; font-size:14px; }
+  nav a { text-decoration:none; opacity:.9; padding:4px 0; border-bottom:2px solid transparent; }
+  nav a:hover { opacity:1; border-bottom-color:var(--honey); }
+  .menu-btn { display:none; background:none; border:0; color:inherit; font-size:24px; cursor:pointer; }
+  @media (max-width:760px) {
+    .menu-btn { display:block; }
+    nav { display:none; position:absolute; top:60px; left:0; right:0; background:var(--forest); }
+    nav.open { display:block; }
+    nav ul { flex-direction:column; gap:0; padding:8px 20px 16px; }
+    nav li a { display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  }
+
+  /* ヒーロー */
+  .hero { padding:300px 20px 0; text-align:center; }
+  @media (max-width:760px) { .hero { padding:200px 20px 0; } }
+  .hero .logo { width:min(380px, 70vw); height:auto; }
+  .logo-dark { display:none; }
+  @media (prefers-color-scheme: dark) { .logo-light { display:none; } .logo-dark { display:inline; } }
+  .hero h1 { font-size:clamp(22px, 4vw, 32px); margin-top:28px; letter-spacing:.02em; }
+  .hero p { color:var(--sub); margin:14px auto 0; max-width:720px; }
+  /* セクション */
+  /* トピックの間は余白だけで区切る (パソコン 315px、スマホ 210px。2026-11-17 に 450・300px の約70%へ) */
+  section { padding:0; margin-top:315px; }
+  main { padding-bottom:450px; }
+  @media (max-width:760px) { section { margin-top:210px; } main { padding-bottom:300px; } }
+  .eyebrow { font-size:14px; font-weight:700; letter-spacing:.24em; color:var(--honey); text-transform:uppercase; }
+  h2 { font-size:clamp(26px, 3.6vw, 34px); margin-top:6px; line-height:1.4; }
+  .lead { color:var(--sub); margin-top:8px; max-width:720px; }
+  /* フッター */
+  footer { background:var(--forest); color:var(--on-forest); padding:36px 0; font-size:13px; }
+  footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+  footer ul { list-style:none; display:flex; gap:18px; flex-wrap:wrap; }
+  footer a { opacity:.85; text-decoration:none; }
+  footer a:hover { opacity:1; text-decoration:underline; }
+  footer small { opacity:.7; display:block; }
+  /* スクロールで各トピックが下から少し上がって現れる (JS が動くときだけ。動きを減らす設定の人には出さない) */
+  .js .reveal { opacity:0; transform:translateY(48px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .js .reveal.shown { opacity:1; transform:none; }
+  .js .reveal .visual { transition-delay:.15s; }
+  @media (prefers-reduced-motion: reduce) { .js .reveal { opacity:1; transform:none; transition:none; } }
+  /* しくみページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  .hero.sub h1 { font-size:clamp(28px, 5vw, 40px); margin-top:0; }
+  /* ダウンロードページ */
+  .hero.sub .eyebrow { margin-bottom:6px; }
+  section { scroll-margin-top:72px; margin-top:140px; }
+  @media (max-width:760px) { section { margin-top:98px; } }
+  main { padding-bottom:300px; }
+  @media (max-width:760px) { main { padding-bottom:200px; } }
+  .cats { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:36px; }
+  .cats a { display:inline-block; padding:8px 18px; border-radius:999px; border:1.5px solid var(--forest); text-decoration:none; font-size:14px; font-weight:700; }
+  .cats a:hover { background:var(--honey-soft); }
+  @media (prefers-color-scheme: dark) { .cats a { border-color:var(--honey); } }
+  /* トピック: 左右2列。テキストは上から 左→右 (.rev がテキスト右) */
+  .topic { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+  .topic.rev .text { order:2; }
+  .topic.rev .visual { order:1; }
+  .topic .lead { max-width:none; }
+  @media (max-width:860px) {
+    .topic { grid-template-columns:1fr; gap:36px; }
+    .topic.rev .text, .topic.rev .visual { order:0; }
+  }
+  .text p.body { margin-top:14px; }
+  .text a:not(.btn):not(.more) { color:var(--forest); }
+  @media (prefers-color-scheme: dark) { .text a:not(.btn):not(.more) { color:var(--honey); } }
+  .more { display:inline-block; margin-top:20px; font-weight:600; text-decoration:none; border-bottom:2px solid var(--honey); }
+  .btn { display:inline-block; margin-top:24px; padding:12px 26px; border-radius:999px; background:var(--honey); color:#1F2328; font-weight:700; text-decoration:none; }
+  .btn:hover { filter:brightness(1.06); }
+  .btn small { font-weight:600; opacity:.75; margin-left:6px; }
+  .btn-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px 22px; }
+  .tips { margin-top:22px; padding-left:1.2em; color:var(--sub); font-size:15px; }
+  .tips li + li { margin-top:4px; }
+  /* GitHub のフォルダ一覧 */
+  .files { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
+  .files a.row { display:flex; align-items:center; gap:14px; padding:18px 24px; text-decoration:none; }
+  .files a.row:hover { background:var(--honey-soft); }
+  .files .row + .row { border-top:1px solid var(--line); }
+  .files .name { flex:1; min-width:0; }
+  .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
+  .files .name span { display:block; font-size:13px; color:var(--sub); }
+  .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
+  .files .go { flex:none; color:var(--sub); }
+  /* ステッカーの見本 */
+  .stickers { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  .stickers figure { text-align:center; }
+  .stickers figure.wide { grid-column:1 / -1; }
+  .stickers img { width:100%; height:auto; display:block; }
+  .stickers figcaption { font-size:12px; color:var(--sub); margin-top:4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/hivex_reverse.svg" alt="Hive Plus X"></a>
+    <button class="menu-btn" aria-label="メニュー" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+    <nav>
+      <ul>
+        <li><a href="app.html">HPX-note</a></li>
+        <li><a href="devices.html">機器をつくる</a></li>
+        <li><a href="install.html">設置ガイド</a></li>
+        <li><a href="download.html">ダウンロード</a></li>
+        <li><a href="index.html#community">コミュニティ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+<main>
+  <div class="hero wrap sub">
+    <p class="eyebrow">Download</p>
+    <h1>ダウンロード</h1>
+    <p>ファームウェア、サーバーのプログラム (HPX-Server)、回路図などは GitHub で公開しています。機器に貼るステッカーはこのページからダウンロードできます。利用にあたっては、<a href="policy.html">オープンソース方針</a>をご確認ください。</p>
+    <ul class="cats">
+<li><a href="#github">GitHub で公開しているもの</a></li>
+<li><a href="#sticker">機器ステッカー</a></li>
+    </ul>
+  </div>
+
+<section id="github">
+  <div class="reveal wrap topic">
+    <div class="text">
+      <p class="eyebrow">GitHub</p>
+      <h2>GitHub で公開しているもの</h2>
+      <p class="lead">プログラムと図面は、すべて GitHub のリポジトリにあります。右の一覧から、見たいフォルダを開いてください。</p>
+      <p class="body">まとめて手に入れたいときは、下のボタンでリポジトリ全体を zip でダウンロードできます。GitHub のページでは、緑の「Code」ボタン →「Download ZIP」でも同じです。</p>
+      <div class="btn-row">
+        <a class="btn" href="https://github.com/Hive-Plus-X/hiveplusx/archive/refs/heads/main.zip">すべてを zip でダウンロード</a>
+        <a class="more" href="https://github.com/Hive-Plus-X/hiveplusx" target="_blank" rel="noopener">GitHub のリポジトリを開く ↗</a>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="files">
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/firmware" target="_blank" rel="noopener"><span class="name"><b>ファームウェア</b><span>HPX-Core と各センサのプログラム (Arduino)</span></span><span class="lic">MIT</span><span class="go" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/server" target="_blank" rel="noopener"><span class="name"><b>サーバーのシステムファイル　HPX-Server</b><span>HPX-note を動かすサーバーのプログラム一式</span></span><span class="lic">MIT</span><span class="go" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/hardware/wiring" target="_blank" rel="noopener"><span class="name"><b>回路図・配線図</b><span>機器ごとの基板の配線図</span></span><span class="lic">CERN-OHL-P v2</span><span class="go" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/hardware/parts" target="_blank" rel="noopener"><span class="name"><b>部品表</b><span>機器ごとの部品と買える店</span></span><span class="lic">CERN-OHL-P v2</span><span class="go" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/docs" target="_blank" rel="noopener"><span class="name"><b>説明書・検討メモ</b><span>サーバーの準備のしかたなど</span></span><span class="lic">CC BY 4.0</span><span class="go" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/brand" target="_blank" rel="noopener"><span class="name"><b>ロゴ・ステッカーの元データ</b><span>hive+x のロゴ、機器名、ステッカー</span></span><span class="lic">名前とロゴの扱い</span><span class="go" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sticker">
+  <div class="reveal wrap topic rev">
+    <div class="text">
+      <p class="eyebrow">Sticker</p>
+      <h2>機器ステッカー</h2>
+      <p class="lead">自作した HPX の機器に貼るステッカーです。上が白で hive+x、下の緑の帯に機器名を入れました。重量センサ HPX-W だけは、細長い機器に合わせた横長です。</p>
+      <p class="body">zip には 7 種類の SVG (印刷用) と PNG (画像) が入っています。正方形は 50mm 角、HPX-W は 100mm × 30mm で作っていますが、SVG は拡大・縮小しても形が崩れません。</p>
+      <div class="btn-row">
+        <a class="btn" href="download/hiveplusx_stickers_20261121.zip" download>ステッカーをダウンロード<small>zip・約 260KB</small></a>
+        <a class="more" href="https://github.com/Hive-Plus-X/hiveplusx/tree/main/brand/sticker" target="_blank" rel="noopener">GitHub の元データ ↗</a>
+      </div>
+      <ul class="tips">
+        <li>印刷屋さんには SVG を渡してください。</li>
+        <li>うすい灰色の線は、切り取り位置の目安です。</li>
+        <li>屋外の巣箱に貼るなら、耐候性 (UVカット・防水) の用紙かラミネートがおすすめです。</li>
+        <li>名前とロゴの扱いは、<a href="policy.html#name">オープンソース方針</a>をご覧ください。</li>
+      </ul>
+    </div>
+    <div class="visual">
+      <div class="stickers">
+        <figure><img src="img/sticker/HPX-Core.png" alt="HPX-Core のステッカー" loading="lazy"><figcaption>HPX-Core　ハブ</figcaption></figure>
+        <figure><img src="img/sticker/HPX-TH.png" alt="HPX-TH のステッカー" loading="lazy"><figcaption>HPX-TH　温湿度センサ</figcaption></figure>
+        <figure><img src="img/sticker/HPX-F.png" alt="HPX-F のステッカー" loading="lazy"><figcaption>HPX-F　電気柵アラート</figcaption></figure>
+        <figure><img src="img/sticker/HPX-B.png" alt="HPX-B のステッカー" loading="lazy"><figcaption>HPX-B　バッテリー見守り</figcaption></figure>
+        <figure><img src="img/sticker/HPX-CAM.png" alt="HPX-CAM のステッカー" loading="lazy"><figcaption>HPX-CAM　カメラ</figcaption></figure>
+        <figure><img src="img/sticker/HPX-Solar.png" alt="HPX-Solar のステッカー" loading="lazy"><figcaption>HPX-Solar　ソーラー電源</figcaption></figure>
+        <figure class="wide"><img src="img/sticker/HPX-W.png" alt="HPX-W のステッカー" loading="lazy"><figcaption>HPX-W　重量センサ</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <img src="img/hivex_reverse.svg" alt="Hive Plus X" style="height:22px">
+      <small style="margin-top:8px">&copy; 2026 Taro Maeda and Hive Plus X contributors</small>
+    </div>
+    <ul>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx">GitHub</a></li>
+      <li><a href="https://github.com/Hive-Plus-X/hiveplusx/discussions">フォーラム</a></li>
+      <li><a href="https://line.me/R/ti/p/@222xdxtk">LINE</a></li>
+      <li><a href="policy.html">オープンソース方針</a></li>
+      <li><a href="faq.html">よくある質問</a></li>
+      <li><a href="help.php">AI ヘルプ</a></li>
+      <li><a href="contact.php">お問い合わせ</a></li>
+      <li><a href="report_admin.php" title="管理" aria-label="管理"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('shown'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
