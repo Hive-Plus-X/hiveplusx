@@ -362,6 +362,33 @@ A. 2 本を並列につなぎます (直列にはしないでください)。寿
 
 A. パソコンにArduino IDEをインストールして、センサとパソコンをUSBケーブルでつなぐと書き込めます。
 
+### Q. Arduino IDE に ESP32 のボードを入れるには？
+
+A. 最初に一度だけ、「環境設定」にボードマネージャの URL を追加し、ボードマネージャで検索してインストールします。
+
+1. Arduino IDE の「ファイル」→「基本設定 (環境設定)」を開き、「追加のボードマネージャの URL」に下の URL を書いて OK を押します。2 つ書くときは改行で分けます。
+2. 左の「ボードマネージャ」を開き、名前で検索して「インストール」を押します。
+3. 「ツール」→「ボード」で、使うボードを選びます。
+
+| 機器 | URL | ボードマネージャで検索して入れるもの | 選ぶボード |
+|---|---|---|---|
+| HPX-Core (ESP32) | https://espressif.github.io/arduino-esp32/package_esp32_index.json | esp32 (作者 Espressif Systems、3.3.12 以上) | 使う開発ボードに合うもの (分からないときは「ESP32 Dev Module」) |
+| HPX-TH・HPX-W・HPX-F (XIAO nRF52840) | https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json | Seeed nRF52 Boards | Seeed XIAO nRF52840 |
+
+- XIAO nRF52840 には「Seeed nRF52 mbed-enabled Boards」という似た名前のものもありますが、HPX のファームは「Seeed nRF52 Boards」(mbed の付かないほう) を使います。
+
+### Q. ESP32 を USB でつないでも、Arduino IDE にポートが出ません。
+
+A. パソコンに USB ドライバーを入れる必要がある場合があります。
+
+- ESP32 の開発ボードには、USB とつなぐための小さなチップが載っています。チップの種類によって、入れるドライバーが違います。
+  - CP2102 (CP210x): Silicon Labs の「CP210x USB to UART Bridge VCP Drivers」。HPX の配線図で使っている ELEGOO ESP-32 はこれです。
+  - CH340 (CH34x): WCH の「CH340/CH341 ドライバー」。
+- どのチップかは、ボードの説明ページか、ボードのチップの刻印で確かめてください。
+- ドライバーを入れたら、USB を挿し直し、「ツール」→「ポート」で選びます (Windows なら COM○)。
+- それでも出ないときは、USB ケーブルを替えてみてください。充電専用のケーブルでは、パソコンとやりとりできません。
+- XIAO nRF52840 (HPX-TH・HPX-W・HPX-F) はマイコンに USB が入っているので、ふつうはドライバーは要りません。
+
 ### Q. 「NimBLEDevice.h: No such file or directory」と出ます。
 
 A. ライブラリマネージャで「NimBLE-Arduino」(作者 h2zero、2.x 版) を入れてください。
