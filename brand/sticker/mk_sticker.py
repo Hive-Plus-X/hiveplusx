@@ -173,17 +173,19 @@ def D_white(n):
 
 def W_wide():
     # HPX-W 用の横長 (100mm × 21mm 想定、2026-11-21 TARO 要望で高さ 30mm の7割に): 左の白に hive+x、ハチミツ色の縦線、右の緑に白文字の HPX-W。
-    # D_white を横に並べかえた形
+    # D_white を横に並べかえた形。HPX-W の字の上下を hive+x の「x」の上下にそろえる (2026-11-21 TARO 要望)
     W, H, R = 2000, 420, 110
-    cut = 1300   # 白と緑の境目
-    # hive+x の字の下の線 (ベースライン、ロゴの y=0) に HPX-W の字の下をそろえる (2026-11-21 TARO 要望)
-    lw = 980; lk = lw / (LOGO_BOX[2] - LOGO_BOX[0])
-    base = (H / 2 + 10) - (LOGO_BOX[1] + LOGO_BOX[3]) / 2 * lk
+    XH = 1118                      # ロゴの x の高さ (ロゴの座標で。下はベースライン y=0)
+    lw = 880; lk = lw / (LOGO_BOX[2] - LOGO_BOX[0])
+    lcx, lcy = 110 + lw / 2, H / 2 + 10
+    base = lcy - (LOGO_BOX[1] + LOGO_BOX[3]) / 2 * lk   # hive+x のベースライン
+    xh = XH * lk                   # HPX-W の字の高さ = x の高さ
+    cut = 110 + lw + 100           # 白と緑の境目
     body = (f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="{R}" fill="{WHITE}" stroke="{LINE}" stroke-width="6"/>'
-            + logo_g(cut / 2, H / 2 + 10, lw, CHAR)
+            + logo_g(lcx, lcy, lw, CHAR)
             + f'<path fill="{FOREST}" d="M{cut} 3H{W-R}A{R-3} {R-3} 0 0 1 {W-3} {R}V{H-R}A{R-3} {R-3} 0 0 1 {W-R} {H-3}H{cut}Z"/>'
             + f'<rect x="{cut-4}" y="3" width="12" height="{H-6}" fill="{HONEY}"/>'
-            + dev_g('W', (cut + 6 + W - 3) / 2, base - 100 / 2, height=100, width=W - cut - 140))
+            + dev_g('W', (cut + 6 + W - 3) / 2, base - xh / 2, height=xh))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100mm" height="21mm">'
             + body + '</svg>')
 
