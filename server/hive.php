@@ -315,7 +315,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     } elseif ($nw > 0) {
         $wHow = ' <span class="muted" style="font-size:.7em">較正していない重量センサがあるため、巣箱の重さを出せません</span>';
     }
-    // 蜂場の温湿度センサ (蜂場ページで選んだもの) があれば、蜂場の気温 (ピンク)・湿度 (水色) も同じグラフに出す
+    // 蜂場の温湿度センサ (蜂場ページで選んだもの) があれば、蜂場の気温 (ピンク) を温度のグラフに、湿度 (水色) を湿度のグラフに出す
     $atS = []; $ahS = [];
     $apTh = apiary_th($site['apiaries'][$aid] ?? [], $sensors, $since);
     foreach ($apTh as $i => $x) {
@@ -324,7 +324,7 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
         $ahS[] = [$nm, S_C_AH, $x['h'], H_DASH[$i % count(H_DASH)]];
     }
     foreach ($apTh as $x) if ($x['t'] && (!$first || $x['t'][0][0] < $first)) $first = $x['t'][0][0];
-    // グラフは上から 重量、温度と湿度(1つのグラフ。温度は左の目盛り、湿度は右の目盛り)。記録が無くても枠は出す
+    // グラフは上から 重量、温度、湿度 (それぞれ別のグラフ)。記録が無くても枠は出す
     $from = $per === 0 ? ($first > 0 ? min($first, $now - 3600) : $now - 86400) : $since;
     // パソコン用とスマホ用(幅を狭くして、目盛りの数字が小さくなりすぎないようにしたもの)を作り、画面の幅で出し分ける
     // マウスを乗せる(スマホはタッチ)と日時と値を出す
@@ -347,10 +347,12 @@ foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     if ($conf['t_hi'] !== null) $tl[] = '上限 ' . h((string)$conf['t_hi']) . '℃';
     if ($conf['t_lo'] !== null) $tl[] = '下限 ' . h((string)$conf['t_lo']) . '℃';
     echo '<p class="gt"><span style="color:' . H_C_W . '">重量 (kg)</span>' . $wHow . $wb . '</p>' . $dual($wS, [], 0.5, 0, H_C_W, '#666', ['l' => ['重量', 'kg', 2]])
-        . '<p class="gt"><span style="color:' . H_C_T . '">温度 (℃)</span>・<span style="color:' . H_C_H . '">湿度 (%)</span>'
-        . ($apTh ? '・<span style="color:' . S_C_AT . '">蜂場の気温</span>・<span style="color:' . S_C_AH . '">蜂場の湿度</span>' : '')
-        . ' <span class="muted" style="font-size:.7em">温度は左、湿度は右の目盛り</span>' . '</p>'
-        . $dual(array_merge($tS, $atS), array_merge($hS, $ahS), 2, 5, H_C_T, H_C_H, ['l' => ['温度', '℃', 1], 'r' => ['湿度', '%', 1]]);
+        . '<p class="gt"><span style="color:' . H_C_T . '">温度 (℃)</span>'
+        . ($apTh ? '・<span style="color:' . S_C_AT . '">蜂場の気温</span>' : '') . '</p>'
+        . $dual(array_merge($tS, $atS), [], 2, 0, H_C_T, '#666', ['l' => ['温度', '℃', 1]])
+        . '<p class="gt"><span style="color:' . H_C_H . '">湿度 (%)</span>'
+        . ($apTh ? '・<span style="color:' . S_C_AH . '">蜂場の湿度</span>' : '') . '</p>'
+        . $dual(array_merge($hS, $ahS), [], 5, 0, H_C_H, '#666', ['l' => ['湿度', '%', 1]]);
     if (count($apTh) > 1) {
         $lg = [];
         foreach ($atS as $i => $x) $lg[] = '<span style="color:' . S_C_AT . '">' . ($i === 0 ? '━' : '┅') . '</span> ' . h('蜂場 ' . $apTh[$i]['name']);
