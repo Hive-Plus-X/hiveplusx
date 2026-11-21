@@ -312,7 +312,7 @@ function apiary_avg(array $hv, array $sensors, int $since): array
                 $wCals[] = $c;
             }
         }
-        // 巣箱の重さ (重量センサ1台なら2倍 (巣箱全体の重さが届く BroodMinder-W3/W4・W5・W+ 1台ならそのまま)、2台以上なら合計)。較正していないセンサがある巣箱は入れない
+        // 巣箱の重さ (重量センサ1台なら2倍 (巣箱全体の重さが届く BroodMinder 1台ならそのまま)、2台以上なら合計)。較正していないセンサがある巣箱は入れない
         if ($nw > 0 && count($wSer) === $nw) {
             foreach (hive_kg_series($wSer, hive_full_single($wCals)) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
         }
