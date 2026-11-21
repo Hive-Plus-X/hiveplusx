@@ -134,7 +134,7 @@
   <div class="hero wrap sub">
     <p class="eyebrow">FAQ</p>
     <h1>よくある質問</h1>
-    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (42 問)。<br>質問を押すと答えが開きます。</p>
+    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (43 問)。<br>質問を押すと答えが開きます。</p>
     <ul class="cats">
 <li><a href="#c1">Hive Plus X の全体</a></li>
 <li><a href="#c2">機器の作り方・部品</a></li>
@@ -182,6 +182,8 @@
 </div></div></section>
 
 <section id="c3"><div class="reveal wrap narrow"><p class="eyebrow">Category 3</p><h2>HPX-Core の設定・動き</h2><div class="qas">
+<details class="qa"><summary><span class="q">Q</span><span>HPX-Coreに何台のセンサを追加できますか。</span></summary><div class="a"><span class="amark">A</span><div><p>10 台までです。ネットワークが不調の時にデータを一時的に HPX-Core 本体に保存するため、台数を制限しています。</p>
+<ul><li>10 台は、センサの種類を問わない合計です (HPX-TH・HPX-W・HPX-F、Inkbird・SwitchBot の温湿度計、BroodMinder など)。</li><li>重量センサ HPX-W を 1 つの巣箱に 2 台付けるときは、2 台と数えます。</li><li>本体に保存できる記録の数には上限があります。10 台なら、保存の間隔が 30 分のとき 3 日分、15 分のときは約 2 日分ためておけます。</li><li>もっと必要なときは、HPX-Core をもう 1 台使ってください。</li></ul></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>保存の間隔はどう決めますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で、15 分・30 分・60 分から選びます。</p>
 <ul><li>選んだ間隔の区切りの時刻 (たとえば 15 分なら 0 分・15 分・30 分・45 分) に記録して送ります。</li><li>送る間隔だけを別に決める設定はありません。</li><li>BLE の受信はいつもオンです。</li></ul></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>電柵アラートは、すぐ知らせてくれますか？</span></summary><div class="a"><span class="amark">A</span><div><p>保存の間隔ごとに送るので、そのぶん遅れます。15 分にしておけば、遅れは最大 15 分くらいです。</p></div></div></details>
