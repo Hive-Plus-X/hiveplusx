@@ -426,6 +426,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
             } elseif ($act === 'offset') {
                 $off = $num('offset_kg');
                 $c['offset_kg'] = $off === null ? 0 : $off;
+            } elseif ($act === 'place') {
+                // 置き方: side = 巣箱の片側 (1台なら巣箱の重さは2倍)、full = 巣箱全体を乗せる (1台でもそのまま)
+                $pl = (string)($_POST['place'] ?? '');
+                if ($pl !== 'side' && $pl !== 'full') $err = '置き方を選んでください。';
+                else $c['place'] = $pl;
             } else {
                 $err = '不明な操作です。';
             }
@@ -657,7 +662,7 @@ $cal = cal_load($dir);
 if (!$byKind['w']) {
     echo '<p class="muted">重量センサの記録はまだありません。</p>';
 } else {
-    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台ならその2倍 (巣箱の片側に置く使い方。巣箱全体を乗せる BroodMinder-W3/W4 は1台でもそのまま)、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。</p>';
+    echo '<p class="muted">ここの重さは、センサ1台にかかる重さです。巣箱の重さは、巣箱に重量センサが1台なら、置き方が「巣箱の片側」ならその2倍、「巣箱全体を乗せる」ならそのまま、2台なら2台の合計 (両側に置く使い方) にして、蜂場・巣箱ページに出します。置き方は下の「調整」で選べます。</p>';
     echo '<div class="wrap"><table><tr><th>名前</th><th>巣箱</th><th>重さ</th><th>24時間</th><th>電池</th><th>最後の記録</th></tr>';
     $i = 0;
     $calForms = '';
@@ -705,7 +710,6 @@ if (!$byKind['w']) {
         $f = '<details' . ($calOk ? '' : ' open') . '><summary>' . h($nm) . ' の調整' . ($calOk ? '' : ' <span class="warn">(較正がまだです)</span>') . '</summary><div class="card">';
         if ($calOk && $isBm) {
             $f .= '<p class="muted">BroodMinder の重量計です。BroodMinder の中で較正した重さがそのまま届くので、HPX-Core での較正は要りません。'
-                . (!empty($c['full_hive']) ? ' 巣箱全体を量る機種 (W3/W4) なので、巣箱の重さは2倍にしません。' : '')
                 . (!empty($c['offset_kg']) ? ' 差し引く重さ ' . h(number_format((float)$c['offset_kg'], 2)) . ' kg。' : '') . '</p>';
         } elseif ($calOk) {
             $f .= '<p class="muted">今の較正値: ゼロ点 ' . h((string)$c['zero']) . ' ・ 1kg あたり ' . h(number_format((float)$c['per_kg'], 1))
@@ -724,6 +728,14 @@ if (!$byKind['w']) {
                 . '<form method="post"><input type="hidden" name="action" value="offset">' . $hid
                 . '<p><b>2. 差し引く重さ</b> <span class="muted">巣箱に乗せる重しなどの重さを入れると、巣箱だけの重さを表示できます。</span><br>'
                 . '<input type="number" step="0.01" name="offset_kg" value="' . h(isset($c['offset_kg']) ? (string)$c['offset_kg'] : '0') . '"> kg '
+                . '<button type="submit">保存</button></p></form>';
+        }
+        if ($calOk) {
+            $full = w_full_place($c);
+            $f .= '<form method="post"><input type="hidden" name="action" value="place">' . $hid
+                . '<p><b>' . ($isBm ? '' : '3. ') . '置き方</b> <span class="muted">巣箱にこのセンサ1台だけのとき、巣箱ページの重さをどうするかを決めます (2台以上なら合計)。</span><br>'
+                . '<label><input type="radio" name="place" value="side"' . ($full ? '' : ' checked') . '> 巣箱の片側に置く (巣箱の重さはこの値の2倍)</label><br>'
+                . '<label><input type="radio" name="place" value="full"' . ($full ? ' checked' : '') . '> 巣箱全体を乗せる (巣箱の重さはこの値のまま)</label><br>'
                 . '<button type="submit">保存</button></p></form>';
         }
         $calForms .= $f . '</div></details>';

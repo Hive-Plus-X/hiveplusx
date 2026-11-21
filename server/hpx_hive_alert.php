@@ -39,7 +39,7 @@ function hive_weight_how(int $n, bool $full = false): string
 // 巣箱に紐づいた重量センサの較正の一覧から、「巣箱全体を量る1台だけ」か (2倍にしない) を返す
 function hive_full_single(array $cals): bool
 {
-    return count($cals) === 1 && !empty(reset($cals)['full_hive']);
+    return count($cals) === 1 && w_full_place(reset($cals));
 }
 // センサごとの重さの記録 [[[epoch, kg], ...], ...] (それぞれ古い順) から、巣箱の重さの記録 [[epoch, kg], ...] を作る。
 //   1台なら2倍。2台以上なら、1台目の記録の時刻に、ほかのセンサのいちばん近い記録 (前後 HW_PAIR_S 秒まで) を足す。どれかが無い時刻は出さない
