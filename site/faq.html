@@ -134,7 +134,7 @@
   <div class="hero wrap sub">
     <p class="eyebrow">FAQ</p>
     <h1>よくある質問</h1>
-    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (45 問)。<br>質問を押すと答えが開きます。</p>
+    <p>これまでにいただいた質問と答えを、内容ごとにまとめました (46 問)。<br>質問を押すと答えが開きます。</p>
     <ul class="cats">
 <li><a href="#c1">Hive Plus X の全体</a></li>
 <li><a href="#c2">機器の作り方・部品</a></li>
@@ -166,7 +166,8 @@
 <details class="qa"><summary><span class="q">Q</span><span>電子工作は初めてですが、作れますか？</span></summary><div class="a"><span class="amark">A</span><div><p>はんだ付けができれば作れるように、配線図・部品表・書き込み手順を用意しています。基板はユニバーサル基板を使い、部品は表、線は裏のすずめっき線で配線する形にそろえています。<br>電子機器のサイズや配線によって、掲載している配線図が適用できない場合がありますので、必ず使用機器の詳細を確認して配線を調整してください。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>おすすめの ESP32 ボードは何ですか？</span></summary><div class="a"><span class="amark">A</span><div><p>DFRobotの<b>FireBeetle 2 ESP32-E</b>です。少し高いですが、低消費電力パッドを切るとさらに省電力になります。<b>Olimex ESP32-DevKit-LiPo</b>も省電力で良いですが、USB端子がmicro-USBで、他の機器のUSB-Cと異なるので注意が必要です。ELEGOOや Freenoveの開発ボードは、LEDランプが点灯したままで消費電力が大きいです。常時電源が使えるなら問題ないです。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>巣箱の重さはどう計算されますか？</span></summary><div class="a"><span class="amark">A</span><div><p>重量センサの台数で計算が変わります。</p>
-<ul><li>1 台のとき: 巣箱の片側を持ち上げて計るので、センサ値の 2 倍を巣箱の重さにします。</li><li>同じ巣箱に 2 台のとき: 自動で2 台の値を足します。より正確な重量を知りたい場合に有効です。</li></ul></div></div></details>
+<ul><li>1 台のとき: 巣箱の片側を持ち上げて計るので、センサ値の 2 倍を巣箱の重さにします。</li><li>同じ巣箱に 2 台のとき: 自動で2 台の値を足します。より正確な重量を知りたい場合に有効です。</li></ul>
+<p>1 台のときの置き方: 重量センサの中心 (重さを受けるところ) を巣箱の端から約 2.5cm 内側に、反対側の支えも巣箱の反対の端から約 2.5cm 内側に置くと、2 倍でちょうど巣箱の重さになります。センサの中心を巣箱の端ぴったりに置くと、約 5.6% 少なく表示されます (逆に 2.5cm 内側へずらすと約 5.6% 多く表示されます)。BroodMinder の公式ガイドの計算にもとづく目安です。</p></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>重量センサの校正はどうやりますか？</span></summary><div class="a"><span class="amark">A</span><div><p>HPX-Core の管理画面で行います。</p>
 <ol><li>何も載せない状態で「ゼロ点」を取ります。</li><li>重さが分かっているものを載せて記録します。「10 秒お待ちください」と出たら、そのまま待ちます。</li></ol></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>電柵アラート (HPX-F) は、電柵に電気的につなぐのですか？</span></summary><div class="a"><span class="amark">A</span><div><p>つなぎません。市販のフェンスアラート (StaFIX) は、電圧が下がると LED が点滅します。HPX-F は、その点滅を光センサで読み取ります。電柵に触れないので安全です。</p></div></div></details>
@@ -179,6 +180,8 @@
 <details class="qa"><summary><span class="q">Q</span><span>HPX-B (バッテリー見守り) は何をしますか？</span></summary><div class="a"><span class="amark">A</span><div><p>ソーラーパネルで充電するカーバッテリーの電圧と、パネルの電圧を計って知らせます。</p>
 <ul><li>バッテリーが 12.0V を下回るとお知らせメールが届きます。12.6V に戻ると、戻ったことも知らせます。</li><li>バッテリーの残りは、夜明け前の電圧で見るのが目安です。12.7V で満充電、12.2V で半分、11.8V で空です。</li><li>パネルの電圧を見ると、発電しているか、線が外れていないかが分かります。</li><li>金属の箱に入れると電波が届きにくくなるので注意してください。</li></ul></div></div></details>
 <details class="qa"><summary><span class="q">Q</span><span>市販の Bluetooth センサは使えますか？</span></summary><div class="a"><span class="amark">A</span><div><p>はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5・W+・W3・W4) に対応済みです。W3・W4 は巣箱全体を乗せるので、巣箱の重量を正確に測れます。</p></div></div></details>
+<details class="qa"><summary><span class="q">Q</span><span>市販のセンサ (BroodMinder・SwitchBot・Inkbird) を HPX で使っても問題ありませんか？</span></summary><div class="a"><span class="amark">A</span><div><p>それぞれ、電波 (BLE) の形式が公開されている情報にもとづいて受信しています。</p>
+<ul><li><b>BroodMinder (温湿度センサ TH2、重量センサ W5・W+・W3・W4)</b>: 問題ありません。公式サイトで、自分で受信機を作る人向けに、電波の形式と換算の式が公開されています。 <a href="https://doc.mybroodminder.com/87_physics_and_tech_stuff/" target="_blank" rel="noopener" style="word-break:break-all">https://doc.mybroodminder.com/87_physics_and_tech_stuff/</a></li><li><b>BroodMinder-BeeDar (巣門の活動量)</b>: 活動量が電波のどこに入っているかは公開されていないため、使えません。</li><li><b>SwitchBot (温湿度計・防水温湿度計)</b>: SwitchBot の開発元 (Wonder Labs) が、GitHub で電波の形式を「BLE open API」として公開しています。 <a href="https://github.com/OpenWonderLabs/SwitchBotAPI-BLE/blob/latest/devicetypes/meter.md" target="_blank" rel="noopener" style="word-break:break-all">https://github.com/OpenWonderLabs/SwitchBotAPI-BLE/blob/latest/devicetypes/meter.md</a></li><li><b>Inkbird (IBS-TH2 / TH2 PLUS)</b>: メーカーからの公式な公開資料は見つかっていません。電波の読み方は、オープンソースの ESPHome などが公開している方法と同じです。 <a href="https://esphome.io/components/sensor/inkbird_ibsth1_mini.html" target="_blank" rel="noopener" style="word-break:break-all">https://esphome.io/components/sensor/inkbird_ibsth1_mini.html</a></li></ul></div></div></details>
 </div></div></section>
 
 <section id="c3"><div class="reveal wrap narrow"><p class="eyebrow">Category 3</p><h2>HPX-Core の設定・動き</h2><div class="qas">
