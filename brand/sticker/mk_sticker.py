@@ -176,11 +176,14 @@ def W_wide():
     # D_white を横に並べかえた形
     W, H, R = 2000, 420, 110
     cut = 1300   # 白と緑の境目
+    # hive+x の字の下の線 (ベースライン、ロゴの y=0) に HPX-W の字の下をそろえる (2026-11-21 TARO 要望)
+    lw = 980; lk = lw / (LOGO_BOX[2] - LOGO_BOX[0])
+    base = (H / 2 + 10) - (LOGO_BOX[1] + LOGO_BOX[3]) / 2 * lk
     body = (f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="{R}" fill="{WHITE}" stroke="{LINE}" stroke-width="6"/>'
-            + logo_g(cut / 2, H / 2 + 10, 980, CHAR)
+            + logo_g(cut / 2, H / 2 + 10, lw, CHAR)
             + f'<path fill="{FOREST}" d="M{cut} 3H{W-R}A{R-3} {R-3} 0 0 1 {W-3} {R}V{H-R}A{R-3} {R-3} 0 0 1 {W-R} {H-3}H{cut}Z"/>'
             + f'<rect x="{cut-4}" y="3" width="12" height="{H-6}" fill="{HONEY}"/>'
-            + dev_g('W', (cut + 6 + W - 3) / 2, H / 2, height=100, width=W - cut - 140))
+            + dev_g('W', (cut + 6 + W - 3) / 2, base - 100 / 2, height=100, width=W - cut - 140))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100mm" height="21mm">'
             + body + '</svg>')
 
