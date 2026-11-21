@@ -49,6 +49,27 @@ for n in ['Core', 'TH', 'W', 'F']:
     honey = re.search(r'<path fill="#F2A900" d="([^"]+)"', s).group(1)
     DEV[n] = (dark, honey, (0, -1490, vbw - 808, 0))   # 字の高さ (大文字の高さ) で上下中央
 
+def dev_from_font(n):
+    # note-and-devices に無い機器名 (HPX-B・HPX-CAM・HPX-Solar) は、同じ書体 (Inter ExtraBold) から作る。
+    # 作り方は note-and-devices/HPX-*.svg と同じ (字間なし、「-」だけ Honey、右端は最後の字の端 + 116)
+    f = TTFont('/usr/share/fonts/opentype/inter/Inter-ExtraBold.otf')
+    gs = f.getGlyphSet(); cmap = f.getBestCmap()
+    x = 0; dark = []; honey = []; right = 0
+    for ch in f'HPX-{n}':
+        g = gs[cmap[ord(ch)]]
+        pen = SVGPathPen(gs, lambda v: f'{v:g}')
+        from fontTools.pens.transformPen import TransformPen
+        g.draw(TransformPen(pen, (1, 0, 0, -1, x, 0)))
+        bp = BoundsPen(gs); g.draw(bp)
+        if bp.bounds:
+            right = x + bp.bounds[2]
+        (honey if ch == '-' else dark).append(pen.getCommands())
+        x += g.width
+    return (' '.join(dark), ' '.join(honey), (0, -1490, right + 116, 0))
+
+for n in ['B', 'CAM', 'Solar']:
+    DEV[n] = dev_from_font(n)
+
 def dev_g(n, cx, cy, height=None, width=None, text=WHITE):
     dark, honey, (x0, y0, x1, y1) = DEV[n]
     k = height / (y1 - y0) if height else width / (x1 - x0)
@@ -150,6 +171,24 @@ def D_white(n):
             + dev_g(n, 500, top + 92, height=75))
     return frame(body, WHITE, border=True)
 
+def W_wide():
+    # HPX-W 用の横長 (100mm × 21mm 想定、2026-11-21 TARO 要望で高さ 30mm の7割に): 左の白に hive+x、ハチミツ色の縦線、右の緑に白文字の HPX-W。
+    # D_white を横に並べかえた形。HPX-W の字の上下を hive+x の「x」の上下にそろえる (2026-11-21 TARO 要望)
+    W, H, R = 2000, 420, 110
+    XH = 1118                      # ロゴの x の高さ (ロゴの座標で。下はベースライン y=0)
+    lw = 880; lk = lw / (LOGO_BOX[2] - LOGO_BOX[0])
+    lcx, lcy = 110 + lw / 2, H / 2 + 10
+    base = lcy - (LOGO_BOX[1] + LOGO_BOX[3]) / 2 * lk   # hive+x のベースライン
+    xh = XH * lk                   # HPX-W の字の高さ = x の高さ
+    cut = 110 + lw + 100           # 白と緑の境目
+    body = (f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="{R}" fill="{WHITE}" stroke="{LINE}" stroke-width="6"/>'
+            + logo_g(lcx, lcy, lw, CHAR)
+            + f'<path fill="{FOREST}" d="M{cut} 3H{W-R}A{R-3} {R-3} 0 0 1 {W-3} {R}V{H-R}A{R-3} {R-3} 0 0 1 {W-R} {H-3}H{cut}Z"/>'
+            + f'<rect x="{cut-4}" y="3" width="12" height="{H-6}" fill="{HONEY}"/>'
+            + dev_g('W', (cut + 6 + W - 3) / 2, base - xh / 2, height=xh))
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100mm" height="21mm">'
+            + body + '</svg>')
+
 def F_white(n):
     fav = clean(find('favicon_v2/E2_hpx_diag_big.svg', 'favicon/favicon_app.svg'))
     inner = ''.join(re.findall(r'<path [^>]+/>', fav)).replace('#FFFFFF', CHAR)
@@ -169,11 +208,17 @@ for n in ['Core', 'TH', 'W', 'F']:
     out[f'D_white_HPX-{n}'] = D_white(n)
     out[f'F_white_HPX-{n}'] = F_white(n)
 
+# 2026-11-21 追加: D_white に HPX-B・HPX-CAM・HPX-Solar、HPX-W の横長
+for n in ['B', 'CAM', 'Solar']:
+    out[f'D_white_HPX-{n}'] = D_white(n)
+out['D_white_HPX-W_wide'] = W_wide()
+
 os.makedirs(os.path.join(HERE, 'svg'), exist_ok=True)
 os.makedirs(os.path.join(HERE, 'png'), exist_ok=True)
 for name, svg in out.items():
     p = os.path.join(HERE, 'svg', name + '.svg')
     open(p, 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n' + svg)
+    w = 2000 if name.endswith('_wide') else 1000   # 横長は 2000×420px
     cairosvg.svg2png(bytestring=svg.encode(), write_to=os.path.join(HERE, 'png', name + '.png'),
-                     output_width=1000, output_height=1000)
+                     output_width=w)
 print(len(out), 'files')
