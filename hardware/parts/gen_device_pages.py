@@ -120,7 +120,7 @@ DEVICES = [
          # TARO 2026-11-09: 100μF は「コンデンサー100μF」を上に、正式名を下に。「代わりに」は出さない
          # TARO 2026-11-22: microSD は 32GB まで使えることを書き添える
          rename={'絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm': ('コンデンサー100μF', '絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm'),
-                 'microSDカード': ('microSDカード', 'LAZOS microSD メモリーカード 8GB（32GB まで使えます。FAT32 で初期化したもの）')},
+                 'microSDカード': ('microSDカード', '32GBまで（FAT32）\n例えば：LAZOS microSD メモリーカード 8GB')},
          no_alts=True,
          order=['XIAO ESP32S3 Sense',
                 '防水・防塵開閉式プラボックス BCAPシリーズ', '屋外用ルーフ BRFシリーズ', 'ポール取付金具 SSKシリーズ',
