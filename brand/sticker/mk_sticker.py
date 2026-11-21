@@ -172,16 +172,16 @@ def D_white(n):
     return frame(body, WHITE, border=True)
 
 def W_wide():
-    # HPX-W 用の横長 (100mm × 30mm 想定): 左の白に hive+x、ハチミツ色の縦線、右の緑に白文字の HPX-W。
+    # HPX-W 用の横長 (100mm × 21mm 想定、2026-11-21 TARO 要望で高さ 30mm の7割に): 左の白に hive+x、ハチミツ色の縦線、右の緑に白文字の HPX-W。
     # D_white を横に並べかえた形
-    W, H, R = 2000, 600, 110
+    W, H, R = 2000, 420, 110
     cut = 1300   # 白と緑の境目
     body = (f'<rect x="3" y="3" width="{W-6}" height="{H-6}" rx="{R}" fill="{WHITE}" stroke="{LINE}" stroke-width="6"/>'
             + logo_g(cut / 2, H / 2 + 10, 980, CHAR)
             + f'<path fill="{FOREST}" d="M{cut} 3H{W-R}A{R-3} {R-3} 0 0 1 {W-3} {R}V{H-R}A{R-3} {R-3} 0 0 1 {W-R} {H-3}H{cut}Z"/>'
             + f'<rect x="{cut-4}" y="3" width="12" height="{H-6}" fill="{HONEY}"/>'
             + dev_g('W', (cut + 6 + W - 3) / 2, H / 2, height=100, width=W - cut - 140))
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100mm" height="30mm">'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100mm" height="21mm">'
             + body + '</svg>')
 
 def F_white(n):
@@ -213,7 +213,7 @@ os.makedirs(os.path.join(HERE, 'png'), exist_ok=True)
 for name, svg in out.items():
     p = os.path.join(HERE, 'svg', name + '.svg')
     open(p, 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n' + svg)
-    w = 2000 if name.endswith('_wide') else 1000   # 横長は 2000×600px
+    w = 2000 if name.endswith('_wide') else 1000   # 横長は 2000×420px
     cairosvg.svg2png(bytestring=svg.encode(), write_to=os.path.join(HERE, 'png', name + '.png'),
                      output_width=w)
 print(len(out), 'files')

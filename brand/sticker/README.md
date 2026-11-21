@@ -24,7 +24,7 @@ D 白 (D_white) を採用しました。サイトのダウンロードページ 
 |---|---|---|
 | HPX-Core / HPX-TH / HPX-F | svg/D_white_HPX-Core.svg など | 50mm 角 |
 | HPX-B / HPX-CAM / HPX-Solar (2026-11-21 追加) | svg/D_white_HPX-B.svg など | 50mm 角 |
-| HPX-W (横長、左に hive+x・右の緑に HPX-W) | svg/D_white_HPX-W_wide.svg | 100mm × 30mm (PNG は 2000×600px) |
+| HPX-W (横長、左に hive+x・右の緑に HPX-W) | svg/D_white_HPX-W_wide.svg | 100mm × 21mm (PNG は 2000×420px) |
 
 HPX-B・HPX-CAM・HPX-Solar の機器名は note-and-devices に無いので、mk_sticker.py が同じ書体 (Inter ExtraBold) から作ります。
 
