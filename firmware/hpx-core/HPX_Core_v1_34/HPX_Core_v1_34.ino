@@ -13,6 +13,8 @@
 //   * 受信の結果の診断を、「各種BLEセンサの記録」と周辺検索の画面に出すようにした
 //     (周辺の Bluetooth 機器の数、BroodMinder の電波の数と読めなかった数・最後に読めなかった電波の中身、
 //      後半のパッシブで読めた台数、BLE を始められなかったとき)。次に同じことが起きたら、この表示で原因を切り分ける
+//   * BroodMinder の電池の関数 bleBmBattery を bleAlloc の後ろへ移した(Arduino IDE でコンパイルすると
+//     「'BleBuf' does not name a type」になっていたため。v1.33 も同じ)
 //   * ほかは v1.33 と同じ
 //
 // v1.33 の変更 (TARO 2026-11-21: BroodMinder の重量計の電池が途中から出なくなった)
@@ -637,6 +639,14 @@ uint8_t bmBatSid[BLE_MAX_SENSORS];
 uint8_t bmBatVolt[BLE_MAX_SENSORS];     // 電圧からの残量%
 uint8_t bmBatRemain[BLE_MAX_SENSORS];   // 残りの使える量%
 
+// 記録用のバッファはヒープに取り、使い終わると自動で解放する(確保できなければ nullptr)。
+// Arduino IDEの自動プロトタイプ生成より前に型を置く必要があるため、ここで定義する。
+typedef std::unique_ptr<BleRec[]> BleBuf;
+static inline BleBuf bleAlloc(size_t n)
+{
+  return BleBuf(new (std::nothrow) BleRec[n]);
+}
+
 // BroodMinder の電池の値 (届いた数 0〜125) を % にして、2種類の最後の値の低いほうを返す。i は登録の番号
 static uint8_t bleBmBattery(int i, uint8_t b)
 {
@@ -655,14 +665,6 @@ static uint8_t bleBmBattery(int i, uint8_t b)
   if (bmBatVolt[i] == 0xFF) return bmBatRemain[i];
   if (bmBatRemain[i] == 0xFF) return bmBatVolt[i];
   return bmBatVolt[i] < bmBatRemain[i] ? bmBatVolt[i] : bmBatRemain[i];
-}
-
-// 記録用のバッファはヒープに取り、使い終わると自動で解放する(確保できなければ nullptr)。
-// Arduino IDEの自動プロトタイプ生成より前に型を置く必要があるため、ここで定義する。
-typedef std::unique_ptr<BleRec[]> BleBuf;
-static inline BleBuf bleAlloc(size_t n)
-{
-  return BleBuf(new (std::nothrow) BleRec[n]);
 }
 
 // OTAの正常確認は自分で行う(Arduinoコアの自動確定を止める)
