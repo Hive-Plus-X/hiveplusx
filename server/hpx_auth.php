@@ -1067,3 +1067,12 @@ function chart_tip_js(): string
 </script>
 JS;
 }
+
+// 重量センサが巣箱全体を乗せる置き方か。センサページで選んだ置き方 (weight_cal.json の place = full / side) があればそれ、
+//   無ければ機種で決める (BroodMinder-W3/W4・W5・W+ の full_hive)
+function w_full_place(?array $c): bool
+{
+    $pl = (string)($c['place'] ?? '');
+    if ($pl === 'full' || $pl === 'side') return $pl === 'full';
+    return !empty($c['full_hive']);
+}
