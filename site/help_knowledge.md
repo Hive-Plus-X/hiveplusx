@@ -135,6 +135,8 @@ A. 重量センサの台数で計算が変わります。
 - 1 台のとき: 巣箱の片側を持ち上げて計るので、センサ値の 2 倍を巣箱の重さにします。
 - 同じ巣箱に 2 台のとき: 自動で2 台の値を足します。より正確な重量を知りたい場合に有効です。
 
+1 台のときの置き方: 重量センサの中心 (重さを受けるところ) を巣箱の端から約 2.5cm 内側に、反対側の支えも巣箱の反対の端から約 2.5cm 内側に置くと、2 倍でちょうど巣箱の重さになります。センサの中心を巣箱の端ぴったりに置くと、約 5.6% 少なく表示されます (逆に 2.5cm 内側へずらすと約 5.6% 多く表示されます)。BroodMinder の公式ガイドの計算にもとづく目安です。
+
 ### Q. 重量センサの校正はどうやりますか？
 
 A. HPX-Core の管理画面で行います。
@@ -216,6 +218,15 @@ A. ソーラーパネルで充電するカーバッテリーの電圧と、パ�
 ### Q. 市販の Bluetooth センサは使えますか？
 
 A. はい、SwitchBot の温湿度センサ、Inkbird の温湿度センサ、BroodMinder の温湿度センサ (BroodMinder-TH2) と重量センサ (BroodMinder-W5・W+・W3・W4) に対応済みです。W3・W4 は巣箱全体を乗せるので、巣箱の重量を正確に測れます。
+
+### Q. 市販のセンサ (BroodMinder・SwitchBot・Inkbird) を HPX で使っても問題ありませんか？
+
+A. それぞれ、電波 (BLE) の形式が公開されている情報にもとづいて受信しています。
+
+- BroodMinder (温湿度センサ TH2、重量センサ W5・W+・W3・W4): 問題ありません。公式サイトで、自分で受信機を作る人向けに、電波の形式と換算の式が公開されています。 https://doc.mybroodminder.com/87_physics_and_tech_stuff/
+- BroodMinder-BeeDar (巣門の活動量): 活動量が電波のどこに入っているかは公開されていないため、使えません。
+- SwitchBot (温湿度計・防水温湿度計): SwitchBot の開発元 (Wonder Labs) が、GitHub で電波の形式を「BLE open API」として公開しています。 https://github.com/OpenWonderLabs/SwitchBotAPI-BLE/blob/latest/devicetypes/meter.md
+- Inkbird (IBS-TH2 / TH2 PLUS): メーカーからの公式な公開資料は見つかっていません。電波の読み方は、オープンソースの ESPHome などが公開している方法と同じです。 https://esphome.io/components/sensor/inkbird_ibsth1_mini.html
 
 ## 3. HPX-Core の設定・動き
 
