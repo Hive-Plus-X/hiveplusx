@@ -29,6 +29,12 @@ function cam_name(array $c, string $id): string { return (string)($c['name'] ?? 
 // 選ばない (-1) ときはカメラの管理画面の設定のまま。番号はファームと同じ
 const CAM_SIZES = [0 => 'SVGA 800×600', 1 => 'XGA 1024×768', 2 => 'UXGA 1600×1200', 3 => 'QXGA 2048×1536 (OV3660・OV5640 だけ)'];
 function cam_sz(array $c): int { return isset($c['sz']) && isset(CAM_SIZES[(int)$c['sz']]) ? (int)$c['sz'] : -1; }
+// ケースの温度 (HPX-CAM v1.05 から、起きた直後の ESP32-S3 のチップの温度 tc ℃。正確ではない目安)。
+// これ以上になったら「機器の警報」でお知らせ。0 は知らせない。下がって CAM_HOT_BACK ℃ 下回ったら「戻りました」
+const CAM_HOT_LEVELS = [0 => '知らせない', 45 => '45℃ 以上', 50 => '50℃ 以上', 55 => '55℃ 以上', 60 => '60℃ 以上', 65 => '65℃ 以上', 70 => '70℃ 以上'];
+const CAM_HOT_DEFAULT = 60;
+const CAM_HOT_BACK = 5;
+function cam_hot(array $c): int { $v = (int)($c['hot'] ?? CAM_HOT_DEFAULT); return isset(CAM_HOT_LEVELS[$v]) ? $v : CAM_HOT_DEFAULT; }
 function cam_iv(array $c): int { return in_array((int)($c['iv'] ?? 0), CAM_IVS, true) ? (int)$c['iv'] : CAM_IV_DEFAULT; }
 function cam_hours(array $c): array
 {

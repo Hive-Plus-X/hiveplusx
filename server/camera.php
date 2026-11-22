@@ -81,10 +81,13 @@ if (is_post()) {
         $name = mb_substr(trim(preg_replace('/[\x00-\x1F\x7F]/u', '', (string)($_POST['name'] ?? '')) ?? ''), 0, 30);
         $sz = (int)($_POST['sz'] ?? -1);
         if (!isset(CAM_SIZES[$sz])) $sz = -1;
+        $hot = (int)($_POST['hot'] ?? CAM_HOT_DEFAULT);
+        if (!isset(CAM_HOT_LEVELS[$hot])) $hot = CAM_HOT_DEFAULT;
         $watch = (int)($_POST['watch'] ?? 2);
         if (!isset(CW_LEVELS[$watch])) $watch = 2;
-        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch, $sz) {
+        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch, $sz, $hot) {
             if ($sz >= 0) $x['sz'] = $sz; else unset($x['sz']);
+            $x['hot'] = $hot;
             $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid; $x['watch'] = $watch;
             if ($watch === 0) unset($x['wp']);
             $x['iv'] = in_array($iv, CAM_IVS, true) ? $iv : CAM_IV_DEFAULT; $x['h0'] = $h0; $x['h1'] = $h1;
@@ -164,6 +167,7 @@ $st = '最後に届いた写真 ' . ($last ? h(date('n/j H:i', $last)) . ' (' . 
     . ($late ? ' <span class="ng">届いていません</span>' : '')
     . ' ・ ' . ($via !== '' ? 'HPX-Core ' . h($hubs[$via]['name'] ?? $via) . ' 経由' : 'ルーターから直接')
     . (isset($c['bv']) ? ' ・ 電池 ' . h(number_format((float)$c['bv'], 2)) . 'V' : '')
+    . (isset($c['tc']) ? ' ・ ケース ' . h(number_format((float)$c['tc'], 1)) . '℃' . (!empty($c['hotq']) ? ' <span class="ng">熱くなっています</span>' : '') : '')
     . (isset($c['w']) ? ' ・ ' . (int)$c['w'] . '×' . (int)$c['h'] : '')
     . ' ・ ' . $iv . '分ごと ' . $h0 . '〜' . $h1 . '時';
 echo '<p class="muted" style="margin:0 0 .4em">' . $st . '</p>';
@@ -308,6 +312,10 @@ if ($cam['own']) {
         . $opt(-1, cam_sz($c), 'カメラの管理画面の設定のまま' . (isset($c['w']) ? ' (今 ' . (int)$c['w'] . '×' . (int)$c['h'] . ')' : ''));
     foreach (CAM_SIZES as $v => $lb) echo $opt($v, cam_sz($c), $lb);
     echo '</select><br><small class="muted">ここで選ぶと、カメラの管理画面の設定より優先します (HPX-CAM v1.04 から)。</small></p>';
+    echo '<p><label>ケースが熱くなったときのお知らせ (「機器の警報」のメール・LINE)</label><select name="hot">';
+    foreach (CAM_HOT_LEVELS as $v => $lb) echo $opt($v, cam_hot($c), $lb);
+    echo '</select><br><small class="muted">起きた直後のカメラのチップの温度で、正確ではない目安です (HPX-CAM v1.05 から)。'
+        . '知らせたあと ' . CAM_HOT_BACK . '℃ 下がったら「戻りました」を送ります。</small></p>';
     echo '<p><label>写真が大きく変わったときのお知らせ (巣箱が倒れた、人が来た、など)</label><select name="watch">';
     foreach (CW_LEVELS as $v => $lb) echo $opt($v, cw_level($c), $lb);
     echo '</select><br><small class="muted">前の写真と見くらべて、大きく変わったら蜂場のメンバーにお知らせメール (LINE) を送ります。'
