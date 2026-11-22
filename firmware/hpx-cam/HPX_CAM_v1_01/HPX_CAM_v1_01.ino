@@ -12,10 +12,13 @@
 //   5V–GND に 100µF (Wi-Fi 送信の瞬間の電圧の下がりよけ)
 //
 // 動き方:
-//   1. 電池を入れたとき (または RESET ボタンを押したとき) は「設定モード」になり、
-//      Wi-Fi「HPX-Setup-xxxx」(パスワード 12345678、HPX-Core と同じ) を出す。スマートフォンでつないで http://192.168.4.1/ を開くと
-//      設定の画面が出る (Wi-Fi・サーバーのアドレス・機器用トークン・写真の大きさなど、試し撮り、接続テスト)。
-//      設定が済んでいれば、だれもつながないまま 3分たつと撮影を始める (設定前は 10分たつと眠って待つ)。
+//   1. 電池を入れたとき (または RESET ボタンを押したとき) は「設定モード」になり、HPX-Core と同じ
+//      Wi-Fi「HPX-Setup-xxxx」(パスワード 12345678) を出す。スマートフォンでつないで http://192.168.4.1/ を開く。
+//      初めは HPX-Core と同じ「ネットワーク設定」(SSID・Wi-Fiパスワード・管理画面のパスワード) → 保存するとすぐ試しにつなぐ
+//      → 管理画面の開き方を控えて OK → 管理画面 (ユーザー名 admin) の「動作設定」で送信先のURL・トークンなどを入れる
+//      → 保存すると写真を1枚送って確かめる。
+//      HPX-Core と違い、ふだん眠っているのでルーターからは管理画面を開けない。管理画面は RESET のあと約10分だけ、
+//      設定用 Wi-Fi で開く。だれも触らないまま約10分たつと撮影を始める (設定が済む前は 30分で眠る)。
 //   2. 撮影のたびに目を覚まし、写真を撮って microSD にためる → Wi-Fi でサーバー (cam_upload.php) へ送る → 眠る。
 //      送れなかった写真は microSD に残し、次に起きたときに送り直す (新しい写真から順に)。
 //      送れた写真は microSD の日付のフォルダへ移して残す (いっぱいに近くなったら古い日から消す)。
@@ -29,13 +32,15 @@
 //   Content-Type: image/jpeg、本文は JPEG そのもの
 //   返事: {"ok":true,"saved":1,"iv":10,"h0":5,"h1":19,"now":...}
 //
-// v1.01 (2026-11-22 TARO: Wi-Fi の設定の手順を HPX-Core とそろえる)
+// v1.01 (2026-11-22 TARO: Wi-Fi の設定の手順を、できるだけ全部 HPX-Core とそろえる)
 //   * 設定用 Wi-Fi の名前を HPX-Core と同じ「HPX-Setup-xxxx」にした (v1.00 は HPX-CAM-xxxx)
-//   * 「保存」を押したら、HPX-Core と同じく、すぐ試しにルーターへつなぐ (そのまま写真も1枚送って確かめる)。
-//     つながらなかったときは、その場で入れ直せる
+//   * HPX-Core と同じ2段の形にした。1段目「ネットワーク設定」(接続方法・SSID・Wi-Fiパスワード・管理画面のパスワード・動作モード。
+//     接続方法は Wi-Fi、動作モードはディープスリープに決まっているので表示だけ) を保存すると、すぐ試しにルーターへつなぎ、
+//     つながったら管理画面の開き方を出す →「控えました」にチェックして OK。2段目は管理画面の「動作設定」で送信先のURL・トークンなど
+//   * 管理画面のパスワード (ユーザー名 admin、BASIC 認証) を足した。設定のあとは管理画面のどのページもパスワードが要る
+//   * 管理画面を開ける時間を HPX-Core の電池のときと同じ約10分に (設定前は 30分で眠る、v1.00 は 3分・10分)
 //   * HPX-Core と同じく、RESET ボタンを押して離し、3秒以内に BOOT ボタンを5秒長押しすると、設定が消えて初めの状態に戻る
-//   * 送り先 (サーバーのアドレス・トークン) も同じ画面で入れるのは v1.00 のまま
-//     (HPX-CAM はほとんど眠っているので、HPX-Core のようにルーター経由で開く管理画面は持たない)
+//   * HPX-Core と違うところ: ふだん眠っているので、ルーターからは管理画面を開けない (RESET のあと設定用 Wi-Fi で開く)
 //
 // v1.00 (2026-11-22 TARO 依頼: HPX-CAM のファームウェアを作る)
 //   * 初めての版。実機ではまだ確かめていない (クラウドでコンパイルだけ確認)
@@ -64,8 +69,8 @@ static const char* FW_VERSION = "HPX-CAM.1.01";
 
 // ---- 設定モードの Wi-Fi ----
 static const char* AP_PASSWORD = "12345678";          // HPX-Core と同じ初期パスワード
-static const uint32_t SETUP_IDLE_MS_CONFIGURED = 3UL * 60 * 1000;   // 設定済み: 3分だれも触らなければ撮影を始める
-static const uint32_t SETUP_IDLE_MS_NEW = 10UL * 60 * 1000;         // 設定前: 10分で眠る (電池を守る)
+static const uint32_t SETUP_IDLE_MS_CONFIGURED = 10UL * 60 * 1000;  // 設定済み: 約10分だれも触らなければ撮影を始める (HPX-Core の電池のときと同じ)
+static const uint32_t SETUP_IDLE_MS_NEW = 30UL * 60 * 1000;         // 設定前: 30分で眠る (HPX-Core と同じ。電池を守る)
 static const uint32_t SETUP_NEW_SLEEP_S = 6UL * 3600;               // 設定前に眠ったら 6時間後にもう一度設定モード
 
 // ---- ピン (XIAO ESP32S3 Sense) ----
@@ -111,7 +116,7 @@ static const time_t TIME_VALID = 1767225600;           // 2026-01-01 より前�
 
 // ---- 設定 (NVS に保存) ----
 Preferences prefs;
-String cfgSsid, cfgPass, cfgUrl, cfgToken, cfgName;
+String cfgSsid, cfgPass, cfgUrl, cfgToken, cfgName, cfgAdmin;   // cfgAdmin = 管理画面のパスワード (ユーザー名 admin)
 uint8_t cfgSize = 0;      // 0=SVGA 800×600, 1=XGA 1024×768, 2=UXGA 1600×1200, 3=QXGA 2048×1536
 bool cfgFlip = false;     // 上下・左右を逆に (カメラを逆さに付けたとき)
 uint8_t cfgSend = 0;      // 0=撮るたびに送る, 1=1時間に1回まとめて送る
@@ -240,6 +245,7 @@ void loadConfig()
   cfgUrl = prefs.getString("url", "");
   cfgToken = prefs.getString("tok", "");
   cfgName = prefs.getString("name", "");
+  cfgAdmin = prefs.getString("adminpw", "");
   cfgSize = prefs.getUChar("size", 0);
   cfgFlip = prefs.getBool("flip", false);
   cfgSend = prefs.getUChar("send", 0);
@@ -262,6 +268,7 @@ void saveConfig()
   prefs.putString("url", cfgUrl);
   prefs.putString("tok", cfgToken);
   prefs.putString("name", cfgName);
+  prefs.putString("adminpw", cfgAdmin);
   prefs.putUChar("size", cfgSize);
   prefs.putBool("flip", cfgFlip);
   prefs.putUChar("send", cfgSend);
@@ -787,38 +794,175 @@ void sendHtml(const String& h)
 
 void touch() { lastTouch = millis(); }
 
-void handleRoot()
+bool requireAuth()
 {
   touch();
-  String h = pageHead("HPX-CAM の設定");
-  h += "<h1>HPX-CAM の設定</h1>";
-  h += "<p>カメラのID: <b>" + camId + "</b><br>ファーム: " + String(FW_VERSION) + "<br>";
+  if (cfgAdmin.length() == 0) return true;
+  if (server.authenticate("admin", cfgAdmin.c_str())) return true;
+  server.requestAuthentication(BASIC_AUTH, "HPX");
+  return false;
+}
+
+bool netConfigured() { return cfgSsid.length() > 0 && cfgAdmin.length() > 0; }
+
+void redirectTo(const char* where)
+{
+  server.sendHeader("Location", where, true);
+  server.send(303, "text/plain", "");
+}
+
+String apName() { return "HPX-Setup-" + camId.substring(8); }
+
+// ---- 1段目: ネットワーク設定 (HPX-Core の初回設定と同じ形) ----
+enum { NT_NONE, NT_CONNECTING, NT_OK, NT_FAIL };
+uint8_t netTrial = NT_NONE;
+uint32_t netTrialMs = 0;
+static const uint32_t NET_TRIAL_TIMEOUT_MS = 25000;   // HPX-Core と同じ
+
+void handleNetPage()
+{
+  if (!requireAuth()) return;
+  if ((netTrial == NT_CONNECTING || netTrial == NT_OK) && !server.hasArg("edit")) { redirectTo("/nresult"); return; }
+  String h = pageHead("ネットワーク設定");
+  h += "<h1>ネットワーク設定</h1>";
+  if (netTrial == NT_FAIL)
+  {
+    h += "<p style='color:#c00'><b>Wi-Fi「" + htmlEscape(cfgSsid) + "」につながりませんでした。</b><br>"
+         "SSID(Wi-Fiの名前)とWi-Fiパスワードを確かめて、もう一度保存してください。"
+         "ルーターが近くにあるか、2.4GHz の Wi-Fi か(ESP32 は 5GHz につなげません)も確かめてください。</p>";
+  }
+  h += "<p>カメラのID: <b>" + camId + "</b></p>";
+  h += "<form action='/save' method='POST'>";
+  h += "<label>接続方法</label><br><b>Wi-Fi</b><br><small>HPX-CAM は Wi-Fi だけです (有線LAN・LTE-M はありません)</small><br><br>";
+  h += "<label for='ssid'>SSID (LTEルーターなど)</label><br><input type='text' id='ssid' name='ssid' maxlength='32' value='" +
+       htmlEscape(cfgSsid) + "'><br><br>";
+  h += "<label for='password'>Wi-Fiパスワード</label><br><input type='password' id='password' name='password' maxlength='63'><br><br>";
+  h += "<label for='adminpw'>管理画面のパスワード(6〜32文字。ユーザー名は admin)</label><br>"
+       "<input type='password' id='adminpw' name='adminpw' maxlength='32'" + String(cfgAdmin.length() == 0 ? " required" : "") + "><br>";
+  if (cfgAdmin.length() > 0) h += "<small>変更しない場合は空欄のまま</small><br>";
+  h += "<br><label>動作モード</label><br><b>ディープスリープ (電池)</b><br><small>撮るときだけ起きて、あとは眠ります (HPX-CAM は常時稼働を選べません)</small><br><br>";
+  h += "<input type='submit' value='保存'>";
+  h += "</form>";
+  if (configured()) h += "<p><a href='/'>管理画面へ戻る</a></p>";
+  h += "</body></html>";
+  sendHtml(h);
+}
+
+void handleNetSave()
+{
+  if (!requireAuth()) return;
+  String ssid = server.arg("ssid"), pass = server.arg("password"), apw = server.arg("adminpw");
+  ssid.trim();
+  if (ssid.length() == 0 || ssid.length() > 32) { server.send(400, "text/plain; charset=utf-8", "SSIDは1〜32文字で入力してください。"); return; }
+  if (pass.length() != 0 && (pass.length() < 8 || pass.length() > 63)) { server.send(400, "text/plain; charset=utf-8", "Wi-Fiパスワードは8〜63文字(または空欄)にしてください。"); return; }
+  if (cfgAdmin.length() == 0 && apw.length() == 0) { server.send(400, "text/plain; charset=utf-8", "管理画面のパスワードを入力してください。"); return; }
+  if (apw.length() != 0 && (apw.length() < 6 || apw.length() > 32)) { server.send(400, "text/plain; charset=utf-8", "管理画面のパスワードは6〜32文字にしてください。"); return; }
+  cfgSsid = ssid;
+  cfgPass = pass;   // HPX-Core と同じく、空欄はパスワードなしの Wi-Fi
+  if (apw.length()) cfgAdmin = apw;
+  saveConfig();
+  // HPX-Core と同じく、設定用 Wi-Fi を出したまま試しにつなぐ
+  WiFi.disconnect(false);
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.begin(cfgSsid.c_str(), cfgPass.c_str());
+  netTrial = NT_CONNECTING;
+  netTrialMs = millis();
+  redirectTo("/nresult");
+}
+
+void netTrialLoop()
+{
+  if (netTrial != NT_CONNECTING) return;
+  if (WiFi.status() == WL_CONNECTED) { netTrial = NT_OK; rtcLastRssi = (int8_t)WiFi.RSSI(); }
+  else if (millis() - netTrialMs > NET_TRIAL_TIMEOUT_MS)
+  {
+    netTrial = NT_FAIL;
+    WiFi.disconnect(false);
+    WiFi.mode(WIFI_AP);
+  }
+}
+
+void handleNetResult()
+{
+  touch();
+  if (netTrial == NT_NONE || netTrial == NT_FAIL) { redirectTo("/net"); return; }
+  if (netTrial == NT_CONNECTING)
+  {
+    String h = pageHeadR("接続を確かめています", 3);
+    h += "<h1>Wi-Fi「" + htmlEscape(cfgSsid) + "」につないでいます…</h1>";
+    h += "<p>つながるか確かめているところです(最大" + String(NET_TRIAL_TIMEOUT_MS / 1000) + "秒)。この画面は自動で変わります。</p>";
+    h += "<p><small>途中でスマートフォンの Wi-Fi が切れたときは、もう一度「" + apName() + "」につなぎ、"
+         "<a href='http://192.168.4.1/'>http://192.168.4.1/</a> を開いてください。</small></p></body></html>";
+    sendHtml(h);
+    return;
+  }
+  String h = pageHead("管理画面の開き方");
+  h += "<h1>Wi-Fi「" + htmlEscape(cfgSsid) + "」につながりました</h1>";
+  h += "<p>電波の強さ: " + String(WiFi.RSSI()) + " dBm (−80 より弱いと写真を送れないことがあります)</p>";
+  h += "<p><b>HPX-CAM はふだん眠っているので、HPX-Core と違い、ルーターからは管理画面を開けません。</b>"
+       "管理画面を開くときは、<b>RESET ボタンを押して</b>から約10分の間に、スマートフォンをこの Wi-Fi「" + apName() +
+       "」(パスワード " + String(AP_PASSWORD) + ")につなぎ、<b>http://192.168.4.1/</b> を開きます。"
+       "ユーザー名は admin、パスワードはさきほど決めた管理画面のパスワードです。</p>";
+  h += "<form action='/nfinish' method='POST'>";
+  h += "<p><label><input type='checkbox' name='noted' value='1' required> 管理画面の開き方を控えました</label></p>";
+  h += "<button type='submit' class='go'>OK(管理画面へ進む)</button></form>";
+  h += "<p><a href='/net?edit=1'>設定をやり直す</a></p></body></html>";
+  sendHtml(h);
+}
+
+void handleNetFinish()
+{
+  touch();
+  if (netTrial != NT_OK || !server.hasArg("noted")) { redirectTo("/net"); return; }
+  netTrial = NT_NONE;
+  redirectTo(configured() ? "/" : "/settings");
+}
+
+// ---- 2段目: 管理画面 ----
+void handleRoot()
+{
+  if (!netConfigured()) { handleNetPage(); return; }   // 初めはネットワーク設定から (HPX-Core と同じ)
+  if (!requireAuth()) return;
+  String h = pageHead("HPX-CAM 管理画面");
+  h += "<h1>HPX-CAM 管理画面</h1>";
+  h += "<p><b>カメラのID : " + camId + "</b><br><b>Firmware Version: " + String(FW_VERSION) + "</b><br>";
   float v = readVbat();
   h += "電池: " + (v > 1.0f ? String(v, 2) + " V" : String("測れません (USB だけのとき)")) + "<br>";
   if (sdOk)
-  {
-    h += "microSD: " + String((uint32_t)(SD.cardSize() / (1024ULL * 1024ULL))) + " MB、送る前の写真 " +
-         String(countQueue()) + " 枚<br>";
-  }
+    h += "microSD: " + String((uint32_t)(SD.cardSize() / (1024ULL * 1024ULL))) + " MB、送る前の写真 " + String(countQueue()) + " 枚<br>";
   else h += "<span style='color:#c00'>microSD: 読めません (無しでも動きますが、送れなかった写真は残りません)</span><br>";
+  h += "Wi-Fi: " + htmlEscape(cfgSsid) + "<br>";
   h += "撮影: " + String(curIv) + "分ごと、" + String(curH0) + "時〜" + String(curH1) + "時 (HPX-note のカメラのページで変えられます)";
   if (rtcLastHttp != 0) h += "<br>前の送信の結果: " + String(rtcLastHttp);
   h += "</p>";
-  if (!configured()) h += "<p style='color:#c00'><b>まだ設定されていません。下の欄を入れて保存してください。</b></p>";
-
+  if (!configured())
+    h += "<p style='color:#c00'><b>送信先が設定されていません。「動作設定」でサーバーのアドレスとトークンを入れてください。</b></p>";
   h += "<p><a class='go sub' href='/snap' target='_blank'>試し撮り (向きとピントを見る)</a></p>";
+  h += "<p><a class='go sub' href='/settings'>動作設定 (送信先・写真の大きさなど)</a></p>";
+  if (configured())
+  {
+    h += "<form action='/test' method='POST'><button class='go sub'>接続テスト (試しに1枚送る)</button></form>";
+    h += "<form action='/start' method='POST'><button class='go'>管理画面を終えて撮影を始める</button></form>";
+    h += "<p><small>このまま約10分さわらなければ、自動で撮影を始めます。</small></p>";
+  }
+  h += "<p><a href='/net?edit=1'>ネットワーク設定 (Wi-Fi・管理画面のパスワード)</a></p>";
+  h += "<p><small>最初からやり直すときは、RESET ボタンを押して離し、3秒以内に BOOT ボタンを5秒長押しします。</small></p>";
+  h += "</body></html>";
+  sendHtml(h);
+}
 
-  h += "<form action='/save' method='POST'>";
-  h += "<label>Wi-Fi の名前 (SSID、2.4GHz)</label><br><input type='text' name='ssid' maxlength='32' value='" +
-       htmlEscape(cfgSsid) + "'><br><br>";
-  h += "<label>Wi-Fi のパスワード</label><br><input type='password' name='pass' maxlength='63'><br>";
-  if (cfgPass.length()) h += "<small>変えないときは空のまま</small><br>";
-  h += "<br><label>サーバーのアドレス</label><br><input type='text' name='url' maxlength='200' value='" +
-       htmlEscape(cfgUrl) + "' placeholder='https://example.com/hpx/'><br>"
-       "<small>HPX-note のアドレス (例 https://hiveplusx.com/hpx/)。HPX-Core の送信先 (…/receive.php) をそのまま入れてもかまいません</small><br><br>";
-  h += "<label>機器用トークン</label><br><input type='password' name='tok' maxlength='100'><br>"
-       "<small>HPX-note のマイアカウントに出る、HPX-Core と同じトークン。";
-  if (cfgToken.length()) h += "変えないときは空のまま";
+void handleSettingsPage()
+{
+  if (!netConfigured()) { redirectTo("/"); return; }
+  if (!requireAuth()) return;
+  String h = pageHead("動作設定");
+  h += "<h1>動作設定</h1><form action='/savesettings' method='POST'>";
+  h += "<label>送信先のURL</label><br><input type='text' name='url' maxlength='200' value='" +
+       htmlEscape(cfgUrl) + "' placeholder='https://example.com/hpx/receive.php'><br>"
+       "<small>HPX-Core と同じ送信先 (…/receive.php) を入れてください。同じフォルダの cam_upload.php へ送ります</small><br><br>";
+  h += "<label>トークン</label><br><input type='password' name='tok' maxlength='100'><br>"
+       "<small>HPX-note のマイアカウントに出る、HPX-Core と同じ機器用トークン。";
+  if (cfgToken.length()) h += "変更しない場合は空欄のまま";
   h += "</small><br><br>";
   h += "<label>カメラの名前 (初めの1回だけ HPX-note に送ります。あとは HPX-note で変えます)</label><br>"
        "<input type='text' name='name' maxlength='30' value='" + htmlEscape(cfgName) + "'><br><br>";
@@ -833,31 +977,22 @@ void handleRoot()
        "> 撮るたびに送る (おすすめ。変化のお知らせが早い)</label><br>";
   h += "<label><input type='radio' name='send' value='1'" + String(cfgSend == 1 ? " checked" : "") +
        "> 1時間に1回まとめて送る (電池が長もち。お知らせは最大1時間遅れ)</label><br>";
+  h += "<small>撮影の間隔と時間帯は HPX-note のカメラのページで決めます</small><br>";
   h += "<input type='submit' value='保存'></form>";
-
-  if (configured())
-  {
-    h += "<form action='/test' method='POST'><button class='go sub'>接続テスト (試しに1枚送る)</button></form>";
-    h += "<form action='/start' method='POST'><button class='go'>設定を終えて撮影を始める</button></form>";
-    h += "<p><small>このまま 3分さわらなければ、自動で撮影を始めます。</small></p>";
-  }
-  h += "</body></html>";
+  h += "<p><a href='/'>管理画面へ戻る</a></p></body></html>";
   sendHtml(h);
 }
 
 void handleTest();
 
-void handleSave()
+void handleSettingsSave()
 {
-  touch();
-  String ssid = server.arg("ssid"), pass = server.arg("pass"), url = server.arg("url"), tok = server.arg("tok");
-  ssid.trim(); url.trim(); tok.trim();
-  if (ssid.length() == 0 || ssid.length() > 32) { server.send(400, "text/plain; charset=utf-8", "Wi-Fi の名前を入れてください。"); return; }
-  if (pass.length() && (pass.length() < 8 || pass.length() > 63)) { server.send(400, "text/plain; charset=utf-8", "Wi-Fi のパスワードは8〜63文字です。"); return; }
-  if (!url.startsWith("http://") && !url.startsWith("https://")) { server.send(400, "text/plain; charset=utf-8", "サーバーのアドレスは https:// から入れてください。"); return; }
-  if (tok.length() == 0 && cfgToken.length() == 0) { server.send(400, "text/plain; charset=utf-8", "機器用トークンを入れてください。"); return; }
-  if (ssid != cfgSsid || pass.length()) cfgPass = pass;
-  cfgSsid = ssid;
+  if (!netConfigured()) { redirectTo("/"); return; }
+  if (!requireAuth()) return;
+  String url = server.arg("url"), tok = server.arg("tok");
+  url.trim(); tok.trim();
+  if (!url.startsWith("http://") && !url.startsWith("https://")) { server.send(400, "text/plain; charset=utf-8", "送信先のURLは https:// から入れてください。"); return; }
+  if (tok.length() == 0 && cfgToken.length() == 0) { server.send(400, "text/plain; charset=utf-8", "トークンを入力してください。"); return; }
   cfgUrl = url;
   if (tok.length()) cfgToken = tok;
   cfgName = server.arg("name");
@@ -867,13 +1002,13 @@ void handleSave()
   cfgSend = server.arg("send") == "1" ? 1 : 0;
   saveConfig();
   camStop();   // 次の試し撮りで新しい大きさ・向きにする
-  // HPX-Core と同じく、保存したらすぐ試しにつなぐ (写真も1枚送って確かめる)
+  // 保存したら、試しに写真を1枚送って確かめる
   handleTest();
 }
 
 void handleSnap()
 {
-  touch();
+  if (!requireAuth()) return;
   if (!camStart()) { server.send(500, "text/plain; charset=utf-8", "カメラを始められません。カメラの差し込みと PSRAM の設定を確かめてください。"); return; }
   camera_fb_t* fb = camShot(2);
   if (!fb) { server.send(500, "text/plain; charset=utf-8", "撮れませんでした。もう一度押してください。"); return; }
@@ -930,10 +1065,11 @@ void runTrial()
 
 void handleTest()
 {
-  touch();
+  if (!requireAuth()) return;
+  if (!configured()) { redirectTo("/settings"); return; }
   String h = pageHeadR("接続テスト", 5);
-  h += "<h1>Wi-Fi「" + htmlEscape(cfgSsid) + "」につないでいます…</h1>"
-       "<p>設定を保存しました。つながるか、写真を1枚サーバーへ送って確かめています (20〜40秒)。この画面は自動で結果に変わります。</p>"
+  h += "<h1>接続テスト中…</h1>"
+       "<p>写真を1枚撮って、サーバーへ送れるか確かめています (20〜40秒)。この画面は自動で結果に変わります。</p>"
        "<p><small>途中でスマートフォンの Wi-Fi が切れたら、もう一度 HPX-Setup-xxxx につないで "
        "<a href='/result'>http://192.168.4.1/result</a> を開いてください。</small></p>"
        "<script>setTimeout(function(){location.href='/result'},5000)</script></body></html>";
@@ -955,12 +1091,14 @@ void handleResult()
   String h = pageHead("接続テストの結果");
   h += "<h1>接続テストの結果</h1><p>" + trialMsg + "</p>";
   h += "<form action='/start' method='POST'><button class='go'>設定を終えて撮影を始める</button></form>";
-  h += "<p><a href='/'>設定の画面へ戻る</a></p></body></html>";
+  h += "<p><a href='/'>管理画面へ戻る</a></p></body></html>";
   sendHtml(h);
 }
 
 void handleStart()
 {
+  if (!requireAuth()) return;
+  if (!configured()) { redirectTo("/"); return; }
   String h = pageHead("撮影を始めます");
   h += "<h1>撮影を始めます</h1><p>設定用の Wi-Fi を止めて、" + String(curIv) +
        "分ごとに撮影します。設定を変えるときは、電池を入れ直すか RESET ボタンを押してください。</p></body></html>";
@@ -985,12 +1123,17 @@ void runSetup()
 {
   WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
-  String ssid = "HPX-Setup-" + camId.substring(8);
+  String ssid = apName();
   WiFi.softAP(ssid.c_str(), AP_PASSWORD);
   Serial.println("設定用 Wi-Fi: " + ssid + " / " + AP_PASSWORD + " → http://192.168.4.1/");
   dns.start(53, "*", WiFi.softAPIP());
   server.on("/", HTTP_GET, handleRoot);
-  server.on("/save", HTTP_POST, handleSave);
+  server.on("/net", HTTP_GET, handleNetPage);
+  server.on("/save", HTTP_POST, handleNetSave);
+  server.on("/nresult", HTTP_GET, handleNetResult);
+  server.on("/nfinish", HTTP_POST, handleNetFinish);
+  server.on("/settings", HTTP_GET, handleSettingsPage);
+  server.on("/savesettings", HTTP_POST, handleSettingsSave);
   server.on("/snap", HTTP_GET, handleSnap);
   server.on("/test", HTTP_POST, handleTest);
   server.on("/result", HTTP_GET, handleResult);
@@ -1003,6 +1146,7 @@ void runSetup()
   {
     dns.processNextRequest();
     server.handleClient();
+    netTrialLoop();
     if (trialRunning && trialMsg.length() == 0 && !trialPending)
     {
       trialPending = true;
@@ -1012,7 +1156,7 @@ void runSetup()
     }
     if (WiFi.softAPgetStationNum() > 0) touch();
     uint32_t idle = millis() - lastTouch;
-    if (configured() && idle > SETUP_IDLE_MS_CONFIGURED)
+    if (configured() && netTrial != NT_CONNECTING && idle > SETUP_IDLE_MS_CONFIGURED)
     {
       Serial.println("設定モードを終えて撮影を始める");
       camStop();
@@ -1022,7 +1166,7 @@ void runSetup()
       startGuard();
       runCycle();
     }
-    if (!configured() && idle > SETUP_IDLE_MS_NEW)
+    if (!configured() && netTrial != NT_CONNECTING && idle > SETUP_IDLE_MS_NEW)
     {
       Serial.println("設定されないまま時間がたったので眠る");
       goSleep(SETUP_NEW_SLEEP_S);
