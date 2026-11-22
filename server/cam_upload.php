@@ -95,6 +95,8 @@ cam_update($uid, $id, function (array $x) use (&$c, &$hotMsg, $now, $t, $core, $
     $x['w'] = (int)$info[0]; $x['h'] = (int)$info[1];   // 写真の大きさ (px)
     if (isset($_GET['bv']) && is_numeric($_GET['bv'])) $x['bv'] = round((float)$_GET['bv'], 2); else unset($x['bv']);
     if (isset($_GET['rssi']) && is_numeric($_GET['rssi'])) $x['rssi'] = (int)$_GET['rssi']; else unset($x['rssi']);
+    // ファームのビルド番号 (HPX-CAM v1.06 から。106 → カメラのページで「v1.06」)。送ってこない古い版は消す
+    if (isset($_GET['fw']) && ctype_digit((string)$_GET['fw']) && (int)$_GET['fw'] > 0 && (int)$_GET['fw'] < 100000) $x['fw'] = (int)$_GET['fw']; else unset($x['fw']);
     // ケースの温度 (HPX-CAM v1.05 から)。設定の温度以上になったら1回だけお知らせし、CAM_HOT_BACK ℃ 下がったら「戻りました」
     if ($tc !== null) {
         $x['tc'] = $tc; $x['tct'] = $now;
