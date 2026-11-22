@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="4542" viewBox="0 0 1700 4542">
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="4568" viewBox="0 0 1700 4568">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1700" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（親機）＋有線LAN＆ソーラーシステムチェック 基板の配線図</text>
@@ -3893,7 +3893,7 @@
 <text x="70" y="4153" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</text>
 <text x="710" y="4153" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
 <text x="770" y="4153" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">縦に置く。線はすべて裏</text>
-<rect x="60" y="4182" width="1580" height="320" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<rect x="60" y="4182" width="1580" height="346" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
 <text x="78" y="4208" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
 <text x="78" y="4236" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</text>
 <text x="78" y="4262" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・FireBeetle・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜11行）に電圧チェックの部品を足した。</text>
@@ -3904,8 +3904,9 @@
 <text x="78" y="4392" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（念のため。FireBeetle は USB の 5V の後ろにダイオードがある）。</text>
 <text x="78" y="4418" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・FireBeetle の電池コネクタ（PH2.0）には何もつながない。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（FireBeetle の回路図から。充電の部品に悪くないかは未確認）。</text>
 <text x="78" y="4444" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</text>
-<text x="78" y="4470" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・マイナスはコントローラーの「バッテリー−」へ。「パネル−」と「バッテリー−」がつながっている（共通マイナス）コントローラーでだけ、パネル電圧を正しく測れる。</text>
-<text x="78" y="4496" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</text>
+<text x="78" y="4470" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・マイナスはコントローラーの「バッテリー−」へ。「パネル−」にはつながない。</text>
+<text x="78" y="4496" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・パネル電圧は「パネル−」と「バッテリー−」がつながっている（マイナス共通）コントローラーでだけ測れる。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）コントローラーでは、パネル＋の線をつながない（パネル用の抵抗・コンデンサーとヒューズは省いてよい）。つながないとパネルは 0V になり「未接続」として扱う。どちらの型かは、コントローラーの線を外してテスターの導通モードで確かめる。</text>
+<text x="78" y="4522" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</text>
 <rect x="280.0" y="553.2" width="400.0" height="944.8" rx="10" fill="#37474f" fill-opacity="0.72" stroke="#102027" stroke-width="3"/>
 <rect x="338.26771653543307" y="557.2" width="283.46456692913387" height="401.5748031496063" rx="4" fill="#b0bec5" fill-opacity="0.85" stroke="#78909c" stroke-width="2"/>
 <rect x="338.26771653543307" y="557.2" width="283.46456692913387" height="90" rx="4" fill="#212121" fill-opacity="0.8"/>
