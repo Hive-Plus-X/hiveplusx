@@ -12,13 +12,13 @@
 //   5V–GND に 100µF (Wi-Fi 送信の瞬間の電圧の下がりよけ)
 //
 // 動き方:
-//   1. 電池を入れたとき (または RESET ボタンを押したとき) は「設定モード」になり、HPX-Core と同じ
-//      Wi-Fi「HPX-Setup-xxxx」(パスワード 12345678) を出す。スマートフォンでつないで http://192.168.4.1/ を開く。
-//      初めは HPX-Core と同じ「ネットワーク設定」(SSID・Wi-Fiパスワード・管理画面のパスワード) → 保存するとすぐ試しにつなぐ
-//      → 管理画面の開き方を控えて OK → 管理画面 (ユーザー名 admin) の「動作設定」で送信先のURL・トークンなどを入れる
-//      → 保存すると写真を1枚送って確かめる。
-//      HPX-Core と違い、ふだん眠っているのでルーターからは管理画面を開けない。管理画面は RESET のあと約10分だけ、
-//      設定用 Wi-Fi で開く。だれも触らないまま約10分たつと撮影を始める (設定が済む前は 30分で眠る)。
+//   1. 初めて電源を入れると、HPX-Core と同じ Wi-Fi「HPX-Setup-xxxx」(パスワード 12345678) を出す。
+//      スマートフォンでつないで http://192.168.4.1/ を開き、「ネットワーク設定」(SSID・Wi-Fiパスワード・管理画面のパスワード)
+//      を保存するとすぐ試しにつなぐ → 管理画面のURL (http://IPアドレス/ と http://hpx-cam-xxxx.local/) を控えて OK → 再起動。
+//      そのあとは HPX-Core と同じく、ルーターにつないだスマートフォンから管理画面 (ユーザー名 admin) を開き、
+//      「動作設定」で送信先のURL・トークンなどを入れる → 保存すると写真を1枚送って確かめる。
+//      電源を入れなおすと約10分、ルーター経由で管理画面を開ける (HPX-Core の電池のときと同じ)。だれも触らないまま
+//      約10分たつと撮影を始める。ルーターにつながらないときは設定用 Wi-Fi「HPX-Setup-xxxx」を出す。
 //   2. 撮影のたびに目を覚まし、写真を撮って microSD にためる → Wi-Fi でサーバー (cam_upload.php) へ送る → 眠る。
 //      送れなかった写真は microSD に残し、次に起きたときに送り直す (新しい写真から順に)。
 //      送れた写真は microSD の日付のフォルダへ移して残す (いっぱいに近くなったら古い日から消す)。
@@ -39,8 +39,9 @@
 //     つながったら管理画面の開き方を出す →「控えました」にチェックして OK。2段目は管理画面の「動作設定」で送信先のURL・トークンなど
 //   * 管理画面のパスワード (ユーザー名 admin、BASIC 認証) を足した。設定のあとは管理画面のどのページもパスワードが要る
 //   * 管理画面を開ける時間を HPX-Core の電池のときと同じ約10分に (設定前は 30分で眠る、v1.00 は 3分・10分)
-//   * HPX-Core と同じく、RESET ボタンを押して離し、3秒以内に BOOT ボタンを5秒長押しすると、設定が消えて初めの状態に戻る
-//   * HPX-Core と違うところ: ふだん眠っているので、ルーターからは管理画面を開けない (RESET のあと設定用 Wi-Fi で開く)
+//   * HPX-Core と同じく、つないだあとはルーター経由で管理画面を開く (http://IPアドレス/ と http://hpx-cam-xxxx.local/)。
+//     電源を入れなおしてから約10分開ける。ルーターにつながらないときは設定用 Wi-Fi を出す
+//   * 電源を入れなおし、3秒以内に BOOT ボタンを5秒長押しすると、設定が消えて初めの状態に戻る
 //
 // v1.00 (2026-11-22 TARO 依頼: HPX-CAM のファームウェアを作る)
 //   * 初めての版。実機ではまだ確かめていない (クラウドでコンパイルだけ確認)
@@ -51,6 +52,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <DNSServer.h>
+#include <ESPmDNS.h>
 #include <Preferences.h>
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
@@ -749,7 +751,7 @@ void runCycle()
 }
 
 // ====================================================================
-// 設定モード (電池を入れた・RESET を押したとき)
+// 設定モード (電源を入れたとき)
 // ====================================================================
 
 WebServer server(80);
@@ -812,6 +814,8 @@ void redirectTo(const char* where)
 }
 
 String apName() { return "HPX-Setup-" + camId.substring(8); }
+String mdnsHost() { String h = "hpx-cam-" + camId.substring(8); h.toLowerCase(); return h; }
+bool apMode = true;   // true = 設定用 Wi-Fi で開いている、false = ルーター経由で開いている
 
 // ---- 1段目: ネットワーク設定 (HPX-Core の初回設定と同じ形) ----
 enum { NT_NONE, NT_CONNECTING, NT_OK, NT_FAIL };
@@ -861,6 +865,17 @@ void handleNetSave()
   cfgPass = pass;   // HPX-Core と同じく、空欄はパスワードなしの Wi-Fi
   if (apw.length()) cfgAdmin = apw;
   saveConfig();
+  if (!apMode)
+  {
+    // ルーター経由で開いているときは、保存して再起動する (新しい Wi-Fi につながらなければ設定用 Wi-Fi が出る)
+    String h = pageHead("ネットワーク設定保存");
+    h += "<h1>設定を保存しました</h1><p>HPX-CAM を再起動して、Wi-Fi「" + htmlEscape(cfgSsid) + "」につなぎ直します。</p>"
+         "<p>つながらなかったときは、設定用の Wi-Fi「" + apName() + "」が出るので、つないで http://192.168.4.1/ を開いてください。</p></body></html>";
+    sendHtml(h);
+    delay(1500);
+    ESP.restart();
+    return;
+  }
   // HPX-Core と同じく、設定用 Wi-Fi を出したまま試しにつなぐ
   WiFi.disconnect(false);
   WiFi.mode(WIFI_AP_STA);
@@ -896,16 +911,25 @@ void handleNetResult()
     sendHtml(h);
     return;
   }
-  String h = pageHead("管理画面の開き方");
+  const String ipUrl = "http://" + WiFi.localIP().toString() + "/";
+  const String nameUrl = "http://" + mdnsHost() + ".local/";
+  String h = pageHead("管理画面のURL");
   h += "<h1>Wi-Fi「" + htmlEscape(cfgSsid) + "」につながりました</h1>";
-  h += "<p>電波の強さ: " + String(WiFi.RSSI()) + " dBm (−80 より弱いと写真を送れないことがあります)</p>";
-  h += "<p><b>HPX-CAM はふだん眠っているので、HPX-Core と違い、ルーターからは管理画面を開けません。</b>"
-       "管理画面を開くときは、<b>RESET ボタンを押して</b>から約10分の間に、スマートフォンをこの Wi-Fi「" + apName() +
-       "」(パスワード " + String(AP_PASSWORD) + ")につなぎ、<b>http://192.168.4.1/</b> を開きます。"
+  h += "<p><b>まだ切り替えていません。</b>切り替えたあとは、HPX-CAM の管理画面を次のURLで開きます。"
+       "<b>スクリーンショットを撮るか、メモしてください。</b></p>";
+  h += "<p style='font-size:1.4em;border:2px solid #333;padding:8px'><b>" + htmlEscape(ipUrl) + "</b></p>";
+  h += "<p>名前でも開けます: <b>" + htmlEscape(nameUrl) + "</b><br>"
+       "<small>(iPhone・Mac・Windows 向け。Android では開けないことがあります)</small></p>";
+  h += "<p>開くときは、スマートフォンやPCを <b>HPX-CAM と同じ Wi-Fi「" + htmlEscape(cfgSsid) + "」</b>につないでください。"
        "ユーザー名は admin、パスワードはさきほど決めた管理画面のパスワードです。</p>";
+  h += "<p><b>HPX-CAM は撮影を始めると眠っているので、管理画面を開けるのは電源を入れてから約10分の間です。</b>"
+       "あとで開くときは、電源を入れなおしてから開いてください。</p>";
+  h += "<p>電波の強さ: " + String(WiFi.RSSI()) + " dBm (−80 より弱いと写真を送れないことがあります)</p>";
+  h += "<p><small>IPアドレスはルーターの都合で変わることがあります。開けなくなったら、ルーターの接続機器一覧で「" +
+       mdnsHost() + "」を探してください。</small></p>";
   h += "<form action='/nfinish' method='POST'>";
-  h += "<p><label><input type='checkbox' name='noted' value='1' required> 管理画面の開き方を控えました</label></p>";
-  h += "<button type='submit' class='go'>OK(管理画面へ進む)</button></form>";
+  h += "<p><label><input type='checkbox' name='noted' value='1' required> 管理画面のURLを控えました</label></p>";
+  h += "<button type='submit' class='go'>OK(Wi-Fiを切り替える)</button></form>";
   h += "<p><a href='/net?edit=1'>設定をやり直す</a></p></body></html>";
   sendHtml(h);
 }
@@ -914,8 +938,16 @@ void handleNetFinish()
 {
   touch();
   if (netTrial != NT_OK || !server.hasArg("noted")) { redirectTo("/net"); return; }
-  netTrial = NT_NONE;
-  redirectTo(configured() ? "/" : "/settings");
+  const String ip = WiFi.localIP().toString();
+  String h = pageHead("切り替えます");
+  h += "<h1>切り替えます</h1>";
+  h += "<p>HPX-CAM を再起動して、Wi-Fi「" + htmlEscape(cfgSsid) + "」で動き始めます。</p>";
+  h += "<p>スマートフォンやPCを「" + htmlEscape(cfgSsid) + "」に戻し、約30秒後に "
+       "<a href='http://" + ip + "/'>http://" + ip + "/</a> を開いて、「動作設定」で送信先のURLとトークンを入れてください。</p>";
+  h += "</body></html>";
+  sendHtml(h);
+  delay(1500);
+  ESP.restart();
 }
 
 // ---- 2段目: 管理画面 ----
@@ -943,10 +975,10 @@ void handleRoot()
   {
     h += "<form action='/test' method='POST'><button class='go sub'>接続テスト (試しに1枚送る)</button></form>";
     h += "<form action='/start' method='POST'><button class='go'>管理画面を終えて撮影を始める</button></form>";
-    h += "<p><small>このまま約10分さわらなければ、自動で撮影を始めます。</small></p>";
+    h += "<p><small>このまま約10分さわらなければ、自動で撮影を始めます。撮影を始めたあとで管理画面を開くときは、電源を入れなおしてください。</small></p>";
   }
   h += "<p><a href='/net?edit=1'>ネットワーク設定 (Wi-Fi・管理画面のパスワード)</a></p>";
-  h += "<p><small>最初からやり直すときは、RESET ボタンを押して離し、3秒以内に BOOT ボタンを5秒長押しします。</small></p>";
+  h += "<p><small>最初からやり直すときは、電源を入れなおし、3秒以内に BOOT ボタンを5秒長押しします。</small></p>";
   h += "</body></html>";
   sendHtml(h);
 }
@@ -1024,7 +1056,7 @@ void runTrial()
 {
   trialRunning = true;
   trialMsg = "";
-  WiFi.begin(cfgSsid.c_str(), cfgPass.c_str());
+  if (WiFi.status() != WL_CONNECTED) WiFi.begin(cfgSsid.c_str(), cfgPass.c_str());
   uint32_t t0 = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - t0 < WIFI_TIMEOUT_MS) { dns.processNextRequest(); server.handleClient(); delay(50); }
   if (WiFi.status() != WL_CONNECTED)
@@ -1070,8 +1102,7 @@ void handleTest()
   String h = pageHeadR("接続テスト", 5);
   h += "<h1>接続テスト中…</h1>"
        "<p>写真を1枚撮って、サーバーへ送れるか確かめています (20〜40秒)。この画面は自動で結果に変わります。</p>"
-       "<p><small>途中でスマートフォンの Wi-Fi が切れたら、もう一度 HPX-Setup-xxxx につないで "
-       "<a href='/result'>http://192.168.4.1/result</a> を開いてください。</small></p>"
+       "<p><small>画面が変わらないときは <a href='/result'>結果の画面</a> を開いてください。</small></p>"
        "<script>setTimeout(function(){location.href='/result'},5000)</script></body></html>";
   sendHtml(h);
   trialMsg = "";
@@ -1100,8 +1131,8 @@ void handleStart()
   if (!requireAuth()) return;
   if (!configured()) { redirectTo("/"); return; }
   String h = pageHead("撮影を始めます");
-  h += "<h1>撮影を始めます</h1><p>設定用の Wi-Fi を止めて、" + String(curIv) +
-       "分ごとに撮影します。設定を変えるときは、電池を入れ直すか RESET ボタンを押してください。</p></body></html>";
+  h += "<h1>撮影を始めます</h1><p>管理画面を閉じて、" + String(curIv) +
+       "分ごとに撮影します。管理画面を開くときは、電源を入れなおしてください (約10分開けます)。</p></body></html>";
   sendHtml(h);
   delay(1500);
   camStop();
@@ -1115,18 +1146,36 @@ void handleStart()
 
 void handleCaptive()
 {
-  server.sendHeader("Location", "http://192.168.4.1/", true);
+  server.sendHeader("Location", apMode ? "http://192.168.4.1/" : "/", true);
   server.send(302, "text/plain", "");
 }
 
 void runSetup()
 {
   WiFi.persistent(false);
-  WiFi.mode(WIFI_AP_STA);
-  String ssid = apName();
-  WiFi.softAP(ssid.c_str(), AP_PASSWORD);
-  Serial.println("設定用 Wi-Fi: " + ssid + " / " + AP_PASSWORD + " → http://192.168.4.1/");
-  dns.start(53, "*", WiFi.softAPIP());
+  apMode = true;
+  if (netConfigured())
+  {
+    // HPX-Core と同じく、ルーターにつないで、ルーター経由で管理画面を出す
+    WiFi.mode(WIFI_STA);
+    WiFi.setHostname(mdnsHost().c_str());
+    if (wifiConnect(20000))
+    {
+      apMode = false;
+      if (MDNS.begin(mdnsHost().c_str())) MDNS.addService("http", "tcp", 80);
+      Serial.println("管理画面: http://" + WiFi.localIP().toString() + "/  http://" + mdnsHost() + ".local/");
+      if (!timeValid()) ntpSync();
+    }
+    else WiFi.disconnect(true);
+  }
+  if (apMode)
+  {
+    WiFi.mode(WIFI_AP_STA);
+    String ssid = apName();
+    WiFi.softAP(ssid.c_str(), AP_PASSWORD);
+    Serial.println("設定用 Wi-Fi: " + ssid + " / " + AP_PASSWORD + " → http://192.168.4.1/");
+    dns.start(53, "*", WiFi.softAPIP());
+  }
   server.on("/", HTTP_GET, handleRoot);
   server.on("/net", HTTP_GET, handleNetPage);
   server.on("/save", HTTP_POST, handleNetSave);
@@ -1144,7 +1193,7 @@ void runSetup()
   bool trialPending = false;
   for (;;)
   {
-    dns.processNextRequest();
+    if (apMode) dns.processNextRequest();
     server.handleClient();
     netTrialLoop();
     if (trialRunning && trialMsg.length() == 0 && !trialPending)
@@ -1154,7 +1203,7 @@ void runSetup()
       runTrial();
       trialPending = false;
     }
-    if (WiFi.softAPgetStationNum() > 0) touch();
+    if (apMode && WiFi.softAPgetStationNum() > 0) touch();
     uint32_t idle = millis() - lastTouch;
     if (configured() && netTrial != NT_CONNECTING && idle > SETUP_IDLE_MS_CONFIGURED)
     {
@@ -1191,7 +1240,7 @@ void startGuard()
   if (esp_timer_create(&a, &h) == ESP_OK) esp_timer_start_once(h, (uint64_t)AWAKE_MAX_MS * 1000ULL);
 }
 
-// RESET を押して離し、3秒以内に BOOT ボタンを5秒長押しすると、設定を消して初めの状態に戻す (HPX-Core と同じ)
+// 電源を入れなおし、3秒以内に BOOT ボタンを5秒長押しすると、設定を消して初めの状態に戻す
 void checkFactoryReset()
 {
   pinMode(PIN_BOOT, INPUT_PULLUP);
