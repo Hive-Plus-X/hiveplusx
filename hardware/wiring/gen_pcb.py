@@ -2537,4 +2537,208 @@ for kind, (r0, rw, wused, LV) in DK_LANV.items():
 
 COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
 
+# ---------------------------------------------------------------- ＋有線LAN＆ソーラーシステムチェック を Freenove で（6×8cm 基板、TARO 2026-11-22）
+# TARO 2026-11-22: Freenove と 5×7 ユニバーサル基板（秋月 両面スルーホール 112977、穴 A〜X × 1〜18）で作りたい。
+# 6×8cm では線が交わらずに引けなかった（2026-11-13）。5×7cm を横に置き、Freenove も横に寝かせて（アンテナ左・USB-C 右）
+# 上半分（1〜11 行）に差す。W5500 は左下（13〜18 行）。電圧を測る抵抗と 0.1µF は Freenove の下（2〜10 行）に寝かせて付ける。
+# Freenove の右端の 1ピン（5V と GND）はソケットに入れない（20ピンのソケットを 1ピン切って 19ピン）。空いた W11 の穴に線を通す。
+COLS = "ABCDEFGHIJKLMNOPQRSTUVWXY"
+FN5_NETS = []      # (net, 穴の並び) … 色が同じでも別の線どうしの交わりを調べる
+def wn(net, color, *holes):
+    w(color, *holes)
+    FN5_NETS.append((net, [hole(h) for h in holes]))
+
+def check_nets(name):
+    """線どうしが交わらないか、ほかの線・足の穴の上を通らないかを、線の名前（つながり）で調べる"""
+    probs = []
+    segs = [(net, a, b) for net, hs in FN5_NETS for a, b in zip(hs, hs[1:])]
+    def cells(a, b):
+        n = max(abs(b[0] - a[0]), abs(b[1] - a[1]))
+        return [(a[0] + (b[0] - a[0]) * i // n, a[1] + (b[1] - a[1]) * i // n) for i in range(n + 1)]
+    occ = {}
+    for net, a, b in segs:
+        for c in cells(a, b):
+            occ.setdefault(c, set()).add(net)
+    for c, nets in occ.items():
+        if len(nets) > 1:
+            probs.append(f"{COLS[c[0]]}{c[1]+1} に別の線 {sorted(nets)}")
+    pinpos = {(round((x - OX) / P), round((y - OY) / P)): lab for x, y, lab, k in REC["pins"]}
+    for net, hs in FN5_NETS:
+        verts = set(hs)
+        for a, b in zip(hs, hs[1:]):
+            for c in cells(a, b)[1:-1]:
+                if c in pinpos and c not in verts:
+                    probs.append(f"{net} の線が {pinpos[c]}（{COLS[c[0]]}{c[1]+1}）の穴の上を通る")
+    print(f"[check-net] {name}: {len(probs)} 件")
+    for p_ in sorted(set(probs)):
+        print("   ", p_)
+
+def dk_h(kind, c0, rt, used, nosock, sock):
+    """DevKitC 型の開発ボードを横に寝かせて描く（アンテナが左・USB が右）。
+    c0 は 1本目のピンの列（0から）、rt は上のピン列の行（0から）。下のピン列は rt+10。
+    下の列に DK_PINS の左の列（3V3・EN・IO36…5V）、上の列に右の列（GND・IO23…）が左から並ぶ。nosock はソケットに入れないピンの穴"""
+    Lp, Rp = DK_PINS[kind]
+    n = len(Lp)
+    ext = {"olimex": (0.5, 0.5), "freenove": (2.2, 0.6), "elegoo": (2.3, 4.6)}[kind]   # TARO 2026-11-22: Freenove は USB-C 側が 5V・GND のピンのすぐ横で切れている
+    x1, x2 = OX + (c0 - ext[0]) * P, OX + (c0 + n - 1 + ext[1]) * P
+    y1, y2 = OY + (rt - 0.5) * P, OY + (rt + 10.5) * P
+    cy = (y1 + y2) / 2
+    s.top.append(f'<rect x="{x1}" y="{y1}" width="{x2-x1}" height="{y2-y1}" rx="10" fill="#0d47a1" fill-opacity="0.30" stroke="#062a63" stroke-width="3" stroke-dasharray="14 6"/>')
+    rec_part(x1, y1, x2 - x1, y2 - y1, "Freenove")
+    mw, mh = 25.5 / 2.54 * P, 18 / 2.54 * P      # ESP32-WROOM（25.5×18mm）は左の端
+    mx = x1 + 6
+    s.top.append(f'<rect x="{mx}" y="{cy-mh/2}" width="{mw}" height="{mh}" rx="4" fill="#b0bec5" fill-opacity="0.25" stroke="#78909c" stroke-width="2" stroke-dasharray="6 4"/>')
+    s.top.append(f'<rect x="{mx}" y="{cy-mh/2}" width="70" height="{mh}" rx="4" fill="#212121" fill-opacity="0.22"/>')
+    tag(mx + 35, cy + 5, "アンテナ", 11, "middle", "#263238", w=60)
+    tag(mx + 70 + (mw - 70) / 2, cy - 82, "ESP32-WROOM-32", 11, "middle", "#263238", w=120)
+    s.top.append(f'<rect x="{x2-30}" y="{cy-34}" width="48" height="68" rx="8" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>')
+    s.text(x2 + 26, cy - 8, "USB-C", 13, "start", "bold", "#333", layer=s.top)
+    s.text(x2 + 26, cy + 10, "（右）", 13, "start", "bold", "#333", layer=s.top)
+    for r, names, below in ((rt + 10, Lp, True), (rt, Rp, False)):
+        for i, nme in enumerate(names):
+            c = c0 + i
+            x, y = H(c, r)
+            hn_ = f"{COLS[c]}{r+1}"
+            ns = hn_ in nosock
+            if not ns:
+                rec_pin(x, y, nme)
+            on = hn_ in used
+            fill = "#d4af37" if on else ("none" if ns else "#9e9e9e")
+            s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="{fill}" stroke="{"#c62828" if ns else "#5d4520"}" stroke-width="2"{" stroke-dasharray=\'4 3\'" if ns else ""}/>')
+            ty = y + 26 if below else y - 14
+            if ns:
+                s.text(x, ty, nme, 10, "middle", "bold", "#c62828", layer=s.top)
+            else:
+                s.top.append(f'<text x="{x}" y="{ty}" font-size="11" text-anchor="middle" font-weight="bold" fill="{"#1a237e" if on else "#555"}" font-family="{FONT}" transform="rotate(-90 {x} {ty-4})">{nme}</text>' if False else "")
+                tag(x, ty, nme.replace("IO", ""), 10, "middle", "#1a237e" if on else "#777", w=len(nme.replace("IO", "")) * 7 + 6)
+    return x1, y1, x2, y2
+
+# 線（穴の名前）。色は FireBeetle・Olimex の図と同じ決まり
+# TARO 2026-11-22: 5×7cm だと W5500 の基板が大きく Freenove と当たる。TARO の 6×8cm 基板は穴 A〜V × 1〜27（22×27）。
+# W5500 は 23×25mm、ピン列は 8穴はなれ（間 7穴）、ピンは 25mm の辺の真ん中（両端から 6mm）。Freenove は USB-C 側が 5V・GND のピンのすぐ横で切れている。
+# → Freenove を上の端に横に寝かせ（ピン C〜V、USB-C を右の端に）、W5500 は下（C・K 列、15〜20 行）。
+#   Freenove の 3V3 の 3本（R11・S11・T11）はソケットに入れず、穴を GND・バッテリー＋・パネル＋の線の通り道にする。
+#   外からの 3本の線（パネル＋・バッテリー＋・マイナス）は端子台を使わず、赤丸の穴に直接はんだ付けする（22 列では端子台まで線が交わらずに引けない）。
+WR0 = 22   # W5500 のいちばん上のピンの行
+FN5_W = [
+    # W5500
+    ("INT", "purple", "IO25（K11）", ["K11", "K22"], "W5500 INT（K22）"),
+    ("CS", "orange", "IO26（L11）", ["L11", "L23", "K23"], "W5500 CS（K23）"),
+    ("SCK", "yellow", "IO14・SCK（N11）", ["N11", "N24", "K24"], "W5500 SCK（K24）"),
+    ("MOSI", "blue", "IO13・MOSI（Q11）", ["Q11", "Q25", "K25"], "W5500 MO（K25）"),
+    ("MISO", "green", "IO19・MISO（J1）", ["J1", "J4", "B4", "B22", "C22"], "W5500 MI（C22）"),
+    ("RST", "white", "IO23（D1）", ["D1", "D2", "A2", "A23", "C23"], "W5500 RST（C23）"),
+    ("3V3", "red", "3V3（C11）", ["C11", "C12", "D12", "D25", "C25"], "W5500 V（C25）"),
+    # 電圧を測る部品（Freenove の下）と GND
+    ("GND", "black", "GND（P11）", ["P11", "P10", "P2", "M2", "K2"], "0.1µF の線（M2）・8.2kΩ（K2）"),
+    ("GND", "black", "0.1µF（M4）", ["M4", "M2"], "GND の線（M2）"),
+    ("GND", "black", "（とちゅうの P10）", ["P10", "K10", "I10"], "0.1µF（K10）・15kΩ（I10）"),
+    ("GND", "black", "（とちゅうの P10）", ["P10", "R10", "R22"], "R11 の空いた穴を通って下へ"),
+    ("GND", "black", "（とちゅうの R22）", ["R22", "T22", "T23"], "マイナスの線（T23）"),
+    ("GND", "black", "（とちゅうの R22）", ["R22", "R27", "K27"], "W5500 G3（K27）"),
+    ("GND", "black", "BP5293 GND（T15）", ["T15", "T22"], "GND の線（T22）"),
+    ("GND", "black", "10µF（U17）", ["U17", "T17"], "GND の線（T17）"),
+    ("VP", "yellow", "IO39（F11）", ["F11", "F6", "K6", "M6", "N6"], "8.2kΩ（K6）・0.1µF（M6）・100kΩ（N6）"),
+    ("VB", "green", "IO35（H11）", ["H11", "H8", "I8", "K8", "N8"], "15kΩ（I8）・0.1µF（K8）・100kΩ（N8）"),
+    ("PV", "blue", "パネル＋の線（T13）", ["T13", "T6", "R6"], "100kΩ（R6、T11 の空いた穴を通る）"),
+    ("BAT", "red", "バッテリー＋の線（S19）", ["S19", "S17", "S15", "S8", "R8"], "BP5293 VIN（S15）・10µF（S17）・100kΩ（R8、S11 の空いた穴を通る）"),
+    ("5V", "orange", "5V（U11）", ["U11", "U15"], "BP5293 VOUT（U15）"),
+]
+FN5_USED = {hs[0] for _, _, _, hs, _ in FN5_W} | {"C11", "P11"}
+OX, OY = 200, 300
+s = S(1700, 4200)
+FN5_NETS.clear()
+title(s, f"{DK_TAG['freenove']}HPX-Core ＋有線LAN＆ソーラーシステムチェック", "6×8cm（穴 22×27）／ W5500 ＋ 電圧チェック ／ v1.25")
+board(s, 22, 27, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜V × 1〜27）")
+B100 = ["#8d5524", "#212121", "#f9a825"]
+res_flat("K2", "K6", "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], (-2000, -2000))
+cap_flat(s, hole("M4"), hole("M6"), "0.1µF")
+res_flat("N6", "R6", "100kΩ", B100, (-2000, -2000))
+res_flat("N8", "R8", "100kΩ", B100, (-2000, -2000))
+res_flat("I8", "I10", "15kΩ", ["#8d5524", "#4caf50", "#f57c00"], (-2000, -2000))
+cap_flat(s, hole("K8"), hole("K10"), "0.1µF")
+dk_h("freenove", 2, 0, FN5_USED, {"R11", "S11", "T11"}, "")
+for h_, t_ in (("K4", "8.2kΩ"), ("M5", "0.1µF"), ("P6", "100kΩ"), ("P8", "100kΩ"), ("I9", "15kΩ"), ("K9", "0.1µF")):
+    x_, y_ = H(*hole(h_))
+    tag(x_ + 16, y_ + 5, t_, 11, "start", "#5d4520", w=len(t_) * 8 + 8)
+# W5500（LAN 差し込み口が下）。基板 23×25mm、ピンは 25mm の辺の真ん中（両端から 6mm）
+x1, y1, x2, y2 = module(2 - 0.53, 10 + 0.53, WR0 - 1 - 6 / 2.54, WR0 - 1 + 5 + 6 / 2.54, "#1565c0", "#0d3c7a", "W5500")
+s.top.append(f'<rect x="{(x1+x2)/2-34}" y="{y1+70}" width="68" height="68" rx="3" fill="#212121" fill-opacity="0.85"/>')
+s.text((x1 + x2) / 2, y1 + 110, "W5500", 13, "middle", "bold", "#eee", layer=s.top)
+s.top.append(f'<rect x="{(x1+x2)/2-80}" y="{y2-120}" width="160" height="150" rx="6" fill="#cfd8dc" fill-opacity="0.75" stroke="#607d8b" stroke-width="2"/>')
+s.text((x1 + x2) / 2, y2 - 40, "LAN 差し込み口", 13, "middle", "bold", "#37474f", layer=s.top)
+s.text((x1 + x2) / 2, y2 + 52, "LAN ケーブル（下へ）", 13, "middle", "bold", "#333", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 160, "W5500 モジュール（23×25mm）", 13, "middle", "bold", "#fff", layer=s.top)
+s.text((x1 + x2) / 2, y1 + 180, "ピンソケット 6ピン×2 に差す", 12, "middle", "bold", "#eee", layer=s.top)
+pins(2, WR0, ["MI", "RST", "NC", "V", "V2", "G"], "L", {"MI", "RST", "V"})
+pins(10, WR0, ["INT", "CS", "SCK", "MO", "G2", "G3"], "R", {"INT", "CS", "SCK", "MO", "G3"})
+# BP5293-50（左から VIN・GND・VOUT。印字面を手前（下）に向ける）
+xa, ya = H(*hole("S15")); xb, _ = H(*hole("U15"))
+s.top.append(f'<rect x="{xa-26}" y="{ya-34}" width="{xb-xa+52}" height="22" rx="4" fill="#263238" fill-opacity="0.9" stroke="#000" stroke-width="2"/>')
+rec_part(xa - 26, ya - 34, xb - xa + 52, 22, "")
+s.text((xa + xb) / 2, ya - 18, "BP5293-50", 12, "middle", "bold", "#fff", layer=s.top)
+for h_, nn in (("S15", "VIN"), ("T15", "GND"), ("U15", "VOUT")):
+    x, y = H(*hole(h_))
+    rec_pin(x, y, nn)
+    s.top.append(f'<circle cx="{x}" cy="{y}" r="8.5" fill="#d4af37" stroke="#5d4520" stroke-width="2"/>')
+    tag(x, y + 24, nn, 10, "middle", w=len(nn) * 7 + 8)
+cap_flat(s, hole("S17"), hole("U17"), "10µF", True)
+x_, y_ = H(*hole("U17")); tag(x_ + 22, y_ + 5, "10µF", 11, "start", w=40)
+# 外からの線（ヒューズを通った パネル＋・バッテリー＋ と マイナス）は赤丸の穴に直接はんだ付け
+for i, (h_, nn, col) in enumerate((("T13", "パネル＋（1A ヒューズ経由）", "blue"), ("S19", "バッテリー＋（1A ヒューズ経由）", "red"), ("T23", "マイナス", "black"))):
+    solder_mark(s, *hole(h_))
+    x, y = H(*hole(h_))
+    xe = OX + 21 * P + 90
+    s.add(f'<path d="M{x},{y} L{x+14},{y} L{x+14},{y+14} L{xe},{y+14}" fill="none" stroke="{COL[col]}" stroke-width="6" stroke-linejoin="round" opacity="0.85"/>')
+    s.text(xe + 8, y + 19, nn, 13, "start", "bold", COL[col] if col != "black" else "#212121")
+for net, c, a, hs, b in FN5_W:
+    wn(net, c, *hs)
+lx, ly = OX + 21 * P + 340, OY + 0 * P
+s.text(lx, ly, "部品の穴", 14, weight="bold")
+for i, (a_, b_) in enumerate([("K2〜K6", "8.2kΩ（パネル用、寝かせる）"), ("M4・M6", "0.1µF（パネル）"), ("N6〜R6", "100kΩ（パネル＋ → 測る点）"),
+                             ("N8〜R8", "100kΩ（バッテリー＋ → 測る点）"), ("I8・I10", "15kΩ（バッテリー用）"), ("K8・K10", "0.1µF（バッテリー）"),
+                             ("S15・T15・U15", "BP5293-50（VIN・GND・VOUT）"), ("S17・U17", "10µF（BP5293 の入力側）"),
+                             ("T13・S19・T23", "外からの線（赤丸）"), ("C22〜C27・K22〜K27", "W5500 のソケット"),
+                             ("C1〜V1", "Freenove のソケット 20ピン"), ("C11〜Q11・U11〜V11", "Freenove のソケット 15ピン＋2ピン")]):
+    s.text(lx, ly + 30 + i * 44, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, ly + 47 + i * 44, b_, 12, fill="#333")
+for i, t_ in enumerate(["青い点線の四角が Freenove の外形。", "2〜10 行の部品は Freenove の下に", "入る。寝かせて低く付ける", "",
+                        "R11・S11・T11（赤い点線の丸）は", "Freenove の 3V3 のピン。ソケットを", "付けないので穴が空き、線を通す"]):
+    s.text(lx, ly + 30 + 12 * 44 + 10 + i * 18, t_, 12, weight="bold", fill="#c62828")
+fname = "HPX-Core_LANV_freenove_pcb.svg"
+check_nets(fname)
+yb = back_section(s, OY + (NR - 1) * P + 300, fname)
+y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, " → ".join(hs), b] for _, c, a, hs, b in FN5_W],
+          [100, 300, 520, 660], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["Freenove ESP32 WROOM（FNK0090、ピンヘッダ付き）", "1", "C1〜V1・C11〜V11。横に寝かせて、アンテナを左・USB-C を右の端に向ける"],
+    ["ピンソケット（メス）20ピン", "2", "上の列 C1〜V1 は 20ピンのまま。下の列は 15ピン（C11〜Q11）と 2ピン（U11・V11）に切る"],
+    ["W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2", "1", "C22〜C27・K22〜K27。LAN 差し込み口を下に向ける（基板の下の端から 2穴ぶんくらいはみ出す）"],
+    ["三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）", "1", "S15・T15・U15（左から VIN・GND・VOUT。印字面を手前（下）に向けて立てる）"],
+    ["積層セラミックコンデンサー 10µF 50V 5mm", "1", "S17・U17（BP5293 の入力側）"],
+    ["金属皮膜抵抗 100kΩ 1%", "2", "N6〜R6（パネル用）、N8〜R8（バッテリー用）。寝かせて付ける"],
+    ["金属皮膜抵抗 15kΩ 1%（小型 1/4W）", "1", "I8・I10（バッテリー用。足の間 2穴で寝かせる）"],
+    ["金属皮膜抵抗 8.2kΩ 1%", "1", "K2〜K6（パネル用、寝かせる）"],
+    ["積層セラミックコンデンサー 0.1µF 50V 5mm", "2", "M4・M6（パネル用）、K8・K10（バッテリー用）"],
+    ["ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ", "2", "バッテリー＋とパネル＋の線の途中（コントローラーの近く）"],
+    ["ユニバーサル基板 6×8cm（穴 22×27）・すずめっき線", "1", "縦に置く。線はすべて裏"],
+], [680, 60, 840], "部品表")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線（下の「裏から見た図」が実際に配線する向き）。",
+    "・Freenove は横に寝かせて上の端に差す（アンテナが左、USB-C が右の端）。図の点線の四角が Freenove の外形で、2〜10 行の部品（抵抗 4本・0.1µF 2個）はその下に入る。",
+    "・Freenove の下の部品は、ソケットより先にはんだ付けし、基板にぴったり寝かせて低く付ける。ソケット（約 8.5mm）とピンヘッダの台（約 2.5mm）で、すき間は 1cm くらいの見込み（未確認）。",
+    "・Freenove の下の列のソケットは、15ピン（C11〜Q11）と 2ピン（U11・V11）に切って付ける。R11・S11・T11（使わない 3V3 のピン）はソケットに入らず浮く。空いた穴に GND・バッテリー＋・パネル＋の線を通すため。",
+    "・W5500（23×25mm）は C・K 列の 22〜27 行（TARO 2026-11-22: 基板の下の端へ）。W5500 の基板は 19.6 行くらいから、LAN 差し込み口のある側は 6×8cm 基板の下の端から 5mm くらいはみ出す見込み。GND は右の列の G3（K27）につなぐ。",
+    "・22 列の基板では端子台まで線が交わらずに引けないので、外からの 3本の線（パネル＋・バッテリー＋・マイナス）は赤丸の穴（T13・S19・T23）に直接はんだ付けする。",
+    "・開発ボードの電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を 5V ピン（U11）に入れる。",
+    "・バッテリーは 100kΩ と 15kΩ で 約1/7.7 にして IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 にして IO39 で読む（ファーム v1.25）。",
+    "・W5500 の信号は FireBeetle の図と同じピン: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。",
+    "・BP5293-50 は左から VIN・GND・VOUT（FireBeetle・Olimex の図とは左右が逆。印字面を手前（下）に向ける）。足の並びは秋月の資料（データシート）で確かめてから差す。入力は 26V まで。",
+    "・USB-C で書き込むときは、バッテリー＋の線のヒューズを抜く（5V ピンにバッテリーからの 5V が来ているため）。",
+    "・マイナスはコントローラーの「バッテリー−」へ。「パネル−」にはつながない。",
+    "・パネル電圧は「パネル−」と「バッテリー−」がつながっている（マイナス共通）コントローラーでだけ測れる。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）コントローラーでは、パネル＋の線（T13）をつながない（パネル用の抵抗・コンデンサーとヒューズは省いてよい）。つながないとパネルは 0V になり「未接続」として扱う。どちらの型かは、コントローラーの線を外してテスターの導通モードで確かめる。",
+    "・Freenove のピンの並びは Freenove の GitHub のピン配置図から。左右のピン列は 10穴はなれていると見込んで描いた（実物で未確認）。差す前に、基板の印字とピンの名前を見くらべる。",
+], fname)
+
 print("ok")
