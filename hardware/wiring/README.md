@@ -22,7 +22,7 @@
 
 HPX-Core の図は 2026-11-13 に開発ボードを FireBeetle 2 ESP32-E (DFRobot DFR0654) に変えて描き直しました (TARO)。ほかの開発ボードで作るときの図も、同じピン (ファーム v1.25) に合わせて描き直して残しています:
 Olimex ESP32-DEVKIT-LIPO の [基本モデル](HPX-Core_BASIC_olimex_pcb.png)・[＋有線LAN](HPX-Core_LAN_olimex_pcb.png)・[＋有線LAN＆ソーラーシステムチェック](HPX-Core_LANV_olimex_pcb.png) (180度回して差す)・[＋防水](HPX-Core_olimex_wiring.png)・[＋防水＆電池駆動](HPX-Core_BAT_olimex_pcb.png)・[＋LTE-M](HPX-Core_LTE_olimex_pcb.png) ([線の対応](HPX-Core_LTE_olimex_wiring.png))、
-Freenove ESP32 WROOM (FNK0090) の [基本モデル](HPX-Core_BASIC_freenove_pcb.png)・[＋有線LAN](HPX-Core_LAN_freenove_pcb.png)・[＋防水](HPX-Core_freenove_wiring.png)・[＋防水＆電池駆動](HPX-Core_BAT_freenove_pcb.png)・[＋LTE-M](HPX-Core_LTE_freenove_pcb.png) (＋有線LAN＆ソーラーシステムチェックは 6×8cm の基板で線が交わらずに引けないので図なし)、
+Freenove ESP32 WROOM (FNK0090) の [基本モデル](HPX-Core_BASIC_freenove_pcb.png)・[＋有線LAN](HPX-Core_LAN_freenove_pcb.png)・[＋防水](HPX-Core_freenove_wiring.png)・[＋防水＆電池駆動](HPX-Core_BAT_freenove_pcb.png)・[＋LTE-M](HPX-Core_LTE_freenove_pcb.png)・[＋有線LAN＆ソーラーシステムチェック](HPX-Core_LANV_freenove_pcb.png) (6×8cm では線が交わらずに引けないので、秋月 5×7cm 基板を横に置き Freenove を横に寝かせて差す。電圧を測る部品は Freenove の下、ソケットは 19ピン×2)、
 ELEGOO ESP-32 の [基本モデル](HPX-Core_BASIC_elegoo_pcb.png)・[＋有線LAN](HPX-Core_LAN_elegoo_pcb.png)・[＋有線LAN＆ソーラーシステムチェック](HPX-Core_LANV_elegoo_pcb.png)・[＋防水](HPX-Core_elegoo_wiring.png)・[＋防水＆電池駆動](HPX-Core_BAT_elegoo_pcb.png)・[＋LTE-M](HPX-Core_LTE_elegoo_pcb.png)。どれもファーム v1.25。
 2026-11-12 までの ELEGOO の ＋有線LAN・＋有線LAN＆ソーラーシステムチェック (W5500 が 24〜29 行、MISO＝D4、パネル＝D34) と Olimex の HPX-Solar の D+＝IO34 で組んだものは、ファーム v1.24 までを使います ([古い線の対応図](HPX-Core_LAN_elegoo_wiring.png))。
 
