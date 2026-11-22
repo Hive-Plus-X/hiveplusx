@@ -91,12 +91,15 @@ if (is_post()) {
         $name = mb_substr(trim(preg_replace('/[\x00-\x1F\x7F]/u', '', (string)($_POST['name'] ?? '')) ?? ''), 0, 30);
         $sz = (int)($_POST['sz'] ?? -1);
         if (!isset(CAM_SIZES[$sz])) $sz = -1;
+        $fl = (int)($_POST['fl'] ?? -1);
+        if (!isset(CAM_FLIPS[$fl])) $fl = -1;
         $hot = (int)($_POST['hot'] ?? CAM_HOT_DEFAULT);
         if (!isset(CAM_HOT_LEVELS[$hot])) $hot = CAM_HOT_DEFAULT;
         $watch = (int)($_POST['watch'] ?? 2);
         if (!isset(CW_LEVELS[$watch])) $watch = 2;
-        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch, $sz, $hot) {
+        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch, $sz, $fl, $hot) {
             if ($sz >= 0) $x['sz'] = $sz; else unset($x['sz']);
+            if ($fl >= 0) $x['fl'] = $fl; else unset($x['fl']);
             $x['hot'] = $hot;
             $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid; $x['watch'] = $watch;
             if ($watch === 0) unset($x['wp']);
@@ -104,7 +107,7 @@ if (is_post()) {
             return $x;
         });
         link_log_sync($UID);   // カメラの巣箱が変わったら履歴に残す
-        redirect('camera.php?c=' . $cid . '#set', 'カメラの設定を保存しました。撮影の間隔・時間帯・写真の大きさは、カメラが次に写真を送ったあとから変わります。');
+        redirect('camera.php?c=' . $cid . '#set', 'カメラの設定を保存しました。撮影の間隔・時間帯・写真の大きさ・向きは、カメラが次に写真を送ったあとから変わります。');
     }
     if ($act === 'remove' && ($_POST['ok'] ?? '') === '1') {
         // 消さずに cams_removed/ へ移す (間違えたときはサーバーのファイルを戻せば元に戻る)
@@ -330,6 +333,9 @@ if ($cam['own']) {
         . $opt(-1, cam_sz($c), 'カメラの管理画面の設定のまま' . (isset($c['w']) ? ' (今 ' . (int)$c['w'] . '×' . (int)$c['h'] . ')' : ''));
     foreach (CAM_SIZES as $v => $lb) echo $opt($v, cam_sz($c), $lb);
     echo '</select><br><small class="muted">ここで選ぶと、カメラの管理画面の設定より優先します (HPX-CAM v1.04 から)。</small></p>';
+    echo '<p><label>写真の向き (左右や上下が反対に写るとき)</label><select name="fl">' . $opt(-1, cam_fl($c), 'カメラの管理画面の設定のまま');
+    foreach (CAM_FLIPS as $v => $lb) echo $opt($v, cam_fl($c), $lb);
+    echo '</select><br><small class="muted">ここで選ぶと、カメラの管理画面の設定より優先します (HPX-CAM v1.07 から。カメラが次に写真を送ったあと、その次の写真から変わります)。</small></p>';
     echo '<p><label>ケースが熱くなったときのお知らせ (「機器の警報」のメール・LINE)</label><select name="hot">';
     foreach (CAM_HOT_LEVELS as $v => $lb) echo $opt($v, cam_hot($c), $lb);
     echo '</select><br><small class="muted">起きた直後のカメラのチップの温度で、正確ではない目安です (HPX-CAM v1.05 から)。'
