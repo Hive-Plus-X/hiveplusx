@@ -94,6 +94,19 @@ if (is_post()) {
         });
         redirect($selfUrl([], 'h-' . $id), $all && $n > 1 ? 'アラート設定を、この蜂場の巣箱 ' . $n . ' 箱すべてに保存しました。' : 'アラート設定を保存しました。');
     }
+    // 「要注意」マークの切り替え (押すたびに付ける・外す)。巣箱を見られる人 (チームのメンバーも) が切り替えられる
+    if ($act === 'watch_toggle') {
+        $id = (string)($_POST['id'] ?? '');
+        if (!isset($site['hives'][$id])) redirect($selfUrl());
+        $on = empty($site['hives'][$id]['watch']);
+        site_use($site['hives'][$id]['_o']);
+        site_update('site', function (array $s) use ($id, $on) {
+            if (!isset($s['hives'][$id])) return $s;
+            if ($on) $s['hives'][$id]['watch'] = true; else unset($s['hives'][$id]['watch']);
+            return $s;
+        });
+        redirect($selfUrl());
+    }
     if ($act === 'hive_delete') {
         $id = (string)($_POST['id'] ?? '');
         if (!isset($site['hives'][$id])) redirect($selfUrl());
@@ -151,6 +164,15 @@ function hive_form(array $hv, string $id, string $aid, array $site, array $senso
     return $o . '</p><p><button type="submit">保存</button></p></form>' . core_filter_js();
 }
 
+// 「要注意」ボタン (QR コードのマークの左)。押すたびに付ける・外す。付いているときは赤
+function watch_button(array $hv, string $hid): string
+{
+    $on = !empty($hv['watch']);
+    return '<form method="post" class="inl wtf">' . csrf_field() . '<input type="hidden" name="act" value="watch_toggle"><input type="hidden" name="id" value="' . h($hid) . '">'
+        . '<button type="submit" class="wtb' . ($on ? ' on' : '') . '" aria-pressed="' . ($on ? 'true' : 'false') . '" title="' . ($on ? '押すと「要注意」を外します' : '押すと「要注意」の印を付けます') . '">'
+        . '<span aria-hidden="true">⚠</span>要注意</button></form>';
+}
+
 // QR コードのマークと、押すと出るメニュー (この巣箱の PNG、この蜂場・すべての蜂場の巣箱の印刷用 PDF)。
 // QR コードの中身は memo.php?qr=巣箱id の URL (その巣箱の内検メモを書く欄が開く)。ログインしていなければ、ログインのあとで開く
 function qr_menu(array $site, string $aid, string $hid): string
@@ -188,7 +210,11 @@ echo '<style>.qrrow{display:flex;align-items:flex-start;gap:8px}.qrrow .per{flex
     . '.qrm{position:relative;margin:0}.qrm>summary{list-style:none;display:flex;align-items:center;gap:3px;padding:2px 8px;border:1px solid #bbc;border-radius:4px;background:#fff;color:#234;font-size:.85em}'
     . '.qrm>summary::-webkit-details-marker{display:none}.qrm[open]>summary{background:#234;color:#fff}.qrm>summary svg{background:none;border:0;width:22px;height:22px}'
     . '.qrp{position:absolute;right:0;top:calc(100% + 4px);z-index:20;width:260px;background:#fff;border:1px solid #bbc;border-radius:6px;padding:10px 12px;box-shadow:0 3px 12px rgba(0,0,0,.18)}'
-    . '.qrp p{margin:.3em 0}.qrp .qrt{font-weight:bold;margin-top:0}.qrp button{width:100%}.qrimg{display:block;width:150px;height:150px;margin:0 auto 4px;border:1px solid #ddd}</style>';
+    . '.qrp p{margin:.3em 0}.qrp .qrt{font-weight:bold;margin-top:0}.qrp button{width:100%}.qrimg{display:block;width:150px;height:150px;margin:0 auto 4px;border:1px solid #ddd}'
+    // 「要注意」ボタンと、要注意の巣箱のボタン (枠と巣箱名を赤。選んでいるときは赤の地に白い字)
+    . '.wtf{margin:0}button.wtb,button.wtb:hover{display:flex;align-items:center;gap:3px;padding:2px 8px;min-height:28px;border:1px solid #bbc;border-radius:4px;background:#fff;color:#234;font-size:.85em}'
+    . '.wtb span{font-size:1.1em;line-height:1;color:#9aa3ad}button.wtb.on{background:#D32F2F;border-color:#D32F2F;color:#fff;font-weight:bold}.wtb.on span{color:#fff}.wtb:hover{background:#f1f4f2}button.wtb.on:hover{background:#b71c1c}'
+    . '.hbtns a.watch{border-color:#D32F2F;color:#D32F2F}.hbtns a.watch.on{background:#D32F2F;border-color:#D32F2F;color:#fff}</style>';
 echo flash_html();
 
 if (!$site['apiaries']) {
@@ -209,7 +235,8 @@ $ap = $site['apiaries'][$aid];
 // ---- 巣箱のボタン(四角)。最後の「＋」で巣箱を追加 ----
 echo '<div class="hbtns">';
 foreach ($hives as $x => $hv) {
-    echo '<a href="' . h($selfUrl(['h' => $x])) . '"' . ($x === $hsel ? ' class="on"' : '') . '>' . h((string)$hv['name']) . '</a>';
+    $cl = trim(($x === $hsel ? 'on' : '') . (!empty($hv['watch']) ? ' watch' : ''));
+    echo '<a href="' . h($selfUrl(['h' => $x])) . '"' . ($cl !== '' ? ' class="' . $cl . '"' : '') . (!empty($hv['watch']) ? ' title="要注意"' : '') . '>' . h((string)$hv['name']) . '</a>';
 }
 $canEdit = apiary_can_edit($site, $aid);
 if (!$canEdit && $hsel === 'new') $hsel = '';
@@ -230,10 +257,10 @@ $since = $per === 0 ? 0 : $now - $per * 86400;
 foreach (array_intersect_key($hives, [$hsel => 1]) as $hid => $hv) {
     // 巣箱名は上の巣箱のボタンで分かるので、ボックスには出さない
     echo '<div class="card hive" id="h-' . h($hid) . '">';
-    // グラフの期間(巣箱名の下)。右端に QR コードのマーク
+    // グラフの期間(巣箱名の下)。右端に「要注意」ボタンと QR コードのマーク
     echo '<div class="qrrow"><div class="per sq">';
     foreach (S_PERIODS as $v => $lb) echo '<a href="' . h($selfUrl(['p' => $v])) . '"' . ($per === $v ? ' class="on"' : '') . '>' . h($lb) . '</a>';
-    echo '</div>' . qr_menu($site, $aid, $hid) . '</div>';
+    echo '</div>' . watch_button($hv, (string)$hid) . qr_menu($site, $aid, $hid) . '</div>';
     // この巣箱に置いた HPX-CAM (カメラページの設定で巣箱を選んだもの)
     foreach (cams_visible() as $cmId => $cm) {
         if ((string)($cm['c']['hive'] ?? '') === (string)$hid && $cm['o'] === ($hv['_o'] ?? '')) echo CAM_LINK_CSS . cam_link_html((string)$cmId, $cm, (string)$hid);
