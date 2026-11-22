@@ -258,6 +258,9 @@ $token = (string)($acct['token'] ?? '');
 // ファームウェア自動更新サーバーのURL: config の $HPX_OTA_URL、無ければこのサーバーの firmware/manifest.txt (置いてあるときだけ)
 $otaUrl = trim((string)($HPX_OTA_URL ?? ''));
 if ($otaUrl === '' && is_file(__DIR__ . '/firmware/manifest.txt')) $otaUrl = site_url('firmware/manifest.txt');
+// HPX-CAM 用: config の $HPX_CAM_OTA_URL、無ければこのサーバーの firmware/manifest_cam.txt (置いてあるときだけ)
+$camOtaUrl = trim((string)($HPX_CAM_OTA_URL ?? ''));
+if ($camOtaUrl === '' && is_file(__DIR__ . '/firmware/manifest_cam.txt')) $camOtaUrl = site_url('firmware/manifest_cam.txt');
 echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="card form">'
     . '<p>HPX-Core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
     . '<details><summary>送信先のURLを表示する</summary><p><input type="text" readonly value="' . h(site_url('receive.php')) . '" onclick="this.select()"></p></details>'
@@ -269,6 +272,11 @@ echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="
           . '<p class="muted">入れなくても動きます。入れておくと、新しいファームウェアが出たときに HPX-Core が自分で更新します (電池なら1日1回、常時稼働なら6時間ごとに確かめます)。'
           . '管理画面「動作設定」の「ファームウェア自動更新サーバーのURL」に入れてください。</p></details>'
         : '<p class="muted">ファームウェア自動更新サーバーのURL: まだ用意されていません (HPX-Core の管理画面のその欄は空欄のままで動きます)。</p>')
+    . ($camOtaUrl !== ''
+        ? '<details><summary>HPX-CAM のファームウェア自動更新サーバーのURLを表示する</summary><p><input type="text" readonly value="' . h($camOtaUrl) . '" onclick="this.select()"></p>'
+          . '<p class="muted">HPX-CAM の管理画面「動作設定」の「ファームウェア自動更新サーバーのURL」に入れてください。HPX-Core 用とは別の URL です。入れておくと、HPX-CAM が1日1回確かめて自分で更新します。'
+          . 'HPX-CAM の送信先のURLとトークンは、HPX-Core と同じものを入れます。</p></details>'
+        : '')
     . '<p class="muted">このアカウントの HPX-Core: ' . $hubCount . ' 台' . ((int)($HPX_MAX_HUBS ?? 0) > 0 && empty($ME['admin']) ? ' (' . (int)$HPX_MAX_HUBS . ' 台まで)' : '') . '</p>'
     . '<details><summary>トークンを作り直す</summary><div class="card danger"><p>今のトークンは使えなくなります。つないでいるすべての HPX-Core に、新しいトークンを入れ直してください。'
     . '入れ直すまでの記録は HPX-Core に貯まり、入れ直した後に送られます。</p>'

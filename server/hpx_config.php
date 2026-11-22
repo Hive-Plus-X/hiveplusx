@@ -65,6 +65,7 @@ function hpx_settings_def(): array
         'HPX_MAX_HUBS' => ['g' => 'users', 'l' => '1つのアカウントにつなげる HPX-Core の台数', 't' => 'int', 'd' => 5, 'min' => 0, 'max' => 1000, 'u' => '台', 'hp' => '0 なら無制限。サーバー管理者はいつも無制限。'],
         'HPX_MAX_CAMS' => ['g' => 'users', 'l' => '1つのアカウントにつなげるカメラの台数', 't' => 'int', 'd' => 5, 'min' => 0, 'max' => 1000, 'u' => '台', 'hp' => '0 なら無制限。'],
         'HPX_OTA_URL' => ['g' => 'users', 'l' => 'HPX-Core のファーム自動更新の URL', 't' => 'url', 'd' => '', 'hp' => 'manifest.txt の URL。空なら、このフォルダの firmware/manifest.txt があればその URL。'],
+        'HPX_CAM_OTA_URL' => ['g' => 'users', 'l' => 'HPX-CAM のファーム自動更新の URL', 't' => 'url', 'd' => '', 'hp' => 'manifest_cam.txt の URL。空なら、このフォルダの firmware/manifest_cam.txt があればその URL。'],
         'HPX_CONSENT_TEXT' => ['g' => 'users', 'l' => '登録のときに同意してもらう「データの利用」の文', 't' => 'text', 'd' => '', 'hp' => '空なら決まった文。'],
         'HPX_TERMS_URL' => ['g' => 'users', 'l' => '利用規約のページの URL', 't' => 'url', 'd' => '', 'hp' => '空なら同意の文にリンクを付けません。'],
         'HPX_EXPORT_REMIND_DAYS' => ['g' => 'users', 'l' => 'サーバー管理者に全データのダウンロードを促すまで', 't' => 'int', 'd' => 30, 'min' => 0, 'max' => 3650, 'u' => '日', 'hp' => '0 なら知らせません。'],
