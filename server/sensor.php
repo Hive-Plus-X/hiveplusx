@@ -9,8 +9,8 @@
 //   重量センサの較正(生の値 → kg)は HPX-Core の管理画面で行い、ここではゼロリセットと差し引く重さだけ入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
-require_once __DIR__ . '/hpx_sensor_csv.php';
-require_once __DIR__ . '/hpx_cam.php';         // メニューの「カメラ」(cams_in_menu())   // read_ble() と CSV の形 (定時記録データ・全データ)
+require_once __DIR__ . '/hpx_sensor_csv.php';   // read_ble() と CSV の形 (定時記録データ・全データ)
+require_once __DIR__ . '/hpx_cam.php';          // メニューの「カメラ」(cams_in_menu())
 
 const D_TITLE = 'センサ - ' . BRAND_NAME;
 const D_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
