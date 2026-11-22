@@ -79,16 +79,19 @@ if (is_post()) {
         $h1 = max(1, min(24, (int)($_POST['h1'] ?? CAM_H1_DEFAULT)));
         if ($h1 <= $h0) redirect('camera.php?c=' . $cid . '#set', '撮影する時間帯は「から」より「まで」を後にしてください。');
         $name = mb_substr(trim(preg_replace('/[\x00-\x1F\x7F]/u', '', (string)($_POST['name'] ?? '')) ?? ''), 0, 30);
+        $sz = (int)($_POST['sz'] ?? -1);
+        if (!isset(CAM_SIZES[$sz])) $sz = -1;
         $watch = (int)($_POST['watch'] ?? 2);
         if (!isset(CW_LEVELS[$watch])) $watch = 2;
-        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch) {
+        cam_update($UID, $cid, function (array $x) use ($aid, $hvid, $iv, $h0, $h1, $name, $watch, $sz) {
+            if ($sz >= 0) $x['sz'] = $sz; else unset($x['sz']);
             $x['name'] = $name; $x['apiary'] = $aid; $x['hive'] = $hvid; $x['watch'] = $watch;
             if ($watch === 0) unset($x['wp']);
             $x['iv'] = in_array($iv, CAM_IVS, true) ? $iv : CAM_IV_DEFAULT; $x['h0'] = $h0; $x['h1'] = $h1;
             return $x;
         });
         link_log_sync($UID);   // カメラの巣箱が変わったら履歴に残す
-        redirect('camera.php?c=' . $cid . '#set', 'カメラの設定を保存しました。撮影の間隔・時間帯は、カメラが次に写真を送ったあとから変わります。');
+        redirect('camera.php?c=' . $cid . '#set', 'カメラの設定を保存しました。撮影の間隔・時間帯・写真の大きさは、カメラが次に写真を送ったあとから変わります。');
     }
     if ($act === 'remove' && ($_POST['ok'] ?? '') === '1') {
         // 消さずに cams_removed/ へ移す (間違えたときはサーバーのファイルを戻せば元に戻る)
@@ -301,7 +304,11 @@ if ($cam['own']) {
     for ($v = 0; $v <= 23; $v++) echo $opt($v, $h0, $v . '時');
     echo '</select> から <select name="h1">';
     for ($v = 1; $v <= 24; $v++) echo $opt($v, $h1, $v . '時');
-    echo '</select> まで</p><p><label>写真が大きく変わったときのお知らせ (巣箱が倒れた、人が来た、など)</label><select name="watch">';
+    echo '</select> まで</p><p><label>写真の大きさ (大きいほど電池と通信量が増えます。ふつうは SVGA で十分です)</label><select name="sz">'
+        . $opt(-1, cam_sz($c), 'カメラの管理画面の設定のまま' . (isset($c['w']) ? ' (今 ' . (int)$c['w'] . '×' . (int)$c['h'] . ')' : ''));
+    foreach (CAM_SIZES as $v => $lb) echo $opt($v, cam_sz($c), $lb);
+    echo '</select><br><small class="muted">ここで選ぶと、カメラの管理画面の設定より優先します (HPX-CAM v1.04 から)。</small></p>';
+    echo '<p><label>写真が大きく変わったときのお知らせ (巣箱が倒れた、人が来た、など)</label><select name="watch">';
     foreach (CW_LEVELS as $v => $lb) echo $opt($v, cw_level($c), $lb);
     echo '</select><br><small class="muted">前の写真と見くらべて、大きく変わったら蜂場のメンバーにお知らせメール (LINE) を送ります。'
         . (cw_ai_key() !== '' ? 'そのときだけ AI が写真を見て、明るさ・影・天気だけの違いなら送りません。' : 'AI のキーが設定されていないので、2枚続けて変わったままのときに送ります (明るさ・影で送ることがあります)。')

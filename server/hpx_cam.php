@@ -25,6 +25,10 @@ function cam_update(string $uid, string $id, callable $fn): bool { return json_u
 function cam_name(array $c, string $id): string { return (string)($c['name'] ?? '') !== '' ? (string)$c['name'] : 'HPX-CAM ' . substr($id, -4); }
 
 // 撮影の間隔と時間帯 (カメラへの返事でも送る)
+// 写真の大きさ (HPX-CAM v1.04 から)。HPX-note で選ぶと返事の "sz" でカメラに届き、カメラの管理画面の設定より優先する。
+// 選ばない (-1) ときはカメラの管理画面の設定のまま。番号はファームと同じ
+const CAM_SIZES = [0 => 'SVGA 800×600', 1 => 'XGA 1024×768', 2 => 'UXGA 1600×1200', 3 => 'QXGA 2048×1536 (OV3660・OV5640 だけ)'];
+function cam_sz(array $c): int { return isset($c['sz']) && isset(CAM_SIZES[(int)$c['sz']]) ? (int)$c['sz'] : -1; }
 function cam_iv(array $c): int { return in_array((int)($c['iv'] ?? 0), CAM_IVS, true) ? (int)$c['iv'] : CAM_IV_DEFAULT; }
 function cam_hours(array $c): array
 {

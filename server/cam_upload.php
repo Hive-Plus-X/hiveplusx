@@ -5,6 +5,7 @@
 //   Content-Type: image/jpeg、本文は JPEG そのもの (1枚 2MB まで)
 //   返事 (JSON): {"ok":true, "saved":1, "iv":10, "h0":5, "h1":19, "now":<サーバーの時刻>}
 //     iv = 撮影の間隔 (分)、h0〜h1 = 撮影する時間帯 (時)。カメラのページで変えられ、次の撮影から使う。now は時計合わせ用
+//     sz = 写真の大きさ (0=SVGA 1=XGA 2=UXGA 3=QXGA)。カメラのページで選んだときだけ付ける。無ければカメラの管理画面の設定のまま
 //   同じカメラ・同じ撮影時刻の写真がもうあれば、保存せずに ok を返す (送り直しで二重にならない)
 declare(strict_types=1);
 require __DIR__ . '/hpx_cam.php';
@@ -39,7 +40,9 @@ $dir = cam_dir($uid, $id);
 $c = is_file($dir . '/cam.json') ? cam_load($uid, $id) : [];
 $reply = function (int $saved) use (&$c, $now): string {
     [$h0, $h1] = cam_hours($c);
-    return (string)json_encode(['ok' => true, 'saved' => $saved, 'iv' => cam_iv($c), 'h0' => $h0, 'h1' => $h1, 'now' => $now]);
+    $r = ['ok' => true, 'saved' => $saved, 'iv' => cam_iv($c), 'h0' => $h0, 'h1' => $h1, 'now' => $now];
+    if (cam_sz($c) >= 0) $r['sz'] = cam_sz($c);   // 写真の大きさ (HPX-note で選んだときだけ。HPX-CAM v1.04 から使う)
+    return (string)json_encode($r);
 };
 
 // デモ用アカウントには保存しない (カメラには受け取ったと返す)
