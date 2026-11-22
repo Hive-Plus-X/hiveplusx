@@ -4,6 +4,7 @@
 //   ・1日の写真: 大きな写真と横向きのスライドバーで1枚ずつ見る。▶ でパラパラ漫画のように続けて再生する (速さを選べる)
 //   ・カメラの設定 (持ち主だけ): 名前、置いている蜂場、撮影の間隔と時間帯 (カメラへの返事で伝え、次の撮影から使う)、
 //     大きな変化のお知らせ (知らせない/感度、hpx_cam_watch.php)。最近の大きな変化の記録は見られる人みんなに出す
+//     (「確認済み」ボタンで消せる。cam.json の wack = 確認した最後の記録の時刻)
 //   見られるのは、自分のカメラと、共有された蜂場に紐づいたカメラ。写真の受け口は cam_upload.php、保存の形は hpx_cam.php
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
@@ -64,6 +65,15 @@ if (isset($_GET['zip'])) {
 
 // ---- 設定の保存 (持ち主だけ) ----
 if (is_post()) {
+    // 「確認済み」: 大きな変化の表示を消す (見られる人ならだれでも押せる。消すのは押した時点までの記録、お知らせの送り方は変わらない)
+    if ($cam && ($_POST['act'] ?? '') === 'wack') {
+        $upTo = (int)($_POST['t'] ?? 0);
+        cam_update($cam['o'], $cid, function (array $x) use ($upTo) {
+            $x['wack'] = max((int)($x['wack'] ?? 0), $upTo);
+            return $x;
+        });
+        redirect('camera.php?c=' . $cid, '大きな変化の表示を「確認済み」にしました。');
+    }
     if (!$cam || !$cam['own']) redirect('camera.php', 'このカメラの設定は持ち主だけが変えられます。');
     $act = (string)($_POST['act'] ?? '');
     if ($act === 'save') {
@@ -169,18 +179,26 @@ $st = '最後に届いた写真 ' . ($last ? h(date('n/j H:i', $last)) . ' (' . 
     . (isset($c['bv']) ? ' ・ 電池 ' . h(number_format((float)$c['bv'], 2)) . 'V' : '')
     . (isset($c['tc']) ? ' ・ ケース ' . h(number_format((float)$c['tc'], 1)) . '℃' . (!empty($c['hotq']) ? ' <span class="ng">熱くなっています</span>' : '') : '')
     . (isset($c['w']) ? ' ・ ' . (int)$c['w'] . '×' . (int)$c['h'] : '')
+    . (isset($c['fw']) ? ' ・ ファーム v' . intdiv((int)$c['fw'], 100) . '.' . sprintf('%02d', (int)$c['fw'] % 100) : '')
     . ' ・ ' . $iv . '分ごと ' . $h0 . '〜' . $h1 . '時';
 echo '<p class="muted" style="margin:0 0 .4em">' . $st . '</p>';
 
 // 最近の大きな変化 (hpx_cam_watch.php の記録。知らせたものだけ、3日以内)
-$wl = array_values(array_filter((array)($c['wlog'] ?? []), fn($r) => !empty($r[2]) && (int)$r[0] > $now - 3 * 86400));
+// 「確認済み」を押した時刻 (wack) までの記録は出さない
+$wack = (int)($c['wack'] ?? 0);
+$wl = array_values(array_filter((array)($c['wlog'] ?? []), fn($r) => !empty($r[2]) && (int)$r[0] > $now - 3 * 86400 && (int)$r[0] > $wack));
 if ($wl) {
-    echo '<div style="margin:.2em 0 .6em;padding:6px 10px;border:1px solid #f0c36d;border-radius:6px;background:#fff8e1">⚠ <b>カメラ画像に大きな変化がありました</b>';
+    $wMax = max(array_map(fn($r) => (int)$r[0], $wl));
+    echo '<div style="margin:.2em 0 .6em;padding:6px 10px;border:1px solid #f0c36d;border-radius:6px;background:#fff8e1">'
+        . '<form method="post" style="float:right;margin:0 0 4px 8px">' . csrf_field()
+        . '<input type="hidden" name="c" value="' . h($cid) . '"><input type="hidden" name="act" value="wack"><input type="hidden" name="t" value="' . $wMax . '">'
+        . '<button type="submit">✓ 確認済み</button></form>'
+        . '⚠ <b>カメラ画像に大きな変化がありました</b>';
     foreach (array_slice($wl, 0, 5) as $r) {
         $u = $self(['d' => date('Y-m-d', (int)$r[0]), 'f' => date('His', (int)$r[0])]);
         echo '<br><a href="' . h($u) . '">' . h(date('n/j H:i', (int)$r[0])) . '</a>' . ((string)($r[3] ?? '') !== '' ? ' <span class="muted">' . h((string)$r[3]) . '</span>' : '');
     }
-    echo '</div>';
+    echo '<div style="clear:both"></div></div>';
 }
 
 $dp = (string)($_GET['d'] ?? '');
