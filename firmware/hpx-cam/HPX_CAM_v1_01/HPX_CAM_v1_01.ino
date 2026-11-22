@@ -14,7 +14,7 @@
 // 動き方:
 //   1. 初めて電源を入れると、HPX-Core と同じ Wi-Fi「HPX-Setup-xxxx」(パスワード 12345678) を出す。
 //      スマートフォンでつないで http://192.168.4.1/ を開き、「ネットワーク設定」(SSID・Wi-Fiパスワード・管理画面のパスワード)
-//      を保存するとすぐ試しにつなぐ → 管理画面のURL (http://IPアドレス/ と http://hpx-cam-xxxx.local/) を控えて OK → 再起動。
+//      を保存するとすぐ試しにつなぐ → 管理画面のURL (http://IPアドレス/ と http://<機器ID>.local/) を控えて OK → 再起動。
 //      そのあとは HPX-Core と同じく、ルーターにつないだスマートフォンから管理画面 (ユーザー名 admin) を開き、
 //      「動作設定」で送信先のURL・トークンなどを入れる → 保存すると写真を1枚送って確かめる。
 //      電源を入れなおすと約10分、ルーター経由で管理画面を開ける (HPX-Core の電池のときと同じ)。だれも触らないまま
@@ -39,9 +39,11 @@
 //     つながったら管理画面の開き方を出す →「控えました」にチェックして OK。2段目は管理画面の「動作設定」で送信先のURL・トークンなど
 //   * 管理画面のパスワード (ユーザー名 admin、BASIC 認証) を足した。設定のあとは管理画面のどのページもパスワードが要る
 //   * 管理画面を開ける時間を HPX-Core の電池のときと同じ約10分に (設定前は 30分で眠る、v1.00 は 3分・10分)
-//   * HPX-Core と同じく、つないだあとはルーター経由で管理画面を開く (http://IPアドレス/ と http://hpx-cam-xxxx.local/)。
+//   * HPX-Core と同じく、つないだあとはルーター経由で管理画面を開く (http://IPアドレス/ と http://<機器ID>.local/)。
 //     電源を入れなおしてから約10分開ける。ルーターにつながらないときは設定用 Wi-Fi を出す
 //   * 電源を入れなおし、3秒以内に BOOT ボタンを5秒長押しすると、設定が消えて初めの状態に戻る
+//   * HPX-Core と同じく「機器ID」を持つ (初めは hpx-cam-<MAC の最後の6けた>)。管理画面の「機器ID変更」で変えると、
+//     管理画面の名前の URL が http://<新しい機器ID>.local/ になる
 //
 // v1.00 (2026-11-22 TARO 依頼: HPX-CAM のファームウェアを作る)
 //   * 初めての版。実機ではまだ確かめていない (クラウドでコンパイルだけ確認)
@@ -118,7 +120,7 @@ static const time_t TIME_VALID = 1767225600;           // 2026-01-01 より前�
 
 // ---- 設定 (NVS に保存) ----
 Preferences prefs;
-String cfgSsid, cfgPass, cfgUrl, cfgToken, cfgName, cfgAdmin;   // cfgAdmin = 管理画面のパスワード (ユーザー名 admin)
+String cfgSsid, cfgPass, cfgUrl, cfgToken, cfgName, cfgAdmin, cfgDevId;   // cfgDevId = 機器ID (管理画面の http://<機器ID>.local/ に使う)   // cfgAdmin = 管理画面のパスワード (ユーザー名 admin)
 uint8_t cfgSize = 0;      // 0=SVGA 800×600, 1=XGA 1024×768, 2=UXGA 1600×1200, 3=QXGA 2048×1536
 bool cfgFlip = false;     // 上下・左右を逆に (カメラを逆さに付けたとき)
 uint8_t cfgSend = 0;      // 0=撮るたびに送る, 1=1時間に1回まとめて送る
@@ -248,6 +250,7 @@ void loadConfig()
   cfgToken = prefs.getString("tok", "");
   cfgName = prefs.getString("name", "");
   cfgAdmin = prefs.getString("adminpw", "");
+  cfgDevId = prefs.getString("deviceID", "");
   cfgSize = prefs.getUChar("size", 0);
   cfgFlip = prefs.getBool("flip", false);
   cfgSend = prefs.getUChar("send", 0);
@@ -271,6 +274,7 @@ void saveConfig()
   prefs.putString("tok", cfgToken);
   prefs.putString("name", cfgName);
   prefs.putString("adminpw", cfgAdmin);
+  prefs.putString("deviceID", cfgDevId);
   prefs.putUChar("size", cfgSize);
   prefs.putBool("flip", cfgFlip);
   prefs.putUChar("send", cfgSend);
@@ -814,7 +818,11 @@ void redirectTo(const char* where)
 }
 
 String apName() { return "HPX-Setup-" + camId.substring(8); }
-String mdnsHost() { String h = "hpx-cam-" + camId.substring(8); h.toLowerCase(); return h; }
+// 機器ID (HPX-Core と同じしくみ)。初めは MAC アドレスの最後の6けたから作り、管理画面の「機器ID変更」で変えられる。
+// 管理画面の名前の URL は http://<機器ID>.local/ になる
+String defaultDeviceId() { String t = camId.substring(6); t.toLowerCase(); return "hpx-cam-" + t; }
+String deviceId() { return cfgDevId.length() ? cfgDevId : defaultDeviceId(); }
+String mdnsHost() { return deviceId(); }
 bool apMode = true;   // true = 設定用 Wi-Fi で開いている、false = ルーター経由で開いている
 
 // ---- 1段目: ネットワーク設定 (HPX-Core の初回設定と同じ形) ----
@@ -835,7 +843,7 @@ void handleNetPage()
          "SSID(Wi-Fiの名前)とWi-Fiパスワードを確かめて、もう一度保存してください。"
          "ルーターが近くにあるか、2.4GHz の Wi-Fi か(ESP32 は 5GHz につなげません)も確かめてください。</p>";
   }
-  h += "<p>カメラのID: <b>" + camId + "</b></p>";
+  h += "<p>機器ID: <b>" + htmlEscape(deviceId()) + "</b></p>";
   h += "<form action='/save' method='POST'>";
   h += "<label>接続方法</label><br><b>Wi-Fi</b><br><small>HPX-CAM は Wi-Fi だけです (有線LAN・LTE-M はありません)</small><br><br>";
   h += "<label for='ssid'>SSID (LTEルーターなど)</label><br><input type='text' id='ssid' name='ssid' maxlength='32' value='" +
@@ -957,7 +965,8 @@ void handleRoot()
   if (!requireAuth()) return;
   String h = pageHead("HPX-CAM 管理画面");
   h += "<h1>HPX-CAM 管理画面</h1>";
-  h += "<p><b>カメラのID : " + camId + "</b><br><b>Firmware Version: " + String(FW_VERSION) + "</b><br>";
+  h += "<p><b>機器ID : " + htmlEscape(deviceId()) + "</b><br>固有ID(MAC) : " + camId + "<br><b>Firmware Version: " + String(FW_VERSION) + "</b><br>";
+  if (!apMode) h += "管理画面: http://" + WiFi.localIP().toString() + "/ ・ http://" + htmlEscape(mdnsHost()) + ".local/<br>";
   float v = readVbat();
   h += "電池: " + (v > 1.0f ? String(v, 2) + " V" : String("測れません (USB だけのとき)")) + "<br>";
   if (sdOk)
@@ -978,6 +987,7 @@ void handleRoot()
     h += "<p><small>このまま約10分さわらなければ、自動で撮影を始めます。撮影を始めたあとで管理画面を開くときは、電源を入れなおしてください。</small></p>";
   }
   h += "<p><a href='/net?edit=1'>ネットワーク設定 (Wi-Fi・管理画面のパスワード)</a></p>";
+  h += "<p><a href='/deviceid'>機器ID変更</a></p>";
   h += "<p><small>最初からやり直すときは、電源を入れなおし、3秒以内に BOOT ボタンを5秒長押しします。</small></p>";
   h += "</body></html>";
   sendHtml(h);
@@ -1013,6 +1023,55 @@ void handleSettingsPage()
   h += "<input type='submit' value='保存'></form>";
   h += "<p><a href='/'>管理画面へ戻る</a></p></body></html>";
   sendHtml(h);
+}
+
+void handleDeviceIdPage()
+{
+  if (!netConfigured()) { redirectTo("/"); return; }
+  if (!requireAuth()) return;
+  String h = pageHead("機器ID設定");
+  h += "<h1>機器ID設定</h1>";
+  h += "<p>現在の機器ID：<b>" + htmlEscape(deviceId()) + "</b></p>";
+  h += "<form action='/saveid' method='POST'>";
+  h += "<label for='deviceid'>新しい機器ID</label><br>";
+  h += "<input type='text' id='deviceid' name='deviceid' pattern='[a-z0-9]+([a-z0-9-]*[a-z0-9])?' maxlength='32' value='" +
+       htmlEscape(deviceId()) + "' required>";
+  h += "<br><small>半角英小文字(a-z)、数字(0-9)、ハイフン(-)のみ（先頭・末尾のハイフンは使用不可）。"
+       "管理画面の名前の URL が http://&lt;機器ID&gt;.local/ になります。HPX-note に出るカメラの名前は、HPX-note のカメラのページで変えます</small><br><br>";
+  h += "<input type='submit' value='保存'></form><br>";
+  h += "<a href='/'>管理画面へ戻る</a></body></html>";
+  sendHtml(h);
+}
+
+void handleSaveDeviceId()
+{
+  if (!netConfigured()) { redirectTo("/"); return; }
+  if (!requireAuth()) return;
+  String id = server.arg("deviceid");
+  id.trim();
+  if (id.length() == 0) { server.send(400, "text/plain; charset=utf-8", "機器IDを入力してください。"); return; }
+  if (id.length() > 32) { server.send(400, "text/plain; charset=utf-8", "機器IDは32文字以内にしてください。"); return; }
+  if (id.startsWith("-") || id.endsWith("-")) { server.send(400, "text/plain; charset=utf-8", "機器IDの先頭・末尾にハイフンは使用できません。"); return; }
+  for (unsigned int i = 0; i < id.length(); i++)
+  {
+    char c = id.charAt(i);
+    if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-'))
+    {
+      server.send(400, "text/plain; charset=utf-8", "機器IDは半角英小文字・数字・ハイフンのみ使用できます。");
+      return;
+    }
+  }
+  cfgDevId = id;
+  saveConfig();
+  const String url = "http://" + mdnsHost() + ".local/";
+  String h = pageHead("機器ID保存");
+  h += "<h1>機器IDを保存しました</h1>";
+  h += "<p><b>機器ID : " + htmlEscape(deviceId()) + "</b></p>";
+  h += "<p>HPX-CAM は約2秒後に自動再起動します。</p>";
+  h += "<p><b>新しい管理画面</b><br><a href='" + url + "'>" + url + "</a></p></body></html>";
+  sendHtml(h);
+  delay(2000);
+  ESP.restart();
 }
 
 void handleTest();
@@ -1182,6 +1241,8 @@ void runSetup()
   server.on("/nresult", HTTP_GET, handleNetResult);
   server.on("/nfinish", HTTP_POST, handleNetFinish);
   server.on("/settings", HTTP_GET, handleSettingsPage);
+  server.on("/deviceid", HTTP_GET, handleDeviceIdPage);
+  server.on("/saveid", HTTP_POST, handleSaveDeviceId);
   server.on("/savesettings", HTTP_POST, handleSettingsSave);
   server.on("/snap", HTTP_GET, handleSnap);
   server.on("/test", HTTP_POST, handleTest);
