@@ -29,6 +29,10 @@ function cam_name(array $c, string $id): string { return (string)($c['name'] ?? 
 // 選ばない (-1) ときはカメラの管理画面の設定のまま。番号はファームと同じ
 const CAM_SIZES = [0 => 'SVGA 800×600', 1 => 'XGA 1024×768', 2 => 'UXGA 1600×1200', 3 => 'QXGA 2048×1536 (OV3660・OV5640 だけ)'];
 function cam_sz(array $c): int { return isset($c['sz']) && isset(CAM_SIZES[(int)$c['sz']]) ? (int)$c['sz'] : -1; }
+// 写真の向き (HPX-CAM v1.07 から)。HPX-note で選ぶと返事の "fl" (1=上下を逆 2=左右を逆 の足し算) でカメラに届き、
+// カメラの管理画面の設定より優先する。選ばない (-1) ときはカメラの管理画面の設定のまま
+const CAM_FLIPS = [0 => 'そのまま', 2 => '左右を逆にする', 1 => '上下を逆にする', 3 => '上下も左右も逆にする (180度回す)'];
+function cam_fl(array $c): int { return isset($c['fl']) && isset(CAM_FLIPS[(int)$c['fl']]) ? (int)$c['fl'] : -1; }
 // ケースの温度 (HPX-CAM v1.05 から、起きた直後の ESP32-S3 のチップの温度 tc ℃。正確ではない目安)。
 // これ以上になったら「機器の警報」でお知らせ。0 は知らせない。下がって CAM_HOT_BACK ℃ 下回ったら「戻りました」
 const CAM_HOT_LEVELS = [0 => '知らせない', 45 => '45℃ 以上', 50 => '50℃ 以上', 55 => '55℃ 以上', 60 => '60℃ 以上', 65 => '65℃ 以上', 70 => '70℃ 以上'];

@@ -43,6 +43,7 @@ $reply = function (int $saved) use (&$c, $now): string {
     [$h0, $h1] = cam_hours($c);
     $r = ['ok' => true, 'saved' => $saved, 'iv' => cam_iv($c), 'h0' => $h0, 'h1' => $h1, 'now' => $now];
     if (cam_sz($c) >= 0) $r['sz'] = cam_sz($c);   // 写真の大きさ (HPX-note で選んだときだけ。HPX-CAM v1.04 から使う)
+    if (cam_fl($c) >= 0) $r['fl'] = cam_fl($c);   // 写真の向き (HPX-note で選んだときだけ。HPX-CAM v1.07 から使う)
     return (string)json_encode($r);
 };
 
