@@ -9,7 +9,8 @@
 //   重量センサの較正(生の値 → kg)は HPX-Core の管理画面で行い、ここではゼロリセットと差し引く重さだけ入れる。較正の値はハブごとのデータフォルダに weight_cal.json として保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
-require_once __DIR__ . '/hpx_sensor_csv.php';   // read_ble() と CSV の形 (定時記録データ・全データ)
+require_once __DIR__ . '/hpx_sensor_csv.php';
+require_once __DIR__ . '/hpx_cam.php';         // メニューの「カメラ」(cams_in_menu())   // read_ble() と CSV の形 (定時記録データ・全データ)
 
 const D_TITLE = 'センサ - ' . BRAND_NAME;
 const D_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
@@ -454,7 +455,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
 // ====================================================================
 
 page_head(D_TITLE, true);
-// 蜂場管理ページ(hpx_site.php)と同じメニュー。作業記録には期限切れ・今日の タスクの数を出す
+// 蜂場管理ページ(hpx_site.php)と同じメニュー (main_nav_html())。作業記録には期限切れ・今日の タスクの数を出す
 $todo = json_decode((string)@file_get_contents(account_site_dir($UID) . '/works.json'), true);
 $over = 0; $due = 0;
 foreach ((is_array($todo['todos'] ?? null) ? $todo['todos'] : []) as $t) {
@@ -462,10 +463,7 @@ foreach ((is_array($todo['todos'] ?? null) ? $todo['todos'] : []) as $t) {
     if ($t['due'] < date('Y-m-d', $now)) $over++;
     elseif ($t['due'] === date('Y-m-d', $now)) $due++;
 }
-echo '<nav>' . brand_nav_logo() . '<span class="nl"><a href="apiary.php">蜂場</a><a href="hive.php">巣箱</a><a href="memo.php">メモ</a><a href="task.php">タスク'
-    . ($over ? '<span class="badge" title="期限切れの タスク">' . $over . '</span>' : '')
-    . ($due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a><a href="work.php">記録</a></span>'
-    . auth_nav_right('sensor.php') . '</nav>';
+echo main_nav_html('sensor.php', $over, $due, cams_in_menu());   // hpx_auth.php (AI・カメラも、ほかのページと同じ決まりで出す)
 echo '<p class="muted" style="text-align:right;margin:0">' . h(date('Y-m-d H:i', $now)) . ' 現在 (5分ごとに自動で更新)</p>';
 if ($msg !== '') echo '<p class="ng">' . h($msg) . '</p>';
 if (isset($_GET['saved'])) echo '<p class="ok">重量センサの設定を保存しました。</p>';
