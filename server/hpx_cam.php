@@ -151,6 +151,24 @@ function cams_visible(): array
     return $out;
 }
 
+// メニューに「カメラ」を出すか。hpx_site.php を読まないページ (sensor.php) 用で、cams_visible() と同じ決まり
+//   (自分のカメラ、またはチームで見られる蜂場に置いた共有のカメラが1台でもあれば true)
+function cams_in_menu(): bool
+{
+    global $UID;
+    if (function_exists('site_load')) return (bool)cams_visible();
+    if ($UID === demo_uid()) demo_cam_fill();
+    foreach (array_merge([$UID], shared_owners($UID)) as $o) {
+        foreach (glob(cams_dir((string)$o) . '/*/cam.json') ?: [] as $p) {
+            if (!cam_id_ok(basename(dirname($p)))) continue;
+            if ((string)$o === $UID) return true;
+            $aid = (string)(json_load($p)['apiary'] ?? '');
+            if ($aid !== '' && apiary_role((string)$o, $aid, $UID) !== null) return true;
+        }
+    }
+    return false;
+}
+
 // デモ用アカウントの見本の写真: img/demo_cam/ の写真 (何枚でも) を順に使い、3日前・2日前・きのうの 5:00〜18:50 に10分ごとの写真として
 //   見本のカメラに入れる (朝夕は少し暗く、日ごとに少しずつ明るさを変える)。日付が変わったら入れ直す (いつも直近の3日分)。
 //   写真が無い・GD が無い・$HPX_DEMO_DUMMY = false なら何もしない

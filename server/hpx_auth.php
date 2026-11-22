@@ -950,10 +950,26 @@ function auth_next(string $next): string
 }
 
 // 上部メニューの右端の設定マーク。押すとセンサ・チーム・アカウント・ログアウト・ユーザー管理(サーバー管理者だけ)が出る。蜂場ページとセンサページで共通
+// 上部メニュー (蜂場・巣箱・メモ・タスク・記録・AI・カメラ + 右端の歯車)。hpx_site.php の page_head() と sensor.php で同じものを出す
+//   $over・$due: 期限切れ・今日までのタスクの数。$cam: HPX-CAM の写真を見られるとき true (cams_visible()・cams_in_menu())
+function main_nav_html(string $active, int $over, int $due, bool $cam): string
+{
+    $items = ['apiary.php' => '蜂場', 'hive.php' => '巣箱', 'memo.php' => 'メモ', 'task.php' => 'タスク', 'work.php' => '記録'];
+    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AI';   // config に Claude の API キーがあるときだけ (ai_note.php)
+    if ($cam) $items['camera.php'] = 'カメラ';   // HPX-CAM の写真が届いているときだけ
+    $o = '<nav>' . brand_nav_logo() . '<span class="nl">';   // メニューの文字 (スマホでは2段目に並ぶ)
+    foreach ($items as $f => $lb) {
+        $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb)
+            . ($f === 'task.php' && $over ? '<span class="badge" title="期限切れの タスク">' . $over . '</span>' : '')
+            . ($f === 'task.php' && $due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a>';
+    }
+    return $o . '</span>' . auth_nav_right($active) . '</nav>';
+}
+
 function auth_nav_right(string $active): string
 {
     global $ME;
-    $items = ['sensor.php' => 'センサ', 'camera.php' => 'カメラ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント', 'offline.php' => 'オフライン'];
+    $items = ['sensor.php' => 'センサ', 'team.php' => 'チーム', 'account.php' => 'マイアカウント', 'offline.php' => 'オフライン'];
     $o = '<details class="setm r"><summary title="設定"' . (isset($items[$active]) || $active === 'admin.php' || $active === 'settings.php' ? ' class="on"' : '') . '>'
         . '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.6 7.6 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>'
         . '<span class="sr">設定</span></summary><div class="setmenu"><div class="who" title="' . h((string)($ME['email'] ?? '')) . '">' . h((string)($ME['name'] ?? '')) . '</div>';
