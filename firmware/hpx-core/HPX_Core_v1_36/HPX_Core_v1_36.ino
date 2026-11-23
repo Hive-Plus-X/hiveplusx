@@ -21,6 +21,10 @@
 //     (TARO 2026-11-23 実機: 順番を変えても、LANケーブルを抜いても 192.168.4.1 が開かなかった。
 //      動いていた初回設定の Wi-Fi との違いは DNS の答えの有無。iPhone は答えが無いと開けないとみて対応、推測)。
 //     管理用 Wi-Fi から来た知らない URL は管理画面へ案内する(つないだときにログインが自動で出る)
+//   * 管理用 Wi-Fi から開いたときは、ブラウザのパスワードの窓(BASIC 認証)ではなく、画面の入力欄でログインする
+//     (TARO 2026-11-23 実機: iPhone は管理用 Wi-Fi ではパスワードの窓を出さず、真っ白・読み込み中のままだった。
+//      シリアルでは iPhone の問い合わせは届き、HPX-Core はパスワードを求め続けていた。これが原因)。
+//     ログインはクッキー(再起動で消える)。有線LAN・Wi-Fi 側からは今までどおりパスワードの窓でも入れる
 //   * 診断のため、管理画面の有線LANの欄に「管理用Wi-Fiの診断」(ネットワークの口の一覧)を出し、
 //     管理用 Wi-Fi を出しているときは画面を開きに来た相手の IPアドレスをシリアルに出す
 //   * Wi-Fi のときは、これまでどおり(つながらなければ設定用の画面を出す)
@@ -3631,13 +3635,86 @@ void redirectTo(const char* path)
   server.send(303, "text/plain", "");
 }
 
+// v1.36: 画面のログイン(クッキー)。iPhone は管理用 Wi-Fi「HPX-Setup-xxxx」から開くと、
+// ブラウザのパスワードの窓(BASIC 認証)を出さず、画面が真っ白・読み込み中のままになった(TARO 2026-11-23 実機)。
+// そこで、管理用 Wi-Fi から来たときは、ふつうの入力欄のログイン画面を出す。合言葉は再起動で消える
+String loginToken;
+
+bool viaAdminAp()
+{
+  return lanApStarted && server.client().localIP() == WiFi.softAPIP();
+}
+
+bool loginCookieOk()
+{
+  if (loginToken.length() == 0 || !server.hasHeader("Cookie")) return false;
+  return server.header("Cookie").indexOf("hpxs=" + loginToken) >= 0;
+}
+
+// ログインのあと戻る先(このサイトの中の / で始まる道だけ)
+String loginNextPath()
+{
+  String n = server.arg("next");
+  if (!n.startsWith("/") || n.startsWith("//") || n.indexOf('\'') >= 0 || n.indexOf('<') >= 0 || n.indexOf('"') >= 0) n = "/";
+  return n;
+}
+
+void handleLoginPage()
+{
+  touch();
+  const bool bad = server.hasArg("bad");
+  String h = pageHead("ログイン");
+  h += "<h1>HPX-Core 管理画面</h1>";
+  if (bad) h += "<p style='color:#c00'><b>パスワードがちがいます。</b></p>";
+  h += "<p>機器ID: <b>" + htmlEscape(deviceID) + "</b></p>";
+  h += "<form action='/login' method='POST'>";
+  h += "<input type='hidden' name='next' value='" + htmlEscape(loginNextPath()) + "'>";
+  h += "<label for='pw'>管理画面のパスワード</label><br>";
+  h += "<input type='password' id='pw' name='pw' maxlength='32' autofocus required><br>";
+  h += "<input type='submit' value='ログイン'></form></body></html>";
+  sendHtml(h);
+}
+
+void handleLoginPost()
+{
+  touch();
+  const String next = loginNextPath();
+  if (adminPass.length() > 0 && server.arg("pw") != adminPass)
+  {
+    Serial.println("HTTP login failed");
+    delay(1000);   // 総当たりを遅くする
+    server.sendHeader("Location", "/login?bad=1&next=" + next, true);
+    server.send(303, "text/plain", "");
+    return;
+  }
+  if (loginToken.length() == 0)
+  {
+    char buf[33];
+    snprintf(buf, sizeof(buf), "%08lx%08lx%08lx%08lx", (unsigned long)esp_random(), (unsigned long)esp_random(),
+             (unsigned long)esp_random(), (unsigned long)esp_random());
+    loginToken = buf;
+  }
+  Serial.println("HTTP login ok");
+  server.sendHeader("Set-Cookie", "hpxs=" + loginToken + "; Path=/; HttpOnly; SameSite=Lax");
+  server.sendHeader("Location", next, true);
+  server.send(303, "text/plain", "");
+}
+
 // 管理画面の認証。管理パスワード未設定(v1.01からの移行直後)は通す。
 bool requireAuth()
 {
   touch();
   if (adminPass.length() == 0) return true;
+  if (loginCookieOk()) return true;
   if (server.authenticate("admin", adminPass.c_str())) return true;
-  if (lanApStarted) Serial.println("HTTP ask password");   // v1.36 診断
+  if (viaAdminAp())   // v1.36: 管理用 Wi-Fi からは入力欄のログイン画面へ
+  {
+    String next = server.uri();
+    if (server.method() != HTTP_GET) next = "/";
+    server.sendHeader("Location", "/login?next=" + next, true);
+    server.send(303, "text/plain", "");
+    return false;
+  }
   server.requestAuthentication(BASIC_AUTH, "HPX");
   return false;
 }
@@ -4977,7 +5054,7 @@ void handleUpdateUpload()
     Serial.print("Update: ");
     Serial.println(upload.filename);
 
-    if (adminPass.length() > 0 && !server.authenticate("admin", adminPass.c_str()))
+    if (adminPass.length() > 0 && !loginCookieOk() && !server.authenticate("admin", adminPass.c_str()))
     {
       otaMessage = "認証に失敗しました。";
       return;
@@ -5193,6 +5270,12 @@ void startNormalServer()
     Serial.println("mDNS start failed.");
   }
 
+  {
+    static const char* hdrKeys[] = {"Cookie"};   // v1.36: 画面のログイン(クッキー)を読む
+    server.collectHeaders(hdrKeys, 1);
+  }
+  server.on("/login", HTTP_GET, handleLoginPage);
+  server.on("/login", HTTP_POST, handleLoginPost);
   server.on("/", HTTP_GET, handleMainPage);
   server.on("/runnow", HTTP_POST, handleRunNow);
   server.on("/sleepnow", HTTP_POST, handleSleepNow);
