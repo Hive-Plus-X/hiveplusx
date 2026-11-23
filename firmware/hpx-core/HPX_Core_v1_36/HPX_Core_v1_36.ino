@@ -14,6 +14,11 @@
 //     LTE-M は再起動でつなぎ直す。
 //   * つながっていない間も、管理用 Wi-Fi にスマートフォンがつながっているあいだは、ディープスリープ・再起動しない
 //     (誰もいなければ、これまでどおり約10分でスリープ、常時稼働は30分で再起動してつなぎ直す)
+//   * 有線LAN・LTE-M の管理用 Wi-Fi を、ネットにつなぐ「前」に出すようにした
+//     (TARO 2026-11-23 実機: 有線LANがつながったあとに出すと、iPhone は 192.168.4.2 をもらえるのに
+//      http://192.168.4.1/ がずっと読み込み中のままだった。有線LAN側 http://hpx-core2.local/ は開けた。原因は確認中)
+//   * 診断のため、管理画面の有線LANの欄に「管理用Wi-Fiの診断」(ネットワークの口の一覧)を出し、
+//     管理用 Wi-Fi を出しているときは画面を開きに来た相手の IPアドレスをシリアルに出す
 //   * Wi-Fi のときは、これまでどおり(つながらなければ設定用の画面を出す)
 //   * ほかは v1.34 と同じ (v1.35 は取り下げた版なので番号を飛ばした)
 //
@@ -328,6 +333,7 @@
 #include <WiFiClientSecure.h>
 #include <ETH.h>              // 有線LAN(W5500)。arduino-esp32 3.x に入っている
 #include <SPI.h>
+#include "lwip/netif.h"   // v1.36: 管理用 Wi-Fi の診断(通り道の一覧)
 #include <esp_ota_ops.h>
 #include <esp_task_wdt.h>
 #include <esp_sleep.h>
@@ -696,6 +702,7 @@ void trialLoop(uint32_t now);
 void handleCaptive();
 void handleMainPage();
 String netTroubleHtml();
+String netifDiagText();
 void handleSettingsPage();
 void handleSettingsSave();
 void handleDeviceIDPage();
@@ -800,6 +807,9 @@ String makeMdnsHost(const String& source)
 void touch()
 {
   lastActivityMs = millis();
+  // v1.36 診断: 有線LAN・LTE-M で管理用 Wi-Fi を出しているときは、どこから画面を開きに来たかをシリアルに出す
+  if (lanApStarted)
+    Serial.println("HTTP " + server.uri() + " from " + server.client().remoteIP().toString());
 }
 
 void initRtc(bool force)
@@ -3933,6 +3943,7 @@ void handleMainPage()
     else h += "(<span style='color:red'>LANケーブルがつながっていません</span>)</p>";
     h += "<p>IP: " + ETH.localIP().toString() + "</p>";
     if (lanApStarted) h += "<p>管理用Wi-Fi: 出しています(このWi-Fiにつないで http://" + WiFi.softAPIP().toString() + "/ を開く)</p>";
+    if (lanApStarted) h += "<details><summary>管理用Wi-Fiの診断</summary><pre style='font-size:14px;white-space:pre-wrap'>" + htmlEscape(netifDiagText()) + "</pre></details>";
   }
   else
   {
@@ -4019,6 +4030,22 @@ void handleSleepNow()
   h += "</body></html>";
   sendHtml(h);
   sleepRequested = true;
+}
+
+// v1.36 診断: lwIP の通り道(ネットワークの口)の一覧。st=Wi-Fi子機 ap=管理用Wi-Fi en=有線LAN lo=内部
+String netifDiagText()
+{
+  String t;
+  for (struct netif* n = netif_list; n != nullptr; n = n->next)
+  {
+    char ip[16];
+    ip4addr_ntoa_r(netif_ip4_addr(n), ip, sizeof(ip));
+    t += String(n->name[0]) + String(n->name[1]) + String(n->num) + " " + ip +
+         " up=" + String(netif_is_up(n) ? 1 : 0) + " link=" + String(netif_is_link_up(n) ? 1 : 0) +
+         (n == netif_default ? " default" : "") + "\n";
+  }
+  t += "AP: " + WiFi.softAPIP().toString() + " 接続中 " + String(WiFi.softAPgetStationNum()) + " 台 / Wi-Fi mode " + String((int)WiFi.getMode());
+  return t;
 }
 
 // v1.36: 有線LAN・LTE-M でつながっていないとき、管理画面のいちばん上に出す理由と直し方(つながっていれば空)
@@ -5316,6 +5343,9 @@ void setup()
   }
 
   // 保守モード または 常時稼働
+  // v1.36: 有線LAN・LTE-M の管理用 Wi-Fi は、ネットにつなぐ前に出す
+  // (TARO 2026-11-23: 有線LANがつながったあとに出すと、iPhone は 192.168.4.2 をもらえるのに 192.168.4.1 の画面が開かなかった)
+  startLanAp(false);
   Serial.println("Connecting (" + netName() + ")...");
   stage(4);
   if (!connectNet(WIFI_CONNECT_TIMEOUT_MS))
@@ -5334,6 +5364,7 @@ void setup()
     Serial.println(netLocalIP());
   }
   startLanAp(!netConnected());   // 有線LAN・LTE-M のとき、管理画面用の Wi-Fi を出す(つながらないときは必ず)
+  if (lanApStarted) Serial.println(netifDiagText());   // v1.36 診断
   stage(5);
   startNormalServer();
   lastActivityMs = millis();
