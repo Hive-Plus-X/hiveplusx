@@ -17,6 +17,10 @@
 //   * 有線LAN・LTE-M の管理用 Wi-Fi を、ネットにつなぐ「前」に出すようにした
 //     (TARO 2026-11-23 実機: 有線LANがつながったあとに出すと、iPhone は 192.168.4.2 をもらえるのに
 //      http://192.168.4.1/ がずっと読み込み中のままだった。有線LAN側 http://hpx-core2.local/ は開けた。原因は確認中)
+//   * 管理用 Wi-Fi も初回設定の Wi-Fi と同じ手順(WiFi.disconnect → AP)で出し、DNS にすべて 192.168.4.1 と答える
+//     (TARO 2026-11-23 実機: 順番を変えても、LANケーブルを抜いても 192.168.4.1 が開かなかった。
+//      動いていた初回設定の Wi-Fi との違いは DNS の答えの有無。iPhone は答えが無いと開けないとみて対応、推測)。
+//     管理用 Wi-Fi から来た知らない URL は管理画面へ案内する(つないだときにログインが自動で出る)
 //   * 診断のため、管理画面の有線LANの欄に「管理用Wi-Fiの診断」(ネットワークの口の一覧)を出し、
 //     管理用 Wi-Fi を出しているときは画面を開きに来た相手の IPアドレスをシリアルに出す
 //   * Wi-Fi のときは、これまでどおり(つながらなければ設定用の画面を出す)
@@ -2617,6 +2621,9 @@ void netOff()
 void startLanAp(bool force)
 {
   if (netType == NET_WIFI || (!lanApOn && !force) || lanApStarted) return;   // 有線LAN・LTE-M のとき
+  // v1.36: 動いている初回設定の Wi-Fi(startConfigAP)と同じ手順で出す
+  WiFi.disconnect(true);
+  delay(100);
   WiFi.mode(WIFI_AP);
   delay(100);
   ensureApPass();
@@ -2624,6 +2631,10 @@ void startLanAp(bool force)
   lanApStarted = WiFi.softAP(apSsid.c_str(), apPass.c_str());
   Serial.println(lanApStarted ? ("admin AP " + apSsid + " / http://" + WiFi.softAPIP().toString() + "/")
                               : String("LAN: admin AP start failed"));
+  // v1.36: 初回設定と同じく、名前の問い合わせ(DNS)にすべて 192.168.4.1 と答える。
+  // iPhone は DNS の答えが無いと、つないでも 192.168.4.1 の画面が開かなかった(TARO 2026-11-23)。
+  // 答えると、つないだときに管理画面のログインが自動で出る(キャプティブポータル)
+  if (lanApStarted) dnsServer.start(53, "*", WiFi.softAPIP());
 }
 
 bool waitConnected(uint32_t ms)
@@ -3603,7 +3614,10 @@ String pageHead(const String& title)
 
 void sendHtml(const String& body)
 {
+  const uint32_t t0 = millis();
   server.send(200, "text/html; charset=utf-8", body);
+  if (lanApStarted)   // v1.36 診断: 画面を送り終えるまでの時間
+    Serial.printf("HTTP sent %u bytes in %lu ms\n", (unsigned)body.length(), (unsigned long)(millis() - t0));
 }
 
 void sendText(int code, const String& msg)
@@ -3623,6 +3637,7 @@ bool requireAuth()
   touch();
   if (adminPass.length() == 0) return true;
   if (server.authenticate("admin", adminPass.c_str())) return true;
+  if (lanApStarted) Serial.println("HTTP ask password");   // v1.36 診断
   server.requestAuthentication(BASIC_AUTH, "HPX");
   return false;
 }
@@ -5206,6 +5221,13 @@ void startNormalServer()
   {
     Serial.print("404 : ");
     Serial.println(server.uri());
+    // v1.36: 管理用 Wi-Fi から来た知らない URL(iPhone などの接続確認)は管理画面へ案内する
+    if (lanApStarted && server.client().localIP() == WiFi.softAPIP())
+    {
+      server.sendHeader("Location", "http://" + WiFi.softAPIP().toString() + "/", true);
+      server.send(302, "text/plain", "");
+      return;
+    }
     server.send(404, "text/plain", "Not Found");
   });
 
@@ -5390,6 +5412,17 @@ void loop()
   // handleClient() の中で lastActivityMs が更新されるため、現在時刻はその後に取得する。
   // (先に取ると now < lastActivityMs になり、符号なしの引き算が巨大な値になって
   //  最初のアクセス直後にスリープしてしまう)
+  if (lanApStarted)
+  {
+    dnsServer.processNextRequest();
+    static int lastSta = -1;   // v1.36 診断: 管理用 Wi-Fi につないでいる台数が変わったらシリアルに出す
+    const int sta = WiFi.softAPgetStationNum();
+    if (sta != lastSta)
+    {
+      lastSta = sta;
+      Serial.printf("admin AP clients: %d\n", sta);
+    }
+  }
   server.handleClient();
   const uint32_t now = millis();
   wifiWatch(now);
