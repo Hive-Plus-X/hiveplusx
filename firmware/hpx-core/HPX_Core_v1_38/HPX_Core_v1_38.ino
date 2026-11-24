@@ -8,7 +8,11 @@
 //     ダウンロード・書き込み・再起動する(1〜2分。LTE-M は数分)。同じか古ければ「最新です」と、
 //     サーバーの番号とこの機器の番号を出す。読めなかったときは理由を出す。
 //     起動後10分・6時間の間隔・時刻合わせの待ちには関係なく、すぐ確認する(電池が少ないときはしない)
-//   * メイン画面に「自動更新の確認」(最後に確認した時刻と結果)を出す
+//   * メイン画面に「自動更新の確認」(最後に確認した時刻と結果、確認できない理由)を出す
+//   * 自動更新が止まる不具合を直した: 常時稼働では、起動直後の時刻合わせ(NTP)に1回失敗すると、
+//     「8回に1回だけ試す」の数え方が起動回数(常時稼働では増えない)だったため、二度と時刻合わせをしなかった。
+//     時刻が合っていないと自動更新の確認を黙って飛ばすので、ずっと自動更新されなかった。
+//     常時稼働では毎回の区切りで時刻合わせをやり直すようにした(ディープスリープはこれまでどおり)
 //   * ほかは v1.37 と同じ
 //
 // v1.37 の変更 (TARO 2026-11-23: ＋有線LAN＆ソーラーシステムチェックで、12.1V のバッテリーが 24V、
@@ -2757,7 +2761,8 @@ void syncNtp(bool force)
               (now - (time_t)rtcLastNtp) >= (time_t)NTP_RESYNC_S;
   if (!need) return;
   // NTPが通らない回線でも毎回待たないよう、失敗が続いたら8回に1回だけ試す
-  if (!force && rtcNtpFail > 0 && (rtcBootCount % 8) != 0) return;
+  // v1.38: 常時稼働では rtcBootCount が増えないので、ここで止めると二度と合わせなくなる。常時稼働は毎回試す
+  if (!force && rtcNtpFail > 0 && powerMode == MODE_DEEPSLEEP && (rtcBootCount % 8) != 0) return;
 
   ntpSynced = false;
   if (useLte())
@@ -4124,7 +4129,22 @@ void handleMainPage()
 
   h += "<p>最後の送信: " + htmlEscape(lastReportText) + "</p>";
   h += "<p>BLEセンサ: " + htmlEscape(bleStatusText) + "</p>";
-  h += "<p>自動更新の確認: " + (otaUrl.length() == 0 ? String("しない(動作設定の「ファームウェア自動更新サーバーのURL」が空欄)") : htmlEscape(otaCheckText)) + "</p>";
+  {
+    String ot;
+    if (otaUrl.length() == 0) ot = "しない(動作設定の「ファームウェア自動更新サーバーのURL」が空欄)";
+    else if (!timeValid()) ot = "<span style='color:red'>時刻が合っていないので確認できません(時刻合わせ NTP を待っています)</span>";
+    else
+    {
+      ot = htmlEscape(otaCheckText);
+      if (rtcLastOta != 0)
+      {
+        const uint32_t iv = (powerMode == MODE_DEEPSLEEP) ? OTA_INTERVAL_BATT_S : OTA_INTERVAL_MAINS_S;
+        const long left = (long)((time_t)rtcLastOta + (time_t)iv - time(nullptr));
+        if (left > 0) ot += "、次の自動確認は約 " + String((left + 59) / 60) + " 分後";
+      }
+    }
+    h += "<p>自動更新の確認: " + ot + "</p>";
+  }
 
   h += "<p>管理画面: ";
   if (mdnsStarted)
