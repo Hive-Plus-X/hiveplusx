@@ -280,8 +280,8 @@ function share_line(array $a): string
 }
 
 // 折れ線 [[epoch, 値], ...] を1時間ごとの平均にする (2026-11-24 TARO要望: 振れが大きく傾向が見にくいため)
-//   点の時刻はその1時間のまん中 (まだ途中の1時間は今の時刻より先に出さない)
-function hourly_avg(array $pts, int $now): array
+//   返り値: その1時間の始まりの時刻 => 平均値
+function hourly_bins(array $pts): array
 {
     $by = [];
     foreach ($pts as $p) {
@@ -289,9 +289,47 @@ function hourly_avg(array $pts, int $now): array
         $by[intdiv((int)$p[0], 3600) * 3600][] = (float)$p[1];
     }
     ksort($by);
+    return array_map(fn($vs) => array_sum($vs) / count($vs), $by);
+}
+
+// 1時間ごとの平均を折れ線の点にする。点の時刻はその1時間のまん中 (まだ途中の1時間は今の時刻より先に出さない)
+function hourly_points(array $bins, int $now): array
+{
     $out = [];
-    foreach ($by as $t => $vs) $out[] = [min($t + 1800, $now), array_sum($vs) / count($vs)];
+    foreach ($bins as $t => $v) $out[] = [min($t + 1800, $now), $v];
     return $out;
+}
+
+function hourly_avg(array $pts, int $now): array
+{
+    return hourly_points(hourly_bins($pts), $now);
+}
+
+// いくつかのセンサ (重量は巣箱) の1時間平均を、同じ1時間どうしで平均する
+//   あるセンサの記録が抜けた1時間は、そのセンサの前後の1時間の値から直線で補ってから平均する
+//   (2026-11-25 TARO: 抜けた群を飛ばすと平均に入る群が入れ替わり、グラフが急に上下するため)
+//   そのセンサの最初の記録より前・最後の記録より後は補わない
+function hourly_mean_of(array $binsList, int $now): array
+{
+    $hours = [];
+    foreach ($binsList as $bins) foreach ($bins as $t => $_) $hours[$t] = true;
+    ksort($hours);
+    $sum = [];
+    foreach ($binsList as $bins) {
+        if (!$bins) continue;
+        $ts = array_keys($bins);
+        $first = $ts[0]; $last = $ts[count($ts) - 1];
+        $i = 0;
+        foreach ($hours as $t => $_) {
+            if ($t < $first || $t > $last) continue;
+            if (isset($bins[$t])) { $sum[$t][] = $bins[$t]; continue; }
+            while ($ts[$i + 1] < $t) $i++;   // $ts[$i] < $t < $ts[$i+1]
+            $t0 = $ts[$i]; $t1 = $ts[$i + 1];
+            $sum[$t][] = $bins[$t0] + ($bins[$t1] - $bins[$t0]) * ($t - $t0) / ($t1 - $t0);
+        }
+    }
+    ksort($sum);
+    return hourly_points(array_map(fn($vs) => array_sum($vs) / count($vs), $sum), $now);
 }
 
 // 蜂場の平均のグラフ用: その蜂場の巣箱に紐づいたセンサの記録を、1時間ごとに平均する
@@ -300,11 +338,8 @@ function hourly_avg(array $pts, int $now): array
 //   n: 平均のもとになった群(巣箱)の数。期間内に記録がある巣箱だけ数える
 function apiary_avg(array $hv, array $sensors, int $since, int $now): array
 {
-    $sum = ['t' => [], 'h' => [], 'w' => []];
+    $bins = ['t' => [], 'h' => [], 'w' => []];
     $n = ['t' => [], 'h' => [], 'w' => []];
-    $add = function (string $k, array $pts) use (&$sum, $now) {
-        foreach (hourly_avg($pts, $now) as [$t, $v]) $sum[$k][$t][] = $v;
-    };
     foreach ($hv as $hid => $x) {
         $wSer = []; $nw = 0; $wCals = [];
         foreach ((array)($x['sensors'] ?? []) as $k) {
@@ -317,8 +352,8 @@ function apiary_avg(array $hv, array $sensors, int $since, int $now): array
                     $tp[] = [$r[0], $r[1]];
                     if ($r[2] !== null) $hp[] = [$r[0], $r[2]];
                 }
-                if ($tp) { $add('t', $tp); $n['t'][$hid] = 1; }
-                if ($hp) { $add('h', $hp); $n['h'][$hid] = 1; }
+                if ($tp) { $bins['t'][] = hourly_bins($tp); $n['t'][$hid] = 1; }
+                if ($hp) { $bins['h'][] = hourly_bins($hp); $n['h'][$hid] = 1; }
             } else {
                 $c = cal_load($sn['hub'])[$sn['mac']] ?? null;
                 $nw++;
@@ -335,15 +370,11 @@ function apiary_avg(array $hv, array $sensors, int $since, int $now): array
         // 巣箱の重さ (重量センサ1台なら2倍 (巣箱全体の重さが届く BroodMinder 1台ならそのまま)、2台以上なら合計)。較正していないセンサがある巣箱は入れない
         if ($nw > 0 && count($wSer) === $nw) {
             $hk = hive_kg_series($wSer, hive_full_single($wCals));
-            if ($hk) { $add('w', $hk); $n['w'][$hid] = 1; }
+            if ($hk) { $bins['w'][] = hourly_bins($hk); $n['w'][$hid] = 1; }
         }
     }
     $out = [];
-    foreach ($sum as $k => $byT) {
-        ksort($byT);
-        $out[$k] = [];
-        foreach ($byT as $t => $vs) $out[$k][] = [$t, array_sum($vs) / count($vs)];
-    }
+    foreach ($bins as $k => $list) $out[$k] = hourly_mean_of($list, $now);
     $out['n'] = array_map('count', $n);
     return $out;
 }
