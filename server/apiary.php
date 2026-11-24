@@ -279,13 +279,32 @@ function share_line(array $a): string
     return '<p class="muted" style="margin:0 0 .3em">自分の蜂場　共有: <a href="team.php">' . h(implode('・', $tn)) . '</a></p>';
 }
 
-// 蜂場の平均のグラフ用: その蜂場の巣箱に紐づいたセンサの記録を、同じ時刻(分単位)ごとに平均する
+// 折れ線 [[epoch, 値], ...] を1時間ごとの平均にする (2026-11-24 TARO要望: 振れが大きく傾向が見にくいため)
+//   点の時刻はその1時間のまん中 (まだ途中の1時間は今の時刻より先に出さない)
+function hourly_avg(array $pts, int $now): array
+{
+    $by = [];
+    foreach ($pts as $p) {
+        if ($p[1] === null) continue;
+        $by[intdiv((int)$p[0], 3600) * 3600][] = (float)$p[1];
+    }
+    ksort($by);
+    $out = [];
+    foreach ($by as $t => $vs) $out[] = [min($t + 1800, $now), array_sum($vs) / count($vs)];
+    return $out;
+}
+
+// 蜂場の平均のグラフ用: その蜂場の巣箱に紐づいたセンサの記録を、1時間ごとに平均する
+//   まずセンサ (重量は巣箱) ごとに1時間の平均を出し、それを同じ1時間どうしで平均する (記録の多いセンサにかたよらないように)
 //   温度・湿度は温湿度センサすべての平均、重量は巣箱の重さ(重量センサ1台なら2倍、2台以上なら合計)の平均
 //   n: 平均のもとになった群(巣箱)の数。期間内に記録がある巣箱だけ数える
-function apiary_avg(array $hv, array $sensors, int $since): array
+function apiary_avg(array $hv, array $sensors, int $since, int $now): array
 {
     $sum = ['t' => [], 'h' => [], 'w' => []];
     $n = ['t' => [], 'h' => [], 'w' => []];
+    $add = function (string $k, array $pts) use (&$sum, $now) {
+        foreach (hourly_avg($pts, $now) as [$t, $v]) $sum[$k][$t][] = $v;
+    };
     foreach ($hv as $hid => $x) {
         $wSer = []; $nw = 0; $wCals = [];
         foreach ((array)($x['sensors'] ?? []) as $k) {
@@ -293,12 +312,13 @@ function apiary_avg(array $hv, array $sensors, int $since): array
             $sn = $sensors[$k];
             $d = ble_data($sn['hub'], $since);
             if ($sn['kind'] === 'th') {
+                $tp = []; $hp = [];
                 foreach ($d['th'][$sn['mac']] ?? [] as $r) {
-                    $t = intdiv($r[0], 60) * 60;
-                    $sum['t'][$t][] = $r[1];
-                    $n['t'][$hid] = 1;
-                    if ($r[2] !== null) { $sum['h'][$t][] = $r[2]; $n['h'][$hid] = 1; }
+                    $tp[] = [$r[0], $r[1]];
+                    if ($r[2] !== null) $hp[] = [$r[0], $r[2]];
                 }
+                if ($tp) { $add('t', $tp); $n['t'][$hid] = 1; }
+                if ($hp) { $add('h', $hp); $n['h'][$hid] = 1; }
             } else {
                 $c = cal_load($sn['hub'])[$sn['mac']] ?? null;
                 $nw++;
@@ -314,7 +334,8 @@ function apiary_avg(array $hv, array $sensors, int $since): array
         }
         // 巣箱の重さ (重量センサ1台なら2倍 (巣箱全体の重さが届く BroodMinder 1台ならそのまま)、2台以上なら合計)。較正していないセンサがある巣箱は入れない
         if ($nw > 0 && count($wSer) === $nw) {
-            foreach (hive_kg_series($wSer, hive_full_single($wCals)) as [$t, $v]) { $sum['w'][intdiv($t, 60) * 60][] = $v; $n['w'][$hid] = 1; }
+            $hk = hive_kg_series($wSer, hive_full_single($wCals));
+            if ($hk) { $add('w', $hk); $n['w'][$hid] = 1; }
         }
     }
     $out = [];
@@ -600,17 +621,17 @@ foreach ($tiles as $aid => $a) {
     }
     if ($warn) echo '<p class="ng" style="margin:.3em 0">' . implode('<br>', $warn) . '</p>';
 
-    // 平均のグラフ(小さく、3日分)
-    $avg = apiary_avg($hv, $sensors, $since);
+    // 平均のグラフ(小さく、3日分、1時間ごとの平均)
+    $avg = apiary_avg($hv, $sensors, $since, $now);
     // 記録がないグラフも枠だけ出して、ボックスの大きさをそろえる。高さは巣箱ページのグラフより低く
     // 上が重量(黒)、下が温度(赤)。巣箱ページと同じ色。蜂場の温湿度センサがあれば、温度のグラフに蜂場の気温(ピンク)も出す
     $tSer = [['平均温度', S_C_T, $avg['t']]];
-    foreach (apiary_th($a, $sensors, $since) as $x) $tSer[] = ['蜂場の気温 ' . $x['name'], S_C_AT, $x['t']];
+    foreach (apiary_th($a, $sensors, $since) as $x) $tSer[] = ['蜂場の気温 ' . $x['name'], S_C_AT, hourly_avg($x['t'], $now)];
     echo '<div class="mini"><p class="muted">巣箱重量 (kg) ／' . $avg['n']['w'] . '群平均</p>' . chart_svg([['平均重量', S_C_W, $avg['w']]], $since, $now, 'kg', 0.5, 400, 96, 11, true)
         . '<p class="muted"><span style="color:' . S_C_T . '">中心温度</span> (℃) ／' . $avg['n']['t'] . '群平均'
             . (count($tSer) > 1 ? '・<span style="color:' . S_C_AT . '">蜂場の気温</span>' : '') . '</p>'
         . chart_svg($tSer, $since, $now, '℃', 2, 400, 96, 11, true, false)
-        . '<p class="muted">直近3日。巣箱ごとのグラフは<a href="hive.php?' . h(http_build_query(['a' => $aid])) . '">巣箱ページ</a></p></div>';
+        . '<p class="muted">直近3日・1時間ごとの平均。巣箱ごとのグラフは<a href="hive.php?' . h(http_build_query(['a' => $aid])) . '">巣箱ページ</a></p></div>';
 
     echo '<div class="bottom"><h3 style="margin-top:.8em">タスク</h3>' . todo_brief($site, $aid, '', true, apiary_url($aid));
 
