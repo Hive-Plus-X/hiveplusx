@@ -64,7 +64,7 @@ function hpx_settings_def(): array
         'HPX_SITE_URL' => ['g' => 'users', 'l' => 'HPX-note の URL', 't' => 'url', 'd' => '', 'hp' => '招待・再設定のメールに書く URL の元 (例 https://hiveplusx.com/hpx)。空なら開いたページの URL から決めます。'],
         'HPX_MAX_HUBS' => ['g' => 'users', 'l' => '1つのアカウントにつなげる HPX-Core の台数', 't' => 'int', 'd' => 5, 'min' => 0, 'max' => 1000, 'u' => '台', 'hp' => '0 なら無制限。サーバー管理者はいつも無制限。'],
         'HPX_MAX_CAMS' => ['g' => 'users', 'l' => '1つのアカウントにつなげるカメラの台数', 't' => 'int', 'd' => 5, 'min' => 0, 'max' => 1000, 'u' => '台', 'hp' => '0 なら無制限。'],
-        'HPX_OTA_URL' => ['g' => 'users', 'l' => 'HPX-Core のファーム自動更新の URL', 't' => 'url', 'd' => '', 'hp' => 'manifest.txt の URL。空なら、このフォルダの firmware/manifest.txt があればその URL。'],
+        'HPX_OTA_URL' => ['g' => 'users', 'l' => 'HPX-Core のファーム自動更新の URL', 't' => 'url', 'd' => '', 'hp' => 'v1.40 までの HPX-Core に入れてもらう manifest.txt の URL。空なら、このフォルダの firmware/manifest.txt があればその URL。v1.41 からの HPX-Core はこの設定を使わず、送信先と同じ場所の firmware/manifest.txt を見ます。'],
         'HPX_CAM_OTA_URL' => ['g' => 'users', 'l' => 'HPX-CAM のファーム自動更新の URL', 't' => 'url', 'd' => '', 'hp' => 'manifest_cam.txt の URL。空なら、このフォルダの firmware/manifest_cam.txt があればその URL。'],
         'HPX_CONSENT_TEXT' => ['g' => 'users', 'l' => '登録のときに同意してもらう「データの利用」の文', 't' => 'text', 'd' => '', 'hp' => '空なら決まった文。'],
         'HPX_TERMS_URL' => ['g' => 'users', 'l' => '利用規約のページの URL', 't' => 'url', 'd' => '', 'hp' => '空なら同意の文にリンクを付けません。'],
