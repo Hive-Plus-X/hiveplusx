@@ -259,7 +259,7 @@ function bear_cron(): string
         $site = json_load(account_site_dir((string)$uid) . '/site.json');
         foreach ((array)($site['apiaries'] ?? []) as $aid => $a) {
             if (!is_array($a) || !($ll = apiary_latlng($a))) continue;
-            $aps[] = [(string)$uid, (string)$aid, $a, $ll[0], $ll[1], bear_area_prefs($ll[0], $ll[1], (string)($a['address'] ?? ''), $until)];
+            $aps[] = [(string)$uid, (string)$aid, $a, $ll[0], $ll[1], bear_area_prefs($ll[0], $ll[1], (string)($a['address'] ?? ''), $start + B_BUDGET_S / 2)];   // 都道府県調べは時間の半分まで (くまっぷから取る時間を残す)
         }
     }
     $need = [];
