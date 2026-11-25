@@ -269,9 +269,10 @@ echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="
     . ($token !== '' && !empty($acct['token_at']) ? ' (' . h(date('Y-m-d H:i', (int)$acct['token_at'])) . ' に作成)' : '') . '</p></details>'
     . ($otaUrl !== ''
         ? '<details><summary>ファームウェア自動更新サーバーのURLを表示する</summary><p><input type="text" readonly value="' . h($otaUrl) . '" onclick="this.select()"></p>'
-          . '<p class="muted">入れなくても動きます。入れておくと、新しいファームウェアが出たときに HPX-Core が自分で更新します (電池なら1日1回、常時稼働なら6時間ごとに確かめます)。'
-          . '管理画面「動作設定」の「ファームウェア自動更新サーバーのURL」に入れてください。</p></details>'
-        : '<p class="muted">ファームウェア自動更新サーバーのURL: まだ用意されていません (HPX-Core の管理画面のその欄は空欄のままで動きます)。</p>')
+          . '<p class="muted">HPX-Core v1.41 からは、このURLを入れる欄はありません。管理画面「動作設定」の「ファームウェアを自動更新する」にチェックするだけで、送信先のURLと同じ場所の firmware/manifest.txt を自分で見に行きます。'
+          . 'v1.40 までの HPX-Core は、「動作設定」の「ファームウェア自動更新サーバーのURL」にこのURLを入れてください。'
+          . '新しいファームウェアが出たときに HPX-Core が自分で更新します (電池なら1日1回、常時稼働なら6時間ごとに確かめます)。</p></details>'
+        : '<p class="muted">ファームウェア自動更新サーバーのURL: まだ用意されていません (HPX-Core は自動更新しなくても動きます)。</p>')
     . ($camOtaUrl !== ''
         ? '<details><summary>HPX-CAM のファームウェア自動更新サーバーのURLを表示する</summary><p><input type="text" readonly value="' . h($camOtaUrl) . '" onclick="this.select()"></p>'
           . '<p class="muted">HPX-CAM の管理画面「動作設定」の「ファームウェア自動更新サーバーのURL」に入れてください。HPX-Core 用とは別の URL です。入れておくと、HPX-CAM が1日1回確かめて自分で更新します。'
