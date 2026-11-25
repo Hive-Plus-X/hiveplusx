@@ -109,6 +109,8 @@
   .files { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 0; }
   .files .row { display:flex; align-items:center; gap:14px; padding:18px 24px; }
   .files .row + .row { border-top:1px solid var(--line); }
+  .files a.row { color:inherit; text-decoration:none; }
+  .files a.row .name b { text-decoration:underline; text-decoration-color:var(--honey); text-underline-offset:4px; }
   .files .name { flex:1; min-width:0; }
   .files .name b { display:block; font-size:16px; font-weight:700; letter-spacing:.01em; }
   .files .lic { flex:none; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--honey-soft); white-space:nowrap; }
@@ -300,6 +302,7 @@
         <div class="row"><span class="name"><b>サーバーのシステムファイル　HPX-Server</b></span><span class="lic">MIT</span></div>
         <div class="row"><span class="name"><b>回路図・基板・ケース</b></span><span class="lic">CERN-OHL-P v2</span></div>
         <div class="row"><span class="name"><b>説明書・検討メモ</b></span><span class="lic">CC BY 4.0</span></div>
+        <a class="row" href="download.html#sticker"><span class="name"><b>機器ステッカー</b></span><span class="lic">名前とロゴの扱い</span></a>
       </div>
     </div>
   </section>
