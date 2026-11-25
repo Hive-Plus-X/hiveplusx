@@ -371,14 +371,15 @@ function bear_title(array $b, string $lv): string
     return ($lv === 'blink' ? '新しい情報があります。' : '') . 'クマの出没情報: 過去1年・' . (int)B_RED_KM . 'km以内に' . (int)$b['n5'] . '件';
 }
 
-// 蜂場タイルの見出しに付けるマーク。押すと蜂場詳細のクマの欄へ
-function bear_mark_html(string $siteDir, string $aid, array $a, int $now): string
+// 蜂場タイルの見出し・蜂場一覧の名前に付けるマーク。押すと蜂場詳細のクマの欄へ ($toPage: 一覧から蜂場ごとのページへ)
+function bear_mark_html(string $siteDir, string $aid, array $a, int $now, bool $toPage = false): string
 {
     $b = bear_state($siteDir, $aid, $a);
     $lv = bear_level($b, $now);
     if ($lv === '') return '';
     $t = bear_title($b, $lv) . ' (出典: くまっぷ' . (($b['srcs'] ?? []) ? '、データ提供: ' . implode('・', (array)$b['srcs']) : '') . ')';
-    return '<a class="bearmk ' . $lv . '" href="#bear-' . h($aid) . '" title="' . h($t) . '" aria-label="' . h($t) . '" '
+    if ($toPage) return '<a class="bearmk ' . $lv . '" href="apiary.php?' . h(http_build_query(['a' => $aid])) . '#bear-' . h($aid) . '" title="' . h($t) . '" aria-label="' . h($t) . '">' . bear_svg() . '</a>';
+    return '<a class="bearmk ' . $lv . '" href="#bear-' . h($aid) . '" title=""' . h($t) . '" aria-label="' . h($t) . '" '
         . 'onclick="var d=document.getElementById(\'bear-' . h($aid) . '\');if(d){var s=d.closest(\'details\');if(s)s.open=true;}">' . bear_svg() . '</a>';
 }
 
@@ -387,6 +388,8 @@ function bear_detail_html(string $siteDir, string $aid, array $a, int $now): str
 {
     if (!bear_on()) return '';
     $id = ' id="bear-' . h($aid) . '"';
+    // 一覧のマークから来たとき (#bear-<蜂場id>) は、蜂場詳細を開いておく
+    $open = '<script>(function(){var d=document.getElementById("bear-' . h($aid) . '");if(d&&location.hash==="#bear-' . h($aid) . '"){var s=d.closest("details");if(s){s.open=true;d.scrollIntoView();}}})();</script>';
     if (!apiary_latlng($a)) return '<dt' . $id . '>クマの出没情報</dt><dd><span class="muted">「緯度・経度」を入れると、くまっぷの情報で近くの出没を数えます</span></dd>';
     $b = bear_state($siteDir, $aid, $a);
     if (!$b) return '<dt' . $id . '>クマの出没情報</dt><dd><span class="muted">くまっぷから取り込み中です (しばらくすると出ます)</span></dd>';
@@ -413,7 +416,7 @@ function bear_detail_html(string $siteDir, string $aid, array $a, int $now): str
     }
     $o .= '<br><span class="muted" style="font-size:.85em">出典: <a href="' . h(bear_web()) . '" target="_blank" rel="noopener">くまっぷ</a> (株式会社Xenon)'
         . (($b['srcs'] ?? []) ? '、データ提供: ' . h(implode('・', (array)$b['srcs'])) : '') . '。'
-        . '黄色のマーク = 過去3年・' . (int)B_YEL_KM . 'km以内に情報あり、赤色 = 過去1年・' . (int)B_RED_KM . 'km以内に情報あり、赤の点滅 = ' . (int)B_RED_KM . 'km以内の新しい情報 (' . bear_blink_days() . '日間)</span></dd>';
+        . '黄色のマーク = 過去3年・' . (int)B_YEL_KM . 'km以内に情報あり、赤色 = 過去1年・' . (int)B_RED_KM . 'km以内に情報あり、赤の点滅 = ' . (int)B_RED_KM . 'km以内の新しい情報 (' . bear_blink_days() . '日間)</span></dd>' . $open;
     return $o;
 }
 

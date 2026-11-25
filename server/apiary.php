@@ -500,7 +500,8 @@ if ($one === '' && $view === 'list' && $site['apiaries']) {
         $addr = (string)($a['address'] ?? '');
         echo '<tr data-id="' . h((string)$aid) . '" data-q="' . h(mb_strtolower((string)$a['name'] . ' ' . $addr)) . '">'
             . '<td class="hd" title="つかんで上下に動かす">≡</td>'
-            . '<td><a href="' . h(apiary_url((string)$aid)) . '"><b>' . h((string)$a['name']) . '</b></a></td>'
+            . '<td><a href="' . h(apiary_url((string)$aid)) . '"><b>' . h((string)$a['name']) . '</b></a>'
+                . (($bm = bear_mark_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now, true)) !== '' ? ' ' . $bm : '') . '</td>'
             . '<td class="n"><a href="hive.php?' . h(http_build_query(['a' => $aid])) . '" title="登録した群 / 全部の群">' . count($hv) . '</a>／' . (isset($a['hive_count']) ? (int)$a['hive_count'] : count($hv)) . '</td>'
             . '<td>' . sensor_chips($a, $hv, $hubs, $sensors, (string)$aid, $now, '-') . '</td>'
             . '<td class="n">' . (($tn[$aid] ?? 0) ? '<a href="task.php?' . h(http_build_query(['a' => $aid])) . '#todo">' . $tn[$aid] . '件</a>'
