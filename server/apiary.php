@@ -548,6 +548,7 @@ T.addEventListener('pointerup',end);T.addEventListener('pointercancel',end);
 })();</script>
 JS;
     echo $addbox();
+    if (bear_on()) echo '<p class="muted" style="font-size:.75em">クマの出没情報: <a href="' . h(bear_web()) . '" target="_blank" rel="noopener">くまっぷ</a></p>';
 } elseif ($one === '' && $view === 'map' && $site['apiaries']) {
     // 地図: 緯度,経度が入っている蜂場に点を打ち、全部が入る縮尺で出す。点か名前を押すとその蜂場のページへ
     //   地図は国土地理院の地図(地理院タイル)。キー不要。表示には Leaflet (オープンソースの地図の部品) を使う
@@ -720,7 +721,8 @@ foreach ($tiles as $aid => $a) {
 if ($tiles || $view === 'tile' || !$site['apiaries']) {
     if ($one === '') echo $addbox();
     echo '</div>';
-    echo '<p class="muted" style="font-size:.75em">天気予報: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a></p>';
+    echo '<p class="muted" style="font-size:.75em">天気予報: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>'
+        . (bear_on() ? '　クマの出没情報: <a href="' . h(bear_web()) . '" target="_blank" rel="noopener">くまっぷ</a>' : '') . '</p>';
 }
 echo '<script>function shrinkPhoto(inp){var f=inp.files&&inp.files[0];if(!f||!window.createImageBitmap||!window.DataTransfer)return;'
     . 'createImageBitmap(f,{imageOrientation:"from-image"}).then(function(b){var M=1600,r=Math.min(1,M/Math.max(b.width,b.height));'
