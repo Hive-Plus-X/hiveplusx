@@ -43,9 +43,6 @@ $HPX_CRON_TOKEN = '';
 //   Webhook URL は このフォルダの line_webhook.php。友だち追加の URL は「サーバーの設定」の「LINE」で入れる
 $HPX_LINE_TOKEN = '';
 $HPX_LINE_SECRET = '';
-// くまっぷ (https://kumap-xenon.web.app 株式会社Xenon) のテナント API キー (kumap_tk__ で始まる)。蜂場の近くのクマの出没情報を蜂場タイルに出し、
-//   新しい情報をお知らせする。運用者ごとにくまっぷと契約し、テナント設定ページで「points:read」のキーを発行する。docs/server-setup.md の19章
-$HPX_KUMAP_KEY = '';
 // Claude Console (https://console.anthropic.com/) で作った API キー。AIメモ・記録 (画面と LINE) に使う。利用料は使った回数に応じてかかる
 $HPX_AI_KEY = '';
 // HPX-CAM の大きな変化を AI で確かめるときのキー。空なら $HPX_AI_KEY を使う
