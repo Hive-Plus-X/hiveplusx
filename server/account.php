@@ -257,7 +257,9 @@ if (line_on()) {
 $token = (string)($acct['token'] ?? '');
 echo '<h2 id="token">HPX-Core の接続 (機器用トークン)</h2><div class="card form">'
     . '<p>HPX-Core の管理画面「動作設定」に、次の2つを入れてください。届いた記録はこのアカウントに保存され、センサページに出ます。</p>'
-    . '<details><summary>送信先のURLを表示する</summary><p><input type="text" readonly value="' . h(site_url('receive.php')) . '" onclick="this.select()"></p></details>'
+    . '<details><summary>送信先のURLを表示する</summary><p><input type="text" readonly value="' . h(site_url('')) . '" onclick="this.select()"></p>'
+    . '<p class="muted">HPX-Core (v1.42 から)・HPX-CAM は、この URL を入れれば送り先のファイル名 (receive.php・cam_upload.php) を自動で補います。'
+    . 'HPX-Core v1.41 までは、最後に receive.php を付けた <code>' . h(site_url('receive.php')) . '</code> を入れてください。</p></details>'
     . '<details><summary>送信先のトークンを表示する</summary><p><input type="text" readonly value="' . h($token) . '" onclick="this.select()"></p>'
     . '<p class="muted">このトークンを知っている人は、このアカウントに記録を送れます。人に見せないでください。'
     . ($token !== '' && !empty($acct['token_at']) ? ' (' . h(date('Y-m-d H:i', (int)$acct['token_at'])) . ' に作成)' : '') . '</p></details>'
