@@ -15,6 +15,7 @@ require __DIR__ . '/hpx_cam.php';
 require __DIR__ . '/hpx_links.php';
 require __DIR__ . '/hpx_dl_remind.php';
 require __DIR__ . '/hpx_weather.php';
+require __DIR__ . '/hpx_bear.php';
 if (PHP_SAPI !== 'cli') {
     // URL から呼ぶときは、機器用とは別のトークンで確かめる(定期実行サービスにURLを預けるため)
     $cronTok = (string)($HPX_CRON_TOKEN ?? '');
@@ -72,6 +73,9 @@ foreach ($places as [, , , $owner]) if ($owner !== '') link_log_sync($owner);
 
 // ---- 蜂場の天気予報を先に取っておく (蜂場ページを開いたときに待たないように。hpx_weather.php) ----
 if (users_exist()) echo 'weather: ' . weather_refresh_all() . " apiaries\n";
+
+// ---- クマの出没情報 (くまっぷ)。取り込みと、蜂場の近くの新しい情報のお知らせ (hpx_bear.php。$HPX_KUMAP_KEY が空なら何もしない) ----
+if (users_exist()) echo 'bear: ' . bear_cron() . "\n";
 
 // ---- サーバー管理者へ、全アカウントのデータのダウンロードを促すメール (hpx_dl_remind.php) ----
 if (users_exist()) dl_remind_mail();

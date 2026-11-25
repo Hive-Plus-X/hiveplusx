@@ -28,6 +28,8 @@ function photo_thumb(string $aid, string $src): string
 }
 // 天気予報 (Open-Meteo) の取り置きと取得は hpx_weather.php (定期実行 hpx_cron.php でも先に取っておく)
 require_once __DIR__ . '/hpx_weather.php';
+// クマの出没情報 (くまっぷ)。取り込みは定期実行、ここは結果を出すだけ (hpx_bear.php)
+require_once __DIR__ . '/hpx_bear.php';
 
 // WMO の天気コード → マークと短い言葉
 function weather_icon(int $code): array
@@ -615,6 +617,7 @@ if ($tiles || $view === 'tile' || !$site['apiaries']) echo '<div class="cols' . 
 foreach ($tiles as $aid => $a) {
     $hv = hives_of($site, $aid);
     echo '<div class="card apiary" id="a-' . h($aid) . '"><h2 style="margin-top:.2em;display:flex;align-items:baseline;gap:8px">' . h((string)$a['name'])
+        . bear_mark_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now)
         . '<span style="margin-left:auto;font-size:.75em;font-weight:normal;color:#444;white-space:nowrap">'
         . '登録<a href="hive.php?' . h(http_build_query(['a' => $aid])) . '">' . count($hv) . '群</a>／全' . (isset($a['hive_count']) ? (int)$a['hive_count'] : count($hv)) . '群</span></h2>';
     echo share_line($a) . sensor_chips($a, $hv, $hubs, $sensors, $aid, $now);
@@ -684,6 +687,7 @@ foreach ($tiles as $aid => $a) {
             . ' <span class="muted">' . h(ago_text((int)$last[0], $now)) . '</span>' : '<span class="muted">直近の記録なし</span>');
     }
     echo '<dt>蜂場の温湿度</dt><dd>' . ($thTxt ? implode('<br>', $thTxt) : '<span class="muted">未設定</span>') . '</dd>';
+    echo bear_detail_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now);
     echo '</dl>';
     if (($a['note'] ?? '') !== '') echo '<p>' . nl((string)$a['note']) . '</p>';
 

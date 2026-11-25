@@ -24,6 +24,7 @@ function hpx_settings_groups(): array
         'users' => 'アカウントと利用者',
         'cam' => 'HPX-CAM (蜂場カメラ)',
         'line' => 'LINE',
+        'bear' => 'クマの出没情報 (くまっぷ)',
         'ai' => 'AIメモ・記録',
         'help' => '情報サイトの AI ヘルプ',      // 情報サイトの管理ページ (report_admin.php) で変える
         'demo' => 'デモ用アカウント',            // 同上
@@ -75,6 +76,10 @@ function hpx_settings_def(): array
         'HPX_CAM_QUIET_MIN' => ['g' => 'cam', 'l' => '知らせたあと、同じカメラで知らせない時間', 't' => 'int', 'd' => 180, 'min' => 0, 'max' => 10080, 'u' => '分'],
         // LINE
         'HPX_LINE_ADD_URL' => ['g' => 'line', 'l' => '友だち追加の URL', 't' => 'url', 'd' => '', 'hp' => '例 https://line.me/R/ti/p/@222xdxtk。マイアカウントの LINE 連携の説明に出します。'],
+        // クマの出没情報 (くまっぷ)
+        'HPX_BEAR_BLINK_DAYS' => ['g' => 'bear', 'l' => '新しい情報のあと、熊のマークを点滅させる日数', 't' => 'int', 'd' => 7, 'min' => 0, 'max' => 365, 'u' => '日', 'hp' => 'API キーは config.php の $HPX_KUMAP_KEY に書きます (くまっぷとの契約が要ります)。空ならこの機能は出ません。'],
+        'HPX_KUMAP_API' => ['g' => 'bear', 'l' => 'くまっぷ API の URL', 't' => 'url', 'd' => '', 'hp' => '空なら決まった URL。くまっぷから変更の案内があったときだけ入れます。'],
+        'HPX_KUMAP_WEB' => ['g' => 'bear', 'l' => 'くまっぷの画面の URL (お知らせのリンク)', 't' => 'url', 'd' => '', 'hp' => '空なら https://kumap-xenon.web.app'],
         // AI メモ
         'HPX_AI_MODEL' => ['g' => 'ai', 'l' => '読み取りに使うモデル', 't' => 'sel', 'd' => 'claude-opus-5-5', 'o' => $ai, 'hp' => 'Haiku にすると利用料はずっと安くなります (正確さは少し下がるかもしれません)。'],
         'HPX_AI_DAY_MAX' => ['g' => 'ai', 'l' => '1人が1日に記録できる回数', 't' => 'int', 'd' => 50, 'min' => 0, 'max' => 10000, 'u' => '回'],
@@ -98,6 +103,7 @@ function hpx_settings_def(): array
         'HPX_REPORT_ADMIN_PW' => ['g' => 'site_secret', 'l' => '「作った・使ったレポート」の管理ページのパスワード', 't' => 'secret', 'd' => ''],
         'HPX_LINE_TOKEN' => ['g' => 'secret', 'l' => 'LINE のチャネルアクセストークン', 't' => 'secret', 'd' => ''],
         'HPX_LINE_SECRET' => ['g' => 'secret', 'l' => 'LINE のチャネルシークレット', 't' => 'secret', 'd' => ''],
+        'HPX_KUMAP_KEY' => ['g' => 'secret', 'l' => 'くまっぷの API キー (クマの出没情報)', 't' => 'secret', 'd' => ''],
         'HPX_AI_KEY' => ['g' => 'secret', 'l' => 'Claude の API キー (AIメモ・記録)', 't' => 'secret', 'd' => ''],
         'HPX_CAM_AI_KEY' => ['g' => 'secret', 'l' => 'Claude の API キー (カメラ。空なら AIメモのキー)', 't' => 'secret', 'd' => ''],
         'HPX_HELP_KEY' => ['g' => 'site_secret', 'l' => 'Claude の API キー (AI ヘルプ。空なら AIメモのキー)', 't' => 'secret', 'd' => ''],
