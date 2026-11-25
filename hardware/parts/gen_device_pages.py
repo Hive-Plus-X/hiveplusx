@@ -141,6 +141,60 @@ DEVICES = [
          extra=('※試作中です。実機では確かめていません。電池とパネルの電圧を測れるのは、HPX-Core「＋LTE-M」と「＋防水」(USB-C メス基板で 4本に分けたとき) です。ほかの機器 (HPX-Core 基本モデル・HPX-CAM など) には 5V の電源として使えます (眠りながら動く機器向け)。出力の USB-C はパソコンなど普通の USB 機器には差さないでください。ずっと動かす機器 (＋有線LAN・LTE ルーター) には向きません。',
                 [])),
 ]
+# 完成写真 (TARO 2026-11-25): site/img/photo/<名前>.webp (小 640px) と <名前>_l.webp (大 1200px、押すと開く)
+# 機器の key → [(名前, 説明, 版 または None (どの版でも出す))]
+PHOTOS = {
+    'core': [('core_basic_1', '開発ボードに USB-C ケーブルをつないだところ', 'core_basic'),
+             ('core_basic_2', 'ケースに入れた例', 'core_basic'),
+             ('core_lanv_1', 'ケース PFF10-4-10W に入れたところ (LAN ケーブルとバッテリーからの線)', 'core_lanv'),
+             ('core_lanv_2', 'ふたを開けたところ (Freenove ESP32 で作った例。下が W5500、右が端子台)', 'core_lanv'),
+             ('core_bat_1', 'ケース WH145-25-M3 に入れたところ', 'core_bat'),
+             ('core_bat_2', 'ふたを開けたところ (Olimex ESP32-DEVKIT-LIPO で作った例。下は単三3本の電池ボックス)', 'core_bat')],
+    'w': [('w_both_1', '重さを測る台 (どちらの版も同じ)', None),
+          ('w_both_2', '台の内側', None),
+          ('w_cr_1', '完成した CR123A 版', 'w_cr'),
+          ('w_cr_2', 'ふたを開けたところ (CR123A 電池と基板)', 'w_cr')],
+    'th': [('th_both_1', '単三リチウム電池版 (左) と CR123A 版 (右)', None),
+           ('th_cr_1', '完成した CR123A 版', 'th_cr'),
+           ('th_aa_1', '完成した単三リチウム電池版', 'th_aa'),
+           ('th_aa_2', 'ふたを開けたところ', 'th_aa')],
+    'f': [('f_1', '完成した HPX-F', None)],
+    'cam': [('cam_1', '完成した HPX-CAM', None),
+            ('cam_2', '蜂場に取り付けたところ', None)],
+}
+
+
+def photos_html(dev):
+    """完成写真。版ごとの写真は data-variant を付け、版ボタンで切り替わる"""
+    ps = PHOTOS.get(dev['key'])
+    if not ps:
+        return ''
+    def fig(n, cap, v):
+        dv = f' data-variant="{v}"' if v else ''
+        return (f'        <figure{dv}><a href="img/photo/{n}_l.webp" target="_blank" rel="noopener">'
+                f'<img src="img/photo/{n}.webp" alt="{esc(dev["name"])} {esc(cap)}" width="640" height="640" loading="lazy"></a>'
+                f'<figcaption>{esc(cap)}</figcaption></figure>')
+    figs = [fig(*p) for p in ps]
+    # 写真のない版には「準備中」を出す
+    multi = len(dev['variants']) > 1
+    have = {p[2] for p in ps}
+    soon = ''
+    if multi and None not in have:
+        soon = ''.join(f'\n      <p class="note"{f" data-variant={chr(34)}{k}{chr(34)}"}>この版の写真は準備中です。</p>'
+                       for k, _ in dev['variants'] if k not in have)
+    return f'''  <section id="photos">
+    <div class="reveal wrap">
+      <h2>完成写真</h2>
+      <p class="note">写真を押すと、大きな画像が開きます。</p>{soon}
+      <div class="photos">
+{chr(10).join(figs)}
+      </div>
+    </div>
+  </section>
+
+'''
+
+
 # 表に出す分類の順
 CATS = ['チップボード', '電子部品', '電源', 'ケース', 'ケース用基板', 'ケーブル', '部材']
 
@@ -277,6 +331,12 @@ CSS = '''  section { margin-top:140px; scroll-margin-top:80px; }
   .ctab thead th { background:rgba(47,93,69,.07); }
   .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
   @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
+  /* 完成写真 (TARO 2026-11-25) */
+  .photos { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:18px; }
+  .photos figure { margin:0; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .photos figure[hidden] { display:none; }
+  .photos img { display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; }
+  .photos figcaption { padding:10px 14px; font-size:14px; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -613,7 +673,7 @@ def device_page(dev, rows, parts):
     {f'<p class="lead">{esc(dev["note"])}</p>' if dev["note"] else ''}{chooser_html(dev)}{sw}
   </div>
 
-  <section id="parts">
+{photos_html(dev)}  <section id="parts">
     <div class="reveal wrap">
       <span class="tag">{esc(dev["tag"])}</span>
       <h2>部品表</h2>

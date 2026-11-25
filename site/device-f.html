@@ -163,6 +163,12 @@
   .ctab thead th { background:rgba(47,93,69,.07); }
   .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
   @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
+  /* 完成写真 (TARO 2026-11-25) */
+  .photos { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:18px; }
+  .photos figure { margin:0; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .photos figure[hidden] { display:none; }
+  .photos img { display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; }
+  .photos figcaption { padding:10px 14px; font-size:14px; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -206,6 +212,16 @@
     <p class="lead">電柵のフェンスアラートの点滅を光センサで読み取り、電圧の低下を Bluetooth で知らせます。</p>
     
   </div>
+
+  <section id="photos">
+    <div class="reveal wrap">
+      <h2>完成写真</h2>
+      <p class="note">写真を押すと、大きな画像が開きます。</p>
+      <div class="photos">
+        <figure><a href="img/photo/f_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/f_1.webp" alt="HPX-F 完成した HPX-F" width="640" height="640" loading="lazy"></a><figcaption>完成した HPX-F</figcaption></figure>
+      </div>
+    </div>
+  </section>
 
   <section id="parts">
     <div class="reveal wrap">

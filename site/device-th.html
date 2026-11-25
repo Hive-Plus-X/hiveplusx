@@ -163,6 +163,12 @@
   .ctab thead th { background:rgba(47,93,69,.07); }
   .ctab td .m { font-size:16px; font-weight:700; margin-right:4px; }
   @media (prefers-color-scheme: dark) { .chooser .opts button[aria-pressed="true"], .chooser .ans button, .chooser .ans a.btn { background:var(--honey); border-color:var(--honey); color:#1d1d1b; } .chooser summary { color:var(--honey); } }
+  /* 完成写真 (TARO 2026-11-25) */
+  .photos { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:18px; }
+  .photos figure { margin:0; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .photos figure[hidden] { display:none; }
+  .photos img { display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; }
+  .photos figcaption { padding:10px 14px; font-size:14px; color:var(--sub); }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -207,6 +213,19 @@
     <p class="lead">電池は CR123A と単三リチウムの2通りから選べます。違うのはケースと電池まわりだけです。</p>
     <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="th_cr" aria-pressed="true">CR123A 版</button><button type="button" data-v="th_aa" aria-pressed="false">単三リチウム電池版</button></div>
   </div>
+
+  <section id="photos">
+    <div class="reveal wrap">
+      <h2>完成写真</h2>
+      <p class="note">写真を押すと、大きな画像が開きます。</p>
+      <div class="photos">
+        <figure><a href="img/photo/th_both_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/th_both_1.webp" alt="HPX-TH 単三リチウム電池版 (左) と CR123A 版 (右)" width="640" height="640" loading="lazy"></a><figcaption>単三リチウム電池版 (左) と CR123A 版 (右)</figcaption></figure>
+        <figure data-variant="th_cr"><a href="img/photo/th_cr_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/th_cr_1.webp" alt="HPX-TH 完成した CR123A 版" width="640" height="640" loading="lazy"></a><figcaption>完成した CR123A 版</figcaption></figure>
+        <figure data-variant="th_aa"><a href="img/photo/th_aa_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/th_aa_1.webp" alt="HPX-TH 完成した単三リチウム電池版" width="640" height="640" loading="lazy"></a><figcaption>完成した単三リチウム電池版</figcaption></figure>
+        <figure data-variant="th_aa"><a href="img/photo/th_aa_2_l.webp" target="_blank" rel="noopener"><img src="img/photo/th_aa_2.webp" alt="HPX-TH ふたを開けたところ" width="640" height="640" loading="lazy"></a><figcaption>ふたを開けたところ</figcaption></figure>
+      </div>
+    </div>
+  </section>
 
   <section id="parts">
     <div class="reveal wrap">
