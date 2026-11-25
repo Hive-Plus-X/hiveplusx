@@ -5,6 +5,7 @@
 //   秘密 (パスワード・トークン・API キー) は config.php に書く。ここには設定済みかどうかだけ出す (HPX_SECRETS_ON_SCREEN)。
 declare(strict_types=1);
 require __DIR__ . '/hpx_site.php';
+require_once __DIR__ . '/hpx_bear.php';   // クマの出没情報の取り込み状況
 if (empty($ME['admin'])) {
     http_response_code(403);
     exit('このページはサーバー管理者だけが開けます。');
@@ -53,6 +54,7 @@ foreach ($GROUPS as $g => $gl) {
     if ($editable) echo '<form method="post">' . csrf_field() . '<input type="hidden" name="act" value="save"><input type="hidden" name="g" value="' . $g . '">';
     echo hpx_settings_rows($g);
     if ($editable) echo '<p><button type="submit">「' . h($gl) . '」を保存</button></p></form>';
+    if ($g === 'bear') echo bear_status_html();
     if ($g === 'mail') {
         echo '<form method="post" class="inl">' . csrf_field() . '<input type="hidden" name="act" value="testmail">'
             . '<button type="submit">自分 (' . h((string)($ME['email'] ?? '')) . ') にテストメールを送る</button></form> <span class="muted">保存してから押してください。</span>';

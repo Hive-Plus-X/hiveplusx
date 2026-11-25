@@ -294,7 +294,7 @@ function bear_cron(): string
             foreach ($prefs as $pc) if ((int)($data[(string)$pc]['full'] ?? 0) === 0) $ready = false;
             $k = bear_geo_key($lat, $lng);
             $prev = (is_array($old[$aid] ?? null) && ($old[$aid]['ll'] ?? '') === $k) ? $old[$aid] : null;   // 場所を変えたら初めから
-            if (!$ready) { if ($prev) $out[$aid] = $prev; continue; }
+            if (!$ready) { $out[$aid] = $prev ?: ['ll' => $k, 'pending' => 1, 'prefs' => $prefs]; continue; }   // まだ数えられない (ページで「取り込み中」と出す)
             [$nY, $nR, $near, $srcs] = bear_near($lat, $lng, $prefs, $now, $data);
             $seen = $prev ? array_flip((array)($prev['seen'] ?? [])) : null;
             $new = [];
@@ -349,7 +349,7 @@ function bear_state(string $siteDir, string $aid, array $a): ?array
 // マークの段階: 'blink' (赤の点滅) / 'red' / 'yel' / '' (出さない)
 function bear_level(?array $b, int $now): string
 {
-    if (!$b) return '';
+    if (!$b || !empty($b['pending'])) return '';
     if ((int)($b['new_at'] ?? 0) > 0 && $now - (int)$b['new_at'] < bear_blink_days() * 86400 && (int)($b['n5'] ?? 0) > 0) return 'blink';
     if ((int)($b['n5'] ?? 0) > 0) return 'red';
     if ((int)($b['n10'] ?? 0) > 0) return 'yel';
@@ -390,6 +390,11 @@ function bear_detail_html(string $siteDir, string $aid, array $a, int $now): str
     if (!apiary_latlng($a)) return '<dt' . $id . '>クマの出没情報</dt><dd><span class="muted">「緯度・経度」を入れると、くまっぷの情報で近くの出没を数えます</span></dd>';
     $b = bear_state($siteDir, $aid, $a);
     if (!$b) return '<dt' . $id . '>クマの出没情報</dt><dd><span class="muted">くまっぷから取り込み中です (しばらくすると出ます)</span></dd>';
+    if (!empty($b['pending'])) {
+        $ps = array_map(fn($pc) => B_PREFS[sprintf('%02d', (int)$pc)] ?? '', (array)($b['prefs'] ?? []));
+        return '<dt' . $id . '>クマの出没情報</dt><dd><span class="muted">' . ($ps ? 'くまっぷから取り込み中です (' . h(implode('・', $ps)) . '。しばらくすると出ます)'
+            : 'どの都道府県か分かりませんでした。蜂場の「所在地」に都道府県名 (例: 秋田県…) を入れてください') . '</span></dd>';
+    }
     $o = '<dt' . $id . '>クマの出没情報</dt><dd>'
         . '過去1年・' . (int)B_RED_KM . 'km以内 <b>' . (int)$b['n5'] . '件</b>、過去3年・' . (int)B_YEL_KM . 'km以内 <b>' . (int)$b['n10'] . '件</b>';
     if (bear_level($b, $now) === 'blink') $o .= '<br><span class="ng">' . h(date('n/j', (int)$b['new_at'])) . ' に ' . (int)B_RED_KM . 'km以内の新しい情報がありました</span>';
@@ -410,4 +415,25 @@ function bear_detail_html(string $siteDir, string $aid, array $a, int $now): str
         . (($b['srcs'] ?? []) ? '、データ提供: ' . h(implode('・', (array)$b['srcs'])) : '') . '。'
         . '黄色のマーク = 過去3年・' . (int)B_YEL_KM . 'km以内に情報あり、赤色 = 過去1年・' . (int)B_RED_KM . 'km以内に情報あり、赤の点滅 = ' . (int)B_RED_KM . 'km以内の新しい情報 (' . bear_blink_days() . '日間)</span></dd>';
     return $o;
+}
+
+// 「サーバーの設定」に出す取り込み状況 (都道府県ごとの件数・取った時刻・エラー)
+function bear_status_html(): string
+{
+    if (!bear_on()) return '<p class="muted">API キーを入れると、ここに取り込みの状況が出ます。</p>';
+    $rows = [];
+    foreach (glob(bear_dir() . '/pref_*.json') ?: [] as $p) {
+        if (!preg_match('/pref_(\d\d)\.json$/', $p, $m) || !isset(B_PREFS[$m[1]])) continue;
+        $c = bear_pref_load($m[1]);
+        $st = (int)$c['full'] > 0 ? count((array)$c['pts']) . '件' : '<span class="muted">まだ</span>';
+        if (!empty($c['job'])) $st .= ' <span class="muted">(取り直し中 ' . count((array)$c['job']['pts']) . '件まで)</span>';
+        $rows[] = '<tr><td>' . h(B_PREFS[$m[1]]) . '</td><td>' . $st . '</td><td>' . ((int)$c['full'] ? h(date('n/j H:i', (int)$c['full'])) : '-') . '</td><td>'
+            . ((int)$c['inc'] ? h(date('n/j H:i', (int)$c['inc'])) : '-') . '</td><td>' . (($c['err'] ?? '') !== '' ? '<span class="ng">' . h((string)$c['err']) . '</span>' : '') . '</td></tr>';
+    }
+    $geo = json_load(bear_dir() . '/geo.json');
+    $ng = count(array_filter($geo, fn($g) => is_array($g) && empty($g['ok'])));
+    return '<p style="margin-bottom:2px"><b>取り込みの状況</b> <span class="muted">(定期実行のたびに進みます。1回12秒まで)</span></p>'
+        . ($rows ? '<table class="nw"><tr><th>都道府県</th><th>3年分の件数</th><th>3年分を取った</th><th>直近を取った</th><th>エラー</th></tr>' . implode('', $rows) . '</table>'
+            : '<p class="muted">まだ取り込んでいません。緯度・経度のある蜂場があれば、次の定期実行から始まります。</p>')
+        . ($ng ? '<p class="muted">周りの都道府県を国土地理院で調べきれていない蜂場の場所: ' . $ng . 'か所 (住所の都道府県だけで取り込み中。あとで調べ直します)</p>' : '');
 }
