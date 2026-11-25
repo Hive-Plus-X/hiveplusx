@@ -80,6 +80,7 @@ $csrf = '<input type="hidden" name="csrf" value="' . h((string)$_SESSION['csrf']
 <meta name="robots" content="noindex, nofollow">
 <title>サイトの管理 - Hive Plus X</title>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root { --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
           --forest:#2F5D45; --line:rgba(31,35,40,.14); --on-forest:#FFFFFF; --err:#B42318; }
