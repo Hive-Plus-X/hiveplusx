@@ -13,7 +13,8 @@ require_once __DIR__ . '/config.php';
 const HPX_SECRETS_ON_SCREEN = false;
 
 // 画面で変えられる項目。キー = config.php の変数名 ($ を除く)
-//   g: 画面の欄、l: 名前、t: 種類 (str / email / url / int / float / bool / sel / text / terms / secret)、d: config.php に無いときの値、
+//   g: 画面の欄、l: 名前、t: 種類 (str / email / url / int / float / bool / sel / text / terms / key / secret)、
+//   key = 画面で入れられる API キー (読むだけの権限のキーなど、漏れても被害の小さいもの)。画面には末尾4文字だけ出し、空で保存すると今のまま、d: config.php に無いときの値、
 //   o: 選択肢 (sel)、min・max: 数の範囲、u: 単位、hp: 説明
 function hpx_settings_groups(): array
 {
@@ -24,6 +25,7 @@ function hpx_settings_groups(): array
         'users' => 'アカウントと利用者',
         'cam' => 'HPX-CAM (蜂場カメラ)',
         'line' => 'LINE',
+        'bear' => 'クマの出没情報 (くまっぷ)',
         'ai' => 'AIメモ・記録',
         'help' => '情報サイトの AI ヘルプ',      // 情報サイトの管理ページ (report_admin.php) で変える
         'demo' => 'デモ用アカウント',            // 同上
@@ -75,6 +77,11 @@ function hpx_settings_def(): array
         'HPX_CAM_QUIET_MIN' => ['g' => 'cam', 'l' => '知らせたあと、同じカメラで知らせない時間', 't' => 'int', 'd' => 180, 'min' => 0, 'max' => 10080, 'u' => '分'],
         // LINE
         'HPX_LINE_ADD_URL' => ['g' => 'line', 'l' => '友だち追加の URL', 't' => 'url', 'd' => '', 'hp' => '例 https://line.me/R/ti/p/@222xdxtk。マイアカウントの LINE 連携の説明に出します。'],
+        // クマの出没情報 (くまっぷ)
+        'HPX_KUMAP_KEY' => ['g' => 'bear', 'l' => 'くまっぷの API キー', 't' => 'key', 'd' => '', 'hp' => 'くまっぷと契約し、テナント設定ページで権限「points:read」(読むだけ) のキーを作って貼ります (kumap_tk__ で始まる)。入れたキーは末尾4文字だけ出します。変えるときだけ入れて、空のまま保存すると今のキーのままです。空ならこの機能は出ません。読むだけのキーなので、ほかの秘密と違い画面で入れられます。'],
+        'HPX_BEAR_BLINK_DAYS' => ['g' => 'bear', 'l' => '新しい情報のあと、熊のマークを点滅させる日数', 't' => 'int', 'd' => 7, 'min' => 0, 'max' => 365, 'u' => '日'],
+        'HPX_KUMAP_API' => ['g' => 'bear', 'l' => 'くまっぷ API の URL', 't' => 'url', 'd' => '', 'hp' => '空なら決まった URL。くまっぷから変更の案内があったときだけ入れます。'],
+        'HPX_KUMAP_WEB' => ['g' => 'bear', 'l' => 'くまっぷの画面の URL (お知らせのリンク)', 't' => 'url', 'd' => '', 'hp' => '空なら https://kumap-xenon.web.app'],
         // AI メモ
         'HPX_AI_MODEL' => ['g' => 'ai', 'l' => '読み取りに使うモデル', 't' => 'sel', 'd' => 'claude-opus-5-5', 'o' => $ai, 'hp' => 'Haiku にすると利用料はずっと安くなります (正確さは少し下がるかもしれません)。'],
         'HPX_AI_DAY_MAX' => ['g' => 'ai', 'l' => '1人が1日に記録できる回数', 't' => 'int', 'd' => 50, 'min' => 0, 'max' => 10000, 'u' => '回'],
@@ -160,6 +167,7 @@ function hpx_st_parse(array $d, string $raw): array
             if (isset($d['max']) && $v > $d['max']) return [null, $d['max'] . ' 以下にしてください'];
             return [$v, ''];
         case 'bool': return [$raw === '1', ''];
+        case 'key': return preg_match('/^[\x21-\x7e]{8,300}$/', $raw) ? [$raw, ''] : [null, '空白のない英数字・記号で入れてください (コピーしたキーをそのまま貼ります)'];
         case 'sel': return isset($d['o'][$raw]) ? [$raw, ''] : [null, '選びなおしてください'];
         case 'email':
             if ($raw !== '' && !filter_var($raw, FILTER_VALIDATE_EMAIL)) return [null, 'メールアドレスの形になっていません'];
@@ -198,6 +206,7 @@ function hpx_st_show(array $d, $v): string
 {
     switch ($d['t']) {
         case 'bool': return $v ? 'オン' : 'オフ';
+        case 'key': return trim((string)$v) === '' ? '' : '設定済み (末尾 ' . substr(trim((string)$v), -4) . ')';
         case 'sel': return (string)($d['o'][(string)$v] ?? (string)$v);
         case 'terms':
             $ls = [];
@@ -214,6 +223,7 @@ function hpx_st_same(array $d, $a, $b): bool
     if ($d['t'] === 'float') return abs((float)$a - (float)$b) < 1e-9;
     if ($d['t'] === 'int') return (int)$a === (int)$b;
     if ($d['t'] === 'bool') return (bool)$a === (bool)$b;
+    if ($d['t'] === 'key') return trim((string)$a) === trim((string)$b);
     return hpx_st_show($d, $a) === hpx_st_show($d, $b);
 }
 
@@ -229,6 +239,7 @@ function hpx_settings_save(string $g, array $in, array $reset): array
         if ($d['g'] !== $g || !hpx_setting_editable($d)) continue;
         if (!empty($reset[$k])) { $unset[] = $k; continue; }
         if ($d['t'] !== 'bool' && !array_key_exists($k, $in)) continue;
+        if ($d['t'] === 'key' && trim((string)($in[$k] ?? '')) === '') continue;   // 空なら今のキーのまま
         [$v, $err] = hpx_st_parse($d, (string)($in[$k] ?? ''));
         if ($err !== '') { $errs[] = $d['l'] . ': ' . $err; continue; }
         if (hpx_st_same($d, $v, $GLOBALS['HPX_CONFIG_FILE'][$k] ?? $d['d'])) $unset[] = $k;
@@ -280,6 +291,10 @@ function hpx_settings_rows(string $g): string
             case 'text':
             case 'terms':
                 $o .= '<textarea' . $id . ' name="' . $name . '">' . hpx_h(hpx_st_show($d, $cur)) . '</textarea>';
+                break;
+            case 'key':
+                $o .= '<input type="password"' . $id . ' name="' . $name . '" value="" autocomplete="new-password" spellcheck="false" style="width:100%;max-width:28em" placeholder="'
+                    . hpx_h(hpx_st_show($d, $cur) !== '' ? hpx_st_show($d, $cur) : 'キーを貼り付ける') . '">';
                 break;
             case 'int':
             case 'float':

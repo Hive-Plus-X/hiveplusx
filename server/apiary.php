@@ -28,6 +28,8 @@ function photo_thumb(string $aid, string $src): string
 }
 // 天気予報 (Open-Meteo) の取り置きと取得は hpx_weather.php (定期実行 hpx_cron.php でも先に取っておく)
 require_once __DIR__ . '/hpx_weather.php';
+// クマの出没情報 (くまっぷ)。取り込みは定期実行、ここは結果を出すだけ (hpx_bear.php)
+require_once __DIR__ . '/hpx_bear.php';
 
 // WMO の天気コード → マークと短い言葉
 function weather_icon(int $code): array
@@ -498,7 +500,8 @@ if ($one === '' && $view === 'list' && $site['apiaries']) {
         $addr = (string)($a['address'] ?? '');
         echo '<tr data-id="' . h((string)$aid) . '" data-q="' . h(mb_strtolower((string)$a['name'] . ' ' . $addr)) . '">'
             . '<td class="hd" title="つかんで上下に動かす">≡</td>'
-            . '<td><a href="' . h(apiary_url((string)$aid)) . '"><b>' . h((string)$a['name']) . '</b></a></td>'
+            . '<td><a href="' . h(apiary_url((string)$aid)) . '"><b>' . h((string)$a['name']) . '</b></a>'
+                . (($bm = bear_mark_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now, true)) !== '' ? ' ' . $bm : '') . '</td>'
             . '<td class="n"><a href="hive.php?' . h(http_build_query(['a' => $aid])) . '" title="登録した群 / 全部の群">' . count($hv) . '</a>／' . (isset($a['hive_count']) ? (int)$a['hive_count'] : count($hv)) . '</td>'
             . '<td>' . sensor_chips($a, $hv, $hubs, $sensors, (string)$aid, $now, '-') . '</td>'
             . '<td class="n">' . (($tn[$aid] ?? 0) ? '<a href="task.php?' . h(http_build_query(['a' => $aid])) . '#todo">' . $tn[$aid] . '件</a>'
@@ -545,6 +548,7 @@ T.addEventListener('pointerup',end);T.addEventListener('pointercancel',end);
 })();</script>
 JS;
     echo $addbox();
+    if (bear_on()) echo '<p class="muted" style="font-size:.75em">クマの出没情報: <a href="' . h(bear_web()) . '" target="_blank" rel="noopener">くまっぷ</a></p>';
 } elseif ($one === '' && $view === 'map' && $site['apiaries']) {
     // 地図: 緯度,経度が入っている蜂場に点を打ち、全部が入る縮尺で出す。点か名前を押すとその蜂場のページへ
     //   地図は国土地理院の地図(地理院タイル)。キー不要。表示には Leaflet (オープンソースの地図の部品) を使う
@@ -615,6 +619,7 @@ if ($tiles || $view === 'tile' || !$site['apiaries']) echo '<div class="cols' . 
 foreach ($tiles as $aid => $a) {
     $hv = hives_of($site, $aid);
     echo '<div class="card apiary" id="a-' . h($aid) . '"><h2 style="margin-top:.2em;display:flex;align-items:baseline;gap:8px">' . h((string)$a['name'])
+        . bear_mark_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now)
         . '<span style="margin-left:auto;font-size:.75em;font-weight:normal;color:#444;white-space:nowrap">'
         . '登録<a href="hive.php?' . h(http_build_query(['a' => $aid])) . '">' . count($hv) . '群</a>／全' . (isset($a['hive_count']) ? (int)$a['hive_count'] : count($hv)) . '群</span></h2>';
     echo share_line($a) . sensor_chips($a, $hv, $hubs, $sensors, $aid, $now);
@@ -684,6 +689,7 @@ foreach ($tiles as $aid => $a) {
             . ' <span class="muted">' . h(ago_text((int)$last[0], $now)) . '</span>' : '<span class="muted">直近の記録なし</span>');
     }
     echo '<dt>蜂場の温湿度</dt><dd>' . ($thTxt ? implode('<br>', $thTxt) : '<span class="muted">未設定</span>') . '</dd>';
+    echo bear_detail_html(site_dir_of((string)$a['_o']), (string)$aid, $a, $now);
     echo '</dl>';
     if (($a['note'] ?? '') !== '') echo '<p>' . nl((string)$a['note']) . '</p>';
 
@@ -715,7 +721,8 @@ foreach ($tiles as $aid => $a) {
 if ($tiles || $view === 'tile' || !$site['apiaries']) {
     if ($one === '') echo $addbox();
     echo '</div>';
-    echo '<p class="muted" style="font-size:.75em">天気予報: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a></p>';
+    echo '<p class="muted" style="font-size:.75em">天気予報: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>'
+        . (bear_on() ? '　クマの出没情報: <a href="' . h(bear_web()) . '" target="_blank" rel="noopener">くまっぷ</a>' : '') . '</p>';
 }
 echo '<script>function shrinkPhoto(inp){var f=inp.files&&inp.files[0];if(!f||!window.createImageBitmap||!window.DataTransfer)return;'
     . 'createImageBitmap(f,{imageOrientation:"from-image"}).then(function(b){var M=1600,r=Math.min(1,M/Math.max(b.width,b.height));'
