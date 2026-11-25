@@ -163,6 +163,7 @@ if (is_post()) {
 
 page_head('AIメモ・記録 - ' . S_TITLE, AN_PAGE);
 echo flash_html();
+echo '<p class="tabs"><a href="ai_note.php" class="on">AIメモ・記録</a><a href="kb.php">資料に聞く</a></p>';   // 資料に聞く (kb.php)
 if (!ai_key_on()) {
     echo '<p class="card">AIメモ・記録は、サーバーに Claude の API キーが設定されていないため使えません (サーバー管理者が config.php の $HPX_AI_KEY に入れると使えます)。</p></body></html>';
     exit;

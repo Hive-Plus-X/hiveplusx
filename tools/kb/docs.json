@@ -1,0 +1,141 @@
+{
+ "publisher": "一般社団法人日本養蜂協会",
+ "docs": [
+  {
+   "id": "d01",
+   "file": "01.pdf",
+   "title": "養蜂マニュアルⅠ",
+   "year": 2011,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/youhouka-1shuusei.pdf",
+   "from": "https://beekeeping.or.jp/council/manual/"
+  },
+  {
+   "id": "d02",
+   "file": "02.pdf",
+   "title": "養蜂マニュアルⅡ",
+   "year": 2012,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/H23youhouka-2.pdf",
+   "from": "https://beekeeping.or.jp/council/manual/"
+  },
+  {
+   "id": "d03",
+   "file": "03.pdf",
+   "title": "養蜂マニュアルⅢ",
+   "year": 2013,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/H24youhouka-3.pdf",
+   "from": "https://beekeeping.or.jp/council/manual/"
+  },
+  {
+   "id": "d04",
+   "file": "04.pdf",
+   "title": "ミツバチにうまく働いてもらうために",
+   "year": 2011,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/mitubatikahun.pdf",
+   "from": "https://beekeeping.or.jp/council/manual/"
+  },
+  {
+   "id": "d05",
+   "file": "05.pdf",
+   "title": "ミツバチにうまく働いてもらうために～基本知識と作物別のポイント～",
+   "year": 2012,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/h24mitubatiii.pdf",
+   "from": "https://beekeeping.or.jp/council/manual/"
+  },
+  {
+   "id": "d06",
+   "file": "06.pdf",
+   "title": "養蜂技術指導手引書Ⅱ「養蜂における衛生管理」",
+   "year": 2015,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/eiseikanriA4-1.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d07",
+   "file": "07.pdf",
+   "title": "養蜂技術指導手引書Ⅱ「ミツバチの感染症 ヨーロッパ腐蛆病」",
+   "year": 2015,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/fusobyoA4-1.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d08",
+   "file": "08.pdf",
+   "title": "養蜂技術指導手引書Ⅲ「養蜂における衛生管理-消毒技術（再改訂版）」",
+   "year": 2023,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/R6養蜂技術指導手引書（消毒技術）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d09",
+   "file": "09.pdf",
+   "title": "養蜂技術指導手引書Ⅳ「クマによる養蜂被害防除［改訂版］」",
+   "year": 2018,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/kumaboujyo_A4-1.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d10",
+   "file": "10.pdf",
+   "title": "養蜂技術指導手引書Ⅴ「養蜂における衛生管理-ダニ防除技術（再改訂版）」",
+   "year": 2023,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/R6養蜂技術指導手引書（ダニ防除技術）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d11",
+   "file": "11.pdf",
+   "title": "養蜂技術指導手引書2022「ミツバチデータブック」",
+   "year": 2022,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/R6養蜂技術指導手引書2022（ミツバチデータブック）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d12",
+   "file": "12.pdf",
+   "title": "養蜂技術指導手引書2023「ミツバチの生物学を養蜂に活かす」",
+   "year": 2023,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/養蜂技術指導手引書2023（ミツバチの生物学を養蜂に活かす）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d13",
+   "file": "13.pdf",
+   "title": "養蜂技術指導手引書2024「ミツバチヘギイタダニの生物学」",
+   "year": 2024,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/養蜂技術指導手引書2024（ミツバチヘギイタダニの生物学）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d14",
+   "file": "14.pdf",
+   "title": "養蜂技術指導手引書2025「ミツバチヘギイタダニの病理学」",
+   "year": 2025,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/12/養蜂技術指導手引書2025（ミツバチヘギイタダニの病理学）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d15",
+   "file": "15.pdf",
+   "title": "養蜂技術指導手引書2025「ミツバチを守る！電気柵を用いた効果的なクマ防除対策」",
+   "year": 2025,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/12/養蜂技術指導手引書2025（ミツバチを守る！電気柵を用いた効果的なクマ防除対策）.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d16",
+   "file": "16.pdf",
+   "title": "施設園芸農家向けミツバチの管理マニュアル2024",
+   "year": 2024,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/09/施設園芸農家向けミツバチの管理マニュアル2024.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  },
+  {
+   "id": "d18",
+   "file": "18.pdf",
+   "title": "はちみつの瓶詰め等の製造におけるHACCP導入の手引書／蜜蜂の採蜜・衛生管理台帳",
+   "year": 2020,
+   "url": "https://beekeeping.or.jp/wp-content/uploads/2025/06/HACCP_A4-1.pdf",
+   "from": "https://beekeeping.or.jp/council/tebikisho/"
+  }
+ ]
+}

@@ -956,11 +956,11 @@ function auth_next(string $next): string
 function main_nav_html(string $active, int $over, int $due, bool $cam): string
 {
     $items = ['apiary.php' => '蜂場', 'hive.php' => '巣箱', 'memo.php' => 'メモ', 'task.php' => 'タスク', 'work.php' => '記録'];
-    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AI';   // config に Claude の API キーがあるときだけ (ai_note.php)
+    if (trim((string)($GLOBALS['HPX_AI_KEY'] ?? '')) !== '') $items['ai_note.php'] = 'AI';   // config に Claude の API キーがあるときだけ (ai_note.php、中に「資料に聞く」kb.php)
     if ($cam) $items['camera.php'] = 'カメラ';   // HPX-CAM の写真が届いているときだけ
     $o = '<nav>' . brand_nav_logo() . '<span class="nl">';   // メニューの文字 (スマホでは2段目に並ぶ)
     foreach ($items as $f => $lb) {
-        $o .= '<a href="' . $f . '"' . ($active === $f ? ' class="on"' : '') . '>' . h($lb)
+        $o .= '<a href="' . $f . '"' . ($active === $f || ($f === 'ai_note.php' && $active === 'kb.php') ? ' class="on"' : '') . '>' . h($lb)
             . ($f === 'task.php' && $over ? '<span class="badge" title="期限切れの タスク">' . $over . '</span>' : '')
             . ($f === 'task.php' && $due ? '<span class="badge soon" title="今日までの タスク">' . $due . '</span>' : '') . '</a>';
     }
