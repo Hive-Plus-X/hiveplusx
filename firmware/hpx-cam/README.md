@@ -1,4 +1,4 @@
-# HPX-CAM (巣箱・巣門カメラ) のファーム
+# HPX-CAM (蜂場・巣門カメラ) のファーム
 
 Seeed Studio XIAO ESP32S3 Sense で、決まった間隔で写真を撮り、Wi-Fi で HPX-Server (`server/cam_upload.php`) へ送るファームです。写真は HPX-note の「カメラ」のページで見られます。
 
