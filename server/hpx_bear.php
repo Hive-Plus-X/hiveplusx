@@ -379,7 +379,7 @@ function bear_mark_html(string $siteDir, string $aid, array $a, int $now, bool $
     if ($lv === '') return '';
     $t = bear_title($b, $lv) . ' (出典: くまっぷ' . (($b['srcs'] ?? []) ? '、データ提供: ' . implode('・', (array)$b['srcs']) : '') . ')';
     if ($toPage) return '<a class="bearmk ' . $lv . '" href="apiary.php?' . h(http_build_query(['a' => $aid])) . '#bear-' . h($aid) . '" title="' . h($t) . '" aria-label="' . h($t) . '">' . bear_svg() . '</a>';
-    return '<a class="bearmk ' . $lv . '" href="#bear-' . h($aid) . '" title=""' . h($t) . '" aria-label="' . h($t) . '" '
+    return '<a class="bearmk ' . $lv . '" href="#bear-' . h($aid) . '" title="' . h($t) . '" aria-label="' . h($t) . '" '
         . 'onclick="var d=document.getElementById(\'bear-' . h($aid) . '\');if(d){var s=d.closest(\'details\');if(s)s.open=true;}">' . bear_svg() . '</a>';
 }
 
