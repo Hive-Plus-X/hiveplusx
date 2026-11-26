@@ -59,7 +59,7 @@ foreach ($hist as $k => $x) {
     $a = (array)($x['a'] ?? []);
     echo '<div class="card"' . ($k === 0 ? ' id="ans"' : '') . '>'
         . '<p style="margin:.2em 0"><b>Q.</b> ' . nl((string)($x['q'] ?? '')) . ' <span class="muted">' . h(date('n/j H:i', strtotime((string)($x['at'] ?? '')) ?: time())) . '</span></p>'
-        . '<p style="margin:.5em 0"><b>A.</b> ' . nl((string)($a['answer'] ?? '')) . '</p>';
+        . '<p style="margin:.5em 0;line-height:1.9"><b>A.</b> ' . nl((string)($a['answer'] ?? '')) . '</p>';
     $cites = (array)($a['cites'] ?? []);
     if ($cites) {
         echo '<p class="muted" style="margin:.4em 0 .1em">出典 (押すと元の PDF のそのページが開きます)</p><ul style="margin:.1em 0 .4em">';
