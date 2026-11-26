@@ -490,6 +490,7 @@ $left = max(0, h_day_max() - h_count_read($dir, $dev, substr(hash('sha256', (str
 <title>AI ヘルプ - Hive Plus X</title>
 <meta name="description" content="Hive Plus X の機器の作り方や HPX-note の使い方を、AI がお答えします。">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root { --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
           --forest:#2F5D45; --line:rgba(31,35,40,.14); --on-forest:#FFFFFF; --err:#B42318; }

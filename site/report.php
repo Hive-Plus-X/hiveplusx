@@ -139,6 +139,7 @@ $shown = array_slice($pub, ($page - 1) * R_PER_PAGE, R_PER_PAGE);
 <meta name="description" content="Hive Plus X の機器を作ったり、サーバーや養蜂管理アプリを使った方からの報告です。">
 <?php if ($isPost): ?><meta name="robots" content="noindex"><?php endif; ?>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root { --bg:#FAF8F3; --panel:#FFFFFF; --text:#1F2328; --sub:#5B6168; --honey:#F2A900; --honey-soft:#FDF1D2;
           --forest:#2F5D45; --line:rgba(31,35,40,.14); --on-forest:#FFFFFF; --err:#B42318; }
