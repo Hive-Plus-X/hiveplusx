@@ -98,6 +98,7 @@
   .parts .part .price { margin-top:2px; }
   .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
   .parts .part .alt a { font-weight:400; }
+  .parts .part .chip { margin-top:6px; color:var(--text); font-size:14px; white-space:pre-line; }
   .parts td.shop { color:var(--sub); white-space:nowrap; }
   .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
   .parts tfoot td.n { width:auto; }
@@ -221,34 +222,34 @@
       <h2>部品表</h2>
       <p class="note">必要な部品と数です。</p>
       <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <thead><tr><th>部品</th><th class="n">数</th></tr></thead>
         <tbody>
-        <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span><span class="price">1,780円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108554/" target="_blank" rel="noopener">抵抗 20kΩ</a></b><span>小型 金属皮膜抵抗 1/4W20kΩ</span><span class="price">250円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">コンデンサー0.1μF</a></b><span>積層セラミックコンデンサー 0.1μF50V C0G 5mm</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108155/" target="_blank" rel="noopener">コンデンサー 10μF</a></b><span>積層セラミックコンデンサー 10μF50V X7S 5mm (BP5293-50 の入力側)</span><span class="price">60円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g101310/" target="_blank" rel="noopener">端子台 3極</a></b><span>基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦</span><span class="price">40円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ピンヘッダー（オス）</a></b><span>ロープロファイルピンヘッダー(低オス) 7.7mm</span><span class="price">40円 / 40PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr class="cat"><th colspan="3">電源</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g111188/" target="_blank" rel="noopener">三端子DCDCレギュレーター 5V</a></b><span>ROHM BP5293-50 (入力 7〜26V、出力 5V 1A)</span><span class="price">240円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケーブル</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B09FL4Q7B8" target="_blank" rel="noopener">ミニ平型ヒューズホルダー</a></b><span>エーモン ミニ平型ヒューズホルダー (線の途中に入れる)</span><span class="price">415円</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FRR6FTGF" target="_blank" rel="noopener">ミニ平型ヒューズ 1A</a></b><span>ミニ平型ヒューズ 1A (ARISELIFT)</span><span class="price">567円 / 5個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0HJGDW3TT" target="_blank" rel="noopener">電線 0.3〜0.5mm²</a></b><span>サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで)</span><span class="price">980円</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
+        <tr class="cat"><th colspan="2">チップボード</th></tr>
+        <tr><td class="part"><b>nRF52840</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">Seeed XIAO BLE nRF52840</a>　（1,780円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">電子部品</th></tr>
+        <tr><td class="part"><b>抵抗 100kΩ</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">小型 金属皮膜抵抗 1/4W100kΩ</a>　（300円 / 100本入り）</span></td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b>抵抗 20kΩ</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g108554/" target="_blank" rel="noopener">小型 金属皮膜抵抗 1/4W20kΩ</a>　（250円 / 100本入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>抵抗 10kΩ</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</a>　（300円 / 100本入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>コンデンサー0.1μF</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a>　（250円 / 10個入り）</span></td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b>コンデンサー 10μF</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g108155/" target="_blank" rel="noopener">積層セラミックコンデンサー 10μF50V X7S 5mm (BP5293-50 の入力側)</a>　（60円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>端子台 3極</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g101310/" target="_blank" rel="noopener">基板用ねじ式端子台 3P 5.08mm　ターミナルブロック 3P 緑 縦</a>　（40円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>ピンソケット（メス）</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">シングルピンソケット (低メス)</a>　（80円 / 20PIN）</span></td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b>ピンヘッダー（オス）</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ロープロファイルピンヘッダー(低オス) 7.7mm</a>　（40円 / 40PIN）</span></td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b>ジャンパー線</b><span class="chip"><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">スズメッキ軟銅線 TCW 0.5mm 10m</a>　（670円 / 10m）</span></td><td class="n" data-v="数">適宜</td></tr>
+        <tr class="cat"><th colspan="2">電源</th></tr>
+        <tr><td class="part"><b>三端子DCDCレギュレーター 5V</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g111188/" target="_blank" rel="noopener">ROHM BP5293-50 (入力 7〜26V、出力 5V 1A)</a>　（240円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">ケース</th></tr>
+        <tr><td class="part"><b>壁付ネットワークケース PFFシリーズ</b><span class="chip"><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">タカチ　PFF10-4-10W</a>　（639円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">ケース用基板</th></tr>
+        <tr><td class="part"><b>ユニバーサル基板 6×8cm</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a>　（695円 / 5枚入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">部材</th></tr>
+        <tr><td class="part"><b>基板スペーサー ナット入り貼付スペーサー ASTシリーズ</b><span class="chip"><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">タカチ　AST2.5-5B</a>　（219円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">ケーブル</th></tr>
+        <tr><td class="part"><b>ミニ平型ヒューズホルダー</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B09FL4Q7B8" target="_blank" rel="noopener">エーモン ミニ平型ヒューズホルダー (線の途中に入れる)</a>　（415円）</span></td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b>ミニ平型ヒューズ 1A</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B0FRR6FTGF" target="_blank" rel="noopener">ミニ平型ヒューズ 1A (ARISELIFT)</a>　（567円 / 5個入り）</span></td><td class="n" data-v="数">2</td></tr>
+        <tr><td class="part"><b>電線 0.3〜0.5mm²</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B0HJGDW3TT" target="_blank" rel="noopener">サンコー電商 AWG20 【6色】 UL1015 耐熱ビニル絶縁電線 (コントローラーの端子から端子台まで)</a>　（980円）</span></td><td class="n" data-v="数">適宜</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 4,305円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="n" data-v="数">約 4,305円</td></tr></tfoot>
       </table>
       <div class="extra"><h3>その他</h3><p>※パネル電圧は、ソーラーチャージャー（充電コントローラー）の「パネル−」と「バッテリー−」がつながっている（マイナス共通）機種でだけ測れます。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）機種では、パネル＋の線をつながずにバッテリーの電圧だけを測ります（パネル用の抵抗・コンデンサーとヒューズは省いてかまいません）。どちらの型かは、コントローラーの線を外し、テスターの導通モードで確かめてください。どちらの型でも、マイナスの線は「バッテリー−」につなぎ、「パネル−」にはつながないでください。ファームウェアは準備中です。</p></div>
     </div>
