@@ -84,8 +84,9 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
 ,電子部品,18650 電池ホルダー 1本用,リード線付き。2個を並列につなぐ（2本用は直列のものが多いので注意）,amazon,https://www.amazon.co.jp/s?k=18650%20%E9%9B%BB%E6%B1%A0%E3%83%9B%E3%83%AB%E3%83%80%E3%83%BC%201%E6%9C%AC%20%E3%83%AA%E3%83%BC%E3%83%89%E7%B7%9A,1,個,,,,,,,,,,,,,,,,2
 ,電子部品,JST PH 2ピン ケーブル,Olimex の BAT コネクタ用。＋−の向きは基板の印字で確認,amazon,https://www.amazon.co.jp/s?k=JST%20PH%202.0%202%E3%83%94%E3%83%B3%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB,1,本,,,,,,,,,,,,,,,,
 ,その他,LTE-M 対応 SIM（microSIM）,例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認,SORACOM,https://soracom.jp/services/air/japan_coverage/,1,枚,,,,,,,,,,,,,,1,,
-,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,,,,1
-,電子部品,USB-C メス基板（データ対応）,USB Type-C メス コネクター 変換基板（VBUS・GND・D+・D− を取り出せるもの）。HPX-Solar と HPX-Core のつなぎ口,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%20D%2B%20D-,1,個,,,,,,,,,,,,,,1,,1
+,電子部品,USB-C メス基板（電源用）,USB Type-C メス コネクター 変換基板（CC に 5.1kΩ 付き、VBUS・GND を取り出せるもの）,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%205.1k,1,個,,,,,,,,,,,,,,,,
+,電子部品,USB-C メス基板（データ対応）,USB Type-C メス コネクター 変換基板（VBUS・GND・D+・D− を取り出せるもの）。HPX-Solar と HPX-Core のつなぎ口,amazon,https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%20D%2B%20D-,1,個,,,,,,,,,,,,,,1,,
+,電子部品,USB Type-Cコネクターパネル取付キット,,秋月電子通商,https://akizukidenshi.com/catalog/g/g117640/,1,個,300,,,,,,,,,,,,,,,2
 ,ケーブル,USB-C ケーブル（データ対応）,USB-C オス-オス、データ通信対応のもの（充電専用は D+・D− がないので使えない）。HPX-Solar と HPX-Core をつなぐ,amazon,https://www.amazon.co.jp/s?k=USB-C%20%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%20%E3%83%87%E3%83%BC%E3%82%BF%E9%80%9A%E4%BF%A1%E5%AF%BE%E5%BF%9C,1,本,,,,,,,,,,,,,,,,1
 ,電子部品,P-MOSFET（ロジックレベル）,CatM の 5V の入り切り用。リード付き、ゲート 4.5V 以下で ON、1A 以上（型番は未定、部品を決めるとき確認）,amazon,https://www.amazon.co.jp/s?k=P%E3%83%81%E3%83%A3%E3%83%8D%E3%83%AB%20MOSFET%20%E3%83%AD%E3%82%B8%E3%83%83%E3%82%AF%E3%83%AC%E3%83%99%E3%83%AB%20TO-220,1,個,,,,,,,,,,,,,,1,,
 ,電子部品,NPN トランジスタ,2SC1815 など（小信号用）。P-MOSFET のゲートを引く,amazon,https://www.amazon.co.jp/s?k=2SC1815,1,個,,,,,,,,,,,,,,1,,
