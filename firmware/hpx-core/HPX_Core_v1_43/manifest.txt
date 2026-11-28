@@ -1,0 +1,2 @@
+143
+https://hiveplusx.com/hpx/firmware/HPX_Core_v1_43.ino.bin
