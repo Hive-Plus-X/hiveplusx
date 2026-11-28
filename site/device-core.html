@@ -211,66 +211,13 @@
     <a class="back back-top" href="devices.html">← 機器の一覧へ戻る</a>
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
-    <p class="lead">センサの記録を Bluetooth で集め、Wi-Fi・有線LAN・LTE のどれかでサーバーへ送る中心的な機器です。</p>
-    <p class="lead">基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使うか、HPX-Solar を同じケースに入れた「＋LTE-M＆ソーラー」を作ります。</p>
-    <div class="chooser" id="chooser">
-      <h2>どれを作ればいい？</h2>
-      <p class="note">電源と通信方法を選ぶと、作る版が分かります。</p>
-      <p class="q">1. 電源は？</p><div class="opts"><button type="button" data-p="home" aria-pressed="false">家庭用電源（USB）</button><button type="button" data-p="car" aria-pressed="false">ソーラーパネル＋チャージャー＋カーバッテリー</button><button type="button" data-p="aa" aria-pressed="false">単三リチウム電池</button><button type="button" data-p="li" aria-pressed="false">HPX-Solar（小型ソーラーパネル＋18650）</button></div>
-      <p class="q">2. 通信方法は？</p><div class="opts"><button type="button" data-n="lan" aria-pressed="false">有線ルーター（LAN ケーブル）</button><button type="button" data-n="wifi" aria-pressed="false">Wi-Fi ルーター</button><button type="button" data-n="lte" aria-pressed="false">LTE-M（ルーターなし）</button></div>
-      <div class="ans" id="chooser-ans" hidden></div>
-      <details><summary>組み合わせの一覧を見る</summary>
-        <table class="ctab"><thead><tr><th>電源 ＼ 通信</th><th>有線ルーター</th><th>Wi-Fi ルーター</th><th>LTE-M</th></tr></thead><tbody><tr><th>家庭用電源（USB）</th><td><span class="m">◎</span>＋有線LAN</td><td><span class="m">◎</span>基本モデル</td><td><span class="m">◎</span>＋LTE-M</td></tr><tr><th>ソーラーパネル＋チャージャー＋カーバッテリー</th><td><span class="m">◎</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋有線LAN＆ソーラーシステムチェック</td><td><span class="m">○</span>＋LTE-M</td></tr><tr><th>単三リチウム電池</th><td><span class="m">✕</span>版なし</td><td><span class="m">◎</span>＋防水＆電池駆動</td><td><span class="m">✕</span>版なし</td></tr><tr><th>HPX-Solar（小型ソーラーパネル＋18650）</th><td><span class="m">✕</span>版なし</td><td><span class="m">○</span>＋防水＋HPX-Solar</td><td><span class="m">◎</span>＋LTE-M＆ソーラー</td></tr></tbody></table>
-        <p class="note">◎ ぴったりの版があります　○ 近い版を少し変えて作ります　✕ 今は版がありません</p>
-      </details>
-      <script>
-      (function () {
-        var D = {"home|lan": ["◎", "core", "＋有線LAN", "「＋有線LAN」を作ります。USB 電源で動かします。", 0], "home|wifi": ["◎", "core_basic", "基本モデル", "「基本モデル」を作ります。Wi-Fi でルーターにつなぎ、USB 電源で動かします。雨のかかる屋外に置くときは「＋防水」を作ります。", 0], "home|lte": ["◎", "core_lte", "＋LTE-M", "「＋LTE-M」を作り、USB 充電器（5V・1A 以上）を USB-C 口に差します。動作設定の「電圧の測り方」は「測らない」にします。", 0], "car|lan": ["◎", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作ります。カーバッテリーから 5V を作って動かし、バッテリーとパネルの電圧も見守れます。", 0], "car|wifi": ["○", "core_lanv", "＋有線LAN＆ソーラーシステムチェック", "「＋有線LAN＆ソーラーシステムチェック」を作り、有線LANモジュール（W5500）を付けずに、接続方法を Wi-Fi にします。", 0], "car|lte": ["○", "core_lte", "＋LTE-M", "「＋LTE-M」を作り、チャージャーの USB 口か 12V→USB アダプターの 5V を USB-C 口に差します。電圧は「測らない」にして、バッテリーとパネルの電圧は HPX-B で見守ります。", 0], "aa|lan": ["✕", "", "", "有線LANモジュール（W5500）は眠っている間も電気を使う（約0.1A）ので、電池では動かせません。", 0], "aa|wifi": ["◎", "core_bat", "＋防水＆電池駆動", "「＋防水＆電池駆動」を作ります。単三リチウム電池3本で、ディープスリープで動かします。電源のコードも LAN ケーブルもないので、Wi-Fi の届く所ならどこにでも置けます（電池の交換は 2〜3か月ごとの見込み）。", 0], "aa|lte": ["✕", "", "", "LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M」と電源の「HPX-Solar」を作ってください。", 0], "li|lan": ["✕", "", "", "有線LANモジュール（W5500）は電気を多く使うので、HPX-Solar（小型ソーラーパネル＋18650）には向きません。", 0], "li|wifi": ["○", "core_wp", "＋防水＋HPX-Solar", "「＋防水」と電源の「HPX-Solar」を作り、USB-C ケーブルで電気をもらいます。ケースの中を USB-C メス基板で 4本に分けると、電池とパネルの電圧も測れます。動作モードはディープスリープにします（ずっと動かすと冬に電気が足りない見込み）。", 1], "li|lte": ["◎", "core_ltes", "＋LTE-M＆ソーラー", "「＋LTE-M＆ソーラー」を作ります。LTE-M の通信とソーラーパネル・18650 の電源を 1つのケースにまとめた版で、ケースに入る線はパネルの USB-C だけです。ルーターがいらず、電池とパネルの電圧も測れます。電源を別のケースにしてほかの機器と使い回したいときは、「＋LTE-M」と「HPX-Solar」を作って USB-C ケーブルでつなぎます。", 0]};
-        var p = null, n = null, ans = document.getElementById('chooser-ans');
-        function pick(attr, v) {
-          document.querySelectorAll('.chooser [data-' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-' + attr) === v ? 'true' : 'false'); });
-        }
-        function upd() {
-          if (!p || !n) return;
-          var r = D[p + '|' + n];
-          ans.hidden = false;
-          ans.textContent = '';
-          var b = document.createElement('b');
-          b.textContent = r[0] + ' ' + (r[2] || '今は版がありません');
-          var t = document.createElement('div');
-          t.textContent = r[3];
-          ans.appendChild(b); ans.appendChild(t);
-          if (r[1]) {
-            var go = document.createElement('button');
-            go.type = 'button';
-            go.textContent = 'この版の部品表を見る';
-            go.addEventListener('click', function () {
-              var v = document.querySelector('.vsw button[data-v="' + r[1] + '"]');
-              if (v) v.click();
-              document.getElementById('parts').scrollIntoView({behavior: 'smooth'});
-            });
-            ans.appendChild(go);
-          }
-          if (r[4]) {
-            var sl = document.createElement('a');
-            sl.href = 'device-solar.html';
-            sl.className = 'btn';
-            sl.textContent = 'HPX-Solar の作り方を見る';
-            ans.appendChild(sl);
-          }
-        }
-        document.querySelectorAll('.chooser [data-p]').forEach(function (b) { b.addEventListener('click', function () { p = b.getAttribute('data-p'); pick('p', p); upd(); }); });
-        document.querySelectorAll('.chooser [data-n]').forEach(function (b) { b.addEventListener('click', function () { n = b.getAttribute('data-n'); pick('n', n); upd(); }); });
-      })();
-      </script>
-    </div>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core" aria-pressed="false">＋有線LAN</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M</button><button type="button" data-v="core_ltes" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
+    <p class="lead">センサのデータを集めてサーバーへ送る中心的な機器です。</p>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M</button><button type="button" data-v="core_ltes" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
   </div>
 
   <section id="photos">
     <div class="reveal wrap">
       <h2>完成写真</h2>
-      <p class="note" data-variant="core">この版の写真は準備中です。</p>
       <p class="note" data-variant="core_wp">この版の写真は準備中です。</p>
       <p class="note" data-variant="core_lte">この版の写真は準備中です。</p>
       <p class="note" data-variant="core_ltes">この版の写真は準備中です。</p>
@@ -305,27 +252,6 @@
         <tr><td class="part"><b><a href="https://www.monotaro.com/p/8835/6125/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>EM-1.6</span><span class="price">319円 / 50個</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
         </tbody>
         <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 1,711円</td></tr></tfoot>
-      </table>
-      </div>
-      <div data-variant="core">
-      <p class="note">＋有線LANに必要な部品と数です。</p>
-      <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
-        <tbody>
-        <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://www.marutsu.co.jp/pc/i/40755100/" target="_blank" rel="noopener">FireBeetle 2 ESP32-E IoT開発ボード</a></b><span>DFRobot DFR0654</span><span class="price">1,900円</span><span class="alt">代わりに: Olimex ESP32-DEVKIT-LIPO（1,700円）：micro-USB接続</span><span class="alt">代わりに: Freenove ESP32 開発ボード（1,400円）：省電力に向かないので家庭電源向き</span><span class="alt">代わりに: ELEGOO ESP-32 開発ボード（1,200円）：省電力に向かないので家庭電源向き</span></td><td class="shop">マルツオンライン</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B09NFF41YH" target="_blank" rel="noopener">有線LANモジュール W5500</a></b><span>ACEIRMC W5500 イーサネットネットワークモジュール</span><span class="price">2,999円 / 3個入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">18PIN×1・14PIN×1・6PIN×2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5512/8535/" target="_blank" rel="noopener">壁付ネットワークケース PFFシリーズ</a></b><span>タカチ　PFF10-4-10W</span><span class="price">639円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0CX1RGYFG" target="_blank" rel="noopener">ユニバーサル基板 6×8cm</a></b><span class="price">695円 / 5枚入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 4,073円</td></tr></tfoot>
       </table>
       </div>
       <div data-variant="core_lanv">
@@ -479,29 +405,13 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <p class="note" data-variant="core core_lanv core_wp core_bat core_lte core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <p class="note" data-variant="core_lanv core_wp core_bat core_lte core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
       <div data-variant="core_basic">
       <p class="note">USB Type-Cを接続するので、用いるケースに穴あけ加工が必要です。</p>
       <div class="photos">
         <figure><a href="img/photo/core_basic_5_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_basic_5.webp" alt="HPX-Core ケースに入れた ESP32 開発ボード" width="640" height="640" loading="lazy"></a></figure>
         <figure><a href="img/photo/core_basic_6_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_basic_6.webp" alt="HPX-Core ケースにあけた USB-C の穴" width="640" height="640" loading="lazy"></a></figure>
       </div>
-      </div>
-      <figure class="wiring" data-variant="core">
-        <figcaption><b>＋有線LANの配線図</b>FireBeetle 2 ESP32-E と有線LANモジュール W5500 を 6×8cm のユニバーサル基板に並べて差す図です (表と裏、線はすべて裏)。ファームウェアは v1.25 以降を使います (FireBeetle に合わせて W5500 のピンを変えたため)。</figcaption>
-        <a href="img/wiring/HPX-Core_LAN_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LAN_pcb.png" alt="HPX-Core ＋有線LANの配線図" loading="lazy"></a>
-      </figure>
-      <p class="note old-wiring" data-variant="core">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_LAN_olimex_pcb.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a>、<a href="img/wiring/HPX-Core_LAN_freenove_pcb.png" target="_blank" rel="noopener">Freenove ESP32 WROOM (FNK0090)</a>、<a href="img/wiring/HPX-Core_LAN_elegoo_pcb.png" target="_blank" rel="noopener">ELEGOO ESP-32</a></p>
-      <div data-variant="core">
-      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
-        <thead><tr><th>線</th><th>FireBeetle のピン（穴）</th><th>通る穴</th><th>W5500 のピン（穴）</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>IO25（K14）</td><td>K14 → U14 → U22 → V22</td><td>INT（V22）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>IO26（K15）</td><td>K15 → T15 → T23 → V23</td><td>CS（V23）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO14・SCK（K17）</td><td>K17 → S17 → S24 → V24</td><td>SCK（V24）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>IO13・MOSI（K18）</td><td>K18 → R18 → R25 → V25</td><td>MO（V25）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO19・MISO（K22）</td><td>K22 → N22</td><td>MI（N22）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>IO23（K23）</td><td>K23 → N23</td><td>RST（N23）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>GND（K26）</td><td>K26 → L26 → L27 → M27 → N27</td><td>G（N27）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>3V3（K28）</td><td>K28 → O28 → O26 → N26</td><td>V（N26）</td></tr></tbody>
-      </table></div></div>
-      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
-        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
-        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）</td><td>1</td><td>B12〜B25（14ピン）・K12〜K29（18ピン）。USB-C を下に向ける</td></tr><tr><td>ピンソケット（メス）18ピン・14ピン</td><td>各1</td><td>K12〜K29、B12〜B25 にはんだ付けして FireBeetle を差す</td></tr><tr><td>W5500 イーサネットモジュール（ACEIRMC、WIZ820io と同じピン）</td><td>1</td><td>N22〜N27・V22〜V27。LAN 差し込み口を下に向ける</td></tr><tr><td>ピンソケット（メス）6ピン</td><td>2</td><td>N22〜N27、V22〜V27 にはんだ付けして W5500 を差す</td></tr><tr><td>ユニバーサル基板 6×8cm（両面スズメッキ、穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
-      </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。</li><li>線はすべて裏（はんだ面）で、すずめっき線を穴から穴へはんだ付けしてつなぐ。上の図では点線で透かして描き、下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>裏の線どうしは交わらず、ほかのピンの穴の上も通らない。FireBeetle・W5500 の下を通る線は、裏なので部品には触れない。</li><li>W5500 につなぐ 6本の信号は、FireBeetle の右の列（18ピンの列）にまとめた: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。</li><li>このピンはファーム HPX_Core v1.25 から。v1.24 までは ELEGOO ESP-32 用のピンなので、FireBeetle では有線LAN が動かない。</li><li>灰色のピンは使わない（W5500 の NC、もう1本の V、右の列の G 2本）。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li><li>W5500 のピンがモジュールの上下のどこにあるかは分からない（実物で確かめる）。ずれていたら、W5500 と線の端を同じ数だけ上下にずらせばよい。</li><li>FireBeetle 2 の GPIO5 は基板の上の RGB LED が使っていて、ピンは出ていない。GPIO2 は基板の青い LED、GPIO27 は基板のボタン（ファーム v1.25 では工場出荷リセットに使える）。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_lanv">
         <figcaption><b>＋有線LAN＆ソーラーシステムチェックの配線図</b>「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。FireBeetle は USB ではなくバッテリーから VCC ピンへ 5V を入れて動かします。ファームウェアは v1.25 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
@@ -613,7 +523,7 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       </table></div></div>
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>＋LTE-M の基板（PCB72-95）の部品と、HPX-Solar の小さな基板（2*8）の部品を、この 1枚にまとめた。USB-C ケーブルと、ケースの壁の出力用 USB-C はいらない。</li><li>電源は DFR0559 の 5V ピンから直接 FireBeetle の VCC へ。CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。</li><li>電池の電圧（100kΩ/100kΩ で 1/2）は IO39、パネルの電圧（100kΩ/20kΩ で 1/6）は IO36 で読む。＋LTE-M＋HPX-Solar と同じピンなので、ファームはそのまま（v1.25 以降）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない（18650 は DFR0559 につなぐ）。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。</li><li>FireBeetle に USB で書き込むときは、FireBeetle を基板から抜いてから（DFR0559 の 5V と USB の 5V がぶつからないように）。</li><li>裏の線どうしは交わらない（図を作るときに調べている）。FireBeetle の下を通る線（IO39・IO36・GND）は裏なので部品には触れない。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナは付属の SMA ロッドアンテナを IPEX-SMA ケーブルでつなぎ、ケースのふたの内側に貼る（技適のため付属品を使う）。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
       </div>
-      <div class="soonbox" data-variant="core core_lanv core_wp core_bat core_lte core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
+      <div class="soonbox" data-variant="core_lanv core_wp core_bat core_lte core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
