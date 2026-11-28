@@ -98,6 +98,7 @@
   .parts .part .price { margin-top:2px; }
   .parts .part .alt { margin-top:6px; padding-left:10px; border-left:2px solid var(--line); }
   .parts .part .alt a { font-weight:400; }
+  .parts .part .chip { margin-top:6px; color:var(--text); font-size:14px; white-space:pre-line; }
   .parts td.shop { color:var(--sub); white-space:nowrap; }
   .parts tfoot td { font-weight:700; border-top:2px solid var(--line); white-space:nowrap; }
   .parts tfoot td.n { width:auto; }
@@ -231,33 +232,33 @@
       <h2>部品表</h2>
       <p class="note">必要な部品と数です。</p>
       <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
+        <thead><tr><th>部品</th><th class="n">数</th></tr></thead>
         <tbody>
-        <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">nRF52840</a></b><span>Seeed XIAO BLE nRF52840</span><span class="price">1,780円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</a></b><span>コンデンサー100μF</span><span class="price">280円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105002/" target="_blank" rel="noopener">アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5</a>（秋月電子通商、20円）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g110271/" target="_blank" rel="noopener">電解コンデンサー 100μF16V 105℃ ルビコン PX</a>（秋月電子通商、50円）</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">コンデンサー0.1μF</a></b><span>積層セラミックコンデンサー 0.1μF50V C0G 5mm</span><span class="price">250円 / 10個入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506" target="_blank" rel="noopener">CDSセル</a></b><span>Moechando φ5mm CdS セル 5506 (10個入り)</span><span class="price">395円 / 10個入り</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105886/" target="_blank" rel="noopener">CdSセル (1MΩ) GL5528</a>（秋月電子通商、100円 / 4個入り）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ピンヘッダー（オス）</a></b><span>ロープロファイルピンヘッダー(低オス) 7.7mm</span><span class="price">40円 / 40PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">7PIN×2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">ジャンパー線</a></b><span>ジャンパーワイヤー 840個セット (14サイズ)</span><span class="price">935円 / 840本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">8</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g112977/" target="_blank" rel="noopener">ユニバーサル基板 5×7</a></b><span>両面スルーホールユニバーサル基板 5*7</span><span class="price">60円</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電源</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">単三リチウム電池</a></b><span>エナジャイザー リチウム乾電池 単3形 4本入り</span><span class="price">1,283円 / 4本入り</span></td><td class="shop">amazon</td><td class="n" data-v="数">2</td></tr>
-        <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.takachi-el.co.jp/products/WH" target="_blank" rel="noopener">IP67防水ハンドヘルドケース</a></b><span>タカチ　WH145-25-M2-</span><span class="price">1,754円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケーブル</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0933M5MTL" target="_blank" rel="noopener">シールド線 AWG28</a></b><span>Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック)</span><span class="price">680円 / 1m</span></td><td class="shop">amazon</td><td class="n" data-v="数">1 m</td></tr>
-        <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b>ゴムクッション</b><span>iteck　KGR-40　40×3mm</span><span class="price">238円 / 4個入り</span></td><td class="shop">山新</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">基板固定用タッピングビス EMシリーズ</a></b><span>M2.5ビス　EM-2.3-8</span><span class="price">249円 / 50本入り</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">4</td></tr>
-        <tr><td class="part"><b><a href="https://www.ohm-direct.com/shopdetail/018027000007/" target="_blank" rel="noopener">熱収縮チューブ φ1.5mm</a></b><span>オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K</span><span class="price">275円 / 2m</span></td><td class="shop">オーム電機</td><td class="n" data-v="数">5 cm</td></tr>
-        <tr><td class="part"><b><a href="https://www.ohm-direct.com/shopdetail/018027000001/" target="_blank" rel="noopener">熱収縮チューブ φ4mm</a></b><span>オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K</span><span class="price">319円 / 2m</span></td><td class="shop">オーム電機</td><td class="n" data-v="数">5 cm</td></tr>
+        <tr class="cat"><th colspan="2">チップボード</th></tr>
+        <tr><td class="part"><b>nRF52840</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g117341/" target="_blank" rel="noopener">Seeed XIAO BLE nRF52840</a>　（1,780円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">電子部品</th></tr>
+        <tr><td class="part"><b>絶縁ラジアルリード型積層セラミックコンデンサー 100μF6.3V 5mm</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g102243/" target="_blank" rel="noopener">コンデンサー100μF</a>　（280円 / 10個入り）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105002/" target="_blank" rel="noopener">アルミ電解コンデンサー 100μF16V 105℃ ルビコン MH5</a>（秋月電子通商、20円）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g110271/" target="_blank" rel="noopener">電解コンデンサー 100μF16V 105℃ ルビコン PX</a>（秋月電子通商、50円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>コンデンサー0.1μF</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g117059/" target="_blank" rel="noopener">積層セラミックコンデンサー 0.1μF50V C0G 5mm</a>　（250円 / 10個入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>CDSセル</b><span class="chip"><a href="https://www.amazon.co.jp/s?k=Moechando%20CDS%E3%82%BB%E3%83%AB%20%E3%83%95%E3%82%A9%E3%83%88%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%205506" target="_blank" rel="noopener">Moechando φ5mm CdS セル 5506 (10個入り)</a>　（395円 / 10個入り）</span><span class="alt">代わりに: <a href="https://akizukidenshi.com/catalog/g/g105886/" target="_blank" rel="noopener">CdSセル (1MΩ) GL5528</a>（秋月電子通商、100円 / 4個入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>抵抗 10kΩ</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</a>　（300円 / 100本入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>ピンソケット（メス）</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">シングルピンソケット (低メス)</a>　（80円 / 20PIN）</span></td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b>ピンヘッダー（オス）</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g102900/" target="_blank" rel="noopener">ロープロファイルピンヘッダー(低オス) 7.7mm</a>　（40円 / 40PIN）</span></td><td class="n" data-v="数">7PIN×2</td></tr>
+        <tr><td class="part"><b>ジャンパー線</b><span class="chip"><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">スズメッキ軟銅線 TCW 0.5mm 10m</a>　（670円 / 10m）</span></td><td class="n" data-v="数">適宜</td></tr>
+        <tr><td class="part"><b>ジャンパー線</b><span class="chip"><a href="https://www.amazon.co.jp/s?k=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%20840%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88%2014%E3%82%B5%E3%82%A4%E3%82%BA%20%E5%8F%8E%E7%B4%8D%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9%E4%BB%98%E3%81%8D" target="_blank" rel="noopener">ジャンパーワイヤー 840個セット (14サイズ)</a>　（935円 / 840本入り）</span></td><td class="n" data-v="数">8</td></tr>
+        <tr><td class="part"><b>ユニバーサル基板 5×7</b><span class="chip"><a href="https://akizukidenshi.com/catalog/g/g112977/" target="_blank" rel="noopener">両面スルーホールユニバーサル基板 5*7</a>　（60円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">電源</th></tr>
+        <tr><td class="part"><b>単三リチウム電池</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B006QVALTM" target="_blank" rel="noopener">エナジャイザー リチウム乾電池 単3形 4本入り</a>　（1,283円 / 4本入り）</span></td><td class="n" data-v="数">2</td></tr>
+        <tr class="cat"><th colspan="2">ケース</th></tr>
+        <tr><td class="part"><b>IP67防水ハンドヘルドケース</b><span class="chip"><a href="https://www.takachi-el.co.jp/products/WH" target="_blank" rel="noopener">タカチ　WH145-25-M2-</a>　（1,754円）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr class="cat"><th colspan="2">ケーブル</th></tr>
+        <tr><td class="part"><b>シールド線 AWG28</b><span class="chip"><a href="https://www.amazon.co.jp/dp/B0933M5MTL" target="_blank" rel="noopener">Gavitt製 シールド線 AWG28 2芯 (ホワイト・ブラック)</a>　（680円 / 1m）</span></td><td class="n" data-v="数">1 m</td></tr>
+        <tr class="cat"><th colspan="2">部材</th></tr>
+        <tr><td class="part"><b>ゴムクッション</b><span class="chip">iteck　KGR-40　40×3mm　（238円 / 4個入り）</span></td><td class="n" data-v="数">1</td></tr>
+        <tr><td class="part"><b>基板固定用タッピングビス EMシリーズ</b><span class="chip"><a href="https://www.monotaro.com/p/7383/0253/" target="_blank" rel="noopener">M2.5ビス　EM-2.3-8</a>　（249円 / 50本入り）</span></td><td class="n" data-v="数">4</td></tr>
+        <tr><td class="part"><b>熱収縮チューブ φ1.5mm</b><span class="chip"><a href="https://www.ohm-direct.com/shopdetail/018027000007/" target="_blank" rel="noopener">オーム電機 収縮チューブ φ1.5mm 2m 黒 DZ-TR15/K</a>　（275円 / 2m）</span></td><td class="n" data-v="数">5 cm</td></tr>
+        <tr><td class="part"><b>熱収縮チューブ φ4mm</b><span class="chip"><a href="https://www.ohm-direct.com/shopdetail/018027000001/" target="_blank" rel="noopener">オーム電機 収縮チューブ φ4mm 2m 黒 DZ-TR40/K</a>　（319円 / 2m）</span></td><td class="n" data-v="数">5 cm</td></tr>
         </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,184円</td></tr></tfoot>
+        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="n" data-v="数">約 5,184円</td></tr></tfoot>
       </table>
       <p class="legend">部品代の目安は、まとめ買いの値段を1台に使う分で割ったものです。「適宜」の部品と送料は入っていません。</p>
       <div class="extra"><h3>その他</h3><p>※HPX-F本体とは別に、電柵の電圧低下を光で知らせる市販のフェンスアラート（電圧降下警告灯）が必要です。</p><p class="ex">商品の例: <a href="https://www.amazon.co.jp/dp/B00N3MUG1A" target="_blank" rel="noopener">フェンスアラート (電圧降下警告灯)</a>（amazon）</p></div>
