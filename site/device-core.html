@@ -172,6 +172,10 @@
   .photos figure[hidden] { display:none; }
   .photos img { display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; }
   .photos figcaption { padding:10px 14px; font-size:14px; color:var(--sub); }
+  h3.steps { font-size:18px; margin-top:32px; }
+  .feat { margin-bottom:36px; }
+  .feat ul { margin:14px 0 0; padding-left:1.3em; font-size:15px; line-height:1.9; }
+  p.step { margin-top:16px; font-size:15px; }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -218,6 +222,14 @@
 
   <section id="photos">
     <div class="reveal wrap">
+      <div class="feat" data-variant="core_basic">
+      <h2>特徴</h2>
+      <ul><li>家庭用電源などがある場合は、ESP32ボード単体があればOKです。</li><li>USBで電力供給すれば動きます。</li><li>省電力は気にしなくて良いので、LEDランプが消えないELEGOOやFreenoveで大丈夫です。</li></ul>
+      </div>
+      <div class="feat" data-variant="core_lanv">
+      <h2>特徴</h2>
+      <ul><li>カーバッテリーなど大容量のバッテリーとソーラーパネルを組み合わせたソーラーシステムでの使用を想定しています。</li><li>バッテリー電圧を測れます。</li><li>ソーラーパネルの発電電圧も測れます（チャージャーコントローラーのソーラーパネル－端子とバッテリー－端子が導通するタイプのみ）。</li><li>Wi-Fi機能を持たないルーターでも使えるように有線LAN接続できるようにしました。</li><li>防水性はありません。</li></ul>
+      </div>
       <h2>完成写真</h2>
       <p class="note" data-variant="core_ltes">この版の写真は準備中です。</p>
       <div class="photos">
@@ -226,15 +238,15 @@
         <figure data-variant="core_basic"><a href="img/photo/core_basic_4_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_basic_4.webp" alt="HPX-Core しっかり作るならこんな感じ。" width="640" height="640" loading="lazy"></a><figcaption>しっかり作るならこんな感じ。</figcaption></figure>
         <figure data-variant="core_lanv"><a href="img/photo/core_lanv_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_1.webp" alt="HPX-Core 10×10cmのケースを使用。ケース下左：有線接続時のLANケーブル　右：バッテリーチェック用ケーブル" width="640" height="640" loading="lazy"></a><figcaption>10×10cmのケースを使用。ケース下左：有線接続時のLANケーブル　右：バッテリーチェック用ケーブル</figcaption></figure>
         <figure data-variant="core_lanv"><a href="img/photo/core_lanv_2_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_2.webp" alt="HPX-Core Freenove ESP32 で作った例" width="640" height="640" loading="lazy"></a><figcaption>Freenove ESP32 で作った例</figcaption></figure>
+        <figure data-variant="core_lanv"><a href="img/photo/core_lanv_3_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_3.webp" alt="HPX-Core ソーラーシステムとLTEルーターとのセッティング例" width="640" height="640" loading="lazy"></a><figcaption>ソーラーシステムとLTEルーターとのセッティング例</figcaption></figure>
         <figure data-variant="core_bat"><a href="img/photo/core_bat_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_bat_1.webp" alt="HPX-Core ケース WH145-25-M3 に入れたところ" width="640" height="640" loading="lazy"></a><figcaption>ケース WH145-25-M3 に入れたところ</figcaption></figure>
-        <figure data-variant="core_bat"><a href="img/photo/core_bat_2_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_bat_2.webp" alt="HPX-Core ふたを開けたところ (Olimex ESP32-DEVKIT-LIPO で作った例。下は単三3本の電池ボックス)" width="640" height="640" loading="lazy"></a><figcaption>ふたを開けたところ (Olimex ESP32-DEVKIT-LIPO で作った例。下は単三3本の電池ボックス)</figcaption></figure>
+        <figure data-variant="core_bat"><a href="img/photo/core_bat_2_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_bat_2.webp" alt="HPX-Core ふたを開けたところ (Olimex ESP32-DEVKIT-LIPO で作った例。下は単三3本の電池ボックス)" width="640" height="640" loading="lazy"></a><figcaption>ふたを開けたところ (Olimex ESP32-DEVKIT-LIPO で作った例。下は単三3本の電池ボックス)<br>バッテリー容量に余裕がありそうだったら、FreenoveやELEGOOでも大丈夫だと思います。</figcaption></figure>
       </div>
     </div>
   </section>
 
   <section id="parts">
     <div class="reveal wrap">
-      <span class="tag">ハブ</span>
       <h2>部品表</h2>
       <div data-variant="core_basic">
       <p class="note">基本モデルに必要な部品と数です。</p>
@@ -353,7 +365,8 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <p class="note" data-variant="core_lanv core_bat core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <p class="note" data-variant="core_lanv">部品によって大きさやピンの配置が異なる場合があります。必ず現物で確認して、調整してください。</p>
+      <p class="note" data-variant="core_bat core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
       <div data-variant="core_basic">
       <p class="note">USB Type-Cを接続するので、用いるケースに穴あけ加工が必要です。</p>
       <div class="photos">
@@ -362,7 +375,7 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       </div>
       </div>
       <figure class="wiring" data-variant="core_lanv">
-        <figcaption><b>ソーラーシステム版の配線図</b>Freenove ESP32 と W5500 を 6×8cm のユニバーサル基板 (穴 22×27) に並べ、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。Freenove は USB ではなくバッテリーから 5V ピンへ 5V を入れて動かします。ファームウェアは v1.25 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
+        <figcaption><b>ソーラーシステム版の配線図</b>電子部品は基板の表につけ、配線は裏で行っています。<br>HPX-Coreの動作設定で「バッテリー・パネルの電圧を測る」にチェックします。<br>ソーラーパネル+端子とバッテリー+端子が通電するタイプのチャージャーコントローラーは、パネル+の水色配線を省略します。<br>Ｒ，Ｓ，Ｔ列の配線を通すため、11行目のピンソケット（メス）は３ピン分空けてつけます。</figcaption>
         <a href="img/wiring/HPX-Core_LANV_freenove_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LANV_freenove_pcb.png" alt="HPX-Core ソーラーシステム版の配線図 (Freenove ESP32)" loading="lazy"></a>
       </figure>
       <div data-variant="core_lanv">
@@ -374,7 +387,6 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
         <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
         <tbody><tr><td>Freenove ESP32 WROOM（FNK0090、ピンヘッダ付き）</td><td>1</td><td>C1〜V1・C11〜V11。横に寝かせて、アンテナを左・USB-C を右の端に向ける</td></tr><tr><td>ピンソケット（メス）20ピン</td><td>2</td><td>上の列 C1〜V1 は 20ピンのまま。下の列は 15ピン（C11〜Q11）と 2ピン（U11・V11）に切る</td></tr><tr><td>W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</td><td>1</td><td>C22〜C27・K22〜K27。LAN 差し込み口を下に向ける（基板の下の端から 2穴ぶんくらいはみ出す）</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>S21・T21・U21（左から VIN・GND・VOUT。印字面を手前（下）に向けて立てる）</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>S23・U23（BP5293 の入力側）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>N6〜R6（パネル用）、N8〜R8（バッテリー用）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 15kΩ 1%（小型 1/4W）</td><td>1</td><td>I8・I10（バッテリー用。足の間 2穴で寝かせる）</td></tr><tr><td>金属皮膜抵抗 8.2kΩ 1%</td><td>1</td><td>K2〜K6（パネル用、寝かせる）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>M4・M6（パネル用）、K8・K10（バッテリー用）</td></tr><tr><td>基板用ねじ式端子台 3P 5.08mm（緑・縦）</td><td>1</td><td>T14・T16・T18（上から パネル＋・バッテリー＋・マイナス）。線は上から差す</td></tr><tr><td>ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線の途中（コントローラーの近く）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 22×27）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線（下の「裏から見た図」が実際に配線する向き）。</li><li>Freenove は横に寝かせて上の端に差す（アンテナが左、USB-C が右の端）。図の点線の四角が Freenove の外形で、2〜10 行の部品（抵抗 4本・0.1µF 2個）はその下に入る。</li><li>Freenove の下の部品は、ソケットより先にはんだ付けし、基板にぴったり寝かせて低く付ける。ソケット（約 8.5mm）とピンヘッダの台（約 2.5mm）で、すき間は 1cm くらいの見込み（未確認）。</li><li>Freenove の下の列のソケットは、15ピン（C11〜Q11）と 2ピン（U11・V11）に切って付ける。R11・S11・T11（使わない 3V3 のピン）はソケットに入らず浮く。空いた穴に GND・バッテリー＋・パネル＋の線を通すため。</li><li>W5500（23×25mm）は C・K 列の 22〜27 行（TARO 2026-11-22: 基板の下の端へ）。W5500 の基板は 19.6 行くらいから、LAN 差し込み口のある側は 6×8cm 基板の下の端から 5mm くらいはみ出す見込み。GND は右の列の G3（K27）につなぐ。</li><li>外からの 3本の線は、基板用ねじ式端子台 3P 5.08mm（緑・縦）の T14・T16・T18（上から パネル＋・バッテリー＋・マイナス）に入れる。線を上から差し、ねじは右から締める。端子台の上の端は 12.6 行くらいで、Freenove の下の端（11.5 行くらい）とすき間 3mm ほどの見込み（端子台の寸法は買う品の資料で確かめる）。</li><li>開発ボードの電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を 5V ピン（U11）に入れる。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 にして IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 にして IO39 で読む（ファーム v1.25）。</li><li>W5500 の信号は FireBeetle の図と同じピン: INT＝IO25、CS＝IO26、SCK＝IO14、MOSI＝IO13、MISO＝IO19、RST＝IO23。</li><li>BP5293-50 は左から VIN・GND・VOUT（FireBeetle・Olimex の図とは左右が逆。印字面を手前（下）に向ける）。足の並びは秋月の資料（データシート）で確かめてから差す。入力は 26V まで。</li><li>USB-C で書き込むときは、バッテリー＋の線のヒューズを抜く（5V ピンにバッテリーからの 5V が来ているため）。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」にはつながない。</li><li>パネル電圧は「パネル−」と「バッテリー−」がつながっている（マイナス共通）コントローラーでだけ測れる。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）コントローラーでは、パネル＋の線（端子台 T14）をつながない（パネル用の抵抗・コンデンサーとヒューズは省いてよい）。つながないとパネルは 0V になり「未接続」として扱う。どちらの型かは、コントローラーの線を外してテスターの導通モードで確かめる。</li><li>Freenove のピンの並びは Freenove の GitHub のピン配置図から。左右のピン列は 10穴はなれていると見込んで描いた（実物で未確認）。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_bat">
         <figcaption><b>電池版の配線図</b>ケース用基板 PCB36-47 に FireBeetle 2 ESP32-E をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を FireBeetle の VCC と GND へつなぎます (表と裏、線は裏の2本だけ)。FireBeetle の電池コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。FireBeetle は基板より長く、ケースに収まるかはまだ確かめていません。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
@@ -426,7 +438,20 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       </table></div></div>
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>LTE-M の部品と、HPX-Solar の小さな基板（2*8）の部品を、この 1枚にまとめた。USB-C ケーブルと、ケースの壁の出力用 USB-C はいらない。</li><li>電源は DFR0559 の 5V ピンから直接 FireBeetle の VCC へ。CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。</li><li>電池の電圧（100kΩ/100kΩ で 1/2）は IO39、パネルの電圧（100kΩ/20kΩ で 1/6）は IO36 で読む。HPX-Solar と同じピンなので、ファームはそのまま（v1.25 以降）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない（18650 は DFR0559 につなぐ）。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。</li><li>FireBeetle に USB で書き込むときは、FireBeetle を基板から抜いてから（DFR0559 の 5V と USB の 5V がぶつからないように）。</li><li>裏の線どうしは交わらない（図を作るときに調べている）。FireBeetle の下を通る線（IO39・IO36・GND）は裏なので部品には触れない。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナは付属の SMA ロッドアンテナを IPEX-SMA ケーブルでつなぎ、ケースのふたの内側に貼る（技適のため付属品を使う）。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
       </div>
-      <div class="soonbox" data-variant="core_lanv core_bat core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
+      <div data-variant="core_lanv">
+      <h3 class="steps">組み立て手順</h3>
+      <p class="step">1.基板にパーツをはんだ付けし、裏面に配線する。</p>
+      <div class="photos">
+        <figure><a href="img/photo/core_lanv_build_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_build_1.webp" alt="HPX-Core ソーラーシステム版 表面に部品をはんだ付けしたところ" width="640" height="640" loading="lazy"></a><figcaption>表面に部品をはんだ付けしたところ</figcaption></figure>
+        <figure><a href="img/photo/core_lanv_build_2_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_build_2.webp" alt="HPX-Core ソーラーシステム版 11行目のＲ，Ｓ，Ｔ列はピンソケット（メス）を省略する" width="640" height="640" loading="lazy"></a><figcaption>11行目のＲ，Ｓ，Ｔ列はピンソケット（メス）を省略する</figcaption></figure>
+        <figure><a href="img/photo/core_lanv_build_3_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_lanv_build_3.webp" alt="HPX-Core ソーラーシステム版 裏面の配線" width="640" height="640" loading="lazy"></a><figcaption>裏面の配線</figcaption></figure>
+      </div>
+      <p class="step">2.基板に基板スペーサー ナット入り貼付スペーサーを取り付ける。</p>
+      <p class="step">3.ケースの、基板取付ボスをニッパーなどで除去し、２の基板を張り付ける</p>
+      <p class="step">4.ケースの板に、LANケーブルと電圧計測用ケーブルを通す穴を開ける。</p>
+      <p class="step">5.電圧計測用ケーブルをソーラーチャージャーコントローラーにつなぐ。</p>
+      </div>
+      <div class="soonbox" data-variant="core_bat core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
