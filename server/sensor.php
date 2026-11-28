@@ -11,6 +11,7 @@ declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
 require_once __DIR__ . '/hpx_sensor_csv.php';   // read_ble() と CSV の形 (定時記録データ・全データ)
 require_once __DIR__ . '/hpx_cam.php';          // メニューの「カメラ」(cams_in_menu())
+require_once __DIR__ . '/hpx_move.php';         // HPX-Core の引っ越し (2026-11-28)
 
 const D_TITLE = 'センサ - ' . BRAND_NAME;
 const D_PERIODS = [1 => '1日', 3 => '3日', 7 => '7日', 30 => '30日', 0 => '全期間'];   // 0 = 全期間
@@ -382,6 +383,26 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action'])) {
     } elseif ($act === 'unretire') {
         @unlink($hub['dir'] . '/.retired');
         $done = 'unretired';
+    } elseif ($act === 'coremove') {
+        // HPX-Core の引っ越し (hpx_move.php): 今選んでいる (古い) Core の記録・紐づけを、新しい Core へ引き継ぐ
+        $to = strtoupper((string)($_POST['to'] ?? ''));
+        if ($UID === demo_uid()) {
+            $err = 'デモ用アカウントでは引っ越しできません。';
+        } elseif (!password_verify((string)($_POST['pw2'] ?? ''), (string)($ME['pw'] ?? ''))) {
+            sleep(2);
+            $err = 'パスワードが違います。引っ越していません。';
+        } elseif (!isset($hubs[$to]) || $to === $hubId) {
+            $err = '新しい HPX-Core を選んでください。';
+        } else {
+            $err = core_move($UID, $hubId, $to);
+            if ($err === '') { $hubId = $to; $done = 'moved'; }
+        }
+    } elseif ($act === 'corerelease') {
+        // 引っ越した古い Core をまた使う (印を消すだけ。次に届いたら新しい機器として出る)
+        $old = strtoupper((string)($_POST['old'] ?? ''));
+        if (!isset(core_moves(account_hubs_dir($UID))[$old])) $err = '引っ越した HPX-Core が見つかりません。';
+        elseif (!core_move_release($UID, $old)) $err = '保存できませんでした(データフォルダに書き込めません)。';
+        else $done = 'released';
     } elseif ($act === 'th_offset') {
         // 温湿度計ごとの温度(℃)・湿度(%)の補正。th_cal.json に保存し、表示・グラフ・警報で読むときに足す
         $mac = (string)($_POST['mac'] ?? '');
@@ -472,6 +493,8 @@ if (isset($_GET['tested'])) echo '<p class="ok">テストメールを送りま�
 if (isset($_GET['cleared'])) echo '<p class="ok">データをクリアしました。</p>';
 if (isset($_GET['removed'])) echo '<p class="ok">' . h($hub['name'] ?? '') . ' をこのアカウントから外しました。これまでの記録は、紐づけた巣箱・蜂場のグラフにそのまま出ます。</p>';
 if (isset($_GET['unretired'])) echo '<p class="ok">' . h($hub['name'] ?? '') . ' を元に戻しました。</p>';
+if (isset($_GET['moved'])) echo '<p class="ok">' . h($hub['name'] ?? '') . ' へ引っ越しました。古い HPX-Core の記録・紐づけ・風袋引きなどを引き継ぎました。古い HPX-Core から届いたものは、このあと保存しません。</p>';
+if (isset($_GET['released'])) echo '<p class="ok">引っ越した HPX-Core の印を消しました。次に届いたら、新しい HPX-Core として出ます。</p>';
 if (!$hub) {
     echo '<p>まだ機器からのデータがありません。</p></body></html>';
     exit;
@@ -867,5 +890,43 @@ if (is_file($dir . '/.retired')) {
         . '<p>確認のため、機器名 <b>' . h($hub['name']) . '</b> を入れてください<br><input type="text" name="confirm_name" autocomplete="off" required></p>'
         . '<p>ログインのパスワード<br><input type="password" name="pw2" autocomplete="current-password" required></p>'
         . '<button type="submit">アカウントから外す</button></form></div></details>';
+}
+// ---- HPX-Core の引っ越し (2026-11-28) ----
+$others = array_filter($hubs, fn($hb, $id) => $id !== $hubId && !is_file($hb['dir'] . '/.retired'), ARRAY_FILTER_USE_BOTH);
+echo '<details id="move"><summary><b>この HPX-Core を新しい HPX-Core へ引っ越す (入れ替え)</b></summary><div class="card danger">'
+    . '<p>HPX-Core を新しいものに入れ替えたときに使います。' . h($hub['name']) . ' のこれまでの記録、センサの名前、風袋引き・差し引く重さ、温度・湿度の補正、蜂場・巣箱の紐づけを、新しい HPX-Core へそっくり引き継ぎます。'
+    . '巣箱・蜂場のグラフは途切れずに続きます。</p>'
+    . '<p class="muted">手順: (1) 古い HPX-Core の管理画面で「今すぐ計測してサーバーへ送信」を押す → (2) 同じく「設定の書き出し・読み込み」で設定を書き出す → (3) 古い HPX-Core の電源を切る → '
+    . '(4) 新しい HPX-Core で設定を読み込む (HPX-Core v1.43 以降) → (5) 新しい HPX-Core から届いたら、ここで選んで「引っ越す」。<br>'
+    . '引っ越したあと古い HPX-Core から届いたものは保存しません (同じセンサの記録が二重にならないように)。古い HPX-Core のフォルダはサーバーの hubs_moved/ に残します。</p>';
+if (!$others) {
+    echo '<p>新しい HPX-Core からまだ届いていません。新しい HPX-Core をネットにつなぎ、このアカウントのトークンで一度送ってから開き直してください。</p>';
+} else {
+    echo '<form method="post" onsubmit="return window.confirm(\'' . h($hub['name']) . ' を、選んだ HPX-Core へ引っ越します。よろしいですか?\')">'
+        . '<input type="hidden" name="action" value="coremove"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
+        . '<p>新しい HPX-Core<br><select name="to" required><option value="">選んでください</option>';
+    foreach ($others as $id => $hb) {
+        $last = (int)($hb['st']['last_rx'] ?? 0) ?: (int)@filemtime($hb['dir'] . '/state.json');
+        echo '<option value="' . h($id) . '">' . h($hb['name'] . ' (' . $id . '、最後に届いた ' . date('Y-m-d H:i', $last) . ')') . '</option>';
+    }
+    echo '</select></p>'
+        . '<p>ログインのパスワード<br><input type="password" name="pw2" autocomplete="current-password" required></p>'
+        . '<button type="submit">引っ越す</button></form>';
+}
+echo '</div></details>';
+$moves = core_moves(account_hubs_dir($UID));
+if ($moves) {
+    echo '<details><summary><b>引っ越した HPX-Core (' . count($moves) . ')</b></summary><div class="card">'
+        . '<p class="muted">ここにある HPX-Core から届いたものは保存しません。工場出荷状態に戻して別の蜂場などでまた使うときは「また使う」を押してください。次に届いたら、新しい HPX-Core として出ます。</p><table>'
+        . '<tr><th>古い HPX-Core</th><th>引っ越し先</th><th>日時</th><th></th></tr>';
+    foreach ($moves as $old => $e) {
+        $to = (string)($e['to'] ?? '');
+        echo '<tr><td>' . h(((string)($e['name'] ?? '') !== '' ? $e['name'] . ' ' : '') . '(' . $old . ')') . '</td>'
+            . '<td>' . h(isset($hubs[$to]) ? $hubs[$to]['name'] : $to) . '</td><td>' . h((string)($e['time'] ?? '')) . '</td>'
+            . '<td><form method="post" onsubmit="return window.confirm(\'この HPX-Core から届いたものを、また保存するようにします。よろしいですか?\')">'
+            . '<input type="hidden" name="action" value="corerelease"><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="hub" value="' . h($hubId) . '">'
+            . '<input type="hidden" name="old" value="' . h((string)$old) . '"><button type="submit">また使う</button></form></td></tr>';
+    }
+    echo '</table></div></details>';
 }
 echo chart_tip_js() . '</body></html>';

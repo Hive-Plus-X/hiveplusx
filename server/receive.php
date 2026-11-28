@@ -5,6 +5,7 @@
 //   初期設定(login.php)の前だけは、config.php の $HPX_TOKEN で前の場所(データフォルダの <ID>/)に保存する。
 declare(strict_types=1);
 require __DIR__ . '/hpx_auth.php';
+require_once __DIR__ . '/hpx_move.php';   // HPX-Core の引っ越し (引っ越した古い Core の印)
 header('Content-Type: application/json; charset=utf-8');
 
 function fail(int $code, string $msg): void
@@ -48,6 +49,10 @@ if (!is_array($d)) fail(400, 'invalid json');
 $id = strtoupper((string)($d['id'] ?? ''));
 if (!preg_match('/^[0-9A-F]{12}$/', $id)) fail(400, 'invalid id');
 $name = preg_replace('/[^a-z0-9-]/', '', strtolower((string)($d['name'] ?? '')));
+
+// HPX-Core の引っ越し (hpx_move.php、2026-11-28): 新しい Core へ引っ越した古い Core から届いたものは保存しない
+//   (同じセンサの記録が二重にならないように)。機器には受け取ったと返す。また使うときはセンサページの「また使う」で印を消す
+if (isset(core_moves($hubsDir)[$id]) && !is_dir($hubsDir . '/' . $id)) { echo json_encode(['ok' => true, 'saved' => 0, 'moved' => true]); exit; }
 
 $dir = $hubsDir . '/' . $id;
 if (!is_dir($dir)) {
