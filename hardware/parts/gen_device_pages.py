@@ -157,8 +157,9 @@ DEVICES = [
 # 完成写真 (TARO 2026-11-25): site/img/photo/<名前>.webp (小 640px) と <名前>_l.webp (大 1200px、押すと開く)
 # 機器の key → [(名前, 説明, 版 または None (どの版でも出す))]
 PHOTOS = {
-    'core': [('core_basic_1', '開発ボードに USB-C ケーブルをつないだところ', 'core_basic'),
-             ('core_basic_2', 'ケースに入れた例', 'core_basic'),
+    'core': [('core_basic_1', 'HPX-CoreはESP32ボードだけあればOK。', 'core_basic'),
+             ('core_basic_3', 'ショートなどを防ぐため適当な箱に入れるのが良さそうです。', 'core_basic'),
+             ('core_basic_4', 'しっかり作るならこんな感じ。', 'core_basic'),
              ('core_lanv_1', 'ケース PFF10-4-10W に入れたところ (LAN ケーブルとバッテリーからの線)', 'core_lanv'),
              ('core_lanv_2', 'ふたを開けたところ (Freenove ESP32 で作った例。下が W5500、右が端子台)', 'core_lanv'),
              ('core_bat_1', 'ケース WH145-25-M3 に入れたところ', 'core_bat'),
@@ -195,10 +196,11 @@ def photos_html(dev):
     if multi and None not in have:
         soon = ''.join(f'\n      <p class="note"{f" data-variant={chr(34)}{k}{chr(34)}"}>この版の写真は準備中です。</p>'
                        for k, _ in dev['variants'] if k not in have)
+    # 「写真を押すと…」の文は Core では出さない (TARO 2026-11-28)
+    tap = '' if dev['key'] == 'core' else '\n      <p class="note">写真を押すと、大きな画像が開きます。</p>'
     return f'''  <section id="photos">
     <div class="reveal wrap">
-      <h2>完成写真</h2>
-      <p class="note">写真を押すと、大きな画像が開きます。</p>{soon}
+      <h2>完成写真</h2>{tap}{soon}
       <div class="photos">
 {chr(10).join(figs)}
       </div>
