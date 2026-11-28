@@ -28,7 +28,8 @@ CORE_CHOOSER = {
     ('aa', 'lte'): ('✕', None, 'LTE-M は送るときに大きな電気を使うので、単三電池では長くもちません。「＋LTE-M」と電源の「HPX-Solar」を作ってください。'),
     ('li', 'lan'): ('✕', None, '有線LANモジュール（W5500）は電気を多く使うので、HPX-Solar（小型ソーラーパネル＋18650）には向きません。'),
     ('li', 'wifi'): ('○', 'core_wp', '「＋防水」と電源の「HPX-Solar」を作り、USB-C ケーブルで電気をもらいます。ケースの中を USB-C メス基板で 4本に分けると、電池とパネルの電圧も測れます。動作モードはディープスリープにします（ずっと動かすと冬に電気が足りない見込み）。', True),
-    ('li', 'lte'): ('◎', 'core_lte', '「＋LTE-M」と電源の「HPX-Solar」を作り、USB-C ケーブル1本でつなぎます。ルーターがいらず、ソーラーパネルで 18650 を充電して動かし、電池とパネルの電圧も測れます。', True),
+    # TARO 2026-11-28: ＋LTE-M と HPX-Solar を 1つのケースにまとめた「＋LTE-M＆ソーラー」(core_ltes) をすすめる
+    ('li', 'lte'): ('◎', 'core_ltes', '「＋LTE-M＆ソーラー」を作ります。LTE-M の通信とソーラーパネル・18650 の電源を 1つのケースにまとめた版で、ケースに入る線はパネルの USB-C だけです。ルーターがいらず、電池とパネルの電圧も測れます。電源を別のケースにしてほかの機器と使い回したいときは、「＋LTE-M」と「HPX-Solar」を作って USB-C ケーブルでつなぎます。'),
 }
 
 # 機器ごとの版 (parts.csv の数の列名, 画面に出す名前)
@@ -42,7 +43,8 @@ DEVICES = [
          # TARO 2026-11-10: 電源の部分を HPX-Solar (別の機器) に分け、版の名前を ＋LTE-M に
          # TARO 2026-11-08: 版の名前を ＋有線LAN / ＋有線LAN＆ソーラーシステムチェック / ＋防水 / ＋防水＆電池駆動 に (基本モデル=Wi-Fi＋USB給電にオプションを足す考え方)
         # TARO 2026-11-10: 基本モデル (core_basic) = ＋有線LAN から W5500 を外したもの (Wi-Fi＋USB給電)
-        variants=[('core_basic', '基本モデル'), ('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M')],
+        variants=[('core_basic', '基本モデル'), ('core', '＋有線LAN'), ('core_lanv', '＋有線LAN＆ソーラーシステムチェック'), ('core_wp', '＋防水'), ('core_bat', '＋防水＆電池駆動'), ('core_lte', '＋LTE-M'), ('core_ltes', '＋LTE-M＆ソーラー')],
+         # TARO 2026-11-28: ＋LTE-M と HPX-Solar を 1つのケース (OB13-21-6W・OBP13-21) にまとめた ＋LTE-M＆ソーラー (core_ltes) を追加
          # 防水版の部品表は TARO 2026-11-06 の順 (ケーブルを最後に)
          # TARO 2026-11-10: 通信モジュール (チップボードの次) と その他 (最後) を追加
          cats=['チップボード', '通信モジュール', '電子部品', '電源', 'ケース', 'ケース用基板', '部材', 'ケーブル', 'その他'],
@@ -61,10 +63,12 @@ DEVICES = [
                 ('HPX-Core_LTE_pcb.png', '＋LTE-M の基板の配線図', 'ユニバーサル基板 タカチ PCB72-95 の左端に FireBeetle 2 ESP32-E をピンソケットで差し、右に CatM の 5V を入り切りするスイッチ (P-MOSFET・NPN トランジスタ・抵抗)、下に M5Stamp CatM を貼る図です (表と裏、線はすべて裏)。電源はケースの壁の USB-C メス基板から (HPX-Solar か USB 充電器)、その 4本の線を赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。', 'core_lte',
                  [('HPX-Core_LTE_olimex_pcb.png', 'Olimex ESP32-DEVKIT-LIPO'), ('HPX-Core_LTE_freenove_pcb.png', 'Freenove ESP32 WROOM (FNK0090)'), ('HPX-Core_LTE_elegoo_pcb.png', 'ELEGOO ESP-32')]),
                 ('HPX-Core_LTE_wiring.png', '＋LTE-M の線の対応図', 'LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。電源は USB-C ケーブル1本で HPX-Solar か USB 充電器から。FireBeetle は VCC ピンから、CatM は送るときだけスイッチを通した 5V で動かします。HPX-Solar のときは D+・D− で電池とパネルの電圧も受け取ります。ファームウェアは HPX-Core v1.25 です。', 'core_lte',
-                 [('HPX-Core_LTE_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO')])],
+                 [('HPX-Core_LTE_olimex_wiring.png', 'Olimex ESP32-DEVKIT-LIPO')]),
+                ('HPX-Core_LTES_layout.png', '＋LTE-M＆ソーラーの配置図', 'ケース タカチ OB13-21-6W の取り付けベース OBP13-21 (110×135mm) を縦に置き、上に 18650 電池ホルダー2個を横向きに両面テープで貼り、左下に基板 (6×8cm)、右下に DFR0559 ソーラーパワーマネージャーを縦に貼ります。ケースに入る線はソーラーパネルの USB-C だけで、ケースの壁に USB Type-Cコネクターパネル取付キットを1つ付けます。DFR0559 の 5V ピンから基板へ直接電気を送るので、USB-C ケーブルはいりません。LTE-M のアンテナはふたの内側に貼ります。', 'core_ltes'),
+                ('HPX-Core_LTES_pcb.png', '＋LTE-M＆ソーラーの基板の配線図', '6×8cm のユニバーサル基板に、FireBeetle 2 ESP32-E (USB-C を上)、M5Stamp CatM、CatM の 5V を入り切りするスイッチ、電池とパネルの電圧を測る抵抗、パネルの USB-C の CC につなぐ 5.1kΩ を全部まとめる図です (表と裏、線はすべて裏)。ピンは「＋LTE-M」と同じなので、ファームウェアは HPX-Core v1.25 以降をそのまま使い、動作設定の「電圧の測り方」で「HPX-Solar」を選びます。', 'core_ltes')],
          # TARO 2026-11-10: どの版を作ればよいかの選択チャート (電源 × 通信方法)
          chooser=CORE_CHOOSER,
-         note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使います。'),
+         note='基本モデルは、ルーターへの接続をWi-Fiで行い、USBケーブルで電力を供給します。さらに、有線LANでの接続、ソーラーシステムの電圧計測、防水機能、単三リチウム電池駆動、LTE での直接送信（ルーター不要）などのオプション実装が可能です。LTE-M の版の電源は、別の機器「HPX-Solar」（小型ソーラー電源）を使うか、HPX-Solar を同じケースに入れた「＋LTE-M＆ソーラー」を作ります。'),
     dict(key='w', file='device-w.html', tag='重量', name='HPX-W',
          lead='巣箱の下に置いたロードセルで重さを測り、Bluetooth で発信します。',
          variants=[('w_cr', 'CR123A 版'), ('w_aa', '単三リチウム電池版')],
@@ -235,8 +239,9 @@ def page_parts():
     sec = style[style.index('  .eyebrow'):style.index('  section h2, section .lead')]
     header = src[src.index('<header>'):src.index('</header>') + 9]
     footer = src[src.index('<footer>'):src.index('</footer>') + 9]
-    js = src[src.index('<script>\n(function () {\n  var items'):]
-    js = js[:js.index('</script>') + 9]
+    # 表示のアニメーション (var items の関数) だけを取り出す。app.html では画面を大きく表示する関数と同じ <script> に入っている
+    i = src.index('\n  var items')
+    js = '<script>\n' + src[src.rindex('(function () {', 0, i):src.index('})();', i) + 5] + '\n</script>'
     return base + hero + sec, foot, header, footer, js
 
 
@@ -367,6 +372,7 @@ def doc(title, desc, body, parts):
 <title>{esc(title)} | Hive Plus X</title>
 <meta name="description" content="{esc(desc)}">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 {base}{CSS}{foot}</style>
 </head>

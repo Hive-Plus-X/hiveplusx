@@ -95,7 +95,11 @@ def title(s, t, sub):
 INFO = {"cut": None, "tables": [], "notes": []}   # 表と注意の中身 (ウェブサイト用に JSON でも出す)
 
 def notes(s, x, y, lines, head="注意"):
-    INFO["notes"] += [l.lstrip("・") for l in lines]
+    for l in lines:   # 「　」で始まる行は前の行の続き (図では折り返し、サイトでは 1つの項目)
+        if l.startswith("　") and INFO["notes"]:
+            INFO["notes"][-1] += l[1:]
+        else:
+            INFO["notes"].append(l.lstrip("・"))
     INFO["cut"] = INFO["cut"] or y - 20
     s.rect(x, y, s.w - 2 * x, 34 + 26 * len(lines), "#fff3cd", "#e0b84a", 10, 2)
     s.text(x + 18, y + 26, head, 17, weight="bold", fill="#7a5a00")
@@ -2050,6 +2054,139 @@ finish(s, y, [
     "・M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。",
     FB_NOTE_PITCH,
 ], "HPX-Core_LTE_pcb.svg")
+
+# ------------------------------------------------------------------ ＋LTE-M＆ソーラー（HPX-Solar を入れた一体型、TARO 2026-11-28）
+# ケース OB13-21-6W・取り付けベース OBP13-21（110×135mm）に、18650 ホルダー ×2・DFR0559・この基板（6×8cm）を並べる。
+# ＋LTE-M の基板（FireBeetle・CatM の 5V スイッチ）と、HPX-Solar の小さな基板（CC の 5.1kΩ・電池とパネルの分圧）を 1枚にまとめた。
+# 電源は DFR0559 の 5V ピンから直接（USB-C ケーブルなし）。電池の電圧は IO39、パネルの電圧は IO36（＋LTE-M＋HPX-Solar と同じ。ファームはそのまま）。
+# FireBeetle は USB-C を上（ESP32 のアンテナを下＝ケースの壁の側）に。＋LTE-M（PCB72-95）の並びを 1列右へずらして使う。
+OX, OY = 200, 300
+s = S(1600, 4300)
+title(s, "HPX-Core（親機）＋LTE-M＆ソーラー 基板の配線図", "6×8cm 縦置き ／ FireBeetle 2 ＋ M5Stamp CatM ＋ 電池・パネルの電圧 ／ ファーム v1.25 以降")
+board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
+LTES_USED = {"B10", "K13", "K15", "K21", "K22", "K24", "K25", "K26"}
+fb("B", "K", 9, False, LTES_USED, "ピンソケット 18ピン・14ピンに差す")
+B100 = ["#795548", "#212121", "#fdd835", "#c9a227"]
+B10 = ["#795548", "#212121", "#fb8c00", "#c9a227"]
+B20 = ["#e53935", "#212121", "#fb8c00", "#c9a227"]
+B51 = ["#4caf50", "#795548", "#e53935", "#c9a227"]
+def tr3(hs, names, label, fill):
+    pts = [H(*hole(h)) for h in hs]
+    x1, x2, y = pts[0][0], pts[-1][0], pts[0][1]
+    s.top.append(f'<rect x="{x1-16}" y="{y-34}" width="{x2-x1+32}" height="30" rx="6" fill="{fill}" stroke="#222" stroke-width="2"/>')
+    s.text((x1 + x2) / 2, y - 14, label, 11, "middle", "bold", "#fff", layer=s.top)
+    for (x, yy), n in zip(pts, names):
+        rec_pin(x, yy, n)
+        s.top.append(f'<circle cx="{x}" cy="{yy}" r="7" fill="#9e9e9e" stroke="#333" stroke-width="1.5"/>')
+        s.text(x, yy + 22, n, 11, "middle", "bold", "#5d4520", layer=s.top)
+OFF = (-2000, -2000)
+# CatM の 5V スイッチ（＋LTE-M と同じ並びを 1列右へ）
+res_flat("M24", "Q24", "10kΩ", B10, OFF)
+tr3(["R24", "S24", "T24"], ["B", "C", "E"], "NPN", "#455a64")
+res_stand(s, hole("R23"), hole("R22"), "100kΩ", B100, -2000, -2000)
+tr3(["V19", "W19", "X19"], ["D", "G", "S"], "P-MOSFET", "#37474f")
+res_flat("W14", "W18", "100kΩ", B100, OFF)
+# 電池の電圧（右上）: BAT＋（N1）→ 100kΩ → N5（IO39）→ 100kΩ（立てる）・0.1µF → GND（3行）
+res_flat("N1", "N5", "100kΩ", B100, OFF)
+res_stand(s, hole("O5"), hole("O3"), "100kΩ", B100, -2000, -2000)
+cap_flat(s, hole("P3"), hole("P5"), "0.1µF")
+# 左下: パネル（入力 USB-C の VBUS）→ 100kΩ → J29（IO36）→ 20kΩ・0.1µF → GND（33行）。CC1・CC2 → 5.1kΩ（立てる）→ GND
+res_flat("E29", "I29", "100kΩ", B100, OFF)
+res_flat("K29", "K33", "20kΩ", B20, OFF)
+cap_flat(s, hole("L29"), hole("L31"), "0.1µF")
+res_stand(s, hole("C31"), hole("C33"), "5.1kΩ", B51, -2000, -2000)
+res_stand(s, hole("F31"), hole("F33"), "5.1kΩ", B51, -2000, -2000)
+# M5Stamp CatM（30×20mm）は右下（N〜Y 列、27〜33 行）に両面テープで貼る
+mx1, my1 = OX + 13 * P - 14, OY + 26 * P - 10
+mx2, my2 = OX + 24 * P + 14, OY + 32 * P + 10
+s.top.append(f'<rect x="{mx1}" y="{my1}" width="{mx2-mx1}" height="{my2-my1}" rx="8" fill="#eceff1" fill-opacity="0.9" stroke="#90a4ae" stroke-width="3"/>')
+rec_part(mx1, my1, mx2 - mx1, my2 - my1, "CatM")
+s.text((mx1 + mx2) / 2, my1 + 70, "M5Stamp CatM", 15, "middle", "bold", "#263238", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 92, "SIM7080G・microSIM", 12, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 120, "両面テープで貼る", 12, "middle", "bold", "#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 140, "TX・RX は N25・N26、5V は V21、GND は Y21 へ", 11, "middle", fill="#455a64", layer=s.top)
+s.text((mx1 + mx2) / 2, my1 + 158, "アンテナ（IPEX）はケースのふたへ", 11, "middle", fill="#455a64", layer=s.top)
+LAND = [("N1", "DFR0559 BAT＋", "start"), ("M13", "DFR0559 5V", "start"), ("M15", "DFR0559 GND", "start"),
+        ("N25", "CatM TX", "start"), ("N26", "CatM RX", "start"), ("V21", "CatM 5V", "end"), ("Y21", "CatM GND", "end"),
+        ("C29", "→ SOLAR＋", "end", 30), ("D29", "USB-C VBUS", "end"), ("B31", "CC1", "end"), ("E31", "CC2", "end"),
+        ("H33", "USB-C GND", "end", 34), ("I33", "→ SOLAR−", "start", 34)]
+for h, txt, an, *dy in LAND:
+    solder_mark(s, *hole(h))
+    x, y = H(*hole(h))
+    tag(x + (16 if an == "start" else -16), y + (dy[0] if dy else -14), txt, 12, an, "#c62828")
+lx = OX + 25 * P + 50
+s.text(lx, OY, "基板の上の部品", 14, weight="bold")
+for i, (a_, b_) in enumerate([("N1〜N5", "100kΩ（電池＋ → IO39）"), ("O5・O3", "100kΩ（IO39 → GND、立てる）"), ("P3・P5", "0.1µF（電池）"),
+                             ("W14〜W18", "100kΩ（5V → ゲート）"), ("V19・W19・X19", "P-MOSFET（D・G・S）"),
+                             ("M24〜Q24", "10kΩ（IO4 → ベース）"), ("R23・R22", "100kΩ（ベース → GND、立てる）"), ("R24・S24・T24", "NPN（B・C・E）"),
+                             ("E29〜I29", "100kΩ（パネル → IO36）"), ("K29〜K33", "20kΩ（IO36 → GND）"), ("L29・L31", "0.1µF（パネル）"),
+                             ("C31・C33", "5.1kΩ（CC1 → GND、立てる）"), ("F31・F33", "5.1kΩ（CC2 → GND、立てる）")]):
+    s.text(lx, OY + 30 + i * 46, a_, 13, weight="bold", fill="#5d4520")
+    s.text(lx, OY + 48 + i * 46, b_, 12, fill="#333")
+LTES_WIRES = [
+    ("red", "FireBeetle VCC（K13）", ["K13", "M13", "W13", "X13", "X19"], "DFR0559 5V の線（M13）・P-MOSFET の S（X19）"),
+    ("red", "（とちゅうの W13）", ["W13", "W14"], "100kΩ（W14）"),
+    ("black", "FireBeetle GND（K15）", ["K15", "M15", "P15", "P22", "P25", "T25", "T24"], "DFR0559 GND の線（M15）・NPN の E（T24）"),
+    ("black", "（とちゅうの P22）", ["P22", "R22"], "100kΩ（R22）"),
+    ("black", "（とちゅうの T25）", ["T25", "Y25", "Y21"], "CatM GND の線（Y21）"),
+    ("black", "（Y21 から上へ）", ["Y21", "Y3", "P3", "O3"], "0.1µF（P3）・100kΩ（O3）"),
+    ("white", "IO39（K21）", ["K21", "J21", "J5", "N5", "O5", "P5"], "100kΩ（N5）・100kΩ（O5）・0.1µF（P5）"),
+    ("purple", "IO4（K24）", ["K24", "M24"], "10kΩ（M24）"),
+    ("purple", "10kΩ（Q24）", ["Q24", "R24", "R23"], "NPN の B（R24）・100kΩ（R23）"),
+    ("gray", "NPN の C（S24）", ["S24", "S22", "W22", "W19", "W18"], "P-MOSFET の G（W19）・100kΩ（W18）"),
+    ("orange", "P-MOSFET の D（V19）", ["V19", "V21"], "CatM 5V の線（V21）"),
+    ("yellow", "IO16（K25、受信）", ["K25", "N25"], "CatM TX の線（N25）"),
+    ("green", "IO17（K26、送信）", ["K26", "N26"], "CatM RX の線（N26）"),
+    ("blue", "IO36（K22）", ["K22", "J22", "J29", "K29", "L29"], "100kΩ（I29 の先）・20kΩ（K29）・0.1µF（L29）"),
+    ("blue", "（とちゅうの J29）", ["J29", "I29"], "100kΩ（I29）"),
+    ("black", "FireBeetle GND（B10）", ["B10", "A10", "A33", "C33", "F33", "H33", "I33", "K33", "L33", "L31"], "5.1kΩ（C33・F33）・USB-C GND（H33）・SOLAR−（I33）・20kΩ（K33）・0.1µF（L31）"),
+    ("red", "→ DFR0559 SOLAR＋（C29）", ["C29", "D29", "E29"], "USB-C VBUS（D29）・100kΩ（E29）"),
+    ("yellow", "CC1（B31）", ["B31", "C31"], "5.1kΩ（C31）"),
+    ("yellow", "CC2（E31）", ["E31", "F31"], "5.1kΩ（F31）"),
+]
+for c, a, hs, b in LTES_WIRES:
+    w(c, *hs)
+yb = back_section(s, OY + (NR - 1) * P + 160, "HPX-Core_LTES_pcb.svg")
+y = table(s, 60, yb + 40, [["線", "どこから（穴）", "通る穴", "どこへ（穴）"]] + [[c, a, " → ".join(hs), b] for c, a, hs, b in LTES_WIRES],
+          [100, 300, 520, 560], "つなぐ線（穴の位置は 列の文字＋行の数字）")
+y = table(s, 60, y + 50, [
+    ["基板の外からの線（赤丸の穴）", "どこから", "メモ"],
+    ["D29（USB-C VBUS）・H33（USB-C GND）", "ケースの壁の USB Type-Cコネクターパネル取付キット（入力）の VBUS・GND", "ソーラーパネルの電気。D+・D− は使わない"],
+    ["B31（CC1）・E31（CC2）", "同じキットの CC1・CC2", "5.1kΩ で GND へ（ないとパネルが 5V を出さないことがある）"],
+    ["C29（→ SOLAR＋）・I33（→ SOLAR−）", "DFR0559 の SOLAR IN（ねじ端子）の ＋・−", "パネルの電気を基板から DFR0559 へ渡す"],
+    ["N1（DFR0559 BAT＋）", "DFR0559 の BAT IN ＋（18650 の＋と同じねじ端子）", "電池の電圧を測るだけ（電気はほとんど流れない）"],
+    ["M13（DFR0559 5V）・M15（DFR0559 GND）", "DFR0559 の 5V・GND のピン", "FireBeetle と CatM の電源"],
+    ["N25・N26・V21・Y21", "M5Stamp CatM の TX・RX・5V・GND", "＋LTE-M と同じ"],
+], [420, 520, 480], "基板の外からの線")
+y = table(s, 60, y + 50, [
+    ["部品", "数", "置き場所・メモ"],
+    ["DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン", "1", "B9〜B26・K13〜K26。USB-C を上に向ける（ESP32 のアンテナが下）"],
+    ["M5Stamp CatM（SIM7080G）", "1", "N27〜Y33 のあたりに両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で"],
+    ["P-MOSFET（ロジックレベル、1A 以上）", "1", "V19・W19・X19（D・G・S）。足の並びは部品の資料で確かめて合わせる"],
+    ["NPN トランジスタ（2SC1815 など）", "1", "R24・S24・T24（B・C・E）。足の並びは部品の資料で確かめて合わせる"],
+    ["金属皮膜抵抗 100kΩ", "5", "W14〜W18・R23・R22（スイッチ）、N1〜N5・O5・O3（電池）、E29〜I29（パネル）"],
+    ["金属皮膜抵抗 20kΩ", "1", "K29〜K33（パネル）"],
+    ["金属皮膜抵抗 10kΩ", "1", "M24〜Q24（IO4 → ベース）"],
+    ["金属皮膜抵抗 5.1kΩ", "2", "C31・C33、F31・F33（入力 USB-C の CC1・CC2）"],
+    ["積層セラミックコンデンサー 0.1µF", "2", "P3・P5（電池）、L29・L31（パネル）"],
+    ["ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線", "1", "縦に置く。線はすべて裏。取り付けベースに AST2.5-5B で留める"],
+], [640, 60, 620], "部品表（この基板の分）")
+finish(s, y, [
+    "・上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。",
+    "・＋LTE-M の基板（PCB72-95）の部品と、HPX-Solar の小さな基板（2*8）の部品を、この 1枚にまとめた。",
+    "　USB-C ケーブルと、ケースの壁の出力用 USB-C はいらない。",
+    "・電源は DFR0559 の 5V ピンから直接 FireBeetle の VCC へ。",
+    "　CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。",
+    "・電池の電圧（100kΩ/100kΩ で 1/2）は IO39、パネルの電圧（100kΩ/20kΩ で 1/6）は IO36 で読む。",
+    "　＋LTE-M＋HPX-Solar と同じピンなので、ファームはそのまま（v1.25 以降）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。",
+    "・FireBeetle の電池コネクタ（PH2.0）には何もつながない（18650 は DFR0559 につなぐ）。",
+    "　VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。",
+    "・FireBeetle に USB で書き込むときは、FireBeetle を基板から抜いてから（DFR0559 の 5V と USB の 5V がぶつからないように）。",
+    "・裏の線どうしは交わらない（図を作るときに調べている）。FireBeetle の下を通る線（IO39・IO36・GND）は裏なので部品には触れない。",
+    "・M5Stamp CatM は基板に貼るだけで、穴には差さない。",
+    "　アンテナは付属の SMA ロッドアンテナを IPEX-SMA ケーブルでつなぎ、ケースのふたの内側に貼る（技適のため付属品を使う）。",
+    FB_NOTE_PITCH,
+], "HPX-Core_LTES_pcb.svg")
 
 # ================================================================== ほかの開発ボード（Olimex・Freenove・ELEGOO）で作るときの図（TARO 2026-11-13）
 # TARO 2026-11-13: HPX-Core のすべての版を、Olimex・Freenove・ELEGOO のどれでも作れるように図をそろえる。ピンはファーム v1.25（FireBeetle と同じ）。
