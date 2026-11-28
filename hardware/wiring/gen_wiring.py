@@ -972,73 +972,112 @@ json.dump({"tables": [{"head": "つなぐ線", "rows": LTE_WIRES}, {"head": "部
           open(os.path.join(OUT, "HPX-Core_LTE_wiring.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("ok LTE")
 
-# ------------------------------------------------------------------ HPX-Solar (小型ソーラー電源、TARO 2026-11-10)
-# ＋LTE-M＆ソーラー版の電源の部分 (ソーラーパネル・USB-C メス基板・DFR0559・18650 ×2) を別の機器にした。
+# ------------------------------------------------------------------ HPX-Solar (小型ソーラー電源、TARO 2026-11-10、2026-11-28 配置を描き直し)
+# ＋LTE-M＆ソーラー版の電源の部分 (ソーラーパネル・DFR0559・18650 ×2) を別の機器にした。
 # HPX-Core とは USB-C ケーブル1本でつなぐ (案2、TARO 2026-11-10): VBUS=5V、GND、D+=電池の電圧 (1/2)、D−=パネルの電圧 (1/6)。
-# 板はタカチ PCB72-95。ケースは前のまま OB10-17-5W (TARO: ケースはあとで考え直す)。
-s = S(1280, 2240)
+# TARO 2026-11-28: ケース用取り付けベース OBP10-17 (87×115mm、縦置き) に直接載せる。上に 18650 ホルダー2個 (横向き、両面テープ)、
+# その下に DFR0559 (AST3-6B で貼る)、空いたところに抵抗をまとめた小さなユニバーサル基板 (秋月 2*8、AST3-6B)。
+# USB-C は秋月 USB Type-Cコネクターパネル取付キット ×2 をケース OB10-17-5W の壁 (OBP10-17 の下の方向) に付ける。PCB72-95 は使わない。
+# 寸法 (秋月): DFR0559 63×33mm、18650 ホルダー BHC-18650-1A 75×21mm、2*8 基板 80×20mm (取付穴 2.2mm、間隔 76×16mm)。
+s = S(1280, 2560)
 title(s, "HPX-Solar（小型ソーラー電源）の配線図", "試作中 ／ 実機未確認 ／ HPX-Core とは USB-C ケーブル1本")
-K = 5.6                      # 1mm = 5.6px
-BX, BY = 110, 150            # 板の左上
+K = 4.8                      # 1mm = 4.8px
+BX, BY = 95, 160             # OBP10-17 の左上
 def mm(x, y): return BX + x * K, BY + y * K
-s.text(BX, BY - 30, "PCB72-95 を上から見たところ", 17, weight="bold")
-s.rect(BX, BY, 72 * K, 95 * K, "#e8d5a8", "#b08a4a", 4, 3)
-for gx in range(27):
-    for gy in range(36):
-        x, y = mm(2.0 + gx * 2.54 + 1.0, 2.0 + gy * 2.54 + 1.0)
-        s.add(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.2" fill="#c9a865"/>')
-for hx, hy in ((5, 5), (67, 5), (5, 90), (67, 90)):
-    x, y = mm(hx, hy)
-    s.add(f'<circle cx="{x}" cy="{y}" r="{1.6*K}" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>')
-# 入力の USB-C メス基板 (左上。パネルの USB-C を差す)
-x, y = mm(9, 2.5)
-s.rect(x, y, 16 * K, 16 * K, "#37474f", "#222", 6, 2)
-s.rect(x + 4 * K, y - 2 * K, 8 * K, 4 * K, "#b0b0b0", "#666", 4, 1)
-s.text(x + 8 * K, y + 8 * K, "USB-C（入力）", 12, "middle", "bold", "#fff")
-s.text(x + 8 * K, y + 11 * K, "パネルを差す", 11, "middle", fill="#eceff1")
-s.text(x + 8 * K, y - 4 * K, "↓ ソーラーパネルの USB-C", 12, "middle", "bold", "#0d47a1")
-# 18650 ホルダー ×2 (縦向き、右)
-for i in range(2):
-    x, y = mm(30.5 + i * 20.8, 9)
-    s.rect(x, y, 20.2 * K, 77 * K, "#37474f", "#212121", 8, 2)
-    s.rect(x + 2.2 * K, y + 5 * K, 15.8 * K, 67 * K, "#2e7d32", "#1b5e20", 40, 2)
-    s.text(x + 10.1 * K, y + 38 * K, "18650", 14, "middle", "bold", "#fff")
-    s.text(x + 10.1 * K, y + 41.5 * K, "ホルダー", 12, "middle", fill="#fff")
-    s.text(x + 10.1 * K, y + 9.5 * K, "＋", 18, "middle", "bold", "#ffcdd2")
-    s.text(x + 10.1 * K, y + 70 * K, "−", 20, "middle", "bold", "#bbdefb")
-# DFR0559 (左、少し板の外へはみ出す。大きさは目安)
-x, y = mm(-3, 22)
-s.rect(x, y, 32 * K, 50 * K, "#1565c0", "#0d3c7a", 8, 3)
-s.text(x + 16 * K, y + 21 * K, "DFR0559", 16, "middle", "bold", "#fff")
-s.text(x + 16 * K, y + 25 * K, "ソーラー", 12, "middle", fill="#e3f2fd")
-s.text(x + 16 * K, y + 28.5 * K, "パワーマネージャー 5V", 12, "middle", fill="#e3f2fd")
-s.text(x + 16 * K, y + 5 * K, "SOLAR・BAT", 11, "middle", "bold", "#fff")
-s.text(x + 16 * K, y + 47 * K, "5V・GND", 11, "middle", "bold", "#fff")
-# 分圧の抵抗とコンデンサー (DFR0559 の下)
-x, y = mm(2, 74)
-s.rect(x, y, 26 * K, 13 * K, "#fff8e1", "#c9a227", 6, 2)
-s.text(x + 13 * K, y + 5 * K, "抵抗 4本・0.1µF 2個", 12, "middle", "bold")
-s.text(x + 13 * K, y + 9.5 * K, "（電池 1/2・パネル 1/6）", 11, "middle", fill="#666")
-# 出力の USB-C メス基板はケースの壁に付ける
-cx, cy = mm(15, 95)
-s.add(f'<path d="M{cx},{cy-30} L{cx},{cy+46}" stroke="#424242" stroke-width="6" stroke-dasharray="8 5"/>')
-s.rect(cx - 45, cy + 46, 90, 54, "#37474f", "#222", 6, 2)
-s.text(cx, cy + 70, "USB-C（出力）", 12, "middle", "bold", "#fff")
-s.text(cx, cy + 88, "ケースの壁", 11, "middle", fill="#eceff1")
-s.text(cx + 60, cy + 78, "→ USB-C ケーブル（データ対応）で HPX-Core へ", 13, weight="bold", fill="#e65100")
-s.text(BX, BY + 95 * K + 140, "部品は両面テープか M3 ねじで留める。DFR0559 の大きさは目安（実物で確かめる）", 12, fill="#555")
-s.text(BX + 72 * K + 16, BY + 47 * K, "95mm", 13, fill="#555")
-s.text(BX + 36 * K, BY - 8, "72mm", 13, "middle", fill="#555")
+s.text(BX, BY - 34, "ケース用取り付けベース OBP10-17 を上から見たところ", 17, weight="bold")
+s.text(BX, BY - 14, "（縦置き。下がケースの USB-C の側）", 12, fill="#555")
+# ケース OB10-17-5W の内側 (点線) と取り付けベース
+cx0, cy0 = mm(-6, -6); cx1, cy1 = mm(100, 133)
+s.add(f'<rect x="{cx0}" y="{cy0}" width="{cx1-cx0}" height="{cy1-cy0}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2" stroke-dasharray="10 6"/>')
+s.text(cx1 - 8, cy0 + 18, "点線 = ケース OB10-17-5W", 12, "end", fill="#757575")
+s.rect(BX, BY, 87 * K, 115 * K, "#eceff1", "#90a4ae", 6, 3)
+s.text(BX + 87 * K + 10, BY + 57 * K, "115mm", 13, fill="#555")
+s.text(BX + 43.5 * K, BY + 115 * K + 16, "87mm", 13, "middle", fill="#555")
+def spacer(x, y):   # AST3-6B (ナット入り貼付スペーサー) を上から
+    px, py = mm(x, y)
+    s.top.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{2.6*K:.1f}" fill="#fafafa" stroke="#616161" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{1.0*K:.1f}" fill="#616161"/>')
+# 18650 ホルダー ×2 (横向き、上の方。両面テープ)。リード線は左の端から
+for i, yy in enumerate((4, 28)):
+    x, y = mm(6, yy)
+    s.rect(x, y, 75 * K, 21 * K, "#37474f", "#212121", 8, 2)
+    s.rect(x + 4 * K, y + 2.5 * K, 67 * K, 16 * K, "#2e7d32", "#1b5e20", 36, 2)
+    s.text(x + 37.5 * K, y + 12 * K, f"18650 ホルダー {i+1}（両面テープ）", 13, "middle", "bold", "#fff")
+    s.text(x + 7 * K, y + 12.5 * K, "＋", 16, "middle", "bold", "#ffcdd2")
+    s.text(x + 68 * K, y + 12.5 * K, "−", 18, "middle", "bold", "#bbdefb")
+# DFR0559 (63×33mm)。四隅の穴に AST3-6B
+DX, DY = 12, 54
+x, y = mm(DX, DY)
+s.rect(x, y, 63 * K, 33 * K, "#212121", "#000", 8, 3)
+s.text(x + 17 * K, y + 21 * K, "DFR0559", 16, "middle", "bold", "#fff")
+s.text(x + 17 * K, y + 25 * K, "ソーラーパワー", 11, "middle", fill="#e0e0e0")
+s.text(x + 17 * K, y + 28 * K, "マネージャー 5V", 11, "middle", fill="#e0e0e0")
+# 端子 (写真から。位置は目安)
+tx, ty = mm(DX + 26, DY - 0.5); s.rect(tx, ty, 9 * K, 6 * K, "#2e7d32", "#1b5e20", 2, 1.5)
+s.text(tx + 10 * K, ty + 4 * K, "SOLAR IN", 10, "start", "bold", "#a5d6a7")
+tx, ty = mm(DX - 1, DY + 6); s.rect(tx, ty, 6 * K, 10 * K, "#2e7d32", "#1b5e20", 2, 1.5)
+s.text(tx + 8 * K, ty + 5.5 * K, "BAT IN", 10, "start", "bold", "#fff")
+tx, ty = mm(DX + 55, DY + 11); s.rect(tx, ty, 9 * K, 11 * K, "#b0bec5", "#607d8b", 2, 1.5)
+s.text(tx - 3, ty + 4 * K, "USB-A", 9, "end", fill="#e0e0e0"); s.text(tx - 3, ty + 7 * K, "使わない", 9, "end", fill="#e0e0e0")
+tx, ty = mm(DX + 44, DY + 6)
+s.text(tx + 3 * K, ty - 3, "5V・GND", 9, "middle", "bold", "#fff")
+for k in range(2):
+    s.add(f'<rect x="{tx + k*2.54*K:.1f}" y="{ty:.1f}" width="{2*K:.1f}" height="{2*K:.1f}" fill="#d4af37"/>')
+for hx, hy in ((3.5, 3.5), (59.5, 3.5), (3.5, 29.5), (59.5, 29.5)):
+    spacer(DX + hx, DY + hy)
+# 抵抗をまとめた小さな基板 (秋月 両面スルーホールユニバーサル基板 2*8、80×20mm)
+PX, PY = 3.5, 91
+x, y = mm(PX, PY)
+s.rect(x, y, 80 * K, 20 * K, "#c8e6c9", "#558b2f", 4, 2)
+for gx in range(30):
+    for gy in range(7):
+        hx, hy = mm(PX + 2.9 + gx * 2.54, PY + 2.4 + gy * 2.54)
+        s.add(f'<circle cx="{hx:.1f}" cy="{hy:.1f}" r="1.6" fill="#9ccc65"/>')
+for hx, hy in ((2, 2), (78, 2), (2, 18), (78, 18)):
+    spacer(PX + hx, PY + hy)
+def res(x, y, name):   # 抵抗 (横向き、mm 座標の中心)
+    px, py = mm(x, y)
+    s.add(f'<line x1="{px-4.5*K:.1f}" y1="{py:.1f}" x2="{px+4.5*K:.1f}" y2="{py:.1f}" stroke="#888" stroke-width="2"/>')
+    s.rect(px - 2.8 * K, py - 1.1 * K, 5.6 * K, 2.2 * K, "#d7ccc8", "#795548", 3, 1)
+    s.text(px, py - 1.6 * K, name, 10, "middle", "bold", "#333")
+def capc(x, y):
+    px, py = mm(x, y)
+    s.rect(px - 1.4 * K, py - 1.2 * K, 2.8 * K, 2.4 * K, "#3f6fb5", "#1a3e7a", 3, 1)
+    s.text(px, py - 1.8 * K, "0.1µF", 9, "middle", "bold", "#333")
+res(PX + 13, PY + 9, "5.1kΩ"); res(PX + 13, PY + 15, "5.1kΩ")
+res(PX + 31, PY + 9, "100kΩ"); res(PX + 31, PY + 15, "100kΩ"); capc(PX + 40, PY + 12)
+res(PX + 54, PY + 9, "100kΩ"); res(PX + 54, PY + 15, "20kΩ"); capc(PX + 63, PY + 12)
+s.text(x + 13 * K, y + 19.4 * K, "CC 用", 9, "middle", fill="#33691e")
+s.text(x + 34 * K, y + 19.4 * K, "電池 1/2", 9, "middle", fill="#33691e")
+s.text(x + 57 * K, y + 19.4 * K, "パネル 1/6", 9, "middle", fill="#33691e")
+# ケースの壁の USB-C (OBP10-17 の下の方向)
+WY = 127
+for nm, kx, msg in (("入力", 20, "← ソーラーパネルの USB-C"), ("出力", 66, "→ HPX-Core へ")):
+    px, py = mm(kx, WY)
+    s.rect(px - 11 * K, py - 3 * K, 22 * K, 8 * K, "#455a64", "#263238", 4, 2)
+    s.rect(px - 4.5 * K, py + 3.5 * K, 9 * K, 3.5 * K, "#b0b0b0", "#666", 4, 1)
+    s.text(px, py + 2 * K, f"USB-C（{nm}）", 11, "middle", "bold", "#fff")
+    s.text(px, py + 12 * K, msg, 11, "middle", "bold", "#e65100" if nm == "出力" else "#0d47a1")
+s.text(BX + 43.5 * K, mm(0, 133)[1] + 52, "USB Type-Cコネクターパネル取付キット ×2 をケースの壁に付ける", 12, "middle", "bold", "#333")
+# 線 (おおよその通り道)
+s.wire([mm(20, 124), mm(20, 113), mm(17, 113), mm(17, 111)], "red")                       # 入力 → 小さな基板
+s.wire([mm(66, 124), mm(66, 113), mm(69, 113), mm(69, 111)], "orange")                    # 小さな基板 → 出力
+s.wire([mm(8, 91), mm(8, 89), mm(42, 89), mm(42, 54)], "red")                              # 小さな基板 → SOLAR IN
+s.wire([mm(6.5, 49), mm(3, 49), mm(3, 66), mm(11, 66)], "red")                             # 18650 → BAT IN
+s.wire([mm(70, 91), mm(70, 89.5), mm(57, 89.5), mm(57, 61)], "orange")                         # 5V・GND → 小さな基板
+s.text(BX, mm(0, 133)[1] + 76, "緑の板 = 抵抗をまとめる小さな基板（秋月 両面スルーホールユニバーサル基板 2*8、80×20mm）", 11, fill="#555")
+s.text(BX, mm(0, 133)[1] + 112, "線の本数・色は右の「線のつながり」と下の表を見る（この図は置き場所の目安）", 11, fill="#555")
+s.text(BX, mm(0, 133)[1] + 94, "○ はナット入り貼付スペーサー AST3-6B（DFR0559 に4個・小さな基板に4個）", 11, fill="#555")
 
 # 右: 線のつながり
 RX0 = 640
-s.text(RX0, BY - 30, "線のつながり", 17, weight="bold")
+s.text(RX0, BY - 34, "線のつながり", 17, weight="bold")
 s.rect(RX0, BY, 170, 100, "#0d47a1", "#06244f", 6, 3)
 s.text(RX0 + 85, BY + 120, "ソーラーパネル 10W/5V", 13, "middle", "bold")
 s.rect(RX0 + 230, BY + 20, 70, 60, "#37474f", "#222", 6, 2)
-s.text(RX0 + 265, BY + 100, "USB-C", 11, "middle", "bold"); s.text(RX0 + 265, BY + 114, "（入力）", 11, "middle", "bold")
+s.text(RX0 + 225, BY + 96, "USB-C", 11, "end", "bold"); s.text(RX0 + 225, BY + 110, "（入力）", 11, "end", "bold")
 s.add(f'<path d="M{RX0+170},{BY+50} L{RX0+230},{BY+50}" stroke="#424242" stroke-width="8"/>')
-s.rect(RX0 + 360, BY, 230, 230, "#1565c0", "#0d3c7a", 10, 3)
+s.rect(RX0 + 360, BY, 230, 230, "#212121", "#000", 10, 3)
 s.text(RX0 + 475, BY + 120, "DFR0559", 16, "middle", "bold", "#fff")
 for n, yy in (("SOLAR＋", 30), ("SOLAR−", 70), ("BAT＋", 150), ("BAT−", 190)):
     s.pad(RX0 + 360, BY + yy, n, "L")
@@ -1055,6 +1094,12 @@ s.wire([(RX0 + 300, BY + 35), (RX0 + 330, BY + 35), (RX0 + 330, BY + 30), (RX0 +
 s.wire([(RX0 + 300, BY + 65), (RX0 + 340, BY + 65), (RX0 + 340, BY + 70), (RX0 + 360, BY + 70)], "black")
 s.wire([(RX0 + 250, BY + 300), (RX0 + 300, BY + 300), (RX0 + 300, BY + 150), (RX0 + 360, BY + 150)], "red")
 s.wire([(RX0 + 250, BY + 370), (RX0 + 320, BY + 370), (RX0 + 320, BY + 190), (RX0 + 360, BY + 190)], "black")
+# 入力 USB-C の CC1・CC2 → 5.1kΩ → GND (キットには 5.1kΩ が付いていない)
+s.rect(RX0 + 165, BY + 150, 120, 66, "#fff8e1", "#c9a227", 8, 2)
+s.text(RX0 + 225, BY + 172, "CC1・CC2", 12, "middle", "bold")
+s.text(RX0 + 225, BY + 190, "→ 5.1kΩ ×2", 12, "middle", "bold")
+s.text(RX0 + 225, BY + 207, "→ GND", 11, "middle", fill="#666")
+s.wire([(RX0 + 280, BY + 80), (RX0 + 280, BY + 150)], "yellow")
 # 分圧 (電池 100k/100k、パネル 100k/20k)。下の抵抗と 0.1µF は GND へ
 def dv(x, y, top, bot, r):
     s.rect(x, y, 96, 84, "#fff8e1", "#c9a227", 8, 2)
@@ -1064,6 +1109,10 @@ def dv(x, y, top, bot, r):
     s.text(x + 48, y + 76, "＋0.1µF→GND", 10, "middle", fill="#666")
 dv(RX0 + 290, BY + 440, "100kΩ", "100kΩ", "電池 1/2")
 dv(RX0 + 530, BY + 440, "100kΩ", "20kΩ", "パネル 1/6")
+# 小さな基板にのる部品を緑の点線で囲む
+s.add(f'<rect x="{RX0+155}" y="{BY+140}" width="140" height="86" rx="10" fill="none" stroke="#558b2f" stroke-width="2.5" stroke-dasharray="8 5"/>')
+s.add(f'<rect x="{RX0+280}" y="{BY+430}" width="356" height="104" rx="10" fill="none" stroke="#558b2f" stroke-width="2.5" stroke-dasharray="8 5"/>')
+s.text(RX0, BY + 436, "緑の点線 = 小さな基板にのせる部品", 12, weight="bold", fill="#33691e")
 # 出力の USB-C（ピンは上の辺に D+・VBUS・GND・D−）
 s.rect(RX0 + 300, BY + 600, 300, 90, "#37474f", "#222", 8, 2)
 s.text(RX0 + 450, BY + 660, "USB-C（出力）", 13, "middle", "bold", "#fff")
@@ -1079,19 +1128,22 @@ s.wire([(RX0 + 265, BY + 20), (RX0 + 265, BY - 12), (RX0 + 600, BY - 12), (RX0 +
 s.wire([(RX0 + 578, BY + 524), up["D−"]], "blue")
 s.dot(RX0 + 300, BY + 300, "red")
 s.text(RX0, BY + 730, "→ USB-C ケーブル（データ対応）で HPX-Core ＋LTE-M・＋防水 の USB-C 口へ", 13, weight="bold", fill="#e65100")
+s.text(RX0, BY + 756, "GND（−）はすべて共通（DFR0559 の GND・SOLAR−・BAT−、両方の USB-C の GND）", 12, fill="#555")
 
 SOLAR_WIRES = [
     ["線の色（例）", "どこから", "どこへ", "メモ"],
-    ["red", "入力 USB-C の VBUS（＋）", "DFR0559 SOLAR＋", "パネルの USB-C を切らずに差す"],
-    ["black", "入力 USB-C の GND（−）", "DFR0559 SOLAR−", ""],
-    ["red", "18650 の＋（2本並列）", "DFR0559 BAT＋", ""],
-    ["black", "18650 の−（2本並列）", "DFR0559 BAT−", ""],
-    ["orange", "DFR0559 5V（ピン）", "出力 USB-C の VBUS", "HPX-Core の電源"],
-    ["black", "DFR0559 GND（ピン）", "出力 USB-C の GND", ""],
-    ["white", "18650 の＋ → 100kΩ", "出力 USB-C の D+", "100kΩ と 0.1µF で GND へ（電池の電圧 1/2）"],
-    ["blue", "入力 USB-C の VBUS → 100kΩ", "出力 USB-C の D−", "20kΩ と 0.1µF で GND へ（パネルの電圧 1/6）"],
+    ["red", "入力 USB-C の VBUS（＋）", "小さな基板 → DFR0559 SOLAR IN ＋", "小さな基板でパネルの電圧を測る分圧へも分ける"],
+    ["black", "入力 USB-C の GND（−）", "小さな基板の GND → DFR0559 SOLAR IN −", ""],
+    ["yellow", "入力 USB-C の CC1・CC2", "小さな基板の 5.1kΩ → GND", "1本ずつ。ないとパネルが 5V を出さないことがある"],
+    ["red", "18650 の＋（2本並列）", "DFR0559 BAT IN ＋", "ホルダーのリード線をねじ端子へ"],
+    ["black", "18650 の−（2本並列）", "DFR0559 BAT IN −", ""],
+    ["red", "DFR0559 BAT IN ＋", "小さな基板の 100kΩ（電池）", "電池の電圧を測る分圧へ"],
+    ["orange", "DFR0559 5V（ピン）", "小さな基板 → 出力 USB-C の VBUS", "HPX-Core の電源"],
+    ["black", "DFR0559 GND（ピン）", "小さな基板の GND → 出力 USB-C の GND", ""],
+    ["white", "小さな基板（電池 1/2）", "出力 USB-C の D+", "100kΩ/100kΩ のまん中、0.1µF で GND へ"],
+    ["blue", "小さな基板（パネル 1/6）", "出力 USB-C の D−", "100kΩ/20kΩ のまん中、0.1µF で GND へ"],
 ]
-y = table(s, 60, 1040, SOLAR_WIRES, [140, 320, 300, 380], "中の線")
+y = table(s, 60, 1100, SOLAR_WIRES, [140, 300, 360, 340], "中の線")
 OUT_ROWS = [
     ["USB-C の線", "HPX-Solar から", "HPX-Core（＋LTE-M・＋防水）で", "メモ"],
     ["VBUS", "DFR0559 の 5V", "HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）", "5V・1A まで"],
@@ -1110,22 +1162,25 @@ OTHER_ROWS = [
 y = table(s, 60, y + 60, OTHER_ROWS, [400, 240, 500], "ほかの機器に使うとき")
 SOLAR_ROWS = [
     ["部品", "数", "使うところ・メモ"],
-    ["ソーラーパネル 10W/5V（USB-C 出力）", "1", "ケーブルは切らずに入力の USB-C メス基板へ差す"],
-    ["USB-C メス基板（電源用、5.1kΩ 付き）", "1", "入力。パネルの USB-C を受けて＋−の線に分ける"],
-    ["USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）", "1", "出力。ケースの壁に付ける"],
-    ["DFRobot DFR0559 ソーラーパワーマネージャー 5V", "1", "18650 の充電と 5V の出力"],
-    ["18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用", "各2", "並列につなぐ"],
-    ["抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2", "1式", "電池とパネルの電圧を D+・D− へ"],
-    ["タカチ PCB72-95・ケース OB10-17-5W・取り付けベース OBP10-17・AST3-6B", "各1", "ケースはあとで考え直す（今は前の版のまま）"],
+    ["ケース用取り付けベース タカチ OBP10-17（87×115mm）", "1", "縦に置き、下（USB-C の側）から 小さな基板・DFR0559・18650 ホルダーの順"],
+    ["18650 電池ホルダー 1本用（75×21mm）", "2", "横向きにして上の方へ両面テープで貼る。2個を並列につなぐ"],
+    ["DFRobot DFR0559 ソーラーパワーマネージャー 5V（63×33mm）", "1", "ホルダーの下。四隅を AST3-6B で貼る。18650 の充電と 5V の出力"],
+    ["両面スルーホールユニバーサル基板 2*8（80×20mm）", "1", "DFR0559 の下。抵抗とコンデンサーをまとめ、四隅を AST3-6B で貼る"],
+    ["抵抗 5.1kΩ ×2", "1式", "小さな基板。入力 USB-C の CC1・CC2 → GND"],
+    ["抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2", "1式", "小さな基板。電池とパネルの電圧を D+・D− へ"],
+    ["USB Type-Cコネクターパネル取付キット", "2", "ケース OB10-17-5W の壁（取り付けベースの下の方向）に付ける。入力用・出力用"],
+    ["ナット入り貼付スペーサー タカチ AST3-6B", "8個", "DFR0559 に4個・小さな基板に4個"],
+    ["ソーラーパネル 10W/5V（USB-C 出力）", "1", "ケーブルは切らずに入力の USB-C へ差す"],
 ]
-y = table(s, 60, y + 60, SOLAR_ROWS, [600, 60, 480], "部品の使いどころ")
+y = table(s, 60, y + 60, SOLAR_ROWS, [520, 60, 560], "部品の使いどころ")
 SOLAR_NOTES = [
-    "・試作中の図です。実機では確かめていません。",
+    "・試作中の図です。実機では確かめていません。部品の大きさは秋月のページの値、DFR0559 の端子の位置は写真から描いた目安です。",
+    "・小さな基板（2*8）の取付穴は 2.2mm で、AST3-6B の M3 ねじが通らない。ドリルで 3.2mm に広げてから留める。",
+    "・USB Type-Cコネクターパネル取付キットには 5.1kΩ が付いていない。入力側は CC1・CC2 を 5.1kΩ で GND へ（ないとパネルが 5V を出さないことがある）。",
     "・出力の USB-C は普通の USB 機器（パソコンなど）に差さない（D+・D− に電圧を出すため）。印を付けておく。",
     "・ケーブルは「データ対応」の USB-C ケーブルを使う（充電専用のケーブルには D+・D− の線がない）。",
     "・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする（直列にしない）。",
     "・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。",
-    "・入力の USB-C メス基板は CC に 5.1kΩ が付いた電源用を使う。付いていないと、パネルが 5V を出さないことがある。",
     "・DFR0559 の EN は使わない（5V はずっと出す）。何もつながないとき 5V が出るかは未確認。出ないときは EN を ON の側へつなぐ。",
     "・DFR0559 の 5V 出力は 1A まで。待機の電流（眠っている間の電気）は未確認なので、届いたらテスターで測る。",
     "・使える電気の目安（実測ではない）: 10W パネルは冬の晴れで 1日 約10〜20Wh、18650 2本で約22Wh。眠りながら動く機器に向く。",
@@ -1133,7 +1188,7 @@ SOLAR_NOTES = [
 notes(s, 60, y + 20, SOLAR_NOTES)
 s.save("HPX-Solar_pcb.svg")
 _full = open(os.path.join(OUT, "HPX-Solar_pcb.svg"), encoding="utf-8").read()
-_cut = 1000
+_cut = 1060
 open(os.path.join(OUT, "HPX-Solar_pcb_fig.svg"), "w", encoding="utf-8").write(
     _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
 json.dump({"tables": [{"head": "中の線", "rows": SOLAR_WIRES}, {"head": "HPX-Core への USB-C ケーブル（データ対応のもの）", "rows": OUT_ROWS},

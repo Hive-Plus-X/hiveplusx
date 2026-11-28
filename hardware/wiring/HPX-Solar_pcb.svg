@@ -1,1272 +1,614 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2240" viewBox="0 0 1280 2240">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="2560" viewBox="0 0 1280 2560">
 <rect width="100%" height="100%" fill="#fffdf6"/>
 <rect x="0" y="0" width="1280" height="70" rx="0" fill="#1f3a2a" stroke="none" stroke-width="2"/>
 <text x="30" y="45" font-size="26" text-anchor="start" font-weight="bold" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar（小型ソーラー電源）の配線図</text>
 <text x="1250" y="45" font-size="15" text-anchor="end" font-weight="normal" fill="#f5c542" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">試作中 ／ 実機未確認 ／ HPX-Core とは USB-C ケーブル1本</text>
-<text x="110" y="120" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">PCB72-95 を上から見たところ</text>
-<rect x="110" y="150" width="403.2" height="532.0" rx="4" fill="#e8d5a8" stroke="#b08a4a" stroke-width="3"/>
-<circle cx="126.8" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="126.8" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="141.0" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="155.2" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="169.5" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="183.7" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="197.9" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="212.1" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="226.4" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="240.6" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="254.8" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="269.0" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="283.3" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="297.5" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="311.7" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="325.9" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="340.2" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="354.4" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="368.6" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="382.8" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="397.1" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="411.3" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="425.5" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="439.7" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="454.0" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="468.2" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="482.4" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="166.8" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="181.0" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="195.2" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="209.5" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="223.7" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="237.9" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="252.1" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="266.4" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="280.6" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="294.8" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="309.0" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="323.3" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="337.5" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="351.7" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="365.9" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="380.2" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="394.4" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="408.6" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="422.8" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="437.1" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="451.3" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="465.5" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="479.7" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="494.0" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="508.2" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="522.4" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="536.6" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="550.8" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="565.1" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="579.3" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="593.5" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="607.7" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="622.0" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="636.2" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="650.4" r="2.2" fill="#c9a865"/>
-<circle cx="496.6" cy="664.6" r="2.2" fill="#c9a865"/>
-<circle cx="138.0" cy="178.0" r="8.959999999999999" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="485.2" cy="178.0" r="8.959999999999999" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="138.0" cy="654.0" r="8.959999999999999" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="485.2" cy="654.0" r="8.959999999999999" fill="#fffdf6" stroke="#8a6d1d" stroke-width="2"/>
-<rect x="160.4" y="164.0" width="89.6" height="89.6" rx="6" fill="#37474f" stroke="#222" stroke-width="2"/>
-<rect x="182.8" y="152.8" width="44.8" height="22.4" rx="4" fill="#b0b0b0" stroke="#666" stroke-width="1"/>
-<text x="205.2" y="208.8" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（入力）</text>
-<text x="205.2" y="225.6" font-size="11" text-anchor="middle" font-weight="normal" fill="#eceff1" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネルを差す</text>
-<text x="205.2" y="141.6" font-size="12" text-anchor="middle" font-weight="bold" fill="#0d47a1" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">↓ ソーラーパネルの USB-C</text>
-<rect x="280.79999999999995" y="200.4" width="113.11999999999999" height="431.2" rx="8" fill="#37474f" stroke="#212121" stroke-width="2"/>
-<rect x="293.11999999999995" y="228.4" width="88.48" height="375.2" rx="40" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
-<text x="337.35999999999996" y="413.2" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650</text>
-<text x="337.35999999999996" y="432.79999999999995" font-size="12" text-anchor="middle" font-weight="normal" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ホルダー</text>
-<text x="337.35999999999996" y="253.6" font-size="18" text-anchor="middle" font-weight="bold" fill="#ffcdd2" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
-<text x="337.35999999999996" y="592.4" font-size="20" text-anchor="middle" font-weight="bold" fill="#bbdefb" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
-<rect x="397.28" y="200.4" width="113.11999999999999" height="431.2" rx="8" fill="#37474f" stroke="#212121" stroke-width="2"/>
-<rect x="409.59999999999997" y="228.4" width="88.48" height="375.2" rx="40" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
-<text x="453.84" y="413.2" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650</text>
-<text x="453.84" y="432.79999999999995" font-size="12" text-anchor="middle" font-weight="normal" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ホルダー</text>
-<text x="453.84" y="253.6" font-size="18" text-anchor="middle" font-weight="bold" fill="#ffcdd2" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
-<text x="453.84" y="592.4" font-size="20" text-anchor="middle" font-weight="bold" fill="#bbdefb" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
-<rect x="93.2" y="273.2" width="179.2" height="280.0" rx="8" fill="#1565c0" stroke="#0d3c7a" stroke-width="3"/>
-<text x="182.8" y="390.79999999999995" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559</text>
-<text x="182.8" y="413.2" font-size="12" text-anchor="middle" font-weight="normal" fill="#e3f2fd" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラー</text>
-<text x="182.8" y="432.79999999999995" font-size="12" text-anchor="middle" font-weight="normal" fill="#e3f2fd" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パワーマネージャー 5V</text>
-<text x="182.8" y="301.2" font-size="11" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR・BAT</text>
-<text x="182.8" y="536.4" font-size="11" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V・GND</text>
-<rect x="121.2" y="564.4" width="145.6" height="72.8" rx="6" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
-<text x="194.0" y="592.4" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">抵抗 4本・0.1µF 2個</text>
-<text x="194.0" y="617.6" font-size="11" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（電池 1/2・パネル 1/6）</text>
-<path d="M194.0,652.0 L194.0,728.0" stroke="#424242" stroke-width="6" stroke-dasharray="8 5"/>
-<rect x="149.0" y="728.0" width="90" height="54" rx="6" fill="#37474f" stroke="#222" stroke-width="2"/>
-<text x="194.0" y="752.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（出力）</text>
-<text x="194.0" y="770.0" font-size="11" text-anchor="middle" font-weight="normal" fill="#eceff1" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースの壁</text>
-<text x="254.0" y="760.0" font-size="13" text-anchor="start" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ USB-C ケーブル（データ対応）で HPX-Core へ</text>
-<text x="110" y="822.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品は両面テープか M3 ねじで留める。DFR0559 の大きさは目安（実物で確かめる）</text>
-<text x="529.2" y="413.2" font-size="13" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">95mm</text>
-<text x="311.6" y="142" font-size="13" text-anchor="middle" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">72mm</text>
-<text x="640" y="120" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線のつながり</text>
-<rect x="640" y="150" width="170" height="100" rx="6" fill="#0d47a1" stroke="#06244f" stroke-width="3"/>
-<text x="725" y="270" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラーパネル 10W/5V</text>
-<rect x="870" y="170" width="70" height="60" rx="6" fill="#37474f" stroke="#222" stroke-width="2"/>
-<text x="905" y="250" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C</text>
-<text x="905" y="264" font-size="11" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（入力）</text>
-<path d="M810,200 L870,200" stroke="#424242" stroke-width="8"/>
-<rect x="1000" y="150" width="230" height="230" rx="10" fill="#1565c0" stroke="#0d3c7a" stroke-width="3"/>
-<text x="1115" y="270" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559</text>
-<circle cx="1000" cy="180" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="1000" cy="180" r="3" fill="#5a4a14"/>
-<text x="1014" y="185" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR＋</text>
-<circle cx="1000" cy="220" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="1000" cy="220" r="3" fill="#5a4a14"/>
-<text x="1014" y="225" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR−</text>
-<circle cx="1000" cy="300" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="1000" cy="300" r="3" fill="#5a4a14"/>
-<text x="1014" y="305" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BAT＋</text>
-<circle cx="1000" cy="340" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="1000" cy="340" r="3" fill="#5a4a14"/>
-<text x="1014" y="345" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BAT−</text>
-<circle cx="1050" cy="380" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="1050" y="364" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V</text>
-<circle cx="1110" cy="380" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="1110" y="364" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<rect x="640" y="430" width="250" height="110" rx="10" fill="#455a64" stroke="#263238" stroke-width="3"/>
-<rect x="655" y="445" width="220" height="36" rx="18" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
-<text x="765" y="469" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650（保護回路付き）</text>
-<rect x="655" y="493" width="220" height="36" rx="18" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
-<text x="765" y="517" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650（保護回路付き）</text>
-<circle cx="890" cy="450" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="890" cy="450" r="3" fill="#5a4a14"/>
-<text x="876" y="455" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
-<circle cx="890" cy="520" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<circle cx="890" cy="520" r="3" fill="#5a4a14"/>
-<text x="876" y="525" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
-<text x="640" y="562" font-size="13" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 ×2（並列 約3.7V）</text>
-<path d="M940,185 L970,185 L970,180 L1000,180" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,185 L970,185 L970,180 L1000,180" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,185 L970,185 L970,180 L1000,180" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,215 L980,215 L980,220 L1000,220" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,215 L980,215 L980,220 L1000,220" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,215 L980,215 L980,220 L1000,220" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,450 L940,450 L940,300 L1000,300" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,450 L940,450 L940,300 L1000,300" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,450 L940,450 L940,300 L1000,300" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,520 L960,520 L960,340 L1000,340" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,520 L960,520 L960,340 L1000,340" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M890,520 L960,520 L960,340 L1000,340" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="930" y="590" width="96" height="84" rx="8" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
-<text x="978" y="612" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
-<text x="978" y="630" font-size="12" text-anchor="middle" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">↓（電池 1/2）</text>
-<text x="978" y="648" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
-<text x="978" y="666" font-size="10" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋0.1µF→GND</text>
-<rect x="1170" y="590" width="96" height="84" rx="8" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
-<text x="1218" y="612" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
-<text x="1218" y="630" font-size="12" text-anchor="middle" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">↓（パネル 1/6）</text>
-<text x="1218" y="648" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">20kΩ</text>
-<text x="1218" y="666" font-size="10" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋0.1µF→GND</text>
-<rect x="940" y="750" width="300" height="90" rx="8" fill="#37474f" stroke="#222" stroke-width="2"/>
-<text x="1090" y="810" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（出力）</text>
-<circle cx="978" cy="760" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="978" y="788" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D+</text>
-<circle cx="1050" cy="760" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="1050" y="788" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS</text>
-<circle cx="1110" cy="760" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="1110" y="788" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<circle cx="1218" cy="760" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
-<text x="1218" y="788" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D−</text>
-<path d="M1050,380 L1050,760" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1050,380 L1050,760" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1050,380 L1050,760" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1110,380 L1110,760" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1110,380 L1110,760" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1110,380 L1110,760" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,450 L940,580 L978,580 L978,590" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,450 L940,580 L978,580 L978,590" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M940,450 L940,580 L978,580 L978,590" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M978,674 L978,760" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M978,674 L978,760" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M978,674 L978,760" fill="none" stroke="#fafafa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M905,170 L905,138 L1240,138 L1240,590" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M905,170 L905,138 L1240,138 L1240,590" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M905,170 L905,138 L1240,138 L1240,590" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1218,674 L1218,760" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1218,674 L1218,760" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M1218,674 L1218,760" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="640" y="880" font-size="13" text-anchor="start" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ USB-C ケーブル（データ対応）で HPX-Core ＋LTE-M・＋防水 の USB-C 口へ</text>
-<text x="60" y="1028" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">中の線</text>
-<rect x="60" y="1040" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1061" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線の色（例）</text>
-<text x="210" y="1061" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">どこから</text>
-<text x="530" y="1061" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">どこへ</text>
-<text x="830" y="1061" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
-<rect x="60" y="1070" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1079" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
-<text x="112" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
-<text x="210" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の VBUS（＋）</text>
-<text x="530" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 SOLAR＋</text>
-<text x="830" y="1091" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネルの USB-C を切らずに差す</text>
-<rect x="60" y="1100" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1109" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
-<text x="112" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
-<text x="210" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の GND（−）</text>
-<text x="530" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 SOLAR−</text>
-<text x="830" y="1121" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<text x="95" y="126" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケース用取り付けベース OBP10-17 を上から見たところ</text>
+<text x="95" y="146" font-size="12" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（縦置き。下がケースの USB-C の側）</text>
+<rect x="66.2" y="131.2" width="508.8" height="667.2" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2" stroke-dasharray="10 6"/>
+<text x="567.0" y="149.2" font-size="12" text-anchor="end" font-weight="normal" fill="#757575" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">点線 = ケース OB10-17-5W</text>
+<rect x="95" y="160" width="417.59999999999997" height="552.0" rx="6" fill="#eceff1" stroke="#90a4ae" stroke-width="3"/>
+<text x="522.5999999999999" y="433.59999999999997" font-size="13" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">115mm</text>
+<text x="303.79999999999995" y="728.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">87mm</text>
+<rect x="123.8" y="179.2" width="360.0" height="100.8" rx="8" fill="#37474f" stroke="#212121" stroke-width="2"/>
+<rect x="143.0" y="191.2" width="321.59999999999997" height="76.8" rx="36" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
+<text x="303.8" y="236.79999999999998" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 ホルダー 1（両面テープ）</text>
+<text x="157.4" y="239.2" font-size="16" text-anchor="middle" font-weight="bold" fill="#ffcdd2" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
+<text x="450.2" y="239.2" font-size="18" text-anchor="middle" font-weight="bold" fill="#bbdefb" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
+<rect x="123.8" y="294.4" width="360.0" height="100.8" rx="8" fill="#37474f" stroke="#212121" stroke-width="2"/>
+<rect x="143.0" y="306.4" width="321.59999999999997" height="76.8" rx="36" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
+<text x="303.8" y="352.0" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 ホルダー 2（両面テープ）</text>
+<text x="157.4" y="354.4" font-size="16" text-anchor="middle" font-weight="bold" fill="#ffcdd2" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
+<text x="450.2" y="354.4" font-size="18" text-anchor="middle" font-weight="bold" fill="#bbdefb" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
+<rect x="152.6" y="419.2" width="302.4" height="158.4" rx="8" fill="#212121" stroke="#000" stroke-width="3"/>
+<text x="234.2" y="520.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559</text>
+<text x="234.2" y="539.2" font-size="11" text-anchor="middle" font-weight="normal" fill="#e0e0e0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラーパワー</text>
+<text x="234.2" y="553.6" font-size="11" text-anchor="middle" font-weight="normal" fill="#e0e0e0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">マネージャー 5V</text>
+<rect x="277.4" y="416.8" width="43.199999999999996" height="28.799999999999997" rx="2" fill="#2e7d32" stroke="#1b5e20" stroke-width="1.5"/>
+<text x="325.4" y="436.0" font-size="10" text-anchor="start" font-weight="bold" fill="#a5d6a7" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR IN</text>
+<rect x="147.8" y="448.0" width="28.799999999999997" height="48.0" rx="2" fill="#2e7d32" stroke="#1b5e20" stroke-width="1.5"/>
+<text x="186.20000000000002" y="474.4" font-size="10" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BAT IN</text>
+<rect x="416.59999999999997" y="472.0" width="43.199999999999996" height="52.8" rx="2" fill="#b0bec5" stroke="#607d8b" stroke-width="1.5"/>
+<text x="413.59999999999997" y="491.2" font-size="9" text-anchor="end" font-weight="normal" fill="#e0e0e0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-A</text>
+<text x="413.59999999999997" y="505.6" font-size="9" text-anchor="end" font-weight="normal" fill="#e0e0e0" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使わない</text>
+<text x="378.2" y="445.0" font-size="9" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V・GND</text>
+<rect x="363.8" y="448.0" width="9.6" height="9.6" fill="#d4af37"/>
+<rect x="376.0" y="448.0" width="9.6" height="9.6" fill="#d4af37"/>
+<rect x="111.8" y="596.8" width="384.0" height="96.0" rx="4" fill="#c8e6c9" stroke="#558b2f" stroke-width="2"/>
+<circle cx="125.7" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="125.7" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="137.9" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="150.1" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="162.3" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="174.5" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="186.7" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="198.9" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="211.1" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="223.3" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="235.4" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="247.6" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="259.8" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="272.0" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="284.2" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="296.4" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="308.6" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="320.8" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="333.0" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="345.2" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="357.4" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="369.6" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="381.8" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="393.9" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="406.1" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="418.3" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="430.5" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="442.7" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="454.9" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="467.1" cy="681.5" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="608.3" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="620.5" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="632.7" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="644.9" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="657.1" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="669.3" r="1.6" fill="#9ccc65"/>
+<circle cx="479.3" cy="681.5" r="1.6" fill="#9ccc65"/>
+<line x1="152.6" y1="640.0" x2="195.8" y2="640.0" stroke="#888" stroke-width="2"/>
+<rect x="160.76" y="634.72" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="174.2" y="632.32" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5.1kΩ</text>
+<line x1="152.6" y1="668.8" x2="195.8" y2="668.8" stroke="#888" stroke-width="2"/>
+<rect x="160.76" y="663.52" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="174.2" y="661.12" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5.1kΩ</text>
+<line x1="239.0" y1="640.0" x2="282.2" y2="640.0" stroke="#888" stroke-width="2"/>
+<rect x="247.16000000000003" y="634.72" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="260.6" y="632.32" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<line x1="239.0" y1="668.8" x2="282.2" y2="668.8" stroke="#888" stroke-width="2"/>
+<rect x="247.16000000000003" y="663.52" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="260.6" y="661.12" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<rect x="297.0799999999999" y="648.64" width="13.44" height="11.52" rx="3" fill="#3f6fb5" stroke="#1a3e7a" stroke-width="1"/>
+<text x="303.79999999999995" y="645.76" font-size="9" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">0.1µF</text>
+<line x1="349.4" y1="640.0" x2="392.6" y2="640.0" stroke="#888" stroke-width="2"/>
+<rect x="357.56" y="634.72" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="371.0" y="632.32" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<line x1="349.4" y1="668.8" x2="392.6" y2="668.8" stroke="#888" stroke-width="2"/>
+<rect x="357.56" y="663.52" width="26.88" height="10.56" rx="3" fill="#d7ccc8" stroke="#795548" stroke-width="1"/>
+<text x="371.0" y="661.12" font-size="10" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">20kΩ</text>
+<rect x="407.47999999999996" y="648.64" width="13.44" height="11.52" rx="3" fill="#3f6fb5" stroke="#1a3e7a" stroke-width="1"/>
+<text x="414.2" y="645.76" font-size="9" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">0.1µF</text>
+<text x="174.2" y="689.92" font-size="9" text-anchor="middle" font-weight="normal" fill="#33691e" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">CC 用</text>
+<text x="275.0" y="689.92" font-size="9" text-anchor="middle" font-weight="normal" fill="#33691e" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電池 1/2</text>
+<text x="385.4" y="689.92" font-size="9" text-anchor="middle" font-weight="normal" fill="#33691e" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネル 1/6</text>
+<rect x="138.2" y="755.2" width="105.6" height="38.4" rx="4" fill="#455a64" stroke="#263238" stroke-width="2"/>
+<rect x="169.4" y="786.4" width="43.199999999999996" height="16.8" rx="4" fill="#b0b0b0" stroke="#666" stroke-width="1"/>
+<text x="191.0" y="779.2" font-size="11" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（入力）</text>
+<text x="191.0" y="827.2" font-size="11" text-anchor="middle" font-weight="bold" fill="#0d47a1" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">← ソーラーパネルの USB-C</text>
+<rect x="359.0" y="755.2" width="105.6" height="38.4" rx="4" fill="#455a64" stroke="#263238" stroke-width="2"/>
+<rect x="390.2" y="786.4" width="43.199999999999996" height="16.8" rx="4" fill="#b0b0b0" stroke="#666" stroke-width="1"/>
+<text x="411.8" y="779.2" font-size="11" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（出力）</text>
+<text x="411.8" y="827.2" font-size="11" text-anchor="middle" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ HPX-Core へ</text>
+<text x="303.79999999999995" y="850.4" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB Type-Cコネクターパネル取付キット ×2 をケースの壁に付ける</text>
+<path d="M191.0,755.1999999999999 L191.0,702.4 L176.6,702.4 L176.6,692.8" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M191.0,755.1999999999999 L191.0,702.4 L176.6,702.4 L176.6,692.8" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M191.0,755.1999999999999 L191.0,702.4 L176.6,702.4 L176.6,692.8" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M411.8,755.1999999999999 L411.8,702.4 L426.2,702.4 L426.2,692.8" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M411.8,755.1999999999999 L411.8,702.4 L426.2,702.4 L426.2,692.8" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M411.8,755.1999999999999 L411.8,702.4 L426.2,702.4 L426.2,692.8" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M133.4,596.8 L133.4,587.2 L296.6,587.2 L296.6,419.2" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M133.4,596.8 L133.4,587.2 L296.6,587.2 L296.6,419.2" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M133.4,596.8 L133.4,587.2 L296.6,587.2 L296.6,419.2" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M126.2,395.2 L109.4,395.2 L109.4,476.8 L147.8,476.8" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M126.2,395.2 L109.4,395.2 L109.4,476.8 L147.8,476.8" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M126.2,395.2 L109.4,395.2 L109.4,476.8 L147.8,476.8" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M431.0,596.8 L431.0,589.5999999999999 L368.59999999999997,589.5999999999999 L368.59999999999997,452.8" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M431.0,596.8 L431.0,589.5999999999999 L368.59999999999997,589.5999999999999 L368.59999999999997,452.8" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M431.0,596.8 L431.0,589.5999999999999 L368.59999999999997,589.5999999999999 L368.59999999999997,452.8" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="95" y="874.4" font-size="11" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">緑の板 = 抵抗をまとめる小さな基板（秋月 両面スルーホールユニバーサル基板 2*8、80×20mm）</text>
+<text x="95" y="910.4" font-size="11" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線の本数・色は右の「線のつながり」と下の表を見る（この図は置き場所の目安）</text>
+<text x="95" y="892.4" font-size="11" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">○ はナット入り貼付スペーサー AST3-6B（DFR0559 に4個・小さな基板に4個）</text>
+<text x="640" y="126" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線のつながり</text>
+<rect x="640" y="160" width="170" height="100" rx="6" fill="#0d47a1" stroke="#06244f" stroke-width="3"/>
+<text x="725" y="280" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラーパネル 10W/5V</text>
+<rect x="870" y="180" width="70" height="60" rx="6" fill="#37474f" stroke="#222" stroke-width="2"/>
+<text x="865" y="256" font-size="11" text-anchor="end" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C</text>
+<text x="865" y="270" font-size="11" text-anchor="end" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">（入力）</text>
+<path d="M810,210 L870,210" stroke="#424242" stroke-width="8"/>
+<rect x="1000" y="160" width="230" height="230" rx="10" fill="#212121" stroke="#000" stroke-width="3"/>
+<text x="1115" y="280" font-size="16" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559</text>
+<circle cx="1000" cy="190" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="1000" cy="190" r="3" fill="#5a4a14"/>
+<text x="1014" y="195" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR＋</text>
+<circle cx="1000" cy="230" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="1000" cy="230" r="3" fill="#5a4a14"/>
+<text x="1014" y="235" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">SOLAR−</text>
+<circle cx="1000" cy="310" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="1000" cy="310" r="3" fill="#5a4a14"/>
+<text x="1014" y="315" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BAT＋</text>
+<circle cx="1000" cy="350" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="1000" cy="350" r="3" fill="#5a4a14"/>
+<text x="1014" y="355" font-size="15" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">BAT−</text>
+<circle cx="1050" cy="390" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1050" y="374" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V</text>
+<circle cx="1110" cy="390" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1110" y="374" font-size="14" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<rect x="640" y="440" width="250" height="110" rx="10" fill="#455a64" stroke="#263238" stroke-width="3"/>
+<rect x="655" y="455" width="220" height="36" rx="18" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
+<text x="765" y="479" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650（保護回路付き）</text>
+<rect x="655" y="503" width="220" height="36" rx="18" fill="#2e7d32" stroke="#1b5e20" stroke-width="2"/>
+<text x="765" y="527" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650（保護回路付き）</text>
+<circle cx="890" cy="460" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="890" cy="460" r="3" fill="#5a4a14"/>
+<text x="876" y="465" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋</text>
+<circle cx="890" cy="530" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<circle cx="890" cy="530" r="3" fill="#5a4a14"/>
+<text x="876" y="535" font-size="15" text-anchor="end" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">−</text>
+<text x="640" y="572" font-size="13" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 ×2（並列 約3.7V）</text>
+<path d="M940,195 L970,195 L970,190 L1000,190" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,195 L970,195 L970,190 L1000,190" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,195 L970,195 L970,190 L1000,190" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,225 L980,225 L980,230 L1000,230" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,225 L980,225 L980,230 L1000,230" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,225 L980,225 L980,230 L1000,230" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,460 L940,460 L940,310 L1000,310" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,460 L940,460 L940,310 L1000,310" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,460 L940,460 L940,310 L1000,310" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,530 L960,530 L960,350 L1000,350" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,530 L960,530 L960,350 L1000,350" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M890,530 L960,530 L960,350 L1000,350" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="805" y="310" width="120" height="66" rx="8" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
+<text x="865" y="332" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">CC1・CC2</text>
+<text x="865" y="350" font-size="12" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ 5.1kΩ ×2</text>
+<text x="865" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ GND</text>
+<path d="M920,240 L920,310" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M920,240 L920,310" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M920,240 L920,310" fill="none" stroke="#fdd835" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="930" y="600" width="96" height="84" rx="8" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
+<text x="978" y="622" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<text x="978" y="640" font-size="12" text-anchor="middle" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">↓（電池 1/2）</text>
+<text x="978" y="658" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<text x="978" y="676" font-size="10" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋0.1µF→GND</text>
+<rect x="1170" y="600" width="96" height="84" rx="8" fill="#fff8e1" stroke="#c9a227" stroke-width="2"/>
+<text x="1218" y="622" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ</text>
+<text x="1218" y="640" font-size="12" text-anchor="middle" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">↓（パネル 1/6）</text>
+<text x="1218" y="658" font-size="13" text-anchor="middle" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">20kΩ</text>
+<text x="1218" y="676" font-size="10" text-anchor="middle" font-weight="normal" fill="#666" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋0.1µF→GND</text>
+<rect x="795" y="300" width="140" height="86" rx="10" fill="none" stroke="#558b2f" stroke-width="2.5" stroke-dasharray="8 5"/>
+<rect x="920" y="590" width="356" height="104" rx="10" fill="none" stroke="#558b2f" stroke-width="2.5" stroke-dasharray="8 5"/>
+<text x="640" y="596" font-size="12" text-anchor="start" font-weight="bold" fill="#33691e" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">緑の点線 = 小さな基板にのせる部品</text>
+<rect x="940" y="760" width="300" height="90" rx="8" fill="#37474f" stroke="#222" stroke-width="2"/>
+<text x="1090" y="820" font-size="13" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C（出力）</text>
+<circle cx="978" cy="770" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="978" y="798" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D+</text>
+<circle cx="1050" cy="770" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1050" y="798" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS</text>
+<circle cx="1110" cy="770" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1110" y="798" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<circle cx="1218" cy="770" r="8" fill="#d4af37" stroke="#8a6d1d" stroke-width="2"/>
+<text x="1218" y="798" font-size="12" text-anchor="middle" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D−</text>
+<path d="M1050,390 L1050,770" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1050,390 L1050,770" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1050,390 L1050,770" fill="none" stroke="#fb8c00" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1110,390 L1110,770" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1110,390 L1110,770" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1110,390 L1110,770" fill="none" stroke="#212121" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,460 L940,590 L978,590 L978,600" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,460 L940,590 L978,590 L978,600" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M940,460 L940,590 L978,590 L978,600" fill="none" stroke="#e53935" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M978,684 L978,770" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M978,684 L978,770" fill="none" stroke="#555" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M978,684 L978,770" fill="none" stroke="#fafafa" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M905,180 L905,148 L1240,148 L1240,600" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M905,180 L905,148 L1240,148 L1240,600" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M905,180 L905,148 L1240,148 L1240,600" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1218,684 L1218,770" fill="none" stroke="#ffffff" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1218,684 L1218,770" fill="none" stroke="#00000055" stroke-width="7.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1218,684 L1218,770" fill="none" stroke="#1e88e5" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="640" y="890" font-size="13" text-anchor="start" font-weight="bold" fill="#e65100" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">→ USB-C ケーブル（データ対応）で HPX-Core ＋LTE-M・＋防水 の USB-C 口へ</text>
+<text x="640" y="916" font-size="12" text-anchor="start" font-weight="normal" fill="#555" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND（−）はすべて共通（DFR0559 の GND・SOLAR−・BAT−、両方の USB-C の GND）</text>
+<text x="60" y="1088" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">中の線</text>
+<rect x="60" y="1100" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1121" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">線の色（例）</text>
+<text x="210" y="1121" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">どこから</text>
+<text x="510" y="1121" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">どこへ</text>
+<text x="870" y="1121" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
 <rect x="60" y="1130" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1139" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
 <text x="112" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
-<text x="210" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の＋（2本並列）</text>
-<text x="530" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 BAT＋</text>
-<text x="830" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<text x="210" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の VBUS（＋）</text>
+<text x="510" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板 → DFR0559 SOLAR IN ＋</text>
+<text x="870" y="1151" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板でパネルの電圧を測る分圧へも分ける</text>
 <rect x="60" y="1160" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
 <rect x="70" y="1169" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
 <text x="112" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
-<text x="210" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の−（2本並列）</text>
-<text x="530" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 BAT−</text>
-<text x="830" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<text x="210" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の GND（−）</text>
+<text x="510" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板の GND → DFR0559 SOLAR IN −</text>
+<text x="870" y="1181" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
 <rect x="60" y="1190" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1199" width="34" height="12" rx="3" fill="#fb8c00" stroke="#555" stroke-width="1"/>
-<text x="112" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">橙</text>
-<text x="210" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 5V（ピン）</text>
-<text x="530" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の VBUS</text>
-<text x="830" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core の電源</text>
+<rect x="70" y="1199" width="34" height="12" rx="3" fill="#fdd835" stroke="#555" stroke-width="1"/>
+<text x="112" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黄</text>
+<text x="210" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の CC1・CC2</text>
+<text x="510" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板の 5.1kΩ → GND</text>
+<text x="870" y="1211" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1本ずつ。ないとパネルが 5V を出さないことがある</text>
 <rect x="60" y="1220" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1229" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
-<text x="112" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
-<text x="210" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 GND（ピン）</text>
-<text x="530" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の GND</text>
-<text x="830" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<rect x="70" y="1229" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
+<text x="210" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の＋（2本並列）</text>
+<text x="510" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 BAT IN ＋</text>
+<text x="870" y="1241" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ホルダーのリード線をねじ端子へ</text>
 <rect x="60" y="1250" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1259" width="34" height="12" rx="3" fill="#fafafa" stroke="#555" stroke-width="1"/>
-<text x="112" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">白</text>
-<text x="210" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の＋ → 100kΩ</text>
-<text x="530" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の D+</text>
-<text x="830" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ と 0.1µF で GND へ（電池の電圧 1/2）</text>
+<rect x="70" y="1259" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
+<text x="210" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の−（2本並列）</text>
+<text x="510" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 BAT IN −</text>
+<text x="870" y="1271" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
 <rect x="60" y="1280" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<rect x="70" y="1289" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
-<text x="112" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">青</text>
-<text x="210" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力 USB-C の VBUS → 100kΩ</text>
-<text x="530" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の D−</text>
-<text x="830" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">20kΩ と 0.1µF で GND へ（パネルの電圧 1/6）</text>
-<text x="60" y="1358" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core への USB-C ケーブル（データ対応のもの）</text>
-<rect x="60" y="1370" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1391" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の線</text>
-<text x="190" y="1391" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar から</text>
-<text x="450" y="1391" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（＋LTE-M・＋防水）で</text>
-<text x="870" y="1391" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
-<rect x="60" y="1400" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS</text>
-<text x="190" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 の 5V</text>
-<text x="450" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）</text>
-<text x="870" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V・1A まで</text>
-<rect x="60" y="1430" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1451" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<text x="190" y="1451" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 の GND</text>
-<text x="450" y="1451" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
-<text x="870" y="1451" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
-<rect x="60" y="1460" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1481" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D+</text>
-<text x="190" y="1481" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電池の電圧（1/2）</text>
-<text x="450" y="1481" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GPIO39（v1.25。v1.24 までは GPIO34）</text>
-<text x="870" y="1481" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">動作設定「電圧の測り方」で HPX-Solar を選ぶ</text>
-<rect x="60" y="1490" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1511" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D−</text>
-<text x="190" y="1511" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネルの電圧（1/6）</text>
-<text x="450" y="1511" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GPIO36</text>
-<text x="870" y="1511" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
-<text x="60" y="1568" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ほかの機器に使うとき</text>
-<rect x="60" y="1580" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1601" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ機器</text>
-<text x="470" y="1601" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使えるか</text>
-<text x="710" y="1601" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
-<rect x="60" y="1610" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core ＋LTE-M</text>
-<text x="470" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">◎ 電圧も測れる</text>
-<text x="710" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C 口の D+・D− を読む</text>
-<rect x="60" y="1640" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1661" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core ＋防水（USB-C 口を足した版）</text>
-<text x="470" y="1661" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">◎ 電圧も測れる</text>
-<text x="710" y="1661" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ディープスリープで使う（常時稼働は冬に足りない見込み）</text>
-<rect x="60" y="1670" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1691" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core 基本モデル・HPX-CAM など</text>
-<text x="470" y="1691" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">○ 5V だけ</text>
-<text x="710" y="1691" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電圧は測れない。眠りながら動く機器に向く</text>
-<rect x="60" y="1700" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋有線LAN・LTE ルーター</text>
-<text x="470" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">✕</text>
-<text x="710" y="1721" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ずっと電気を使うので、カーバッテリーの方式を使う</text>
-<text x="60" y="1778" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品の使いどころ</text>
-<rect x="60" y="1790" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1811" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品</text>
-<text x="670" y="1811" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
-<text x="730" y="1811" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使うところ・メモ</text>
-<rect x="60" y="1820" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラーパネル 10W/5V（USB-C 出力）</text>
-<text x="670" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="730" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケーブルは切らずに入力の USB-C メス基板へ差す</text>
-<rect x="60" y="1850" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1871" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C メス基板（電源用、5.1kΩ 付き）</text>
-<text x="670" y="1871" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="730" y="1871" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">入力。パネルの USB-C を受けて＋−の線に分ける</text>
-<rect x="60" y="1880" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1901" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）</text>
-<text x="670" y="1901" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="730" y="1901" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力。ケースの壁に付ける</text>
-<rect x="60" y="1910" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1931" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFRobot DFR0559 ソーラーパワーマネージャー 5V</text>
-<text x="670" y="1931" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
-<text x="730" y="1931" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 の充電と 5V の出力</text>
+<rect x="70" y="1289" width="34" height="12" rx="3" fill="#e53935" stroke="#555" stroke-width="1"/>
+<text x="112" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">赤</text>
+<text x="210" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 BAT IN ＋</text>
+<text x="510" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板の 100kΩ（電池）</text>
+<text x="870" y="1301" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電池の電圧を測る分圧へ</text>
+<rect x="60" y="1310" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1319" width="34" height="12" rx="3" fill="#fb8c00" stroke="#555" stroke-width="1"/>
+<text x="112" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">橙</text>
+<text x="210" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 5V（ピン）</text>
+<text x="510" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板 → 出力 USB-C の VBUS</text>
+<text x="870" y="1331" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core の電源</text>
+<rect x="60" y="1340" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1349" width="34" height="12" rx="3" fill="#212121" stroke="#555" stroke-width="1"/>
+<text x="112" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">黒</text>
+<text x="210" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 GND（ピン）</text>
+<text x="510" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板の GND → 出力 USB-C の GND</text>
+<text x="870" y="1361" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<rect x="60" y="1370" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1379" width="34" height="12" rx="3" fill="#fafafa" stroke="#555" stroke-width="1"/>
+<text x="112" y="1391" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">白</text>
+<text x="210" y="1391" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板（電池 1/2）</text>
+<text x="510" y="1391" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の D+</text>
+<text x="870" y="1391" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ/100kΩ のまん中、0.1µF で GND へ</text>
+<rect x="60" y="1400" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<rect x="70" y="1409" width="34" height="12" rx="3" fill="#1e88e5" stroke="#555" stroke-width="1"/>
+<text x="112" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">青</text>
+<text x="210" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板（パネル 1/6）</text>
+<text x="510" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">出力 USB-C の D−</text>
+<text x="870" y="1421" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">100kΩ/20kΩ のまん中、0.1µF で GND へ</text>
+<text x="60" y="1478" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core への USB-C ケーブル（データ対応のもの）</text>
+<rect x="60" y="1490" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1511" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C の線</text>
+<text x="190" y="1511" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Solar から</text>
+<text x="450" y="1511" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core（＋LTE-M・＋防水）で</text>
+<text x="870" y="1511" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
+<rect x="60" y="1520" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1541" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">VBUS</text>
+<text x="190" y="1541" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 の 5V</text>
+<text x="450" y="1541" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）</text>
+<text x="870" y="1541" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">5V・1A まで</text>
+<rect x="60" y="1550" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1571" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<text x="190" y="1571" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 の GND</text>
+<text x="450" y="1571" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GND</text>
+<text x="870" y="1571" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<rect x="60" y="1580" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1601" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D+</text>
+<text x="190" y="1601" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電池の電圧（1/2）</text>
+<text x="450" y="1601" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GPIO39（v1.25。v1.24 までは GPIO34）</text>
+<text x="870" y="1601" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">動作設定「電圧の測り方」で HPX-Solar を選ぶ</text>
+<rect x="60" y="1610" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">D−</text>
+<text x="190" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">パネルの電圧（1/6）</text>
+<text x="450" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">GPIO36</text>
+<text x="870" y="1631" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif"></text>
+<text x="60" y="1688" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ほかの機器に使うとき</text>
+<rect x="60" y="1700" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1721" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">つなぐ機器</text>
+<text x="470" y="1721" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使えるか</text>
+<text x="710" y="1721" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">メモ</text>
+<rect x="60" y="1730" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1751" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core ＋LTE-M</text>
+<text x="470" y="1751" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">◎ 電圧も測れる</text>
+<text x="710" y="1751" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB-C 口の D+・D− を読む</text>
+<rect x="60" y="1760" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1781" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core ＋防水（USB-C 口を足した版）</text>
+<text x="470" y="1781" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">◎ 電圧も測れる</text>
+<text x="710" y="1781" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ディープスリープで使う（常時稼働は冬に足りない見込み）</text>
+<rect x="60" y="1790" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1811" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">HPX-Core 基本モデル・HPX-CAM など</text>
+<text x="470" y="1811" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">○ 5V だけ</text>
+<text x="710" y="1811" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電圧は測れない。眠りながら動く機器に向く</text>
+<rect x="60" y="1820" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">＋有線LAN・LTE ルーター</text>
+<text x="470" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">✕</text>
+<text x="710" y="1841" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ずっと電気を使うので、カーバッテリーの方式を使う</text>
+<text x="60" y="1898" font-size="17" text-anchor="start" font-weight="bold" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品の使いどころ</text>
+<rect x="60" y="1910" width="1140" height="30" rx="0" fill="#1f3a2a" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="1931" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">部品</text>
+<text x="590" y="1931" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">数</text>
+<text x="650" y="1931" font-size="14" text-anchor="start" font-weight="bold" fill="#fff" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">使うところ・メモ</text>
 <rect x="60" y="1940" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 リチウムイオン電池（保護回路付き）・電池ホルダー 1本用</text>
-<text x="670" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">各2</text>
-<text x="730" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">並列につなぐ</text>
+<text x="70" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケース用取り付けベース タカチ OBP10-17（87×115mm）</text>
+<text x="590" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="650" y="1961" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">縦に置き、下（USB-C の側）から 小さな基板・DFR0559・18650 ホルダーの順</text>
 <rect x="60" y="1970" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2</text>
-<text x="670" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1式</text>
-<text x="730" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">電池とパネルの電圧を D+・D− へ</text>
+<text x="70" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">18650 電池ホルダー 1本用（75×21mm）</text>
+<text x="590" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
+<text x="650" y="1991" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">横向きにして上の方へ両面テープで貼る。2個を並列につなぐ</text>
 <rect x="60" y="2000" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
-<text x="70" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">タカチ PCB72-95・ケース OB10-17-5W・取り付けベース OBP10-17・AST3-6B</text>
-<text x="670" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">各1</text>
-<text x="730" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケースはあとで考え直す（今は前の版のまま）</text>
-<rect x="60" y="2050" width="1160" height="268" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
-<text x="78" y="2076" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
-<text x="78" y="2104" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・試作中の図です。実機では確かめていません。</text>
-<text x="78" y="2130" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・出力の USB-C は普通の USB 機器（パソコンなど）に差さない（D+・D− に電圧を出すため）。印を付けておく。</text>
-<text x="78" y="2156" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ケーブルは「データ対応」の USB-C ケーブルを使う（充電専用のケーブルには D+・D− の線がない）。</text>
-<text x="78" y="2182" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする（直列にしない）。</text>
-<text x="78" y="2208" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。</text>
-<text x="78" y="2234" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・入力の USB-C メス基板は CC に 5.1kΩ が付いた電源用を使う。付いていないと、パネルが 5V を出さないことがある。</text>
-<text x="78" y="2260" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・DFR0559 の EN は使わない（5V はずっと出す）。何もつながないとき 5V が出るかは未確認。出ないときは EN を ON の側へつなぐ。</text>
-<text x="78" y="2286" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・DFR0559 の 5V 出力は 1A まで。待機の電流（眠っている間の電気）は未確認なので、届いたらテスターで測る。</text>
-<text x="78" y="2312" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・使える電気の目安（実測ではない）: 10W パネルは冬の晴れで 1日 約10〜20Wh、18650 2本で約22Wh。眠りながら動く機器に向く。</text>
-<circle cx="940" cy="185" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="1000" cy="180" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="940" cy="215" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="1000" cy="220" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="890" cy="450" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="1000" cy="300" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="890" cy="520" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="1000" cy="340" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="1050" cy="380" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
-<circle cx="1050" cy="760" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
-<circle cx="1110" cy="380" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="1110" cy="760" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
-<circle cx="940" cy="450" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="978" cy="590" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
-<circle cx="978" cy="674" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
-<circle cx="978" cy="760" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
-<circle cx="905" cy="170" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
-<circle cx="1240" cy="590" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
-<circle cx="1218" cy="674" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
-<circle cx="1218" cy="760" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
-<circle cx="940" cy="450" r="7" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<text x="70" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFRobot DFR0559 ソーラーパワーマネージャー 5V（63×33mm）</text>
+<text x="590" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="650" y="2021" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ホルダーの下。四隅を AST3-6B で貼る。18650 の充電と 5V の出力</text>
+<rect x="60" y="2030" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2051" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">両面スルーホールユニバーサル基板 2*8（80×20mm）</text>
+<text x="590" y="2051" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="650" y="2051" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 の下。抵抗とコンデンサーをまとめ、四隅を AST3-6B で貼る</text>
+<rect x="60" y="2060" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2081" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">抵抗 5.1kΩ ×2</text>
+<text x="590" y="2081" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1式</text>
+<text x="650" y="2081" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板。入力 USB-C の CC1・CC2 → GND</text>
+<rect x="60" y="2090" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2111" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">抵抗 100kΩ ×3・20kΩ ×1・コンデンサー 0.1µF ×2</text>
+<text x="590" y="2111" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1式</text>
+<text x="650" y="2111" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">小さな基板。電池とパネルの電圧を D+・D− へ</text>
+<rect x="60" y="2120" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2141" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">USB Type-Cコネクターパネル取付キット</text>
+<text x="590" y="2141" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">2</text>
+<text x="650" y="2141" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケース OB10-17-5W の壁（取り付けベースの下の方向）に付ける。入力用・出力用</text>
+<rect x="60" y="2150" width="1140" height="30" rx="0" fill="#f4f1e6" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2171" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ナット入り貼付スペーサー タカチ AST3-6B</text>
+<text x="590" y="2171" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">8個</text>
+<text x="650" y="2171" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">DFR0559 に4個・小さな基板に4個</text>
+<rect x="60" y="2180" width="1140" height="30" rx="0" fill="#ffffff" stroke="#d8d2bd" stroke-width="1"/>
+<text x="70" y="2201" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ソーラーパネル 10W/5V（USB-C 出力）</text>
+<text x="590" y="2201" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">1</text>
+<text x="650" y="2201" font-size="14" text-anchor="start" font-weight="normal" fill="#333" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">ケーブルは切らずに入力の USB-C へ差す</text>
+<rect x="60" y="2230" width="1160" height="294" rx="10" fill="#fff3cd" stroke="#e0b84a" stroke-width="2"/>
+<text x="78" y="2256" font-size="17" text-anchor="start" font-weight="bold" fill="#7a5a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">注意</text>
+<text x="78" y="2284" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・試作中の図です。実機では確かめていません。部品の大きさは秋月のページの値、DFR0559 の端子の位置は写真から描いた目安です。</text>
+<text x="78" y="2310" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・小さな基板（2*8）の取付穴は 2.2mm で、AST3-6B の M3 ねじが通らない。ドリルで 3.2mm に広げてから留める。</text>
+<text x="78" y="2336" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・USB Type-Cコネクターパネル取付キットには 5.1kΩ が付いていない。入力側は CC1・CC2 を 5.1kΩ で GND へ（ないとパネルが 5V を出さないことがある）。</text>
+<text x="78" y="2362" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・出力の USB-C は普通の USB 機器（パソコンなど）に差さない（D+・D− に電圧を出すため）。印を付けておく。</text>
+<text x="78" y="2388" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・ケーブルは「データ対応」の USB-C ケーブルを使う（充電専用のケーブルには D+・D− の線がない）。</text>
+<text x="78" y="2414" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・18650 は保護回路付きを使う。2本は同じ銘柄・同じ残量で並列にする（直列にしない）。</text>
+<text x="78" y="2440" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・リチウムイオン電池は 0℃以下で充電すると傷む。電池はケースの中の日陰に置く。</text>
+<text x="78" y="2466" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・DFR0559 の EN は使わない（5V はずっと出す）。何もつながないとき 5V が出るかは未確認。出ないときは EN を ON の側へつなぐ。</text>
+<text x="78" y="2492" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・DFR0559 の 5V 出力は 1A まで。待機の電流（眠っている間の電気）は未確認なので、届いたらテスターで測る。</text>
+<text x="78" y="2518" font-size="15" text-anchor="start" font-weight="normal" fill="#4a3a00" font-family="'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic','Noto Sans CJK JP','IPAGothic',sans-serif">・使える電気の目安（実測ではない）: 10W パネルは冬の晴れで 1日 約10〜20Wh、18650 2本で約22Wh。眠りながら動く機器に向く。</text>
+<circle cx="169.4" cy="436.0" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="169.4" cy="436.0" r="4.8" fill="#616161"/>
+<circle cx="438.2" cy="436.0" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="438.2" cy="436.0" r="4.8" fill="#616161"/>
+<circle cx="169.4" cy="560.8" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="169.4" cy="560.8" r="4.8" fill="#616161"/>
+<circle cx="438.2" cy="560.8" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="438.2" cy="560.8" r="4.8" fill="#616161"/>
+<circle cx="121.4" cy="606.4" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="121.4" cy="606.4" r="4.8" fill="#616161"/>
+<circle cx="486.2" cy="606.4" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="486.2" cy="606.4" r="4.8" fill="#616161"/>
+<circle cx="121.4" cy="683.2" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="121.4" cy="683.2" r="4.8" fill="#616161"/>
+<circle cx="486.2" cy="683.2" r="12.5" fill="#fafafa" stroke="#616161" stroke-width="2"/>
+<circle cx="486.2" cy="683.2" r="4.8" fill="#616161"/>
+<circle cx="191.0" cy="755.1999999999999" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="176.6" cy="692.8" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="411.8" cy="755.1999999999999" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="426.2" cy="692.8" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="133.4" cy="596.8" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="296.6" cy="419.2" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="126.2" cy="395.2" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="147.8" cy="476.8" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="431.0" cy="596.8" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="368.59999999999997" cy="452.8" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="940" cy="195" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="1000" cy="190" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="940" cy="225" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="1000" cy="230" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="890" cy="460" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="1000" cy="310" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="890" cy="530" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="1000" cy="350" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="920" cy="240" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
+<circle cx="920" cy="310" r="5" fill="#fdd835" stroke="#333" stroke-width="1.5"/>
+<circle cx="1050" cy="390" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="1050" cy="770" r="5" fill="#fb8c00" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="390" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="1110" cy="770" r="5" fill="#212121" stroke="#333" stroke-width="1.5"/>
+<circle cx="940" cy="460" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="978" cy="600" r="5" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+<circle cx="978" cy="684" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+<circle cx="978" cy="770" r="5" fill="#fafafa" stroke="#333" stroke-width="1.5"/>
+<circle cx="905" cy="180" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="1240" cy="600" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="1218" cy="684" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="1218" cy="770" r="5" fill="#1e88e5" stroke="#333" stroke-width="1.5"/>
+<circle cx="940" cy="460" r="7" fill="#e53935" stroke="#333" stroke-width="1.5"/>
 </svg>
