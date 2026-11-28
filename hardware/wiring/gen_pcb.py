@@ -1124,7 +1124,7 @@ finish(s, y, [
 # 「＋有線LAN」と同じ ESP-32・W5500 の並びに、上の空いた所（1〜9行）へ 12V バッテリー・パネルの電圧を測る部品と BP5293-50 を足す
 OX, OY = 260, 200
 s = S(1700, 3600)
-title(s, "【ELEGOO で作るとき】HPX-Core ＋有線LAN＆ソーラーシステムチェック 基板", "6×8cm 縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム v1.25")
+title(s, "【ELEGOO で作るとき】HPX-Core ソーラーシステム版 基板", "6×8cm 縦置き ／ ELEGOO ESP-32 ＋ W5500 ／ ファーム v1.25")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
 
 def R(n):   # 行の番号（1〜33）→ 図の行（0〜）
@@ -1809,7 +1809,7 @@ finish(s, y, [
 # パネル＝IO39（v1.25 で 34 から変更。FireBeetle の IO34 は基板の上で電池コネクタにつながっているため）、バッテリー＝IO35。5V は VCC へ。
 OX, OY = 260, 200
 s = S(1700, 3500)
-title(s, "HPX-Core（親機）＋有線LAN＆ソーラーシステムチェック 基板の配線図", "6×8cm（穴 A〜Y × 1〜33）縦置き ／ FireBeetle 2 ESP32-E ＋ W5500 ＋ 電圧チェック ／ ファーム HPX_Core v1.25")
+title(s, "HPX-Core（親機）ソーラーシステム版 基板の配線図", "6×8cm（穴 A〜Y × 1〜33）縦置き ／ FireBeetle 2 ESP32-E ＋ W5500 ＋ 電圧チェック ／ ファーム HPX_Core v1.25")
 board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
 fb("B", "K", 12, True, LAN_USED | {"B17", "B19", "B23", "B25"}, "ピンソケット 18ピン・14ピンに差す")
 fb_w5500(22)
@@ -2599,7 +2599,7 @@ for kind, (r0, rw, wused, LV) in DK_LANV.items():
     n = len(DK_PINS[kind][0])
     OX, OY = 260, 200
     s = S(1700, 3600)
-    title(s, f"{DK_TAG[kind]}HPX-Core ＋有線LAN＆ソーラーシステムチェック", f"6×8cm 縦置き ／ {DK_NAME[kind]}（180度回して差す）＋ W5500 ＋ 電圧チェック ／ ファーム v1.25")
+    title(s, f"{DK_TAG[kind]}HPX-Core ソーラーシステム版", f"6×8cm 縦置き ／ {DK_NAME[kind]}（180度回して差す）＋ W5500 ＋ 電圧チェック ／ ファーム v1.25")
     board(s, 25, 33, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜Y × 1〜33）")
     dk(kind, 1, r0, {hs[0] for _, _, hs, _ in LV if hs[0][0] in "BL"}, DK_SOCK[kind], rot=True)
     w5500_used(rw, wused)
@@ -2785,7 +2785,7 @@ FN5_USED = {hs[0] for _, _, _, hs, _ in FN5_W} | {"C11", "P11"}
 OX, OY = 200, 300
 s = S(1700, 4200)
 FN5_NETS.clear()
-title(s, f"{DK_TAG['freenove']}HPX-Core ＋有線LAN＆ソーラーシステムチェック", "6×8cm（穴 22×27）／ W5500 ＋ 電圧チェック ／ v1.25")
+title(s, f"{DK_TAG['freenove']}HPX-Core ソーラーシステム版", "6×8cm（穴 22×27）／ W5500 ＋ 電圧チェック ／ v1.25")
 board(s, 22, 27, "ユニバーサル基板 6×8cm を縦に置いたところ（穴 A〜V × 1〜27）")
 B100 = ["#8d5524", "#212121", "#f9a825"]
 res_flat("K2", "K6", "8.2kΩ", ["#9e9e9e", "#e53935", "#e53935"], (-2000, -2000))

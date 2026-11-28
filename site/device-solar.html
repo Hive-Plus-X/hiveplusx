@@ -211,7 +211,7 @@
     <a class="back back-top" href="devices.html">← 機器の一覧へ戻る</a>
     <p class="eyebrow">Devices</p>
     <h1>HPX-Solar</h1>
-    <p class="lead">小型ソーラーパネルで 18650 電池2本を充電し、HPX-Core「＋LTE-M」などへ電気を送る電源です。</p>
+    <p class="lead">小型ソーラーパネルで 18650 電池2本を充電し、HPX-Core などへ電気を送る電源です。</p>
     
   </div>
 
@@ -248,7 +248,7 @@
         </tbody>
         <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 7,556円</td></tr></tfoot>
       </table>
-      <div class="extra"><h3>その他</h3><p>※試作中です。実機では確かめていません。電池とパネルの電圧を測れるのは、HPX-Core「＋LTE-M」と「＋防水」(USB-C メス基板で 4本に分けたとき) です。ほかの機器 (HPX-Core 基本モデル・HPX-CAM など) には 5V の電源として使えます (眠りながら動く機器向け)。出力の USB-C はパソコンなど普通の USB 機器には差さないでください。ずっと動かす機器 (＋有線LAN・LTE ルーター) には向きません。</p></div>
+      <div class="extra"><h3>その他</h3><p>※試作中です。実機では確かめていません。HPX-Core 基本モデル・HPX-CAM などには 5V の電源として使えます (眠りながら動く機器向け)。出力の USB-C はパソコンなど普通の USB 機器には差さないでください。ずっと動かす機器 (ソーラーシステム版・LTE ルーター) には向きません。</p></div>
     </div>
   </section>
 
@@ -264,13 +264,9 @@
         <thead><tr><th>線の色（例）</th><th>どこから</th><th>どこへ</th><th>メモ</th></tr></thead>
         <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>入力 USB-C の VBUS（＋）</td><td>小さな基板 → DFR0559 SOLAR IN ＋</td><td>小さな基板でパネルの電圧を測る分圧へも分ける</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>入力 USB-C の GND（−）</td><td>小さな基板の GND → DFR0559 SOLAR IN −</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>入力 USB-C の CC1・CC2</td><td>小さな基板の 5.1kΩ → GND</td><td>1本ずつ。ないとパネルが 5V を出さないことがある</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>18650 の＋（2本並列）</td><td>DFR0559 BAT IN ＋</td><td>ホルダーのリード線をねじ端子へ</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>18650 の−（2本並列）</td><td>DFR0559 BAT IN −</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>DFR0559 BAT IN ＋</td><td>小さな基板の 100kΩ（電池）</td><td>電池の電圧を測る分圧へ</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>DFR0559 5V（ピン）</td><td>小さな基板 → 出力 USB-C の VBUS</td><td>HPX-Core の電源</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>DFR0559 GND（ピン）</td><td>小さな基板の GND → 出力 USB-C の GND</td><td></td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>小さな基板（電池 1/2）</td><td>出力 USB-C の D+</td><td>100kΩ/100kΩ のまん中、0.1µF で GND へ</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>小さな基板（パネル 1/6）</td><td>出力 USB-C の D−</td><td>100kΩ/20kΩ のまん中、0.1µF で GND へ</td></tr></tbody>
       </table></div></div>
-      <div class="wtab"><h3>HPX-Core への USB-C ケーブル（データ対応のもの）</h3><div class="scroll"><table>
-        <thead><tr><th>USB-C の線</th><th>HPX-Solar から</th><th>HPX-Core（＋LTE-M・＋防水）で</th><th>メモ</th></tr></thead>
-        <tbody><tr><td>VBUS</td><td>DFR0559 の 5V</td><td>HPX-Core の VCC（＋LTE-M は CatM の 5V スイッチへも）</td><td>5V・1A まで</td></tr><tr><td>GND</td><td>DFR0559 の GND</td><td>GND</td><td></td></tr><tr><td>D+</td><td>電池の電圧（1/2）</td><td>GPIO39（v1.25。v1.24 までは GPIO34）</td><td>動作設定「電圧の測り方」で HPX-Solar を選ぶ</td></tr><tr><td>D−</td><td>パネルの電圧（1/6）</td><td>GPIO36</td><td></td></tr></tbody>
-      </table></div></div>
       <div class="wtab"><h3>ほかの機器に使うとき</h3><div class="scroll"><table>
         <thead><tr><th>つなぐ機器</th><th>使えるか</th><th>メモ</th></tr></thead>
-        <tbody><tr><td>HPX-Core ＋LTE-M</td><td>◎ 電圧も測れる</td><td>USB-C 口の D+・D− を読む</td></tr><tr><td>HPX-Core ＋防水（USB-C 口を足した版）</td><td>◎ 電圧も測れる</td><td>ディープスリープで使う（常時稼働は冬に足りない見込み）</td></tr><tr><td>HPX-Core 基本モデル・HPX-CAM など</td><td>○ 5V だけ</td><td>電圧は測れない。眠りながら動く機器に向く</td></tr><tr><td>＋有線LAN・LTE ルーター</td><td>✕</td><td>ずっと電気を使うので、カーバッテリーの方式を使う</td></tr></tbody>
+        <tbody><tr><td>HPX-Core 基本モデル・HPX-CAM など</td><td>○ 5V だけ</td><td>電圧は測れない。眠りながら動く機器に向く</td></tr><tr><td>ソーラーシステム版・LTE ルーター</td><td>✕</td><td>ずっと電気を使うので、カーバッテリーの方式を使う</td></tr></tbody>
       </table></div></div>
       <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
