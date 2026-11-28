@@ -1196,3 +1196,182 @@ json.dump({"tables": [{"head": "中の線", "rows": SOLAR_WIRES}, {"head": "HPX-
            "notes": [n.lstrip("・") for n in SOLAR_NOTES]},
           open(os.path.join(OUT, "HPX-Solar_pcb.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("ok Solar")
+
+# ------------------------------------------------------------------ HPX-Core ＋LTE-M＆ソーラー（HPX-Solar を入れた一体型、TARO 2026-11-28）
+# ケースを OB13-21-6W、取り付けベースを OBP13-21（110×135mm、TARO の値）に大きくして、＋LTE-M と HPX-Solar を1つのケースに入れる。
+# ＋LTE-M の基板の部品と HPX-Solar の小さな基板の部品は 1枚の基板（6×8cm、HPX-Core_LTES_pcb.png）にまとめる。
+# Solar から Core へは USB-C ケーブルを通さず、DFR0559 の 5V ピンから直接。ケースの外から入るのはソーラーパネルの USB-C だけ。
+s = S(1400, 2700)
+title(s, "HPX-Core ＋LTE-M＆ソーラー 取り付けベースの配置図", "試作中 ／ 実機未確認 ／ ケースに入るのはパネルの USB-C だけ")
+K = 4.8                      # 1mm = 4.8px
+BX, BY = 95, 205             # OBP13-21 の左上
+def mm(x, y): return BX + x * K, BY + y * K
+s.text(BX, BY - 78, "ケース用取り付けベース OBP13-21 を上から見たところ", 17, weight="bold")
+s.text(BX, BY - 56, "（縦置き。下がパネルの USB-C を付けるケースの壁の側）", 12, fill="#555")
+cx0, cy0 = mm(-6, -6); cx1, cy1 = mm(116, 141)
+s.add(f'<rect x="{cx0}" y="{cy0}" width="{cx1-cx0}" height="{cy1-cy0}" rx="10" fill="none" stroke="#9e9e9e" stroke-width="2" stroke-dasharray="10 6"/>')
+s.text(cx1 - 8, cy0 + 18, "点線 = ケース OB13-21-6W", 12, "end", fill="#757575")
+s.rect(BX, BY, 110 * K, 135 * K, "#eceff1", "#90a4ae", 6, 3)
+s.text(BX + 110 * K + 36, BY + 67 * K, "135mm", 13, fill="#555")
+s.text(BX + 55 * K, BY + 135 * K + 16, "110mm", 13, "middle", fill="#555")
+def spacer(x, y, r=2.6):   # 貼付スペーサーを上から
+    px, py = mm(x, y)
+    s.top.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{r*K:.1f}" fill="#fafafa" stroke="#616161" stroke-width="2"/>')
+    s.top.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{1.0*K:.1f}" fill="#616161"/>')
+# 18650 ホルダー ×2（横向き、上の方。両面テープ）
+for i, yy in enumerate((4, 28)):
+    x, y = mm(4, yy)
+    s.rect(x, y, 75 * K, 21 * K, "#37474f", "#212121", 8, 2)
+    s.rect(x + 4 * K, y + 2.5 * K, 67 * K, 16 * K, "#2e7d32", "#1b5e20", 36, 2)
+    s.text(x + 37.5 * K, y + 12 * K, f"18650 ホルダー {i+1}（両面テープ）", 13, "middle", "bold", "#fff")
+    s.text(x + 7 * K, y + 12.5 * K, "＋", 16, "middle", "bold", "#ffcdd2")
+    s.text(x + 68 * K, y + 12.5 * K, "−", 18, "middle", "bold", "#bbdefb")
+x, y = mm(82, 6)
+s.text(x + 12 * K, y + 14 * K, "空き", 13, "middle", "bold", "#90a4ae")
+s.text(x + 12 * K, y + 18 * K, "（線を通す）", 11, "middle", fill="#90a4ae")
+# 基板 6×8cm（縦）。FireBeetle（USB-C が上）・CatM・抵抗。四隅を AST2.5-5B で
+GX, GY = 4, 52
+x, y = mm(GX, GY)
+s.rect(x, y, 60 * K, 80 * K, "#e8d3a8", "#b08d57", 4, 2)
+s.rect(x + 3 * K, y + 7 * K, 25.4 * K, 60 * K, "#37474f", "#102027", 6, 2)
+s.rect(x + 9.7 * K, y + 5.5 * K, 12 * K, 4 * K, "#bdbdbd", "#616161", 3, 1.5)
+s.text(x + 15.7 * K, y + 30 * K, "FireBeetle 2", 13, "middle", "bold", "#fff")
+s.text(x + 15.7 * K, y + 34 * K, "ESP32-E", 12, "middle", "bold", "#fff")
+s.rect(x + 7 * K, y + 58 * K, 17.4 * K, 8 * K, "#212121", "#000", 3, 1)
+s.text(x + 15.7 * K, y + 63 * K, "アンテナ", 10, "middle", "bold", "#eee")
+s.rect(x + 29 * K, y + 64 * K, 30 * K, 15 * K, "#eceff1", "#90a4ae", 4, 2)
+s.text(x + 44 * K, y + 71 * K, "M5Stamp CatM", 11, "middle", "bold", "#263238")
+s.text(x + 44 * K, y + 75 * K, "（両面テープ）", 10, "middle", fill="#455a64")
+s.text(x + 44 * K, y + 22 * K, "5V スイッチ", 11, "middle", "bold", "#5d4520")
+s.text(x + 44 * K, y + 26 * K, "電池・パネルの", 11, "middle", "bold", "#5d4520")
+s.text(x + 44 * K, y + 29.5 * K, "電圧の抵抗", 11, "middle", "bold", "#5d4520")
+s.text(x + 30 * K, y - 1.5 * K, "基板 6×8cm（HPX-Core_LTES_pcb.png）", 11, "middle", "bold", "#5d4520")
+for hx, hy in ((2.5, 2.5), (57.5, 2.5), (2.5, 77.5), (57.5, 77.5)):
+    spacer(GX + hx, GY + hy, 2.2)
+# DFR0559（縦向き 33×63mm）。四隅に AST3-6B
+DX, DY = 72, 58
+x, y = mm(DX, DY)
+s.rect(x, y, 33 * K, 63 * K, "#212121", "#000", 8, 3)
+s.text(x + 16.5 * K, y + 30 * K, "DFR0559", 15, "middle", "bold", "#fff")
+s.text(x + 16.5 * K, y + 34 * K, "ソーラーパワー", 11, "middle", fill="#e0e0e0")
+s.text(x + 16.5 * K, y + 37.5 * K, "マネージャー 5V", 11, "middle", fill="#e0e0e0")
+s.text(x + 16.5 * K, y + 41.5 * K, "（縦に置く）", 10, "middle", fill="#bdbdbd")
+tx, ty = mm(DX + 6, DY + 54); s.rect(tx, ty, 10 * K, 6 * K, "#2e7d32", "#1b5e20", 2, 1.5)
+s.text(tx + 5 * K, ty - 4, "SOLAR IN", 10, "middle", "bold", "#a5d6a7")
+tx, ty = mm(DX + 23, DY + 6); s.rect(tx, ty, 6 * K, 10 * K, "#2e7d32", "#1b5e20", 2, 1.5)
+s.text(tx - 4, ty + 6 * K, "BAT IN", 10, "end", "bold", "#fff")
+tx, ty = mm(DX + 4, DY + 14)
+s.text(tx + 1.3 * K, ty - 5, "5V・GND", 9, "start", "bold", "#fff")
+for k in range(2):
+    s.add(f'<rect x="{tx:.1f}" y="{ty + k*2.54*K:.1f}" width="{2*K:.1f}" height="{2*K:.1f}" fill="#d4af37"/>')
+for hx, hy in ((3.5, 3.5), (29.5, 3.5), (3.5, 59.5), (29.5, 59.5)):
+    spacer(DX + hx, DY + hy)
+# ケースの壁の USB-C（入力、パネルから）
+px, py = mm(20, 139)
+s.rect(px - 11 * K, py - 3 * K, 22 * K, 8 * K, "#455a64", "#263238", 4, 2)
+s.rect(px - 4.5 * K, py + 3.5 * K, 9 * K, 3.5 * K, "#b0b0b0", "#666", 4, 1)
+s.text(px, py + 2 * K, "USB-C（入力）", 11, "middle", "bold", "#fff")
+s.text(px, py + 12 * K, "← ソーラーパネルの USB-C", 11, "middle", "bold", "#0d47a1")
+s.text(BX + 55 * K, mm(0, 141)[1] + 66, "USB Type-Cコネクターパネル取付キット ×1 をケースの壁に付ける（ケースの穴はこれだけ）", 12, "middle", "bold", "#333")
+# 線（おおよその通り道）
+s.wire([mm(17, 136), mm(17, 130)], "red")                                         # 入力 USB-C → 基板（VBUS・GND・CC1・CC2 の 4本）
+s.wire([mm(23, 136), mm(23, 131)], "yellow")
+s.wire([mm(26, 131), mm(26, 134), mm(68, 134), mm(68, 124), mm(82, 124), mm(82, 120)], "red")   # 基板 → SOLAR IN
+s.wire([mm(4.5, 38.5), mm(2, 38.5), mm(2, 50), mm(68, 50), mm(68, 66), mm(95, 66)], "red")       # 18650 → BAT IN
+s.wire([mm(42, 50), mm(42, 56)], "red"); s.dot(*mm(42, 50), "red")                                # BAT＋ → 基板（N1）
+s.wire([mm(77, 73), mm(66, 73), mm(66, 85), mm(36, 85), mm(36, 84)], "orange")                  # 5V・GND → 基板（M13・M15）
+s.text(BX, mm(0, 141)[1] + 92, "線の本数・色は右の「線のつながり」と下の表を見る（この図は置き場所の目安）", 11, fill="#555")
+s.text(BX, mm(0, 141)[1] + 112, "○ は貼付スペーサー（DFR0559 に AST3-6B ×4、基板に AST2.5-5B ×4）", 11, fill="#555")
+s.text(BX, mm(0, 141)[1] + 132, "LTE-M のアンテナ（付属の SMA ロッドアンテナ）は、ケースのふたの内側に両面テープで貼る", 11, fill="#555")
+
+# 右: 線のつながり
+RX0 = 760
+s.text(RX0, BY - 78, "線のつながり", 17, weight="bold")
+def box(x, y, w, h, fill, stroke, t1, t2=None, fc="#fff"):
+    s.rect(x, y, w, h, fill, stroke, 8, 2)
+    s.text(x + w / 2, y + (h / 2 + 5 if not t2 else h / 2 - 4), t1, 14, "middle", "bold", fc)
+    if t2:
+        s.text(x + w / 2, y + h / 2 + 16, t2, 11, "middle", fill=fc)
+box(RX0, BY, 170, 60, "#0d47a1", "#06244f", "ソーラーパネル", "10W/5V（ケースの外）")
+box(RX0 + 230, BY, 130, 60, "#37474f", "#222", "USB-C（入力）", "ケースの壁")
+s.wire([(RX0 + 170, BY + 30), (RX0 + 230, BY + 30)], "black")
+s.rect(RX0, BY + 120, 200, 120, "#fff8e1", "#c9a227", 8, 2)
+s.text(RX0 + 100, BY + 145, "基板（6×8cm）の中", 14, "middle", "bold", "#333")
+s.text(RX0 + 100, BY + 175, "CC1・CC2 → 5.1kΩ → GND", 11, "middle", fill="#333")
+s.text(RX0 + 100, BY + 195, "パネル 100k/20k → IO36", 11, "middle", fill="#333")
+s.text(RX0 + 100, BY + 215, "電池 100k/100k → IO39", 11, "middle", fill="#333")
+s.wire([(RX0 + 270, BY + 60), (RX0 + 270, BY + 90), (RX0 + 100, BY + 90), (RX0 + 100, BY + 120)], "red", "VBUS・GND・CC1・CC2", (RX0 + 110, BY + 84))
+s.rect(RX0 + 300, BY + 300, 150, 150, "#212121", "#000", 8, 2)
+s.text(RX0 + 375, BY + 375, "DFR0559", 15, "middle", "bold", "#fff")
+s.text(RX0 + 375, BY + 440, "充電・5V を作る", 11, "middle", fill="#e0e0e0")
+for n, yy in (("SOLAR", 330), ("BAT", 420)):
+    s.pad(RX0 + 300, BY + yy, n, "L")
+s.pad(RX0 + 450, BY + 330, "5V", "R"); s.pad(RX0 + 450, BY + 380, "GND", "R")
+s.wire([(RX0 + 200, BY + 200), (RX0 + 250, BY + 200), (RX0 + 250, BY + 330), (RX0 + 300, BY + 330)], "red", "パネルの電気", (RX0 + 150, BY + 290))
+box(RX0, BY + 480, 230, 70, "#455a64", "#263238", "18650 ×2（並列）", "保護回路付き")
+s.wire([(RX0 + 230, BY + 515), (RX0 + 270, BY + 515), (RX0 + 270, BY + 420), (RX0 + 300, BY + 420)], "red")
+s.wire([(RX0 + 270, BY + 470), (RX0 + 30, BY + 470), (RX0 + 30, BY + 240)], "red", "BAT＋（測るだけ）", (RX0 + 40, BY + 462))
+box(RX0, BY + 620, 220, 110, "#37474f", "#102027", "FireBeetle 2 ESP32-E", "VCC に 5V（基板の上）")
+box(RX0 + 290, BY + 620, 200, 110, "#eceff1", "#90a4ae", "M5Stamp CatM", "5V は IO4 のスイッチ経由", "#263238")
+s.wire([(RX0 + 450, BY + 330), (RX0 + 540, BY + 330), (RX0 + 540, BY + 590), (RX0 + 110, BY + 590), (RX0 + 110, BY + 620)], "orange", "5V・GND", (RX0 + 470, BY + 320))
+s.wire([(RX0 + 540, BY + 590), (RX0 + 390, BY + 590), (RX0 + 390, BY + 620)], "orange")
+s.wire([(RX0 + 220, BY + 675), (RX0 + 290, BY + 675)], "green", "TX・RX", (RX0 + 222, BY + 665))
+s.wire([(RX0 + 15, BY + 240), (RX0 + 15, BY + 258), (RX0 - 25, BY + 258), (RX0 - 25, BY + 600), (RX0 + 15, BY + 600), (RX0 + 15, BY + 620)], "white")
+s.text(RX0 - 20, BY + 380, "IO36", 11, fill="#555"); s.text(RX0 - 20, BY + 396, "IO39", 11, fill="#555")
+s.text(RX0, BY + 770, "GND（−）はすべて共通（DFR0559 の GND・SOLAR−・BAT−、入力 USB-C の GND、基板の GND）", 12, fill="#555")
+s.text(RX0, BY + 792, "ケースのふたの内側: LTE-M アンテナ（CatM から IPEX-SMA ケーブル 10cm）", 12, fill="#555")
+
+LTES_WIRES = [
+    ["線の色（例）", "どこから", "どこへ", "メモ"],
+    ["red", "入力 USB-C の VBUS（＋）", "基板 D29（USB-C VBUS）", "パネルの電気"],
+    ["black", "入力 USB-C の GND（−）", "基板 H33（USB-C GND）", ""],
+    ["yellow", "入力 USB-C の CC1・CC2", "基板 B31（CC1）・E31（CC2）", "基板の 5.1kΩ で GND へ"],
+    ["red", "基板 C29（→ SOLAR＋）", "DFR0559 SOLAR IN ＋", ""],
+    ["black", "基板 I33（→ SOLAR−）", "DFR0559 SOLAR IN −", ""],
+    ["red", "18650 の＋（2本並列）", "DFR0559 BAT IN ＋", "ホルダーのリード線をねじ端子へ"],
+    ["black", "18650 の−（2本並列）", "DFR0559 BAT IN −", ""],
+    ["red", "DFR0559 BAT IN ＋", "基板 N1（DFR0559 BAT＋）", "電池の電圧を測る分圧へ（細い線でよい）"],
+    ["orange", "DFR0559 5V（ピン）", "基板 M13（DFR0559 5V）", "FireBeetle の VCC と CatM のスイッチへ"],
+    ["black", "DFR0559 GND（ピン）", "基板 M15（DFR0559 GND）", ""],
+]
+y = table(s, 60, 1180, LTES_WIRES, [140, 320, 360, 420], "中の線（基板の穴は HPX-Core_LTES_pcb.png）")
+LTES_ROWS = [
+    ["部品", "数", "使うところ・メモ"],
+    ["ケース タカチ OB13-21-6W", "1", "ケースの壁にパネル用の USB-C を1つだけ付ける"],
+    ["ケース用取り付けベース タカチ OBP13-21（110×135mm）", "1", "縦に置き、上から 18650 ホルダー、左下に基板、右下に DFR0559"],
+    ["18650 電池ホルダー 1本用（75×21mm）", "2", "横向きにして上の方へ両面テープで貼る。2個を並列につなぐ"],
+    ["DFRobot DFR0559 ソーラーパワーマネージャー 5V（63×33mm）", "1", "右下に縦に置き、四隅を AST3-6B で貼る"],
+    ["ユニバーサル基板 6×8cm", "1", "左下に縦に置き、四隅を AST2.5-5B で貼る。FireBeetle・CatM・抵抗をまとめる"],
+    ["USB Type-Cコネクターパネル取付キット", "1", "ケースの壁（取り付けベースの下の方向）に付ける。パネルの入力用"],
+    ["ナット入り貼付スペーサー AST3-6B ・ AST2.5-5B", "各4個", "DFR0559 に AST3-6B、基板に AST2.5-5B"],
+    ["ソーラーパネル 10W/5V（USB-C 出力）", "1", "ケーブルは切らずに入力の USB-C へ差す"],
+]
+y = table(s, 60, y + 60, LTES_ROWS, [520, 70, 650], "部品の使いどころ")
+LTES_NOTES = [
+    "・試作中の図です。実機では確かめていません。取り付けベースの大きさ（110×135mm）は TARO さんの値、",
+    "　ほかの部品の大きさは秋月・DFRobot・M5Stack の値、DFR0559 の端子の位置は写真から描いた目安です。",
+    "・ケース OB13-21-6W の中の高さと、OBP13-21 のねじ穴・リブの位置は未確認です。部品を貼る前に、実物に置いて確かめます。",
+    "・＋LTE-M と HPX-Solar を 1つのケースに入れた版です。Solar から Core へは USB-C ケーブルを使わず、DFR0559 の 5V ピンから直接つなぎます。",
+    "・ファームウェアは HPX-Core v1.25 以降のまま使えます（電池＝IO39、パネル＝IO36 は ＋LTE-M＋HPX-Solar と同じ）。",
+    "　動作設定の「電圧の測り方」で「HPX-Solar」を、動作モードは「ディープスリープ」を選びます。",
+    "・FireBeetle の USB-C は上（18650 ホルダーの側）を向くので、書き込むときは FireBeetle をソケットから抜いて行います。",
+    "・LTE-M のアンテナは付属品を使います（技適）。ケースのふたの内側に貼り、電池や金属からなるべく離します。",
+    "　ケースの中で電波が弱いときは、防水のアンテナ中継（SMA）で外に出す方法もあります（ケースの穴が増えます）。",
+    "・18650 は保護回路付きを使い、2本は同じ銘柄・同じ残量で並列にします。0℃以下では充電しないよう、日陰に置きます。",
+    "・DFR0559 の EN は使いません（5V はずっと出します）。何もつながないとき 5V が出るかは未確認です。",
+]
+notes(s, 60, y + 20, LTES_NOTES)
+s.h = int(y + 20 + 34 + 26 * len(LTES_NOTES) + 40)
+s.save("HPX-Core_LTES_layout.svg")
+_full = open(os.path.join(OUT, "HPX-Core_LTES_layout.svg"), encoding="utf-8").read()
+_cut = 1110
+open(os.path.join(OUT, "HPX-Core_LTES_layout_fig.svg"), "w", encoding="utf-8").write(
+    _full.replace(f'width="{s.w}" height="{s.h}" viewBox="0 0 {s.w} {s.h}"', f'width="{s.w}" height="{_cut}" viewBox="0 0 {s.w} {_cut}"', 1))
+_n = []
+for l in LTES_NOTES:
+    if l.startswith("　") and _n: _n[-1] += l[1:]
+    else: _n.append(l.lstrip("・"))
+json.dump({"tables": [{"head": "中の線（基板の穴は HPX-Core_LTES_pcb.png）", "rows": LTES_WIRES}, {"head": "部品の使いどころ", "rows": LTES_ROWS}],
+           "notes": _n},
+          open(os.path.join(OUT, "HPX-Core_LTES_layout.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok LTES")
