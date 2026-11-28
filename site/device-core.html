@@ -212,14 +212,12 @@
     <p class="eyebrow">Devices</p>
     <h1>HPX-Core</h1>
     <p class="lead">センサのデータを集めてサーバーへ送る中心的な機器です。</p>
-    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core_lanv" aria-pressed="false">＋有線LAN＆ソーラーシステムチェック</button><button type="button" data-v="core_wp" aria-pressed="false">＋防水</button><button type="button" data-v="core_bat" aria-pressed="false">＋防水＆電池駆動</button><button type="button" data-v="core_lte" aria-pressed="false">＋LTE-M</button><button type="button" data-v="core_ltes" aria-pressed="false">＋LTE-M＆ソーラー</button></div>
+    <div class="vsw" role="group" aria-label="版を選ぶ"><button type="button" data-v="core_basic" aria-pressed="true">基本モデル</button><button type="button" data-v="core_lanv" aria-pressed="false">ソーラーシステム版</button><button type="button" data-v="core_bat" aria-pressed="false">電池版</button><button type="button" data-v="core_ltes" aria-pressed="false">LTE-M版</button></div>
   </div>
 
   <section id="photos">
     <div class="reveal wrap">
       <h2>完成写真</h2>
-      <p class="note" data-variant="core_wp">この版の写真は準備中です。</p>
-      <p class="note" data-variant="core_lte">この版の写真は準備中です。</p>
       <p class="note" data-variant="core_ltes">この版の写真は準備中です。</p>
       <div class="photos">
         <figure data-variant="core_basic"><a href="img/photo/core_basic_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_basic_1.webp" alt="HPX-Core HPX-CoreはESP32ボードだけあればOK。" width="640" height="640" loading="lazy"></a><figcaption>HPX-CoreはESP32ボードだけあればOK。</figcaption></figure>
@@ -255,7 +253,7 @@
       </table>
       </div>
       <div data-variant="core_lanv">
-      <p class="note">＋有線LAN＆ソーラーシステムチェックに必要な部品と数です。</p>
+      <p class="note">ソーラーシステム版に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -287,25 +285,8 @@
         <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,439円</td></tr></tfoot>
       </table>
       </div>
-      <div data-variant="core_wp">
-      <p class="note">＋防水に必要な部品と数です。</p>
-      <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
-        <tbody>
-        <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://www.marutsu.co.jp/pc/i/40755100/" target="_blank" rel="noopener">FireBeetle 2 ESP32-E IoT開発ボード</a></b><span>DFRobot DFR0654</span><span class="price">1,900円</span><span class="alt">代わりに: Olimex ESP32-DEVKIT-LIPO（1,700円）：micro-USB接続</span><span class="alt">代わりに: Freenove ESP32 開発ボード（1,400円）：省電力に向かないので家庭電源向き</span><span class="alt">代わりに: ELEGOO ESP-32 開発ボード（1,200円）：省電力に向かないので家庭電源向き</span></td><td class="shop">マルツオンライン</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/5513/0662/" target="_blank" rel="noopener">IP67 防水ボックス WPシリーズ</a></b><span>タカチ　WP8-10-4G</span><span class="price">1,198円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4977/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST2.5-5B</span><span class="price">219円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/dp/B0FRMNK3CV" target="_blank" rel="noopener">防水USBカプラー</a></b><span>USB Type-C メス-メス</span><span class="price">1,070円</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b>USBケーブル</b><span>USB-C to USB-C ケーブル（両側 USB-C、短いもの。HPX-Solar で電圧も測るときはデータ対応）</span></td><td class="shop">—</td><td class="n" data-v="数">1</td></tr>
-        </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 4,387円</td></tr></tfoot>
-      </table>
-      </div>
       <div data-variant="core_bat">
-      <p class="note">＋防水＆電池駆動に必要な部品と数です。</p>
+      <p class="note">電池版に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -326,40 +307,8 @@
         <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 5,549円</td></tr></tfoot>
       </table>
       </div>
-      <div data-variant="core_lte">
-      <p class="note">＋LTE-Mに必要な部品と数です。</p>
-      <table class="parts">
-        <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
-        <tbody>
-        <tr class="cat"><th colspan="3">チップボード</th></tr>
-        <tr><td class="part"><b><a href="https://www.marutsu.co.jp/pc/i/40755100/" target="_blank" rel="noopener">FireBeetle 2 ESP32-E IoT開発ボード</a></b><span>DFRobot DFR0654</span><span class="price">1,900円</span><span class="alt">代わりに: Olimex ESP32-DEVKIT-LIPO（1,700円）：micro-USB接続</span><span class="alt">代わりに: Freenove ESP32 開発ボード（1,400円）：省電力に向かないので家庭電源向き</span><span class="alt">代わりに: ELEGOO ESP-32 開発ボード（1,200円）：省電力に向かないので家庭電源向き</span></td><td class="shop">マルツオンライン</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">通信モジュール</th></tr>
-        <tr><td class="part"><b><a href="https://www.switch-science.com/search?q=M5Stamp%20CatM" target="_blank" rel="noopener">LTE-M 通信モジュール</a></b><span>M5Stamp CatM（SIM7080G、M5STACK-S003）
-SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属のアンテナを使う</span><span class="price">7,282円</span></td><td class="shop">スイッチサイエンス</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">電子部品</th></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108550/" target="_blank" rel="noopener">抵抗 10kΩ</a></b><span>小型 金属皮膜抵抗 1/4W 10kΩ (100本入り)</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g103138/" target="_blank" rel="noopener">ピンソケット（メス）</a></b><span>シングルピンソケット (低メス)</span><span class="price">80円 / 20PIN</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">18PIN×1・14PIN×1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%BA%E3%83%A1%E3%83%83%E3%82%AD%E7%B7%9A%20TCW%200.5mm%2010m" target="_blank" rel="noopener">ジャンパー線</a></b><span>スズメッキ軟銅線 TCW 0.5mm 10m</span><span class="price">670円 / 10m</span></td><td class="shop">amazon</td><td class="n" data-v="数">適宜</td></tr>
-        <tr><td class="part"><b><a href="https://akizukidenshi.com/catalog/g/g108563/" target="_blank" rel="noopener">抵抗 100kΩ</a></b><span>小型 金属皮膜抵抗 1/4W100kΩ</span><span class="price">300円 / 100本入り</span></td><td class="shop">秋月電子通商</td><td class="n" data-v="数">2</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=USB%20Type-C%20%E3%83%A1%E3%82%B9%20%E5%A4%89%E6%8F%9B%E5%9F%BA%E6%9D%BF%20D%2B%20D-" target="_blank" rel="noopener">USB-C メス基板（データ対応）</a></b><span>USB Type-C メス コネクター 変換基板（VBUS・GND・D+・D− を取り出せるもの）。HPX-Solar と HPX-Core のつなぎ口</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=P%E3%83%81%E3%83%A3%E3%83%8D%E3%83%AB%20MOSFET%20%E3%83%AD%E3%82%B8%E3%83%83%E3%82%AF%E3%83%AC%E3%83%99%E3%83%AB%20TO-220" target="_blank" rel="noopener">P-MOSFET（ロジックレベル）</a></b><span>CatM の 5V の入り切り用。リード付き、ゲート 4.5V 以下で ON、1A 以上（型番は未定、部品を決めるとき確認）</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=2SC1815" target="_blank" rel="noopener">NPN トランジスタ</a></b><span>2SC1815 など（小信号用）。P-MOSFET のゲートを引く</span></td><td class="shop">amazon</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/g/05994042/" target="_blank" rel="noopener">低価格型屋外通信ボックス OBシリーズ</a></b><span>タカチ　OB10-17-5W</span><span class="price">899円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">ケース用基板</th></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7417/6008/" target="_blank" rel="noopener">低価格ユニバーサル基板 PCBシリーズ</a></b><span>タカチ　PCB72-95（穴 27×36）</span><span class="price">409円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">部材</th></tr>
-        <tr><td class="part"><b><a href="https://www.amazon.co.jp/s?k=3M%20%E3%82%B9%E3%82%B3%E3%83%83%E3%83%81%20%E8%B6%85%E5%BC%B7%E5%8A%9B%E4%B8%A1%E9%9D%A2%E3%83%86%E3%83%BC%E3%83%97%20%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%20%E7%B2%97%E9%9D%A2%E7%94%A8%20KPR-19R" target="_blank" rel="noopener">強力両面テープ</a></b><span>3M スコッチ 超強力両面テープ プレミアゴールド 粗面用 KPR-19R (幅19mm 1.5m)</span><span class="price">536円 / 150cm</span></td><td class="shop">amazon</td><td class="n" data-v="数">20 cm</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/g/05994043/" target="_blank" rel="noopener">ケース用取り付けベース</a></b><span>タカチ　OBP10-17（87×115mm）</span><span class="price">699円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr><td class="part"><b><a href="https://www.monotaro.com/p/7082/4995/" target="_blank" rel="noopener">基板スペーサー ナット入り貼付スペーサー ASTシリーズ</a></b><span>タカチ　AST3-6B</span><span class="price">239円</span></td><td class="shop">モノタロウ</td><td class="n" data-v="数">1</td></tr>
-        <tr class="cat"><th colspan="3">その他</th></tr>
-        <tr><td class="part"><b><a href="https://soracom.jp/services/air/japan_coverage/" target="_blank" rel="noopener">LTE-M 対応 SIM（microSIM）</a></b><span>例: SORACOM plan-D（ドコモ回線、LTE-M 対応）。使える場所は SORACOM の対応エリアで確認</span></td><td class="shop">SORACOM</td><td class="n" data-v="数">1</td></tr>
-        </tbody>
-        <tfoot><tr><td class="part">部品代の目安 (1台分)</td><td class="shop"></td><td class="n" data-v="数">約 11,636円</td></tr></tfoot>
-      </table>
-      </div>
       <div data-variant="core_ltes">
-      <p class="note">＋LTE-M＆ソーラーに必要な部品と数です。</p>
+      <p class="note">LTE-M版に必要な部品と数です。</p>
       <table class="parts">
         <thead><tr><th>部品</th><th>購入店</th><th class="n">数</th></tr></thead>
         <tbody>
@@ -405,7 +354,7 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
   <section id="build">
     <div class="reveal wrap">
       <h2>作り方</h2>
-      <p class="note" data-variant="core_lanv core_wp core_bat core_lte core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
+      <p class="note" data-variant="core_lanv core_bat core_ltes">図を押すと、大きな画像が開きます。どの図もまだ実物で組んで確かめていません。取付穴の位置は目安なので、部品と基板の実物で確かめてから組み立ててください。</p>
       <div data-variant="core_basic">
       <p class="note">USB Type-Cを接続するので、用いるケースに穴あけ加工が必要です。</p>
       <div class="photos">
@@ -414,36 +363,24 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       </div>
       </div>
       <figure class="wiring" data-variant="core_lanv">
-        <figcaption><b>＋有線LAN＆ソーラーシステムチェックの配線図</b>「＋有線LAN」と同じ並びの上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。FireBeetle は USB ではなくバッテリーから VCC ピンへ 5V を入れて動かします。ファームウェアは v1.25 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
-        <a href="img/wiring/HPX-Core_LANV_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LANV_pcb.png" alt="HPX-Core ＋有線LAN＆ソーラーシステムチェックの配線図" loading="lazy"></a>
+        <figcaption><b>ソーラーシステム版の配線図</b>FireBeetle と W5500 を並べた上の空いた所に、ソーラーで充電する 12V バッテリーとパネルの電圧を測る抵抗と、バッテリーから 5V を作る BP5293-50、端子台を足した図です (表と裏、線はすべて裏)。FireBeetle は USB ではなくバッテリーから VCC ピンへ 5V を入れて動かします。ファームウェアは v1.25 以降を使い、動作設定で「バッテリー・パネルの電圧を測る」にチェックします。</figcaption>
+        <a href="img/wiring/HPX-Core_LANV_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LANV_pcb.png" alt="HPX-Core ソーラーシステム版の配線図" loading="lazy"></a>
       </figure>
       <p class="note old-wiring" data-variant="core_lanv">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_LANV_olimex_pcb.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a>、<a href="img/wiring/HPX-Core_LANV_freenove_pcb.png" target="_blank" rel="noopener">Freenove ESP32 WROOM (FNK0090)</a>、<a href="img/wiring/HPX-Core_LANV_elegoo_pcb.png" target="_blank" rel="noopener">ELEGOO ESP-32</a></p>
       <div data-variant="core_lanv">
-      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は「＋有線LAN」と同じ）</h3><div class="scroll"><table>
+      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字。上の 8本は FireBeetle と W5500 をつなぐ線）</h3><div class="scroll"><table>
         <thead><tr><th>線</th><th>どこから（穴）</th><th>通る穴</th><th>どこへ（穴）</th></tr></thead>
         <tbody><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>IO25（K14）</td><td>K14 → U14 → U22 → V22</td><td>W5500 INT（V22）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>IO26（K15）</td><td>K15 → T15 → T23 → V23</td><td>W5500 CS（V23）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO14・SCK（K17）</td><td>K17 → S17 → S24 → V24</td><td>W5500 SCK（V24）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>IO13・MOSI（K18）</td><td>K18 → R18 → R25 → V25</td><td>W5500 MO（V25）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO19・MISO（K22）</td><td>K22 → N22</td><td>W5500 MI（N22）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>IO23（K23）</td><td>K23 → N23</td><td>W5500 RST（N23）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>GND（K26）</td><td>K26 → L26 → L27 → M27 → N27</td><td>W5500 G（N27）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>3V3（K28）</td><td>K28 → O28 → O26 → N26</td><td>W5500 V（N26）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>GND（左の列 B23）</td><td>B23 → A23 → A3 → G3 → H3 → L3 → M3 → S3 → V3 → X3</td><td>0.1µF（G3）・8.2kΩ（H3）・15kΩ（L3）・端子台 マイナス（X3）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>（とちゅうの M3・S3・V3）</td><td>M3 → M5</td><td>0.1µF（M5）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td></td><td>S3 → S9</td><td>BP5293 GND（S9）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td></td><td>V3 → V9</td><td>10µF（V9）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>端子台 パネル＋（X1）</td><td>X1 → I1</td><td>100kΩ（I1）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO39（B17）</td><td>B17 → C17 → C5 → G5 → H5 → I5</td><td>0.1µF（G5）・8.2kΩ（H5）・100kΩ（I5）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO35（B19）</td><td>B19 → D19 → D7 → L7 → M7 → N7</td><td>15kΩ（L7）・0.1µF（M7）・100kΩ（N7）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>VCC（B25）</td><td>B25 → F25 → F9 → R9</td><td>BP5293 VOUT（R9）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>端子台 バッテリー＋（X5）</td><td>X5 → X11 → V11 → T11 → N11</td><td>10µF（V11）・100kΩ（N11）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td></td><td>T11 → T9</td><td>BP5293 VIN（T9）</td></tr></tbody>
       </table></div></div>
       <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
         <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
-        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン</td><td>1</td><td>B12〜B25・K12〜K29。USB-C を下に向ける（「＋有線LAN」と同じ）</td></tr><tr><td>W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</td><td>1</td><td>N22〜N27・V22〜V27（「＋有線LAN」と同じ）</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>R9・S9・T9（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>V9・V11（BP5293 の入力側）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>I1〜I5（パネル用）、N7〜N11（バッテリー用）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 15kΩ 1%</td><td>1</td><td>L3〜L7（バッテリー用、寝かせる）</td></tr><tr><td>金属皮膜抵抗 8.2kΩ 1%</td><td>1</td><td>H3・H5（パネル用、立てて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>G3・G5（パネル用）、M5・M7（バッテリー用）</td></tr><tr><td>端子台 3極 5.08mm（基板用、ねじ式）</td><td>1</td><td>X1・X3・X5（上から パネル＋・マイナス・バッテリー＋）。線を入れる口を右に向ける</td></tr><tr><td>ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線の途中（コントローラーの近く）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
+        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン</td><td>1</td><td>B12〜B25・K12〜K29。USB-C を下に向ける</td></tr><tr><td>W5500 イーサネットモジュール ＋ ピンソケット 6ピン×2</td><td>1</td><td>N22〜N27・V22〜V27</td></tr><tr><td>三端子 DCDC レギュレーター ROHM BP5293-50（入力 7〜26V、5V 1A）</td><td>1</td><td>R9・S9・T9（左から VOUT・GND・VIN。印字面を奥（上）に向けて立てる）</td></tr><tr><td>積層セラミックコンデンサー 10µF 50V 5mm</td><td>1</td><td>V9・V11（BP5293 の入力側）</td></tr><tr><td>金属皮膜抵抗 100kΩ 1%</td><td>2</td><td>I1〜I5（パネル用）、N7〜N11（バッテリー用）。寝かせて付ける</td></tr><tr><td>金属皮膜抵抗 15kΩ 1%</td><td>1</td><td>L3〜L7（バッテリー用、寝かせる）</td></tr><tr><td>金属皮膜抵抗 8.2kΩ 1%</td><td>1</td><td>H3・H5（パネル用、立てて付ける）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF 50V 5mm</td><td>2</td><td>G3・G5（パネル用）、M5・M7（バッテリー用）</td></tr><tr><td>端子台 3極 5.08mm（基板用、ねじ式）</td><td>1</td><td>X1・X3・X5（上から パネル＋・マイナス・バッテリー＋）。線を入れる口を右に向ける</td></tr><tr><td>ミニ平型ヒューズホルダー ＋ 1A ミニ平型ヒューズ</td><td>2</td><td>バッテリー＋とパネル＋の線の途中（コントローラーの近く）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>FireBeetle・W5500 と、その 8本の線は「＋有線LAN」と同じ。上の空いた所（1〜11行）に電圧チェックの部品を足した。</li><li>FireBeetle の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VCC（B25）に入れる（マイナスをバッテリーとそろえるため）。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）して IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）して IO39 で読む。</li><li>パネルのピンは v1.25 から IO39（v1.24 までは IO34）。FireBeetle の IO34 は基板の上で電池コネクタの電圧を測る抵抗がつながっているので使わない。</li><li>ファーム v1.25 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（念のため。FireBeetle は USB の 5V の後ろにダイオードがある）。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（FireBeetle の回路図から。充電の部品に悪くないかは未確認）。</li><li>BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」にはつながない。</li><li>パネル電圧は「パネル−」と「バッテリー−」がつながっている（マイナス共通）コントローラーでだけ測れる。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）コントローラーでは、パネル＋の線をつながない（パネル用の抵抗・コンデンサーとヒューズは省いてよい）。つながないとパネルは 0V になり「未接続」として扱う。どちらの型かは、コントローラーの線を外してテスターの導通モードで確かめる。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
-      </div>
-      <figure class="wiring" data-variant="core_wp">
-        <figcaption><b>＋防水の配線図</b>ケースの中で FireBeetle 2 ESP32-E の USB-C と防水USBカプラーを短い USB-C ケーブルでつなぎ、外から USB 電源をつなぎます。外付けの配線はありません。HPX-Solar から電気をもらって電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分けます (試作中、ファーム v1.25 以降)。</figcaption>
-        <a href="img/wiring/HPX-Core_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_wiring.png" alt="HPX-Core ＋防水の配線図" loading="lazy"></a>
-      </figure>
-      <p class="note old-wiring" data-variant="core_wp">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_olimex_wiring.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a>、<a href="img/wiring/HPX-Core_freenove_wiring.png" target="_blank" rel="noopener">Freenove ESP32 WROOM (FNK0090)</a>、<a href="img/wiring/HPX-Core_elegoo_wiring.png" target="_blank" rel="noopener">ELEGOO ESP-32</a></p>
-      <div data-variant="core_wp">
-      <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
-        <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
-        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654）</td><td>1</td><td>本体（親機）。差し込み口は USB-C</td></tr><tr><td>USB-C ケーブル（両側 USB-C、短いもの）</td><td>1</td><td>ケースの中で、防水USBカプラーと FireBeetle をつなぐ</td></tr><tr><td>防水USBカプラー（USB Type-C メス-メス）</td><td>1</td><td>ケースの壁に取り付ける。外から USB 電源をつなぐ</td></tr><tr><td>（HPX-Solar のとき）USB-C メス基板（データ対応）・USB-C ケーブル（データ対応）</td><td>各1</td><td>中の USB-C ケーブルの代わり。カプラーから受けて 4本に分ける</td></tr><tr><td>（HPX-Solar のとき）ジャンパー線・ピンヘッダー</td><td>4本</td><td>VBUS → VCC、GND → GND、D+ → IO39、D− → IO36</td></tr></tbody>
-      </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>HPX-Core には外付けの部品も配線もありません。防水USBカプラーから USB 電源をつなぐだけで動きます。</li><li>HPX-Solar（小型ソーラー電源）から電気をもらい、電池とパネルの電圧も測るときは、右の枠のように USB-C メス基板で 4本に分ける（試作中・実機未確認）。</li><li>  そのときは FireBeetle を VCC ピンから動かし（D+ は IO39 で読む。ファーム v1.25 から）、動作設定の「電圧の測り方」で「HPX-Solar」、動作モードは「ディープスリープ」にする。USB 電源に戻すときは「測らない」に。</li><li>FireBeetle の電池コネクタ（PH2.0）は充電式リチウムイオン電池用。この版では何もつながない。</li><li>USB 電源のときは、管理画面の動作モードは「常時稼働（商用電源）」のまま使う。</li><li>FireBeetle には BOOT ボタンがありません。工場出荷リセットは、ファーム v1.25 なら基板のボタン（IO27）を起動してすぐ5秒長押し（v1.24 までは IO0 のピンを GND に5秒つなぐ）。</li><li>ケースの中のケーブルは、両側 USB-C の短いもの（L型だと収まりやすい）。HPX-Solar のときはデータ対応のものにする。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>FireBeetle・W5500 と、その 8本の線の上の空いた所（1〜11行）に電圧チェックの部品を足した。</li><li>FireBeetle の電源は USB ではなく、バッテリーから BP5293-50 で作った 5V を VCC（B25）に入れる（マイナスをバッテリーとそろえるため）。</li><li>バッテリーは 100kΩ と 15kΩ で 約1/7.7 に（18V で 2.35V）して IO35 で、パネルは 100kΩ と 8.2kΩ で 約1/13 に（30V で 2.27V）して IO39 で読む。</li><li>パネルのピンは v1.25 から IO39（v1.24 までは IO34）。FireBeetle の IO34 は基板の上で電池コネクタの電圧を測る抵抗がつながっているので使わない。</li><li>ファーム v1.25 の動作設定で「バッテリー・パネルの電圧を測る」にチェックし、テスターで測った値を入れて1回合わせる。</li><li>USB で書き込むときは、端子台の線を外すかバッテリー＋のヒューズを抜く（念のため。FireBeetle は USB の 5V の後ろにダイオードがある）。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（FireBeetle の回路図から。充電の部品に悪くないかは未確認）。</li><li>BP5293-50 の入力は 26V まで。パネル＋にはつながない。足の並びは秋月の資料（データシート）で確かめてから差す。</li><li>マイナスはコントローラーの「バッテリー−」へ。「パネル−」にはつながない。</li><li>パネル電圧は「パネル−」と「バッテリー−」がつながっている（マイナス共通）コントローラーでだけ測れる。「パネル＋」と「バッテリー＋」がつながっている（プラス共通）コントローラーでは、パネル＋の線をつながない（パネル用の抵抗・コンデンサーとヒューズは省いてよい）。つながないとパネルは 0V になり「未接続」として扱う。どちらの型かは、コントローラーの線を外してテスターの導通モードで確かめる。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_bat">
-        <figcaption><b>＋防水＆電池駆動の配線図</b>ケース用基板 PCB36-47 に FireBeetle 2 ESP32-E をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を FireBeetle の VCC と GND へつなぎます (表と裏、線は裏の2本だけ)。FireBeetle の電池コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。FireBeetle は基板より長く、ケースに収まるかはまだ確かめていません。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
-        <a href="img/wiring/HPX-Core_BAT_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BAT_pcb.png" alt="HPX-Core ＋防水＆電池駆動の配線図" loading="lazy"></a>
+        <figcaption><b>電池版の配線図</b>ケース用基板 PCB36-47 に FireBeetle 2 ESP32-E をピンソケットで差し、ケース WH145-25-M3 の電池ボックス (単三リチウム3本、約4.5〜5.4V) の線を FireBeetle の VCC と GND へつなぎます (表と裏、線は裏の2本だけ)。FireBeetle の電池コネクタは充電式リチウムイオン電池用なので、乾電池はつながないでください。FireBeetle は基板より長く、ケースに収まるかはまだ確かめていません。管理画面の動作モードは「ディープスリープ」にします。</figcaption>
+        <a href="img/wiring/HPX-Core_BAT_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_BAT_pcb.png" alt="HPX-Core 電池版の配線図" loading="lazy"></a>
       </figure>
       <p class="note old-wiring" data-variant="core_bat">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_BAT_olimex_pcb.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a>、<a href="img/wiring/HPX-Core_BAT_freenove_pcb.png" target="_blank" rel="noopener">Freenove ESP32 WROOM (FNK0090)</a>、<a href="img/wiring/HPX-Core_BAT_elegoo_pcb.png" target="_blank" rel="noopener">ELEGOO ESP-32</a></p>
       <div data-variant="core_bat">
@@ -457,41 +394,9 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
       </table></div></div>
       <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。ピンソケットは表から差し、足を裏ではんだ付けする。下の「裏から見た図」が実際に配線する向き（左右が逆）。</li><li>電池は FireBeetle の「VCC」（左の列のいちばん下）と「GND」へつなぐ。電池コネクタ（PH2.0）は充電式リチウムイオン電池用なので、乾電池は絶対につながない。</li><li>電池を入れたまま USB-C をつながない（書き込みは電池を外してから）。</li><li>新品の単三リチウム3本は約5.4V。VCC の先の 3.3V を作る部品（RT9080）の入力の上限は 5.5V と覚えているが、資料ではまだ確かめていない。余裕は少ない。</li><li>VCC に電池をつなぐと、基板の中のスイッチを通って電池コネクタ（PH2.0）と IO34 の抵抗（1/2 にする）にも電池の電圧がかかる（回路図から）。IO34 で電池の電圧を読めるかもしれない（ファームはまだ使っていない）。</li><li>FireBeetle は長さ 60mm で基板（47mm）より長い。上の端は約2mm、USB-C の側は約11mm 基板からはみ出す。ケースに収まるかは未確認。</li><li>PCB36-47 の穴の数（13×17）は見込み。ケースの深さ（内寸13mm の見込み）に、スペーサー5mm＋基板＋ソケット＋FireBeetle が収まるかも未確認。足りないときはソケットを使わずに直接はんだ付けする。</li><li>眠っている間の電流を減らすには、FireBeetle の裏の「低消費電力パッド」を切る（約0.5mA 減る。切ると電源の LED が消える）。</li><li>管理画面の動作モードは「ディープスリープ」にする。電池のもちは未実測。</li></ul></div>
       </div>
-      <figure class="wiring" data-variant="core_lte">
-        <figcaption><b>＋LTE-M の基板の配線図</b>ユニバーサル基板 タカチ PCB72-95 の左端に FireBeetle 2 ESP32-E をピンソケットで差し、右に CatM の 5V を入り切りするスイッチ (P-MOSFET・NPN トランジスタ・抵抗)、下に M5Stamp CatM を貼る図です (表と裏、線はすべて裏)。電源はケースの壁の USB-C メス基板から (HPX-Solar か USB 充電器)、その 4本の線を赤丸の穴へはんだ付けします。ケースはタカチ OB10-17-5W です (ケースはあとで考え直します)。</figcaption>
-        <a href="img/wiring/HPX-Core_LTE_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_pcb.png" alt="HPX-Core ＋LTE-M の基板の配線図" loading="lazy"></a>
-      </figure>
-      <p class="note old-wiring" data-variant="core_lte">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_LTE_olimex_pcb.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a>、<a href="img/wiring/HPX-Core_LTE_freenove_pcb.png" target="_blank" rel="noopener">Freenove ESP32 WROOM (FNK0090)</a>、<a href="img/wiring/HPX-Core_LTE_elegoo_pcb.png" target="_blank" rel="noopener">ELEGOO ESP-32</a></p>
-      <div data-variant="core_lte">
-      <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
-        <thead><tr><th>線</th><th>どこから（穴）</th><th>通る穴</th><th>どこへ（穴）</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>FireBeetle VCC（J13）</td><td>J13 → L13 → V13 → W13 → W19</td><td>USB-C VBUS の線（L13）・P-MOSFET の S（W19）</td></tr><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>（とちゅうの V13）</td><td>V13 → V14</td><td>100kΩ（V14）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>FireBeetle GND（J15）</td><td>J15 → L15 → O15 → O22 → O25 → S25 → S24</td><td>USB-C GND の線（L15）・NPN の E（S24）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>（とちゅうの O22）</td><td>O22 → Q22</td><td>100kΩ（Q22）</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>（とちゅうの S25）</td><td>S25 → X25 → X21</td><td>CatM GND の線（X21）</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>IO39（J21）</td><td>J21 → L21</td><td>USB-C D+ の線（L21、電池の電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>IO36（J22）</td><td>J22 → L22</td><td>USB-C D− の線（L22、パネルの電圧）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>IO4（J24）</td><td>J24 → L24</td><td>10kΩ（L24）</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>10kΩ（P24）</td><td>P24 → Q24 → Q23</td><td>NPN の B（Q24）・100kΩ（Q23）</td></tr><tr><td>gray</td><td>NPN の C（R24）</td><td>R24 → R22 → V22 → V19 → V18</td><td>P-MOSFET の G（V19）・100kΩ（V18）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>P-MOSFET の D（U19）</td><td>U19 → U21</td><td>CatM 5V の線（U21）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>IO16（J25、受信）</td><td>J25 → M25</td><td>CatM TX の線（M25）</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>IO17（J26、送信）</td><td>J26 → M26</td><td>CatM RX の線（M26）</td></tr></tbody>
-      </table></div></div>
-      <div class="wtab"><h3>部品の置き場所</h3><div class="scroll"><table>
-        <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
-        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン</td><td>1</td><td>A9〜A26・J13〜J26（左端に寄せる）。USB-C を上に向ける</td></tr><tr><td>M5Stamp CatM（SIM7080G）</td><td>1</td><td>M27〜X33 のあたりに両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で</td></tr><tr><td>USB-C メス基板（データ対応、VBUS・GND・D+・D− が出ているもの）</td><td>1</td><td>ケースの壁に付け、4本の線を L13・L15・L21・L22 へ</td></tr><tr><td>P-MOSFET（ロジックレベル、1A 以上）</td><td>1</td><td>U19・V19・W19（D・G・S）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>NPN トランジスタ（2SC1815 など）</td><td>1</td><td>Q24・R24・S24（B・C・E）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>金属皮膜抵抗 100kΩ</td><td>2</td><td>V14〜V18（5V → ゲート、縦）・Q23・Q22（ベース → GND、立てる）</td></tr><tr><td>金属皮膜抵抗 10kΩ</td><td>1</td><td>L24〜P24（IO4 → ベース、横）</td></tr><tr><td>ユニバーサル基板 タカチ PCB72-95（穴 27×36）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏</td></tr><tr><td>ケース OB10-17-5W ＋ 取り付けベース OBP10-17 ＋ 基板スペーサー AST3-6B</td><td>1</td><td>四隅の取付穴（φ3.2）を AST3-6B に留める</td></tr><tr><td>電源: HPX-Solar（別の機器）と USB-C ケーブル（データ対応）</td><td>1</td><td>USB-C ケーブル1本でつなぐ（HPX-Solar_pcb.png）。家では USB 充電器でもよい</td></tr></tbody>
-      </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>赤丸の穴は、ほかの部品からの線（USB-C メス基板の 4本、M5Stamp CatM の TX・RX・5V・GND）を直接はんだ付けするところ。</li><li>電源は USB-C から（HPX-Solar か USB 充電器）。FireBeetle は VCC ピンから、CatM は P-MOSFET を通した 5V から動かす。FireBeetle の電池コネクタ（PH2.0）には何もつながない。</li><li>CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。眠っている間と起動のときは 100kΩ で切れたまま。</li><li>HPX-Solar のときは、D+ に電池の電圧（1/2）、D− にパネルの電圧（1/6）が来る。FireBeetle では D+ を IO39 で読む（v1.25 から。v1.24 までは IO34）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>USB 充電器につなぐときは「測らない」にする（充電器は D+・D− に独自の電圧を出すことがある）。USB-C ケーブルは「データ対応」のものを使う。</li><li>CatM の TX・RX（IO16・IO17）と 5V のスイッチ（IO4）のピンは v1.24 と同じ。</li><li>VCC に 5V を入れると、FireBeetle の中のスイッチを通って電池コネクタにも 5V が出る（回路図から。充電の部品に悪くないかは未確認）。</li><li>穴の数（27×36、上下 3行は D〜X）は TARO さんの寸法図から読んだ。FireBeetle のピンの並びは DFRobot の資料から。差す前に実物で確かめる。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナのケーブル（SMA）と USB-C メス基板は、ケースの穴から防水して付ける。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
-      </div>
-      <figure class="wiring" data-variant="core_lte">
-        <figcaption><b>＋LTE-M の線の対応図</b>LTE-M 通信モジュール M5Stamp CatM で直接サーバーへ送るので、LTE ルーターがいりません。電源は USB-C ケーブル1本で HPX-Solar か USB 充電器から。FireBeetle は VCC ピンから、CatM は送るときだけスイッチを通した 5V で動かします。HPX-Solar のときは D+・D− で電池とパネルの電圧も受け取ります。ファームウェアは HPX-Core v1.25 です。</figcaption>
-        <a href="img/wiring/HPX-Core_LTE_wiring.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTE_wiring.png" alt="HPX-Core ＋LTE-M の線の対応図" loading="lazy"></a>
-      </figure>
-      <p class="note old-wiring" data-variant="core_lte">ほかの開発ボードで作るときの図: <a href="img/wiring/HPX-Core_LTE_olimex_wiring.png" target="_blank" rel="noopener">Olimex ESP32-DEVKIT-LIPO</a></p>
-      <div data-variant="core_lte">
-      <div class="wtab"><h3>つなぐ線</h3><div class="scroll"><table>
-        <thead><tr><th>線の色（例）</th><th>どこから</th><th>どこへ</th><th>メモ</th></tr></thead>
-        <tbody><tr><td class="wc"><span class="sw" style="background:#e53935"></span>赤</td><td>USB-C の VBUS（5V）</td><td>FireBeetle VCC と CatM の 5V スイッチ</td><td>HPX-Solar か USB 充電器から</td></tr><tr><td class="wc"><span class="sw" style="background:#212121"></span>黒</td><td>USB-C の GND</td><td>FireBeetle GND・CatM GND・スイッチの GND</td><td>GND は全部共通（図の GND の印）</td></tr><tr><td class="wc"><span class="sw" style="background:#fb8c00"></span>橙</td><td>5V スイッチの出口（P-MOSFET の D）</td><td>M5Stamp CatM 5V</td><td>送るときだけ 5V を入れる</td></tr><tr><td class="wc"><span class="sw" style="background:#8e24aa"></span>紫</td><td>FireBeetle IO4（GPIO4）</td><td>5V スイッチ（10kΩ → NPN のベース）</td><td>High で ON</td></tr><tr><td class="wc"><span class="sw" style="background:#fafafa"></span>白</td><td>USB-C の D+</td><td>FireBeetle IO39（GPIO39、v1.25）</td><td>HPX-Solar の電池の電圧（1/2）</td></tr><tr><td class="wc"><span class="sw" style="background:#1e88e5"></span>青</td><td>USB-C の D−</td><td>FireBeetle IO36（GPIO36）</td><td>HPX-Solar のパネルの電圧（1/6）</td></tr><tr><td class="wc"><span class="sw" style="background:#fdd835"></span>黄</td><td>M5Stamp CatM TX</td><td>FireBeetle IO16（GPIO16、受信）</td><td>初めは 115200bps、ファームで 921600bps に</td></tr><tr><td class="wc"><span class="sw" style="background:#43a047"></span>緑</td><td>M5Stamp CatM RX</td><td>FireBeetle IO17（GPIO17、送信）</td><td></td></tr></tbody>
-      </table></div></div>
-      <div class="wtab"><h3>部品の使いどころ</h3><div class="scroll"><table>
-        <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
-        <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654）</td><td>1</td><td>本体（親機）。VCC ピンから動かす</td></tr><tr><td>M5Stamp CatM（SIM7080G）＋付属アンテナ・IPEX-SMA ケーブル</td><td>1</td><td>LTE-M でサーバーへ送る。付属アンテナを使う（技適）</td></tr><tr><td>LTE-M 対応 SIM（microSIM）</td><td>1</td><td>例: SORACOM plan-D（LTE-M 対応）</td></tr><tr><td>USB-C メス基板（データ対応）</td><td>1</td><td>ケースの壁に付ける。HPX-Solar から USB-C ケーブルで</td></tr><tr><td>P-MOSFET・NPN トランジスタ・抵抗 100kΩ ×2・10kΩ ×1</td><td>1式</td><td>CatM の 5V スイッチ</td></tr><tr><td>電源: HPX-Solar（別の機器）または USB 充電器（5V・1A 以上）</td><td>1</td><td>HPX-Solar のときは電池とパネルの電圧も測れる</td></tr></tbody>
-      </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。ファームウェアは HPX-Core v1.25（Wi-Fi・有線LAN の版と同じファイル。HPX-Solar の電池の電圧を IO39 で読むのは v1.25 から）。</li><li>動作設定の「電圧の測り方」: HPX-Solar につなぐときは「HPX-Solar」、USB 充電器のときは「測らない」を選ぶ。</li><li>USB 充電器は D+・D− に独自の電圧を出すことがあるので、「測らない」にしないと、でたらめな電圧が出る（壊れはしない見込み）。</li><li>USB-C ケーブルは「データ対応」のものを使う（充電専用のケーブルには D+・D− の線がない）。</li><li>ESP32 は眠る前に IO4 を Low にして固定し、CatM の 5V を切る（ファームで行う）。起動のときも 100kΩ で切れたまま。</li><li>M5Stamp CatM の信号の電圧が ESP32 の 3.3V に合うかは未確認。</li><li>線（UART）の速さ: 電源を入れたら AT+IPR=921600 で M5Stamp CatM を速くし、ESP32 も 921600bps にする（ファームで行う、配線は同じ）。</li><li>  SIM7080G が 921600bps で使えるかは未確認。取りこぼすときは 460800bps に下げる。</li><li>HPX-CAM の画像: FireBeetle が 30分ごとに 1〜2分だけ Wi-Fi の親機になり、カメラから受けて LTE-M で送る（その間 BLE は止める。ファームは準備中）。</li><li>FireBeetle の VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。電池コネクタには何もつながない。</li><li>アンテナは付属品を使う（技適）。電波の届き具合は各社の LTE-M エリアで確かめる。</li><li>動作モードはディープスリープ（30分ごと）。家庭用電源のときは常時稼働でもよい。基板に組む図は HPX-Core_LTE_pcb.png。</li></ul></div>
-      </div>
       <figure class="wiring" data-variant="core_ltes">
-        <figcaption><b>＋LTE-M＆ソーラーの配置図</b>ケース タカチ OB13-21-6W の取り付けベース OBP13-21 (110×135mm) を縦に置き、上に 18650 電池ホルダー2個を横向きに両面テープで貼り、左下に基板 (6×8cm)、右下に DFR0559 ソーラーパワーマネージャーを縦に貼ります。ケースに入る線はソーラーパネルの USB-C だけで、ケースの壁に USB Type-Cコネクターパネル取付キットを1つ付けます。DFR0559 の 5V ピンから基板へ直接電気を送るので、USB-C ケーブルはいりません。LTE-M のアンテナはふたの内側に貼ります。</figcaption>
-        <a href="img/wiring/HPX-Core_LTES_layout.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTES_layout.png" alt="HPX-Core ＋LTE-M＆ソーラーの配置図" loading="lazy"></a>
+        <figcaption><b>LTE-M版の配置図</b>ケース タカチ OB13-21-6W の取り付けベース OBP13-21 (110×135mm) を縦に置き、上に 18650 電池ホルダー2個を横向きに両面テープで貼り、左下に基板 (6×8cm)、右下に DFR0559 ソーラーパワーマネージャーを縦に貼ります。ケースに入る線はソーラーパネルの USB-C だけで、ケースの壁に USB Type-Cコネクターパネル取付キットを1つ付けます。DFR0559 の 5V ピンから基板へ直接電気を送るので、USB-C ケーブルはいりません。LTE-M のアンテナはふたの内側に貼ります。</figcaption>
+        <a href="img/wiring/HPX-Core_LTES_layout.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTES_layout.png" alt="HPX-Core LTE-M版の配置図" loading="lazy"></a>
       </figure>
       <div data-variant="core_ltes">
       <div class="wtab"><h3>中の線（基板の穴は HPX-Core_LTES_pcb.png）</h3><div class="scroll"><table>
@@ -502,11 +407,11 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
         <thead><tr><th>部品</th><th>数</th><th>使うところ・メモ</th></tr></thead>
         <tbody><tr><td>ケース タカチ OB13-21-6W</td><td>1</td><td>ケースの壁にパネル用の USB-C を1つだけ付ける</td></tr><tr><td>ケース用取り付けベース タカチ OBP13-21（110×135mm）</td><td>1</td><td>縦に置き、上から 18650 ホルダー、左下に基板、右下に DFR0559</td></tr><tr><td>18650 電池ホルダー 1本用（75×21mm）</td><td>2</td><td>横向きにして上の方へ両面テープで貼る。2個を並列につなぐ</td></tr><tr><td>DFRobot DFR0559 ソーラーパワーマネージャー 5V（63×33mm）</td><td>1</td><td>右下に縦に置き、四隅を AST3-6B で貼る</td></tr><tr><td>ユニバーサル基板 6×8cm</td><td>1</td><td>左下に縦に置き、四隅を AST2.5-5B で貼る。FireBeetle・CatM・抵抗をまとめる</td></tr><tr><td>USB Type-Cコネクターパネル取付キット</td><td>1</td><td>ケースの壁（取り付けベースの下の方向）に付ける。パネルの入力用</td></tr><tr><td>ナット入り貼付スペーサー AST3-6B ・ AST2.5-5B</td><td>各4個</td><td>DFR0559 に AST3-6B、基板に AST2.5-5B</td></tr><tr><td>ソーラーパネル 10W/5V（USB-C 出力）</td><td>1</td><td>ケーブルは切らずに入力の USB-C へ差す</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。取り付けベースの大きさ（110×135mm）は TARO さんの値、ほかの部品の大きさは秋月・DFRobot・M5Stack の値、DFR0559 の端子の位置は写真から描いた目安です。</li><li>ケース OB13-21-6W の中の高さと、OBP13-21 のねじ穴・リブの位置は未確認です。部品を貼る前に、実物に置いて確かめます。</li><li>＋LTE-M と HPX-Solar を 1つのケースに入れた版です。Solar から Core へは USB-C ケーブルを使わず、DFR0559 の 5V ピンから直接つなぎます。</li><li>ファームウェアは HPX-Core v1.25 以降のまま使えます（電池＝IO39、パネル＝IO36 は ＋LTE-M＋HPX-Solar と同じ）。動作設定の「電圧の測り方」で「HPX-Solar」を、動作モードは「ディープスリープ」を選びます。</li><li>FireBeetle の USB-C は上（18650 ホルダーの側）を向くので、書き込むときは FireBeetle をソケットから抜いて行います。</li><li>LTE-M のアンテナは付属品を使います（技適）。ケースのふたの内側に貼り、電池や金属からなるべく離します。ケースの中で電波が弱いときは、防水のアンテナ中継（SMA）で外に出す方法もあります（ケースの穴が増えます）。</li><li>18650 は保護回路付きを使い、2本は同じ銘柄・同じ残量で並列にします。0℃以下では充電しないよう、日陰に置きます。</li><li>DFR0559 の EN は使いません（5V はずっと出します）。何もつながないとき 5V が出るかは未確認です。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>試作中の図です。実機では確かめていません。取り付けベースの大きさ（110×135mm）は TARO さんの値、ほかの部品の大きさは秋月・DFRobot・M5Stack の値、DFR0559 の端子の位置は写真から描いた目安です。</li><li>ケース OB13-21-6W の中の高さと、OBP13-21 のねじ穴・リブの位置は未確認です。部品を貼る前に、実物に置いて確かめます。</li><li>LTE-M の通信と HPX-Solar (小型ソーラー電源) を 1つのケースに入れた版です。Solar から Core へは USB-C ケーブルを使わず、DFR0559 の 5V ピンから直接つなぎます。</li><li>ファームウェアは HPX-Core v1.25 以降のまま使えます（電池＝IO39、パネル＝IO36 は HPX-Solar と同じ）。動作設定の「電圧の測り方」で「HPX-Solar」を、動作モードは「ディープスリープ」を選びます。</li><li>FireBeetle の USB-C は上（18650 ホルダーの側）を向くので、書き込むときは FireBeetle をソケットから抜いて行います。</li><li>LTE-M のアンテナは付属品を使います（技適）。ケースのふたの内側に貼り、電池や金属からなるべく離します。ケースの中で電波が弱いときは、防水のアンテナ中継（SMA）で外に出す方法もあります（ケースの穴が増えます）。</li><li>18650 は保護回路付きを使い、2本は同じ銘柄・同じ残量で並列にします。0℃以下では充電しないよう、日陰に置きます。</li><li>DFR0559 の EN は使いません（5V はずっと出します）。何もつながないとき 5V が出るかは未確認です。</li></ul></div>
       </div>
       <figure class="wiring" data-variant="core_ltes">
-        <figcaption><b>＋LTE-M＆ソーラーの基板の配線図</b>6×8cm のユニバーサル基板に、FireBeetle 2 ESP32-E (USB-C を上)、M5Stamp CatM、CatM の 5V を入り切りするスイッチ、電池とパネルの電圧を測る抵抗、パネルの USB-C の CC につなぐ 5.1kΩ を全部まとめる図です (表と裏、線はすべて裏)。ピンは「＋LTE-M」と同じなので、ファームウェアは HPX-Core v1.25 以降をそのまま使い、動作設定の「電圧の測り方」で「HPX-Solar」を選びます。</figcaption>
-        <a href="img/wiring/HPX-Core_LTES_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTES_pcb.png" alt="HPX-Core ＋LTE-M＆ソーラーの基板の配線図" loading="lazy"></a>
+        <figcaption><b>LTE-M版の基板の配線図</b>6×8cm のユニバーサル基板に、FireBeetle 2 ESP32-E (USB-C を上)、M5Stamp CatM、CatM の 5V を入り切りするスイッチ、電池とパネルの電圧を測る抵抗、パネルの USB-C の CC につなぐ 5.1kΩ を全部まとめる図です (表と裏、線はすべて裏)。ピンは決まった並びなので、ファームウェアは HPX-Core v1.25 以降をそのまま使い、動作設定の「電圧の測り方」で「HPX-Solar」を選びます。</figcaption>
+        <a href="img/wiring/HPX-Core_LTES_pcb.png" target="_blank" rel="noopener"><img src="img/wiring/HPX-Core_LTES_pcb.png" alt="HPX-Core LTE-M版の基板の配線図" loading="lazy"></a>
       </figure>
       <div data-variant="core_ltes">
       <div class="wtab"><h3>つなぐ線（穴の位置は 列の文字＋行の数字）</h3><div class="scroll"><table>
@@ -521,9 +426,9 @@ SMA アンテナ・IPEX-SMA 変換ケーブル付き。技適のため付属の�
         <thead><tr><th>部品</th><th>数</th><th>置き場所・メモ</th></tr></thead>
         <tbody><tr><td>DFRobot FireBeetle 2 ESP32-E（DFR0654、ピンヘッダ付き）＋ ピンソケット 18ピン・14ピン</td><td>1</td><td>B9〜B26・K13〜K26。USB-C を上に向ける（ESP32 のアンテナが下）</td></tr><tr><td>M5Stamp CatM（SIM7080G）</td><td>1</td><td>N27〜Y33 のあたりに両面テープで貼る。TX・RX・5V・GND を赤丸の穴へ短い線で</td></tr><tr><td>P-MOSFET（ロジックレベル、1A 以上）</td><td>1</td><td>V19・W19・X19（D・G・S）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>NPN トランジスタ（2SC1815 など）</td><td>1</td><td>R24・S24・T24（B・C・E）。足の並びは部品の資料で確かめて合わせる</td></tr><tr><td>金属皮膜抵抗 100kΩ</td><td>5</td><td>W14〜W18・R23・R22（スイッチ）、N1〜N5・O5・O3（電池）、E29〜I29（パネル）</td></tr><tr><td>金属皮膜抵抗 20kΩ</td><td>1</td><td>K29〜K33（パネル）</td></tr><tr><td>金属皮膜抵抗 10kΩ</td><td>1</td><td>M24〜Q24（IO4 → ベース）</td></tr><tr><td>金属皮膜抵抗 5.1kΩ</td><td>2</td><td>C31・C33、F31・F33（入力 USB-C の CC1・CC2）</td></tr><tr><td>積層セラミックコンデンサー 0.1µF</td><td>2</td><td>P3・P5（電池）、L29・L31（パネル）</td></tr><tr><td>ユニバーサル基板 6×8cm（穴 25×33）・すずめっき線</td><td>1</td><td>縦に置く。線はすべて裏。取り付けベースに AST2.5-5B で留める</td></tr></tbody>
       </table></div></div>
-      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>＋LTE-M の基板（PCB72-95）の部品と、HPX-Solar の小さな基板（2*8）の部品を、この 1枚にまとめた。USB-C ケーブルと、ケースの壁の出力用 USB-C はいらない。</li><li>電源は DFR0559 の 5V ピンから直接 FireBeetle の VCC へ。CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。</li><li>電池の電圧（100kΩ/100kΩ で 1/2）は IO39、パネルの電圧（100kΩ/20kΩ で 1/6）は IO36 で読む。＋LTE-M＋HPX-Solar と同じピンなので、ファームはそのまま（v1.25 以降）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない（18650 は DFR0559 につなぐ）。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。</li><li>FireBeetle に USB で書き込むときは、FireBeetle を基板から抜いてから（DFR0559 の 5V と USB の 5V がぶつからないように）。</li><li>裏の線どうしは交わらない（図を作るときに調べている）。FireBeetle の下を通る線（IO39・IO36・GND）は裏なので部品には触れない。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナは付属の SMA ロッドアンテナを IPEX-SMA ケーブルでつなぎ、ケースのふたの内側に貼る（技適のため付属品を使う）。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
+      <div class="wnote"><h3>注意</h3><ul><li>上の図は部品を載せる面（表）から見たところ。部品はすべて表から差し、足を裏ではんだ付けする。線はすべて裏のすずめっき線。</li><li>LTE-M の部品と、HPX-Solar の小さな基板（2*8）の部品を、この 1枚にまとめた。USB-C ケーブルと、ケースの壁の出力用 USB-C はいらない。</li><li>電源は DFR0559 の 5V ピンから直接 FireBeetle の VCC へ。CatM の 5V は IO4 が High のときだけ入る（NPN が P-MOSFET のゲートを GND へ引く）。</li><li>電池の電圧（100kΩ/100kΩ で 1/2）は IO39、パネルの電圧（100kΩ/20kΩ で 1/6）は IO36 で読む。HPX-Solar と同じピンなので、ファームはそのまま（v1.25 以降）。動作設定の「電圧の測り方」で「HPX-Solar」を選ぶ。</li><li>FireBeetle の電池コネクタ（PH2.0）には何もつながない（18650 は DFR0559 につなぐ）。VCC に 5V を入れると、基板の中のスイッチを通って電池コネクタにも 5V が出る（回路図から）。</li><li>FireBeetle に USB で書き込むときは、FireBeetle を基板から抜いてから（DFR0559 の 5V と USB の 5V がぶつからないように）。</li><li>裏の線どうしは交わらない（図を作るときに調べている）。FireBeetle の下を通る線（IO39・IO36・GND）は裏なので部品には触れない。</li><li>M5Stamp CatM は基板に貼るだけで、穴には差さない。アンテナは付属の SMA ロッドアンテナを IPEX-SMA ケーブルでつなぎ、ケースのふたの内側に貼る（技適のため付属品を使う）。</li><li>FireBeetle 2 の左右のピン列は 9穴離れている（TARO さん確認）。ピンの並びは DFRobot の資料から。差す前に、基板の印字とピンの名前を見くらべる。</li></ul></div>
       </div>
-      <div class="soonbox" data-variant="core_lanv core_wp core_bat core_lte core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
+      <div class="soonbox" data-variant="core_lanv core_bat core_ltes">組み立ての手順は、準備ができしだい掲載します。</div>
       <a class="back" href="devices.html">機器の一覧へ戻る</a>
     </div>
   </section>
