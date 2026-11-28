@@ -173,6 +173,8 @@
   .photos img { display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; }
   .photos figcaption { padding:10px 14px; font-size:14px; color:var(--sub); }
   h3.steps { font-size:18px; margin-top:32px; }
+  .feat { margin-bottom:36px; }
+  .feat ul { margin:14px 0 0; padding-left:1.3em; font-size:15px; line-height:1.9; }
   .soonbox { margin-top:24px; padding:22px 24px; border:1px dashed var(--line); border-radius:14px; color:var(--sub); background:var(--panel); }
   .back { display:inline-block; margin-top:16px; font-size:14px; text-decoration:none; border-bottom:2px solid var(--honey); font-weight:600; }
   .back-top { margin-top:0; margin-bottom:18px; }
@@ -219,8 +221,11 @@
 
   <section id="photos">
     <div class="reveal wrap">
+      <div class="feat" data-variant="core_lanv">
+      <h2>特徴</h2>
+      <ul><li>カーバッテリーなど大容量のバッテリーとソーラーパネルを組み合わせたソーラーシステムでの使用を想定しています。</li><li>バッテリー電圧を測れます。</li><li>ソーラーパネルの発電電圧も測れます（チャージャーコントローラーのソーラーパネル－端子とバッテリー－端子が導通するタイプのみ）。</li><li>Wi-Fi機能を持たないルーターでも使えるように有線LAN接続できるようにしました。</li><li>防水性はありません。</li></ul>
+      </div>
       <h2>完成写真</h2>
-      <p class="note" data-variant="core_lanv">カーバッテリーなど大容量のバッテリーとソーラーパネルを組み合わせたソーラーシステムでの使用を想定して、バッテリー電圧を測れます。<br>ソーラーパネルの発電電圧も測れます（チャージャーコントローラーのパネル-とバッテリー-端子が通電するタイプのみ）。<br>Wi-Fi機能を持たないルーターでも使えるように有線LAN接続できるようにしました。<br>防水性はありません。</p>
       <p class="note" data-variant="core_ltes">この版の写真は準備中です。</p>
       <div class="photos">
         <figure data-variant="core_basic"><a href="img/photo/core_basic_1_l.webp" target="_blank" rel="noopener"><img src="img/photo/core_basic_1.webp" alt="HPX-Core HPX-CoreはESP32ボードだけあればOK。" width="640" height="640" loading="lazy"></a><figcaption>HPX-CoreはESP32ボードだけあればOK。</figcaption></figure>
